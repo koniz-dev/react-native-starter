@@ -53,11 +53,56 @@ react-native-starter/
 ├── assets/           # Images, fonts, and other static files
 ├── components/       # Reusable React Native components (see components/README.md)
 ├── constants/       # App constants like colors (see constants/README.md)
+├── docs/             # Additional documentation and guides
 ├── hooks/            # React Hooks (see hooks/README.md)
 ├── scripts/          # Utility scripts (see scripts/README.md)
 ├── app.json          # Expo configuration
 └── package.json      # Dependencies and scripts
 ```
+
+## User Interface
+
+### Safe Areas
+
+This project includes `react-native-safe-area-context` (installed with Expo Router) for handling safe areas on devices with notches and system bars.
+
+**Quick example:**
+
+```tsx
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+export default function Screen() {
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      {/* Your content */}
+    </SafeAreaView>
+  );
+}
+```
+
+See [Safe Areas Guide](docs/safe-areas.md) for more information.
+
+### Assets
+
+Assets (images, fonts, etc.) are stored in the `assets/` directory. Import them directly:
+
+```tsx
+import { Image } from 'react-native';
+
+<Image source={require('./assets/icon.png')} />
+```
+
+See [Assets Guide](docs/assets.md) for more information.
+
+### Environment Variables
+
+This project uses environment variables for configuration. Copy `.env.example` to `.env` and fill in your values:
+
+```bash
+cp .env.example .env
+```
+
+All environment variables used in JavaScript must be prefixed with `EXPO_PUBLIC_`. See [Environment Variables Guide](docs/environment-variables.md) for more information.
 
 ## Development Tools
 
@@ -135,6 +180,20 @@ Expo Go is a free app for testing your app on physical devices:
 - Download from [Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent) (Android)
 
 > **Note:** Expo Go is great for learning and prototyping, but not recommended for production apps. Use development builds instead.
+
+## Documentation
+
+Additional guides are available in the `docs/` directory:
+
+- [Splash Screen and App Icon](docs/splash-screen-and-app-icon.md)
+- [Safe Areas](docs/safe-areas.md)
+- [System Bars](docs/system-bars.md)
+- [Fonts](docs/fonts.md)
+- [Assets](docs/assets.md)
+- [Color Themes](docs/color-themes.md)
+- [Animation](docs/animation.md)
+- [Store Data](docs/store-data.md)
+- [Environment Variables](docs/environment-variables.md)
 
 ## Resources
 

@@ -1,0 +1,14 @@
+node_modules/
+.expo/
+.expo-shared/
+dist/
+build/
+*.log
+*.lock
+package-lock.json
+yarn.lock
+coverage/
+.nyc_output/
+*.min.js
+*.min.css
+
