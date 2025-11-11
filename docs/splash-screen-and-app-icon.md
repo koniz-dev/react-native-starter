@@ -134,6 +134,7 @@ For Android, you can customize the adaptive icon:
 ```
 
 **Guidelines:**
+
 - Use `.png` files
 - Follow [Android Adaptive Icon Guidelines](https://developer.android.com/guide/practices/ui_guidelines/icon_design_adaptive)
 - The default background color is white
@@ -158,6 +159,7 @@ For iOS, you can use the [Icon Composer](https://docs.expo.dev/develop/user-inte
 ```
 
 **Guidelines:**
+
 - Follow [Apple Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/app-icons)
 - Test your icon on different wallpapers
 - Avoid text beside your product's wordmark
@@ -169,4 +171,3 @@ For iOS, you can use the [Icon Composer](https://docs.expo.dev/develop/user-inte
 - [Android Adaptive Icon Guidelines](https://developer.android.com/guide/practices/ui_guidelines/icon_design_adaptive)
 - [Apple Human Interface Guidelines - App Icons](https://developer.apple.com/design/human-interface-guidelines/app-icons)
 - [expo-splash-screen Documentation](https://docs.expo.dev/versions/latest/sdk/splash-screen/)
-

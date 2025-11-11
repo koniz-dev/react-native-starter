@@ -149,10 +149,10 @@ await db.execAsync(`
 `);
 
 // Insert data
-await db.runAsync(
-  'INSERT INTO users (name, email) VALUES (?, ?)',
-  ['John Doe', 'john@example.com']
-);
+await db.runAsync('INSERT INTO users (name, email) VALUES (?, ?)', [
+  'John Doe',
+  'john@example.com',
+]);
 
 // Query data
 const result = await db.getAllAsync('SELECT * FROM users');
@@ -199,12 +199,12 @@ const hasName = storage.contains('user.name');
 
 ## Choosing the Right Storage
 
-| Storage | Use Case | Size Limit | Encrypted |
-|---------|----------|------------|-----------|
-| AsyncStorage | Simple key-value data | ~6-10MB | No |
-| SecureStore | Sensitive data (tokens, passwords) | ~2KB/item | Yes |
-| SQLite | Complex relational data | Large | No |
-| MMKV | High-performance key-value | Large | Optional |
+| Storage      | Use Case                           | Size Limit | Encrypted |
+| ------------ | ---------------------------------- | ---------- | --------- |
+| AsyncStorage | Simple key-value data              | ~6-10MB    | No        |
+| SecureStore  | Sensitive data (tokens, passwords) | ~2KB/item  | Yes       |
+| SQLite       | Complex relational data            | Large      | No        |
+| MMKV         | High-performance key-value         | Large      | Optional  |
 
 ## Best Practices
 
@@ -221,4 +221,3 @@ const hasName = storage.contains('user.name');
 - [expo-secure-store Documentation](https://docs.expo.dev/versions/latest/sdk/securestore/)
 - [expo-sqlite Documentation](https://docs.expo.dev/versions/latest/sdk/sqlite/)
 - [react-native-mmkv Documentation](https://github.com/mrousavy/react-native-mmkv)
-

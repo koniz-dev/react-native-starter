@@ -131,17 +131,14 @@ When using edge-to-edge, use `react-native-safe-area-context` to handle overlaps
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Screen() {
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-      {/* Your content */}
-    </SafeAreaView>
-  );
+  return <SafeAreaView style={{ flex: 1 }}>{/* Your content */}</SafeAreaView>;
 }
 ```
 
 ### Important Notes
 
 With edge-to-edge enabled on Android:
+
 - Features from `expo-navigation-bar` that depend on an opaque navigation bar are unavailable
 - Only style and visibility can be customized
 - Other properties will no-op and warn
@@ -159,4 +156,3 @@ With edge-to-edge enabled on Android:
 - [expo-status-bar Documentation](https://docs.expo.dev/versions/latest/sdk/status-bar/)
 - [expo-navigation-bar Documentation](https://docs.expo.dev/versions/latest/sdk/navigation-bar/)
 - [Safe Areas Guide](safe-areas.md)
-

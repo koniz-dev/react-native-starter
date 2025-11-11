@@ -23,6 +23,7 @@ npm start
 ```
 
 Then:
+
 - Press `a` to open on Android emulator
 - Press `i` to open on iOS simulator
 - Press `w` to open on web browser
@@ -41,6 +42,7 @@ This project uses **Expo Router** for navigation, which is the recommended appro
 React Native doesn't include built-in navigation, so you need a navigation library. Expo Router is built on top of React Navigation and integrates seamlessly with Expo CLI and bundling.
 
 For more information, see:
+
 - [Navigation in Expo](https://docs.expo.dev/develop/app-navigation/)
 - [Expo Router Documentation](https://docs.expo.dev/router/introduction/)
 - [App Directory Guide](app/README.md)
@@ -72,11 +74,7 @@ This project includes `react-native-safe-area-context` (installed with Expo Rout
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Screen() {
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-      {/* Your content */}
-    </SafeAreaView>
-  );
+  return <SafeAreaView style={{ flex: 1 }}>{/* Your content */}</SafeAreaView>;
 }
 ```
 
@@ -89,7 +87,7 @@ Assets (images, fonts, etc.) are stored in the `assets/` directory. Import them 
 ```tsx
 import { Image } from 'react-native';
 
-<Image source={require('./assets/icon.png')} />
+<Image source={require('./assets/icon.png')} />;
 ```
 
 See [Assets Guide](docs/assets.md) for more information.
@@ -110,14 +108,14 @@ All environment variables used in JavaScript must be prefixed with `EXPO_PUBLIC_
 
 Expo CLI is installed automatically with the `expo` package. Common commands:
 
-| Command | Description |
-|---------|-------------|
-| `npx expo start` | Start the development server |
-| `npx expo prebuild` | Generate native Android and iOS directories |
-| `npx expo run:android` | Compile and run on Android |
-| `npx expo run:ios` | Compile and run on iOS |
-| `npx expo install <package>` | Install a library with compatible versions |
-| `npx expo lint` | Lint your project files |
+| Command                      | Description                                 |
+| ---------------------------- | ------------------------------------------- |
+| `npx expo start`             | Start the development server                |
+| `npx expo prebuild`          | Generate native Android and iOS directories |
+| `npx expo run:android`       | Compile and run on Android                  |
+| `npx expo run:ios`           | Compile and run on iOS                      |
+| `npx expo install <package>` | Install a library with compatible versions  |
+| `npx expo lint`              | Lint your project files                     |
 
 See [Expo CLI documentation](https://docs.expo.dev/more/expo-cli/) for more commands.
 
@@ -130,6 +128,7 @@ npm install -g eas-cli
 ```
 
 Common commands:
+
 - `eas build` - Create development, preview, or production builds
 - `eas submit` - Submit your app to app stores
 - `eas update` - Create over-the-air (OTA) updates
@@ -149,17 +148,20 @@ This command checks for common issues in app config, package.json, dependency co
 ### Expo Tools for VS Code
 
 Install the [Expo Tools VS Code extension](https://marketplace.visualstudio.com/items?itemName=expo.vscode-expo-tools) for:
+
 - Autocomplete and IntelliSense for app config files
 - Debugging with breakpoints and variable inspection
 
 ### Orbit
 
 Orbit is a macOS and Windows app for:
+
 - Installing and launching builds from EAS
 - Installing and launching updates
 - Testing on physical devices and emulators
 
 Install with Homebrew (macOS):
+
 ```bash
 brew install expo-orbit
 ```
@@ -169,6 +171,7 @@ Or download from [GitHub releases](https://github.com/expo/orbit/releases).
 ### Snack
 
 [Snack](https://snack.expo.dev) is an in-browser development environment for:
+
 - Sharing code snippets
 - Experimenting with React Native
 - Testing prototypes without local setup
@@ -176,6 +179,7 @@ Or download from [GitHub releases](https://github.com/expo/orbit/releases).
 ### Expo Go
 
 Expo Go is a free app for testing your app on physical devices:
+
 - Download from [App Store](https://apps.apple.com/app/expo-go/id982107779) (iOS)
 - Download from [Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent) (Android)
 
@@ -205,4 +209,3 @@ Additional guides are available in the `docs/` directory:
 ## License
 
 MIT
-

@@ -14,9 +14,7 @@ React Native provides access to system fonts on both iOS and Android. You can us
 import { Text, StyleSheet } from 'react-native';
 
 export default function App() {
-  return (
-    <Text style={styles.text}>Hello World</Text>
-  );
+  return <Text style={styles.text}>Hello World</Text>;
 }
 
 const styles = StyleSheet.create({
@@ -76,9 +74,7 @@ export default function App() {
 import { Text, StyleSheet } from 'react-native';
 
 export default function App() {
-  return (
-    <Text style={styles.text}>Hello World</Text>
-  );
+  return <Text style={styles.text}>Hello World</Text>;
 }
 
 const styles = StyleSheet.create({
@@ -147,4 +143,3 @@ npx expo install expo-font expo-splash-screen
 - [Expo: Fonts](https://docs.expo.dev/develop/user-interface/fonts/)
 - [expo-font Documentation](https://docs.expo.dev/versions/latest/sdk/font/)
 - [React Native: Text Component](https://reactnative.dev/docs/text)
-

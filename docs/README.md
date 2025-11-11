@@ -40,6 +40,7 @@ This directory contains additional guides and documentation for common developme
 ## Quick Reference
 
 All guides include:
+
 - Installation instructions
 - Basic usage examples
 - Best practices
@@ -48,4 +49,3 @@ All guides include:
 ## Contributing
 
 These guides are based on the official Expo documentation. If you find any issues or have suggestions, please refer to the original documentation links provided in each guide.
-

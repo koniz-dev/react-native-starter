@@ -15,11 +15,13 @@ import { useColorScheme } from 'react-native';
 
 export default function App() {
   const colorScheme = useColorScheme(); // 'light' | 'dark' | null
-  
+
   return (
-    <View style={{ 
-      backgroundColor: colorScheme === 'dark' ? '#000' : '#fff' 
-    }}>
+    <View
+      style={{
+        backgroundColor: colorScheme === 'dark' ? '#000' : '#fff',
+      }}
+    >
       {/* Your content */}
     </View>
   );
@@ -87,7 +89,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 export default function MyComponent() {
   const textColor = useThemeColor({}, 'text');
   const backgroundColor = useThemeColor({}, 'background');
-  
+
   return (
     <View style={{ backgroundColor }}>
       <Text style={{ color: textColor }}>Hello</Text>
@@ -143,7 +145,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const systemTheme = useColorScheme() ?? 'light';
   const [theme, setTheme] = useState<Theme>('auto');
-  
+
   const actualTheme = theme === 'auto' ? systemTheme : theme;
 
   return (
@@ -175,6 +177,7 @@ Configure theme in `app.json`:
 ```
 
 Options:
+
 - `"automatic"` - Follows system theme
 - `"light"` - Always light mode
 - `"dark"` - Always dark mode
@@ -193,4 +196,3 @@ Options:
 - [React Native: useColorScheme](https://reactnative.dev/docs/usecolorscheme)
 - [Material Design: Dark Theme](https://material.io/design/color/dark-theme.html)
 - [Apple Human Interface Guidelines: Dark Mode](https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/dark-mode/)
-

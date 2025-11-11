@@ -82,4 +82,3 @@ app/
 
 - [Expo Router Introduction](https://docs.expo.dev/router/introduction/)
 - [Create Pages - File-based Routing](https://docs.expo.dev/router/create-pages/)
-

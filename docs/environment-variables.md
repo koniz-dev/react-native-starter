@@ -197,6 +197,7 @@ EXPO_NO_CLIENT_ENV_VARS=1 npx expo start
 ### Why?
 
 Variables prefixed with `EXPO_PUBLIC_` are:
+
 - Embedded in your compiled JavaScript bundle
 - Visible in plain text
 - Accessible to anyone who inspects your app
@@ -211,6 +212,7 @@ Variables prefixed with `EXPO_PUBLIC_` are:
 ### For Sensitive Data
 
 Use:
+
 - **EAS Secrets** for build-time secrets
 - **SecureStore** for runtime secrets (see [Store Data Guide](store-data.md))
 - **Backend API** for sensitive operations
@@ -282,11 +284,11 @@ npx expo start --clear
 ```tsx
 const getApiUrl = () => {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-  
+
   if (!apiUrl) {
     throw new Error('EXPO_PUBLIC_API_URL is not defined');
   }
-  
+
   return apiUrl;
 };
 ```

@@ -138,9 +138,7 @@ Reanimated 2.3+ supports layout animations:
 ```tsx
 import Animated, { Layout } from 'react-native-reanimated';
 
-<Animated.View layout={Layout.springify()}>
-  {/* Your content */}
-</Animated.View>
+<Animated.View layout={Layout.springify()}>{/* Your content */}</Animated.View>;
 ```
 
 ## Gesture Handler
@@ -168,7 +166,7 @@ export default function App() {
   const translateY = useSharedValue(0);
 
   const pan = Gesture.Pan()
-    .onUpdate((e) => {
+    .onUpdate(e => {
       translateX.value = e.translationX;
       translateY.value = e.translationY;
     })
@@ -188,7 +186,12 @@ export default function App() {
 
   return (
     <GestureDetector gesture={pan}>
-      <Animated.View style={[{ width: 100, height: 100, backgroundColor: 'blue' }, animatedStyle]} />
+      <Animated.View
+        style={[
+          { width: 100, height: 100, backgroundColor: 'blue' },
+          animatedStyle,
+        ]}
+      />
     </GestureDetector>
   );
 }
@@ -208,4 +211,3 @@ export default function App() {
 - [React Native: Animated API](https://reactnative.dev/docs/animated)
 - [react-native-reanimated Documentation](https://docs.swmansion.com/react-native-reanimated/)
 - [react-native-gesture-handler Documentation](https://docs.swmansion.com/react-native-gesture-handler/)
-

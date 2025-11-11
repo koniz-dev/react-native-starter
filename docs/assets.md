@@ -33,8 +33,8 @@ import { Image } from 'react-native';
 
 export default function App() {
   return (
-    <Image 
-      source={require('./assets/images/logo.png')} 
+    <Image
+      source={require('./assets/images/logo.png')}
       style={{ width: 100, height: 100 }}
     />
   );
@@ -46,7 +46,7 @@ export default function App() {
 You can also load images from URLs:
 
 ```tsx
-<Image 
+<Image
   source={{ uri: 'https://example.com/image.png' }}
   style={{ width: 100, height: 100 }}
 />
@@ -55,6 +55,7 @@ You can also load images from URLs:
 ### Image Formats
 
 Expo supports:
+
 - **PNG** - Best for images with transparency
 - **JPEG** - Best for photos
 - **WebP** - Modern format with good compression
@@ -191,4 +192,3 @@ See [Splash Screen and App Icon Guide](splash-screen-and-app-icon.md) for detail
 - [React Native: Images](https://reactnative.dev/docs/images)
 - [expo-asset Documentation](https://docs.expo.dev/versions/latest/sdk/asset/)
 - [expo-av Documentation](https://docs.expo.dev/versions/latest/sdk/av/)
-

@@ -48,7 +48,7 @@ import { useColorScheme } from 'react-native';
 export default function MyComponent() {
   const colorScheme = useColorScheme() ?? 'light';
   const textColor = Colors[colorScheme].text;
-  
+
   return <Text style={{ color: textColor }}>Hello</Text>;
 }
 ```

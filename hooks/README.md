@@ -37,7 +37,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 export default function MyComponent() {
   const textColor = useThemeColor({}, 'text');
   const backgroundColor = useThemeColor({}, 'background');
-  
+
   return (
     <View style={{ backgroundColor }}>
       <Text style={{ color: textColor }}>Hello</Text>

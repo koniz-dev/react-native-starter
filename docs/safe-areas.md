@@ -45,7 +45,9 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom }}>
+    <View
+      style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom }}
+    >
       <Text>Content is in safe area.</Text>
     </View>
   );
@@ -77,11 +79,7 @@ If you're not using Expo Router, wrap your app with `SafeAreaProvider`:
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function App() {
-  return (
-    <SafeAreaProvider>
-      {/* Your app content */}
-    </SafeAreaProvider>
-  );
+  return <SafeAreaProvider>{/* Your app content */}</SafeAreaProvider>;
 }
 ```
 
@@ -117,4 +115,3 @@ For web, set up `SafeAreaProvider` as described above. If you're doing server-si
 - [Expo: Safe Areas](https://docs.expo.dev/develop/user-interface/safe-areas/)
 - [react-native-safe-area-context Documentation](https://github.com/th3rdwave/react-native-safe-area-context)
 - [React Navigation: Safe Areas](https://reactnavigation.org/docs/handling-safe-area/)
-
