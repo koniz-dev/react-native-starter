@@ -80,6 +80,31 @@ export default function Screen() {
 
 See [Safe Areas Guide](docs/safe-areas.md) for more information.
 
+### UI Components (React Native Paper)
+
+This project includes **React Native Paper**, a Material Design 3 component library. Paper provides pre-built, accessible components that automatically adapt to light/dark mode.
+
+**Quick example:**
+
+```tsx
+import { Button, Card, Text } from 'react-native-paper';
+
+export default function Screen() {
+  return (
+    <Card>
+      <Card.Content>
+        <Text variant="titleLarge">Card Title</Text>
+        <Button mode="contained" onPress={() => console.log('Pressed')}>
+          Press me
+        </Button>
+      </Card.Content>
+    </Card>
+  );
+}
+```
+
+See [UI Library Guide](docs/ui-library.md) for more information on using React Native Paper components and customizing themes.
+
 ### Assets
 
 Assets (images, fonts, etc.) are stored in the `assets/` directory. Import them directly:

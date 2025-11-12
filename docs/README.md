@@ -24,6 +24,9 @@ This directory contains additional guides and documentation for common developme
 - **[Color Themes](color-themes.md)**  
   Implement light and dark color themes.
 
+- **[UI Library](ui-library.md)**  
+  Use React Native Paper components and Material Design 3.
+
 - **[Animation](animation.md)**  
   Add animations using React Native Animated API and Reanimated.
 
