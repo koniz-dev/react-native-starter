@@ -167,7 +167,12 @@ npx expo install expo-font @expo-google-fonts/inter
 Then load in `app/_layout.tsx`:
 
 ```tsx
-import { useFonts, Inter_400Regular, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
+import {
+  useFonts,
+  Inter_400Regular,
+  Inter_600SemiBold,
+  Inter_700Bold,
+} from '@expo-google-fonts/inter';
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -214,16 +219,16 @@ const fontConfig = {
 
 React Native Paper follows Material Design 3 typography scale:
 
-| Variant | Default Size | Usage |
-|---------|--------------|-------|
-| `displayLarge` | 57px | Large, short, important text |
-| `displayMedium` | 45px | High-emphasis text |
-| `headlineLarge` | 32px | High-emphasis headlines |
-| `headlineMedium` | 28px | Medium-emphasis headlines |
-| `titleLarge` | 22px | Medium-emphasis titles |
-| `bodyLarge` | 16px | Longer text passages |
-| `bodyMedium` | 14px | Default body text |
-| `labelLarge` | 14px | Button text, labels |
+| Variant          | Default Size | Usage                        |
+| ---------------- | ------------ | ---------------------------- |
+| `displayLarge`   | 57px         | Large, short, important text |
+| `displayMedium`  | 45px         | High-emphasis text           |
+| `headlineLarge`  | 32px         | High-emphasis headlines      |
+| `headlineMedium` | 28px         | Medium-emphasis headlines    |
+| `titleLarge`     | 22px         | Medium-emphasis titles       |
+| `bodyLarge`      | 16px         | Longer text passages         |
+| `bodyMedium`     | 14px         | Default body text            |
+| `labelLarge`     | 14px         | Button text, labels          |
 
 ## Troubleshooting
 

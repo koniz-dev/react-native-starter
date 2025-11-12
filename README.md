@@ -223,6 +223,7 @@ Additional guides are available in the `docs/` directory:
 - [Animation](docs/animation.md)
 - [Store Data](docs/store-data.md)
 - [Environment Variables](docs/environment-variables.md)
+- [API and Storage](docs/api-and-storage.md)
 
 ## Resources
 
