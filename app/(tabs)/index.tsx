@@ -6,13 +6,18 @@ export default function HomeScreen() {
   const theme = useTheme();
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
           <Text variant="headlineMedium" style={styles.title}>
             React Native Paper
           </Text>
-          <Text variant="bodyMedium" style={[styles.subtitle, { color: theme.colors.onSurfaceVariant }]}>
+          <Text
+            variant="bodyMedium"
+            style={[styles.subtitle, { color: theme.colors.onSurfaceVariant }]}
+          >
             Material Design 3 Components
           </Text>
         </View>
@@ -70,7 +75,13 @@ export default function HomeScreen() {
           <Text variant="titleMedium" style={styles.sectionTitle}>
             Surface
           </Text>
-          <Surface style={[styles.surface, { backgroundColor: theme.colors.surfaceVariant }]} elevation={2}>
+          <Surface
+            style={[
+              styles.surface,
+              { backgroundColor: theme.colors.surfaceVariant },
+            ]}
+            elevation={2}
+          >
             <Text variant="bodyMedium" style={styles.surfaceText}>
               Surface component with elevation
             </Text>
@@ -125,4 +136,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
