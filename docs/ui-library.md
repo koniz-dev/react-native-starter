@@ -13,17 +13,17 @@ This starter template includes **React Native Paper**, a Material Design 3 compo
 
 - **PaperProvider** configured in `app/_layout.tsx`
 - **Theme system** in `constants/Theme.ts` connected to `Colors.ts`
-- **Automatic light/dark mode** support (follows system preference)
+- **Automatic light/dark mode** support via system preference
 - **Example components** in `app/(tabs)/index.tsx`
 
 ## Quick Start
 
-The setup is already configured. The theme automatically follows your system's light/dark mode preference.
-
 ### Using Components
 
+Import components from `react-native-paper`:
+
 ```tsx
-import { Button, Card, Text } from 'react-native-paper';
+import { Button, Card, Text, Surface } from 'react-native-paper';
 
 export default function MyScreen() {
   return (
@@ -32,12 +32,20 @@ export default function MyScreen() {
       <Button mode="contained" onPress={() => console.log('Pressed')}>
         Press me
       </Button>
+      <Card>
+        <Card.Content>
+          <Text variant="titleLarge">Card Title</Text>
+          <Text variant="bodyMedium">Card content</Text>
+        </Card.Content>
+      </Card>
     </View>
   );
 }
 ```
 
 ### Using the Theme
+
+Access the theme using the `useTheme()` hook:
 
 ```tsx
 import { useTheme } from 'react-native-paper';
@@ -55,7 +63,7 @@ export default function MyComponent() {
 
 ## Theme Customization
 
-Edit `constants/Theme.ts` to customize:
+Edit `constants/Theme.ts` to customize your theme:
 
 ### Colors
 
@@ -66,57 +74,70 @@ export const lightTheme: MD3Theme = {
     ...MD3LightTheme.colors,
     primary: '#0a7ea4', // Your primary color
     background: '#fff', // Background color
-    // Add more custom colors
+    surface: '#fff', // Surface color
+    // Add more custom colors as needed
   },
 };
 ```
 
-### Roundness & Fonts
+### Roundness
 
 ```tsx
 export const lightTheme: MD3Theme = {
   ...MD3LightTheme,
   roundness: 8, // Adjust border radius (default is 4)
+};
+```
+
+### Fonts
+
+Customize fonts using the `configureFonts` helper:
+
+```tsx
+const fontConfig = {
+  displayLarge: {
+    fontFamily: 'YourCustomFont',
+    fontSize: 57,
+    fontWeight: '400',
+  },
+  // Configure other text variants...
+};
+
+export const lightTheme: MD3Theme = {
+  ...MD3LightTheme,
   fonts: configureFonts({ config: fontConfig }),
 };
 ```
 
-## Adding More Components
-
-Import and use components directly:
-
-```tsx
-import { TextInput, Switch } from 'react-native-paper';
-
-<TextInput
-  label="Email"
-  value={email}
-  onChangeText={setEmail}
-  mode="outlined"
-/>;
-```
-
-See the [React Native Paper documentation](https://callstack.github.io/react-native-paper/docs/components/overview) for all available components.
+See the [official theming guide](https://callstack.github.io/react-native-paper/docs/guides/theming) for more options.
 
 ## Removing React Native Paper
 
-If you want to use a different UI library:
+If you prefer a different UI library:
 
-1. Remove the dependency:
+1. **Uninstall packages:**
 
-   ```bash
+```bash
    npm uninstall react-native-paper react-native-vector-icons
-   ```
+```
 
-2. Remove `PaperProvider` from `app/_layout.tsx`
+2. **Remove from `app/_layout.tsx`:**
+   - Remove `PaperProvider` wrapper
+   - Remove `getTheme` and theme-related imports
 
-3. Replace Paper components with your preferred library
+3. **Delete theme configuration:**
 
-4. Optionally remove `constants/Theme.ts` if not needed
+```bash
+   rm constants/Theme.ts
+```
+
+4. **Update your components:**
+   - Replace Paper component imports with your preferred library
+   - Update the example screen in `app/(tabs)/index.tsx`
 
 ## Learn More
 
 - **[React Native Paper Documentation](https://callstack.github.io/react-native-paper/)** - Official docs
-- **[Component Examples](https://callstack.github.io/react-native-paper/docs/components/overview)** - Component gallery
+- **[Component Examples](https://callstack.github.io/react-native-paper/docs/components/overview)** - Browse all components
 - **[Theme Customization](https://callstack.github.io/react-native-paper/docs/guides/theming)** - Advanced theming guide
-- **[Material Design 3 Guidelines](https://m3.material.io/)** - Material Design guidelines
+- **[Material Design 3](https://m3.material.io/)** - Design system guidelines
