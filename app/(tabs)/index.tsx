@@ -16,7 +16,7 @@ export default function HomeScreen() {
           </Text>
           <Text
             variant="bodyMedium"
-            style={[styles.subtitle, { color: theme.colors.onSurfaceVariant }]}
+            style={{ color: theme.colors.onSurfaceVariant }}
           >
             Material Design 3 Components
           </Text>
@@ -39,13 +39,13 @@ export default function HomeScreen() {
             Buttons
           </Text>
           <View style={styles.buttonRow}>
-            <Button mode="contained" onPress={() => console.log('Pressed')}>
+            <Button mode="contained" onPress={() => {}}>
               Contained
             </Button>
-            <Button mode="outlined" onPress={() => console.log('Pressed')}>
+            <Button mode="outlined" onPress={() => {}}>
               Outlined
             </Button>
-            <Button mode="text" onPress={() => console.log('Pressed')}>
+            <Button mode="text" onPress={() => {}}>
               Text
             </Button>
           </View>
@@ -56,7 +56,7 @@ export default function HomeScreen() {
           <Text variant="titleMedium" style={styles.sectionTitle}>
             Card
           </Text>
-          <Card style={styles.card}>
+          <Card>
             <Card.Content>
               <Text variant="titleLarge">Card Title</Text>
               <Text variant="bodyMedium" style={styles.cardText}>
@@ -64,8 +64,8 @@ export default function HomeScreen() {
               </Text>
             </Card.Content>
             <Card.Actions>
-              <Button onPress={() => console.log('Cancel')}>Cancel</Button>
-              <Button onPress={() => console.log('Ok')}>Ok</Button>
+              <Button onPress={() => {}}>Cancel</Button>
+              <Button onPress={() => {}}>Ok</Button>
             </Card.Actions>
           </Card>
         </View>
@@ -107,9 +107,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     fontWeight: 'bold',
   },
-  subtitle: {
-    marginBottom: 4,
-  },
   section: {
     marginBottom: 24,
   },
@@ -120,10 +117,8 @@ const styles = StyleSheet.create({
   buttonRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
-  },
-  card: {
-    marginBottom: 8,
+    columnGap: 8,
+    rowGap: 8,
   },
   cardText: {
     marginTop: 8,
