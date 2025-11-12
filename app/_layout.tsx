@@ -1,28 +1,16 @@
-import { Stack } from 'expo-router';
 import { PaperProvider } from 'react-native-paper';
-import { ThemeProvider, useAppTheme } from '@/contexts/ThemeContext';
+import { useColorScheme } from 'react-native';
 import { getTheme } from '@/constants/Theme';
+import { Stack } from 'expo-router';
 
-function RootLayoutContent() {
-  const { actualTheme } = useAppTheme();
-  const theme = getTheme(actualTheme);
+export default function RootLayout() {
+  const colorScheme = useColorScheme();
+  const theme = getTheme(colorScheme);
 
   return (
     <PaperProvider theme={theme}>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-      />
+      <Stack screenOptions={{ headerShown: false }} />
     </PaperProvider>
-  );
-}
-
-export default function RootLayout() {
-  return (
-    <ThemeProvider>
-      <RootLayoutContent />
-    </ThemeProvider>
   );
 }
 

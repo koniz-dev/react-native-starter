@@ -1,46 +1,34 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, Card, Text, Surface, useTheme, IconButton } from 'react-native-paper';
-import { useAppTheme } from '@/contexts/ThemeContext';
+import { Button, Card, Text, Surface, useTheme } from 'react-native-paper';
 
 export default function HomeScreen() {
-  const { themeMode, setThemeMode, actualTheme } = useAppTheme();
   const theme = useTheme();
-
-  const toggleTheme = () => {
-    if (themeMode === 'auto') {
-      setThemeMode(actualTheme === 'light' ? 'dark' : 'light');
-    } else if (themeMode === 'light') {
-      setThemeMode('dark');
-    } else {
-      setThemeMode('light');
-    }
-  };
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
-          <View style={styles.headerTop}>
-            <Text variant="headlineMedium" style={styles.title}>
-              React Native Paper
-            </Text>
-            <IconButton
-              icon={actualTheme === 'dark' ? 'brightness-7' : 'brightness-3'}
-              size={24}
-              onPress={toggleTheme}
-              mode="contained"
-            />
-          </View>
+          <Text variant="headlineMedium" style={styles.title}>
+            React Native Paper
+          </Text>
           <Text variant="bodyMedium" style={[styles.subtitle, { color: theme.colors.onSurfaceVariant }]}>
             Material Design 3 Components
           </Text>
-          <Text variant="bodySmall" style={[styles.modeText, { color: theme.colors.onSurfaceVariant }]}>
-            Current mode: {actualTheme} {themeMode !== 'auto' && `(manual)`}
-          </Text>
         </View>
 
-        {/* Themed Button Examples */}
+        {/* Text Variants */}
+        <View style={styles.section}>
+          <Text variant="titleMedium" style={styles.sectionTitle}>
+            Text Variants
+          </Text>
+          <Text variant="headlineSmall">Headline Small</Text>
+          <Text variant="titleLarge">Title Large</Text>
+          <Text variant="bodyLarge">Body Large</Text>
+          <Text variant="bodyMedium">Body Medium</Text>
+        </View>
+
+        {/* Buttons */}
         <View style={styles.section}>
           <Text variant="titleMedium" style={styles.sectionTitle}>
             Buttons
@@ -58,17 +46,16 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* Card Example */}
+        {/* Card */}
         <View style={styles.section}>
           <Text variant="titleMedium" style={styles.sectionTitle}>
-            Cards
+            Card
           </Text>
           <Card style={styles.card}>
             <Card.Content>
               <Text variant="titleLarge">Card Title</Text>
               <Text variant="bodyMedium" style={styles.cardText}>
-                This is a card component from React Native Paper. Cards are great for displaying
-                grouped information.
+                This is a card component from React Native Paper.
               </Text>
             </Card.Content>
             <Card.Actions>
@@ -78,67 +65,16 @@ export default function HomeScreen() {
           </Card>
         </View>
 
-        {/* Surface Example */}
+        {/* Surface */}
         <View style={styles.section}>
           <Text variant="titleMedium" style={styles.sectionTitle}>
             Surface
           </Text>
           <Surface style={[styles.surface, { backgroundColor: theme.colors.surfaceVariant }]} elevation={2}>
             <Text variant="bodyMedium" style={styles.surfaceText}>
-              Surface component with elevation. This provides a Material Design elevation effect.
+              Surface component with elevation
             </Text>
           </Surface>
-        </View>
-
-        {/* Custom Styled Example */}
-        <View style={styles.section}>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
-            Custom Styled
-          </Text>
-          <Button
-            mode="contained"
-            onPress={() => console.log('Custom pressed')}
-            style={styles.customButton}
-            labelStyle={styles.customButtonLabel}
-          >
-            Custom Styled Button
-          </Button>
-        </View>
-
-        {/* Theme Toggle Example */}
-        <View style={styles.section}>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
-            Theme Toggle
-          </Text>
-          <Card style={styles.card}>
-            <Card.Content>
-              <Text variant="titleLarge">Switch Theme</Text>
-              <Text variant="bodyMedium" style={styles.cardText}>
-                Tap the sun/moon icon in the header to toggle between light and dark themes.
-                The theme preference is stored in memory and will reset to system default on app restart.
-              </Text>
-            </Card.Content>
-            <Card.Actions>
-              <Button
-                mode={themeMode === 'light' ? 'contained' : 'outlined'}
-                onPress={() => setThemeMode('light')}
-              >
-                Light
-              </Button>
-              <Button
-                mode={themeMode === 'dark' ? 'contained' : 'outlined'}
-                onPress={() => setThemeMode('dark')}
-              >
-                Dark
-              </Button>
-              <Button
-                mode={themeMode === 'auto' ? 'contained' : 'outlined'}
-                onPress={() => setThemeMode('auto')}
-              >
-                Auto
-              </Button>
-            </Card.Actions>
-          </Card>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -156,24 +92,12 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     alignItems: 'center',
   },
-  headerTop: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    width: '100%',
-  },
   title: {
     marginBottom: 8,
     fontWeight: 'bold',
-    flex: 1,
-    textAlign: 'center',
   },
   subtitle: {
     marginBottom: 4,
-  },
-  modeText: {
-    marginTop: 8,
   },
   section: {
     marginBottom: 24,
@@ -199,12 +123,6 @@ const styles = StyleSheet.create({
   },
   surfaceText: {
     textAlign: 'center',
-  },
-  customButton: {
-    marginTop: 8,
-  },
-  customButtonLabel: {
-    paddingVertical: 4,
   },
 });
 

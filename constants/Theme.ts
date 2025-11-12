@@ -8,8 +8,7 @@ import { Colors } from './Colors';
  * This file connects React Native Paper's Material Design 3 (MD3) theme
  * with the app's existing color system defined in Colors.ts.
  *
- * The theme automatically adapts to light/dark mode based on the system preference
- * or the theme provided to PaperProvider.
+ * The theme automatically adapts to light/dark mode based on the system preference.
  *
  * Customization Examples:
  * - Colors: Modify the colors object to match your brand
