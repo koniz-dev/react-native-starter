@@ -20,9 +20,25 @@ import { Colors } from './Colors';
  * - Roundness: Adjust the roundness value for border radius
  */
 
+/**
+ * Font Configuration
+ *
+ * By default, React Native Paper uses system fonts:
+ * - iOS: SF Pro Display / SF Pro Text
+ * - Android: Roboto
+ * - Web: System UI fonts
+ *
+ * This works well for most apps and requires no additional setup.
+ *
+ * To use custom fonts:
+ * 1. Add font files to assets/fonts/
+ * 2. Load fonts in app/_layout.tsx using useFonts() hook
+ * 3. Configure the fontConfig below with your font families
+ *
+ * See docs/fonts.md for detailed instructions and examples.
+ */
 const fontConfig = {
-  // You can customize fonts here if needed
-  // See: https://callstack.github.io/react-native-paper/docs/guides/theming#customizing-fonts
+  // Empty = use system fonts (recommended for starters)
 };
 
 export const lightTheme: MD3Theme = {
