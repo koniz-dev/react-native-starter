@@ -19,7 +19,7 @@ interface State {
 
 /**
  * ErrorBoundary catches errors in child components and displays a fallback UI.
- * 
+ *
  * @example
  * ```tsx
  * <ErrorBoundary>
@@ -66,7 +66,12 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       // Default fallback UI
-      return <DefaultErrorFallback error={this.state.error} onReset={this.resetError} />;
+      return (
+        <DefaultErrorFallback
+          error={this.state.error}
+          onReset={this.resetError}
+        />
+      );
     }
 
     return this.props.children;
@@ -87,16 +92,10 @@ function DefaultErrorFallback({
 
   return (
     <View
-      style={[
-        styles.container,
-        { backgroundColor: theme.colors.background },
-      ]}
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <Card
-        style={[
-          styles.card,
-          { backgroundColor: theme.colors.errorContainer },
-        ]}
+        style={[styles.card, { backgroundColor: theme.colors.errorContainer }]}
       >
         <Card.Content>
           <Text
@@ -114,7 +113,10 @@ function DefaultErrorFallback({
           {__DEV__ && error.stack && (
             <Text
               variant="bodySmall"
-              style={[styles.stackTrace, { color: theme.colors.onErrorContainer }]}
+              style={[
+                styles.stackTrace,
+                { color: theme.colors.onErrorContainer },
+              ]}
             >
               {error.stack}
             </Text>
@@ -160,4 +162,3 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
 });
-

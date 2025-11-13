@@ -103,8 +103,8 @@ export default function HomeScreen() {
             Snackbar (Toast)
           </Text>
           <Text variant="bodyMedium" style={styles.snackbarDescription}>
-            React Native Paper includes a Snackbar component for showing toast-like
-            messages. No additional libraries needed!
+            React Native Paper includes a Snackbar component for showing
+            toast-like messages. No additional libraries needed!
           </Text>
           <Button
             mode="contained"

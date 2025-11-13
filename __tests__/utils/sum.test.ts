@@ -19,4 +19,3 @@ describe('sum utility function', () => {
     expect(sum(0, 5)).toBe(5);
   });
 });
-

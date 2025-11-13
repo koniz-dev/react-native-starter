@@ -13,15 +13,18 @@ import type { Todo } from '@/types/api';
 
 export default function ExploreScreen() {
   const theme = useTheme();
-  
+
   // Use useFetch hook to simplify data fetching
-  const { data: todos, loading, error, refetch } = useFetch<Todo[]>(
-    async () => {
-      const data = await todosApi.getAll();
-      // Limit to 10 todos for demo
-      return data.slice(0, 10);
-    }
-  );
+  const {
+    data: todos,
+    loading,
+    error,
+    refetch,
+  } = useFetch<Todo[]>(async () => {
+    const data = await todosApi.getAll();
+    // Limit to 10 todos for demo
+    return data.slice(0, 10);
+  });
 
   // Show full-screen loading on initial load
   if (loading && !todos && !error) {

@@ -69,8 +69,8 @@ A generic hook for data fetching with automatic loading and error state manageme
 import { useFetch } from '@/hooks/useFetch';
 import { userApi } from '@/services/api';
 
-const { data, loading, error, refetch } = useFetch<User[]>(
-  () => userApi.getAll()
+const { data, loading, error, refetch } = useFetch<User[]>(() =>
+  userApi.getAll()
 );
 ```
 

@@ -112,8 +112,8 @@ import { userApi } from '@/services/api';
 import { LoadingScreen } from '@/components/LoadingScreen';
 
 function UserList() {
-  const { data, loading, error, refetch } = useFetch<User[]>(
-    () => userApi.getAll()
+  const { data, loading, error, refetch } = useFetch<User[]>(() =>
+    userApi.getAll()
   );
 
   if (loading) return <LoadingScreen message="Loading users..." />;
@@ -177,7 +177,7 @@ function MyScreen() {
   return (
     <>
       <Button onPress={() => setVisible(true)}>Show Message</Button>
-      
+
       <Snackbar
         visible={visible}
         onDismiss={() => setVisible(false)}
@@ -280,8 +280,8 @@ export default function RootLayout() {
 ### Loading with Error Handling
 
 ```tsx
-const { data, loading, error, refetch } = useFetch<User[]>(
-  () => userApi.getAll()
+const { data, loading, error, refetch } = useFetch<User[]>(() =>
+  userApi.getAll()
 );
 
 if (loading) return <LoadingScreen />;
@@ -334,4 +334,3 @@ These utilities provide a solid foundation for error and loading handling:
 - **Snackbar** - Built-in toast messages from React Native Paper
 
 Keep it simple, and build on top of these patterns as your app grows!
-

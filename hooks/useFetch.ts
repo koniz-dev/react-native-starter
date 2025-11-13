@@ -14,15 +14,15 @@ interface UseFetchResult<T> {
 
 /**
  * useFetch is a generic hook for fetching data with automatic loading and error handling.
- * 
+ *
  * @param fetchFn - Function that returns a Promise with the data to fetch
  * @param deps - Optional dependency array to trigger refetch when values change
  * @returns Object with data, loading, error, and refetch function
- * 
+ *
  * @example
  * ```tsx
  * const { data, loading, error, refetch } = useFetch<User[]>(() => userApi.getAll());
- * 
+ *
  * if (loading) return <LoadingScreen />;
  * if (error) return <Text>Error: {error}</Text>;
  * return <UserList users={data} />;
@@ -43,7 +43,7 @@ export function useFetch<T>(
 
     try {
       const result = await fetchFn();
-      
+
       // Only update state if component is still mounted
       if (mountedRef.current) {
         setData(result);
@@ -84,4 +84,3 @@ export function useFetch<T>(
     refetch: fetchData,
   };
 }
-

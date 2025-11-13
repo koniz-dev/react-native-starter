@@ -12,7 +12,7 @@ interface LoadingScreenProps {
 
 /**
  * LoadingScreen displays a centered loading indicator with optional message.
- * 
+ *
  * @example
  * ```tsx
  * <LoadingScreen message="Loading data..." />
@@ -23,10 +23,7 @@ export function LoadingScreen({ message }: LoadingScreenProps) {
 
   return (
     <View
-      style={[
-        styles.container,
-        { backgroundColor: theme.colors.background },
-      ]}
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <ActivityIndicator size="large" color={theme.colors.primary} />
       {message && (
@@ -52,4 +49,3 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
 });
-

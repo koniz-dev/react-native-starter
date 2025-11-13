@@ -35,6 +35,7 @@ __tests__/
 ```
 
 **Organization:**
+
 - `__tests__/utils/` - Tests for pure utility functions
 - `__tests__/components/` - Tests for all React components, including:
   - Reusable components from `components/` directory
@@ -274,7 +275,7 @@ import { fireEvent } from '@testing-library/react-native';
 test('calls onPress when button is pressed', () => {
   const onPress = jest.fn();
   const { getByText } = render(<Button onPress={onPress}>Click me</Button>);
-  
+
   fireEvent.press(getByText('Click me'));
   expect(onPress).toHaveBeenCalledTimes(1);
 });
@@ -314,4 +315,3 @@ The testing setup uses:
 - [React Native Testing Library](https://callstack.github.io/react-native-testing-library/)
 - [Jest Documentation](https://jestjs.io/docs/getting-started)
 - [Testing Best Practices](https://kentcdodds.com/blog/common-mistakes-with-react-testing-library)
-

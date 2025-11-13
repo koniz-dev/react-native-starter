@@ -38,4 +38,3 @@ describe('<LoadingScreen />', () => {
     expect(queryByText(/loading/i)).toBeNull();
   });
 });
-

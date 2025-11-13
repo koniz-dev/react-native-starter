@@ -12,9 +12,7 @@ const TestWrapper = ({ children }: { children: React.ReactNode }) => (
       insets: { top: 0, left: 0, right: 0, bottom: 0 },
     }}
   >
-    <PaperProvider theme={MD3LightTheme}>
-      {children}
-    </PaperProvider>
+    <PaperProvider theme={MD3LightTheme}>{children}</PaperProvider>
   </SafeAreaProvider>
 );
 
@@ -43,4 +41,3 @@ describe('<HomeScreen />', () => {
     getByText('Text');
   });
 });
-

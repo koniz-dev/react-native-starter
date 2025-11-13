@@ -130,7 +130,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 <ErrorBoundary>
   <YourComponent />
-</ErrorBoundary>
+</ErrorBoundary>;
 ```
 
 See [Error and Loading Guide](../docs/error-and-loading.md#errorboundary) for complete documentation.
@@ -144,7 +144,7 @@ A simple, reusable loading component with centered activity indicator and option
 ```tsx
 import { LoadingScreen } from '@/components/LoadingScreen';
 
-<LoadingScreen message="Loading data..." />
+<LoadingScreen message="Loading data..." />;
 ```
 
 See [Error and Loading Guide](../docs/error-and-loading.md#loadingscreen) for complete documentation.
