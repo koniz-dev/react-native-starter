@@ -288,4 +288,4 @@ Expo Go is a free app for testing your app on physical devices:
 
 ## License
 
-MIT
+MIT License - See [LICENSE](LICENSE) for more information.
