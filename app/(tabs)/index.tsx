@@ -1,9 +1,18 @@
+import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, Card, Text, Surface, useTheme } from 'react-native-paper';
+import {
+  Button,
+  Card,
+  Text,
+  Surface,
+  Snackbar,
+  useTheme,
+} from 'react-native-paper';
 
 export default function HomeScreen() {
   const theme = useTheme();
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
 
   return (
     <SafeAreaView
@@ -87,7 +96,40 @@ export default function HomeScreen() {
             </Text>
           </Surface>
         </View>
+
+        {/* Snackbar Example */}
+        <View style={styles.section}>
+          <Text variant="titleMedium" style={styles.sectionTitle}>
+            Snackbar (Toast)
+          </Text>
+          <Text variant="bodyMedium" style={styles.snackbarDescription}>
+            React Native Paper includes a Snackbar component for showing toast-like
+            messages. No additional libraries needed!
+          </Text>
+          <Button
+            mode="contained"
+            onPress={() => setSnackbarVisible(true)}
+            style={styles.snackbarButton}
+          >
+            Show Snackbar
+          </Button>
+        </View>
       </ScrollView>
+
+      {/* Snackbar */}
+      {/* Note: You may see a warning about useNativeDriver - this is harmless in Expo
+          and the Snackbar will fall back to JS-based animations automatically */}
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={() => setSnackbarVisible(false)}
+        duration={3000}
+        action={{
+          label: 'Dismiss',
+          onPress: () => setSnackbarVisible(false),
+        }}
+      >
+        This is a snackbar message!
+      </Snackbar>
     </SafeAreaView>
   );
 }
@@ -129,5 +171,12 @@ const styles = StyleSheet.create({
   },
   surfaceText: {
     textAlign: 'center',
+  },
+  snackbarDescription: {
+    marginBottom: 12,
+    opacity: 0.7,
+  },
+  snackbarButton: {
+    marginTop: 8,
   },
 });

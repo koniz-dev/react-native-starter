@@ -56,3 +56,22 @@ const customColor = useThemeColor(
   'text'
 );
 ```
+
+## Data Fetching Hook
+
+### useFetch
+
+A generic hook for data fetching with automatic loading and error state management.
+
+**Usage:**
+
+```tsx
+import { useFetch } from '@/hooks/useFetch';
+import { userApi } from '@/services/api';
+
+const { data, loading, error, refetch } = useFetch<User[]>(
+  () => userApi.getAll()
+);
+```
+
+See [Error and Loading Guide](../docs/error-and-loading.md#usefetch-hook) for complete documentation and examples.

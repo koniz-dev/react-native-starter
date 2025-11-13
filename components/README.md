@@ -116,3 +116,35 @@ export default function MyScreen() {
   );
 }
 ```
+
+## Error and Loading Components
+
+### ErrorBoundary
+
+A React Error Boundary component that catches JavaScript errors in child components and displays a fallback UI.
+
+**Usage:**
+
+```tsx
+import { ErrorBoundary } from '@/components/ErrorBoundary';
+
+<ErrorBoundary>
+  <YourComponent />
+</ErrorBoundary>
+```
+
+See [Error and Loading Guide](../docs/error-and-loading.md#errorboundary) for complete documentation.
+
+### LoadingScreen
+
+A simple, reusable loading component with centered activity indicator and optional message.
+
+**Usage:**
+
+```tsx
+import { LoadingScreen } from '@/components/LoadingScreen';
+
+<LoadingScreen message="Loading data..." />
+```
+
+See [Error and Loading Guide](../docs/error-and-loading.md#loadingscreen) for complete documentation.

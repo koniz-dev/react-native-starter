@@ -1,41 +1,38 @@
 /**
  * Explore Screen
  * Example screen demonstrating API integration with loading, error, and success states
+ * Uses the useFetch hook for simplified data fetching
  */
-import { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet, View, ActivityIndicator } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card, Text, Button, useTheme } from 'react-native-paper';
 import { todosApi } from '@/services/api';
-import type { Todo, ApiError } from '@/types/api';
+import { useFetch } from '@/hooks/useFetch';
+import { LoadingScreen } from '@/components/LoadingScreen';
+import type { Todo } from '@/types/api';
 
 export default function ExploreScreen() {
   const theme = useTheme();
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  // Fetch todos from API
-  const fetchTodos = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
+  
+  // Use useFetch hook to simplify data fetching
+  const { data: todos, loading, error, refetch } = useFetch<Todo[]>(
+    async () => {
       const data = await todosApi.getAll();
       // Limit to 10 todos for demo
-      setTodos(data.slice(0, 10));
-    } catch (err) {
-      const apiError = err as ApiError;
-      setError(apiError.message || 'Failed to fetch todos');
-    } finally {
-      setLoading(false);
+      return data.slice(0, 10);
     }
-  };
+  );
 
-  // Fetch on mount
-  useEffect(() => {
-    fetchTodos();
-  }, []);
+  // Show full-screen loading on initial load
+  if (loading && !todos && !error) {
+    return (
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: theme.colors.background }]}
+      >
+        <LoadingScreen message="Loading todos..." />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView
@@ -58,23 +55,13 @@ export default function ExploreScreen() {
         <View style={styles.buttonContainer}>
           <Button
             mode="contained"
-            onPress={fetchTodos}
+            onPress={refetch}
             disabled={loading}
             icon="refresh"
           >
             {loading ? 'Loading...' : 'Retry'}
           </Button>
         </View>
-
-        {/* Loading State */}
-        {loading && (
-          <View style={styles.centerContainer}>
-            <ActivityIndicator size="large" color={theme.colors.primary} />
-            <Text variant="bodyMedium" style={styles.loadingText}>
-              Loading todos...
-            </Text>
-          </View>
-        )}
 
         {/* Error State */}
         {error && !loading && (
@@ -102,7 +89,7 @@ export default function ExploreScreen() {
         )}
 
         {/* Success State - Todo List */}
-        {!loading && !error && todos.length > 0 && (
+        {!loading && !error && todos && todos.length > 0 && (
           <View style={styles.todosContainer}>
             <Text variant="titleMedium" style={styles.sectionTitle}>
               Todos ({todos.length})
@@ -142,7 +129,7 @@ export default function ExploreScreen() {
         )}
 
         {/* Empty State */}
-        {!loading && !error && todos.length === 0 && (
+        {!loading && !error && todos && todos.length === 0 && (
           <View style={styles.centerContainer}>
             <Text variant="bodyMedium">No todos found</Text>
           </View>
@@ -175,9 +162,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 32,
-  },
-  loadingText: {
-    marginTop: 16,
   },
   errorCard: {
     marginBottom: 24,

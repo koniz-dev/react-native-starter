@@ -5,7 +5,7 @@ import { Stack } from 'expo-router';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const theme = getTheme(colorScheme);
+  const theme = getTheme(colorScheme ?? null);
 
   return (
     <PaperProvider theme={theme}>

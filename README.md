@@ -224,6 +224,7 @@ Additional guides are available in the `docs/` directory:
 - [Store Data](docs/store-data.md)
 - [Environment Variables](docs/environment-variables.md)
 - [API and Storage](docs/api-and-storage.md)
+- [Error and Loading Handling](docs/error-and-loading.md)
 
 ## Resources
 
