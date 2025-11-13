@@ -2,32 +2,46 @@
 
 A clean starter template for React Native with Expo Router, TypeScript, and file-based routing.
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v18 or later)
-- npm or yarn
-- Expo Go app on your mobile device (optional, for testing)
-
-### Installation
+## Quick Start
 
 ```bash
+# Install dependencies
 npm install
-```
 
-### Start Development Server
-
-```bash
+# Start development server
 npm start
 ```
 
-Then:
+Then press `a` (Android), `i` (iOS), or `w` (web), or scan the QR code with Expo Go.
 
-- Press `a` to open on Android emulator
-- Press `i` to open on iOS simulator
-- Press `w` to open on web browser
-- Scan QR code with Expo Go app on your device
+**📖 For detailed setup instructions, see [Getting Started Guide](docs/getting-started.md)**
+
+## Features
+
+This starter includes everything you need to build a production-ready React Native app:
+
+- ✅ **React Native Paper** - Material Design 3 components with dark/light mode
+- ✅ **Dark/Light Mode** - Automatic system preference detection
+- ✅ **API Client** - Axios with interceptors for authentication and error handling
+- ✅ **Storage Service** - AsyncStorage wrapper with TypeScript support
+- ✅ **Custom Hooks** - `useFetch` for data fetching with loading/error states
+- ✅ **Error Boundary** - Global error handling component
+- ✅ **Loading States** - Built-in loading screen component
+- ✅ **Authentication Example** - Complete login flow with token management
+- ✅ **TypeScript** - Full type safety throughout
+- ✅ **ESLint + Prettier** - Code quality and formatting tools
+- ✅ **Example Screens** - See features in action
+
+## Getting Started
+
+For detailed installation and setup instructions, see the [Getting Started Guide](docs/getting-started.md).
+
+**Quick overview:**
+
+1. **Prerequisites:** Node.js v18+, npm/yarn
+2. **Install:** `npm install`
+3. **Run:** `npm start`
+4. **Code:** Start editing `app/(tabs)/index.tsx`
 
 ## Navigation
 
@@ -47,20 +61,49 @@ For more information, see:
 - [Expo Router Documentation](https://docs.expo.dev/router/introduction/)
 - [App Directory Guide](app/README.md)
 
+## Available Scripts
+
+- `npm start` - Start Expo dev server
+- `npm run android` - Run on Android emulator/device
+- `npm run ios` - Run on iOS simulator/device
+- `npm run web` - Run in web browser
+- `npm run lint` - Check code quality
+- `npm run lint:fix` - Fix linting issues automatically
+- `npm run format` - Format code with Prettier
+- `npm test` - Run tests
+
 ## Project Structure
 
 ```
 react-native-starter/
-├── app/              # File-based routing (see app/README.md)
-├── assets/           # Images, fonts, and other static files
-├── components/       # Reusable React Native components (see components/README.md)
-├── constants/       # App constants like colors (see constants/README.md)
-├── docs/             # Additional documentation and guides
-├── hooks/            # React Hooks (see hooks/README.md)
-├── scripts/          # Utility scripts (see scripts/README.md)
-├── app.json          # Expo configuration
-└── package.json      # Dependencies and scripts
+├── app/              # Expo Router screens (file-based routing)
+│   ├── (tabs)/       # Tab navigation screens
+│   └── _layout.tsx   # Root layout with theme provider
+├── components/       # Reusable UI components
+│   ├── ErrorBoundary.tsx
+│   └── LoadingScreen.tsx
+├── hooks/            # Custom React hooks
+│   └── useFetch.ts   # Data fetching hook
+├── services/         # API & storage services
+│   ├── api.ts        # Axios client with interceptors
+│   └── storage.ts    # AsyncStorage wrapper
+├── types/            # TypeScript type definitions
+│   └── api.ts        # API response types
+├── constants/        # App constants
+│   ├── Colors.ts     # Color definitions
+│   └── Theme.ts      # React Native Paper theme
+├── assets/           # Images, fonts, static files
+└── docs/             # Documentation
 ```
+
+**Key directories:**
+
+- **`app/`** - All screens go here. Files automatically become routes (Expo Router).
+- **`components/`** - Reusable UI components used across screens.
+- **`hooks/`** - Custom React hooks for shared logic (e.g., `useFetch`).
+- **`services/`** - API client and storage utilities.
+- **`constants/`** - App-wide constants like colors and theme config.
+- **`types/`** - TypeScript interfaces and types.
 
 ## User Interface
 
@@ -212,19 +255,29 @@ Expo Go is a free app for testing your app on physical devices:
 
 ## Documentation
 
-Additional guides are available in the `docs/` directory:
+### Essential Guides
+
+- **[Getting Started](docs/getting-started.md)** - Complete setup guide (start here!)
+- **[How-To Guides](docs/how-to.md)** - Common development tasks
+- **[Code Conventions](docs/conventions.md)** - Project standards and best practices
+
+### Feature Guides
+
+- **[API and Storage](docs/api-and-storage.md)** - Backend integration guide
+- **[UI Library](docs/ui-library.md)** - React Native Paper components
+- **[Color Themes](docs/color-themes.md)** - Theming and dark mode
+- **[Error and Loading Handling](docs/error-and-loading.md)** - State management
+
+### Additional Guides
 
 - [Splash Screen and App Icon](docs/splash-screen-and-app-icon.md)
 - [Safe Areas](docs/safe-areas.md)
 - [System Bars](docs/system-bars.md)
 - [Fonts](docs/fonts.md)
 - [Assets](docs/assets.md)
-- [Color Themes](docs/color-themes.md)
 - [Animation](docs/animation.md)
 - [Store Data](docs/store-data.md)
 - [Environment Variables](docs/environment-variables.md)
-- [API and Storage](docs/api-and-storage.md)
-- [Error and Loading Handling](docs/error-and-loading.md)
 
 ## Resources
 
