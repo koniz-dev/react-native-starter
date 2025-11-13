@@ -78,12 +78,25 @@ export default function ExploreScreen() {
 
         {/* Error State */}
         {error && !loading && (
-          <Card style={styles.errorCard}>
+          <Card
+            style={[
+              styles.errorCard,
+              { backgroundColor: theme.colors.errorContainer },
+            ]}
+          >
             <Card.Content>
-              <Text variant="titleMedium" style={styles.errorTitle}>
+              <Text
+                variant="titleMedium"
+                style={[styles.errorTitle, { color: theme.colors.error }]}
+              >
                 Error
               </Text>
-              <Text variant="bodyMedium">{error}</Text>
+              <Text
+                variant="bodyMedium"
+                style={{ color: theme.colors.onErrorContainer }}
+              >
+                {error}
+              </Text>
             </Card.Content>
           </Card>
         )}
@@ -108,7 +121,13 @@ export default function ExploreScreen() {
                       {todo.title}
                     </Text>
                     {todo.completed && (
-                      <Text variant="labelSmall" style={styles.completedBadge}>
+                      <Text
+                        variant="labelSmall"
+                        style={[
+                          styles.completedBadge,
+                          { color: theme.colors.primary },
+                        ]}
+                      >
                         ✓ Done
                       </Text>
                     )}
@@ -162,11 +181,9 @@ const styles = StyleSheet.create({
   },
   errorCard: {
     marginBottom: 24,
-    backgroundColor: '#ffebee',
   },
   errorTitle: {
     marginBottom: 8,
-    color: '#c62828',
   },
   todosContainer: {
     marginTop: 8,
@@ -193,7 +210,6 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   completedBadge: {
-    color: '#4caf50',
     fontWeight: '600',
   },
   todoMeta: {
