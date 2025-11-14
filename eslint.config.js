@@ -44,6 +44,7 @@ module.exports = [
       globals: {
         ...globals.node,
         ...globals.es2021,
+        __DEV__: 'readonly',
       },
     },
     plugins: {
@@ -103,6 +104,7 @@ module.exports = [
       globals: {
         ...globals.node,
         ...globals.es2021,
+        __DEV__: 'readonly',
       },
     },
     plugins: {
@@ -139,6 +141,19 @@ module.exports = [
 
       // Disable rules that conflict with Prettier
       ...prettierConfig.rules,
+    },
+  },
+
+  // Test files configuration
+  {
+    files: ['**/*.test.{ts,tsx,js,jsx}', '**/__tests__/**/*.{ts,tsx,js,jsx}'],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+        ...globals.node,
+        ...globals.es2021,
+        __DEV__: 'readonly',
+      },
     },
   },
 ];

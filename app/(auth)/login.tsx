@@ -109,8 +109,8 @@ export default function LoginScreen() {
             style={[styles.note, { color: theme.colors.onSurfaceVariant }]}
           >
             Note: This is a demo. Update the API endpoint in{' '}
-            <Text style={{ fontFamily: 'monospace' }}>services/auth.ts</Text> to
-            connect to your backend.
+            <Text style={styles.monospace}>services/auth.ts</Text> to connect to
+            your backend.
           </Text>
         </View>
       </ScrollView>
@@ -161,5 +161,8 @@ const styles = StyleSheet.create({
     marginTop: 16,
     textAlign: 'center',
     opacity: 0.7,
+  },
+  monospace: {
+    fontFamily: 'monospace',
   },
 });
