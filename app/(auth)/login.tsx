@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -19,6 +19,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const dismissedErrorRef = useRef<string | null>(null);
 
   // Navigate to main app when authenticated
   useEffect(() => {
@@ -27,10 +28,13 @@ export default function LoginScreen() {
     }
   }, [isAuthenticated]);
 
-  // Show snackbar when error changes
+  // Show snackbar when error appears (but not if it was already dismissed)
   useEffect(() => {
-    if (error) {
-      setSnackbarVisible(true);
+    if (error && error !== dismissedErrorRef.current) {
+      // Schedule state update to avoid synchronous setState in effect
+      queueMicrotask(() => {
+        setSnackbarVisible(true);
+      });
     }
   }, [error]);
 
@@ -48,6 +52,7 @@ export default function LoginScreen() {
 
   const handleDismissSnackbar = () => {
     setSnackbarVisible(false);
+    dismissedErrorRef.current = error;
     dispatch(clearError());
   };
 
