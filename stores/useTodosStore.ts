@@ -176,4 +176,3 @@ export const usePendingTodos = () =>
 export const useTodosCount = () => useTodosStore(state => state.todos.length);
 export const useCompletedTodosCount = () =>
   useTodosStore(state => state.todos.filter(todo => todo.completed).length);
-

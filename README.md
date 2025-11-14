@@ -171,6 +171,7 @@ See [Assets Guide](docs/assets.md) for more information.
 This project includes **Zustand** for state management - a simple, lightweight alternative to Redux with minimal boilerplate.
 
 **Key advantages:**
+
 - No provider needed - works globally
 - Minimal boilerplate - just create and use
 - Built-in persistence with AsyncStorage

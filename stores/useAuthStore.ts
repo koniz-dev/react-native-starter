@@ -6,7 +6,11 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { authService, type LoginCredentials, type AuthResponse } from '@/services/auth';
+import {
+  authService,
+  type LoginCredentials,
+  type AuthResponse,
+} from '@/services/auth';
 import { setItem, getItem, STORAGE_KEYS } from '@/services/storage';
 
 interface AuthState {
@@ -52,7 +56,9 @@ export const useAuthStore = create<AuthState>()(
           });
         } catch (err) {
           const errorMessage =
-            err instanceof Error ? err.message : 'Login failed. Please try again.';
+            err instanceof Error
+              ? err.message
+              : 'Login failed. Please try again.';
           set({
             loading: false,
             error: errorMessage,
@@ -114,7 +120,7 @@ export const useAuthStore = create<AuthState>()(
               loading: false,
             });
           }
-        } catch (err) {
+        } catch {
           set({
             loading: false,
             error: 'Failed to check authentication status',
@@ -137,7 +143,7 @@ export const useAuthStore = create<AuthState>()(
 // Selectors for computed values (optional but recommended)
 export const useAuthUser = () => useAuthStore(state => state.user);
 export const useAuthToken = () => useAuthStore(state => state.token);
-export const useIsAuthenticated = () => useAuthStore(state => !!state.token && !!state.user);
+export const useIsAuthenticated = () =>
+  useAuthStore(state => !!state.token && !!state.user);
 export const useAuthLoading = () => useAuthStore(state => state.loading);
 export const useAuthError = () => useAuthStore(state => state.error);
-

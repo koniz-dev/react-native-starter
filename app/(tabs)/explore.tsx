@@ -73,11 +73,7 @@ export default function ExploreScreen() {
             {loading ? 'Loading...' : 'Retry'}
           </Button>
           {error && (
-            <Button
-              mode="text"
-              onPress={clearError}
-              style={styles.clearButton}
-            >
+            <Button mode="text" onPress={clearError} style={styles.clearButton}>
               Clear Error
             </Button>
           )}

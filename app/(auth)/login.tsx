@@ -26,7 +26,10 @@ export default function LoginScreen() {
   // Show snackbar when error changes
   useEffect(() => {
     if (error) {
-      setSnackbarVisible(true);
+      // Defer state update to avoid synchronous setState in effect
+      setTimeout(() => {
+        setSnackbarVisible(true);
+      }, 0);
     }
   }, [error]);
 
@@ -44,7 +47,7 @@ export default function LoginScreen() {
       await login({ email, password });
       // Navigate to main app after successful login
       router.replace('/(tabs)');
-    } catch (err) {
+    } catch {
       // Error is already set in the store, snackbar will show via useEffect
       // No need to set snackbarVisible here as useEffect handles it
     }

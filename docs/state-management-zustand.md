@@ -141,11 +141,11 @@ export default function LoginScreen() {
 
 ```tsx
 import {
-  useAuthUser,        // Get user object
-  useAuthToken,       // Get auth token
+  useAuthUser, // Get user object
+  useAuthToken, // Get auth token
   useIsAuthenticated, // Boolean: is user logged in?
-  useAuthLoading,     // Loading state
-  useAuthError,       // Error message
+  useAuthLoading, // Loading state
+  useAuthError, // Error message
 } from '@/stores';
 ```
 
@@ -196,12 +196,12 @@ export default function TodosScreen() {
 
 ```tsx
 import {
-  useTodos,              // All todos array
-  useTodosLoading,       // Loading state
-  useTodosError,         // Error message
-  useCompletedTodos,     // Filtered: completed todos
-  usePendingTodos,       // Filtered: pending todos
-  useTodosCount,         // Total count
+  useTodos, // All todos array
+  useTodosLoading, // Loading state
+  useTodosError, // Error message
+  useCompletedTodos, // Filtered: completed todos
+  usePendingTodos, // Filtered: pending todos
+  useTodosCount, // Total count
   useCompletedTodosCount, // Completed count
 } from '@/stores';
 ```
@@ -243,7 +243,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    set => ({
       // Your state and actions
     }),
     {
@@ -260,7 +260,7 @@ Only persist specific fields:
 
 ```typescript
 persist(
-  (set) => ({
+  set => ({
     // State
   }),
   {
@@ -461,7 +461,7 @@ import { devtools } from 'zustand/middleware';
 
 export const useMyStore = create<MyStoreState>()(
   devtools(
-    (set) => ({
+    set => ({
       // Your store
     }),
     { name: 'MyStore' }
@@ -477,7 +477,7 @@ import { persist, devtools } from 'zustand/middleware';
 export const useAuthStore = create<AuthState>()(
   devtools(
     persist(
-      (set) => ({
+      set => ({
         // Your store
       }),
       { name: 'auth-storage' }
@@ -521,10 +521,7 @@ For expensive computations:
 ```typescript
 import { useMemo } from 'react';
 
-const expensiveValue = useMemo(
-  () => computeExpensiveValue(todos),
-  [todos]
-);
+const expensiveValue = useMemo(() => computeExpensiveValue(todos), [todos]);
 ```
 
 ## When to Use Zustand vs Other Solutions
@@ -651,4 +648,3 @@ Zustand provides a simple, powerful way to manage state in React Native apps:
 - ✅ Simple API - easy to learn and use
 
 The stores in this starter (`useAuthStore` and `useTodosStore`) demonstrate real-world patterns you can adapt for your own needs.
-
