@@ -1,30 +1,52 @@
 /**
  * Explore Screen
  * Example screen demonstrating API integration with loading, error, and success states
- * Uses the useFetch hook for simplified data fetching
+ *
+ * This screen demonstrates Redux Toolkit for state management.
+ * For the useFetch hook approach, see the main branch.
  */
+import { useEffect } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card, Text, Button, useTheme } from 'react-native-paper';
-import { todosApi } from '@/services/api';
-import { useFetch } from '@/hooks/useFetch';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import {
+  fetchTodosAsync,
+  selectTodos,
+  selectTodosLoading,
+  selectTodosError,
+  toggleTodo,
+} from '@/store/slices/todosSlice';
 import { LoadingScreen } from '@/components/LoadingScreen';
-import type { Todo } from '@/types/api';
 
 export default function ExploreScreen() {
   const theme = useTheme();
+  const dispatch = useAppDispatch();
 
-  // Use useFetch hook to simplify data fetching
-  const {
-    data: todos,
-    loading,
-    error,
-    refetch,
-  } = useFetch<Todo[]>(async () => {
-    const data = await todosApi.getAll();
-    // Limit to 10 todos for demo
-    return data.slice(0, 10);
-  });
+  // Redux approach - Global state management
+  const reduxTodos = useAppSelector(selectTodos);
+  const reduxLoading = useAppSelector(selectTodosLoading);
+  const reduxError = useAppSelector(selectTodosError);
+
+  // Fetch todos from Redux on mount
+  useEffect(() => {
+    if (reduxTodos.length === 0) {
+      dispatch(fetchTodosAsync());
+    }
+  }, [dispatch, reduxTodos.length]);
+
+  // Use Redux state for display
+  const todos = reduxTodos.slice(0, 10); // Limit to 10 for demo
+  const loading = reduxLoading;
+  const error = reduxError;
+
+  const handleToggleTodo = (id: number) => {
+    dispatch(toggleTodo(id));
+  };
+
+  const handleRefetch = () => {
+    dispatch(fetchTodosAsync());
+  };
 
   // Show full-screen loading on initial load
   if (loading && !todos && !error) {
@@ -52,13 +74,19 @@ export default function ExploreScreen() {
           >
             Fetching todos from JSONPlaceholder API
           </Text>
+          <Text
+            variant="bodySmall"
+            style={[styles.subtitle, { color: theme.colors.onSurfaceVariant }]}
+          >
+            Using Redux Toolkit for state management
+          </Text>
         </View>
 
         {/* Retry Button */}
         <View style={styles.buttonContainer}>
           <Button
             mode="contained"
-            onPress={refetch}
+            onPress={handleRefetch}
             disabled={loading}
             icon="refresh"
           >
@@ -98,7 +126,11 @@ export default function ExploreScreen() {
               Todos ({todos.length})
             </Text>
             {todos.map(todo => (
-              <Card key={todo.id} style={styles.todoCard}>
+              <Card
+                key={todo.id}
+                style={styles.todoCard}
+                onPress={() => handleToggleTodo(todo.id)}
+              >
                 <Card.Content>
                   <View style={styles.todoHeader}>
                     <Text
@@ -124,6 +156,12 @@ export default function ExploreScreen() {
                   </View>
                   <Text variant="bodySmall" style={styles.todoMeta}>
                     User ID: {todo.userId} • ID: {todo.id}
+                  </Text>
+                  <Text
+                    variant="bodySmall"
+                    style={[styles.tapHint, { color: theme.colors.primary }]}
+                  >
+                    Tap to toggle completion
                   </Text>
                 </Card.Content>
               </Card>
@@ -156,6 +194,11 @@ const styles = StyleSheet.create({
   title: {
     marginBottom: 8,
     fontWeight: 'bold',
+  },
+  subtitle: {
+    marginTop: 4,
+    opacity: 0.7,
+    fontStyle: 'italic',
   },
   buttonContainer: {
     marginBottom: 24,
@@ -201,5 +244,10 @@ const styles = StyleSheet.create({
   },
   todoMeta: {
     opacity: 0.6,
+  },
+  tapHint: {
+    marginTop: 4,
+    fontSize: 10,
+    fontStyle: 'italic',
   },
 });

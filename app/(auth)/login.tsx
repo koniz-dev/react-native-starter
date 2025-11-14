@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -9,38 +9,46 @@ import {
   Snackbar,
 } from 'react-native-paper';
 import { router } from 'expo-router';
-import { authService } from '@/services/auth';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { loginAsync, selectAuth, clearError } from '@/store/slices/authSlice';
 
 export default function LoginScreen() {
   const theme = useTheme();
+  const dispatch = useAppDispatch();
+  const { loading, error, isAuthenticated } = useAppSelector(selectAuth);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      setError('Please fill in all fields');
+  // Navigate to main app when authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace('/(tabs)');
+    }
+  }, [isAuthenticated]);
+
+  // Show snackbar when error changes
+  useEffect(() => {
+    if (error) {
       setSnackbarVisible(true);
+    }
+  }, [error]);
+
+  const handleLogin = () => {
+    if (!email || !password) {
+      dispatch(clearError());
+      setSnackbarVisible(true);
+      // For validation errors, we'll show a message directly
+      // In a real app, you might want to add validation to the slice
       return;
     }
 
-    setLoading(true);
-    setError(null);
+    dispatch(loginAsync({ email, password }));
+  };
 
-    try {
-      await authService.login({ email, password });
-      // Navigate to main app after successful login
-      router.replace('/(tabs)');
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Login failed. Please try again.';
-      setError(errorMessage);
-      setSnackbarVisible(true);
-    } finally {
-      setLoading(false);
-    }
+  const handleDismissSnackbar = () => {
+    setSnackbarVisible(false);
+    dispatch(clearError());
   };
 
   return (
@@ -109,11 +117,11 @@ export default function LoginScreen() {
 
       <Snackbar
         visible={snackbarVisible}
-        onDismiss={() => setSnackbarVisible(false)}
+        onDismiss={handleDismissSnackbar}
         duration={4000}
         action={{
           label: 'Dismiss',
-          onPress: () => setSnackbarVisible(false),
+          onPress: handleDismissSnackbar,
         }}
       >
         {error || 'An error occurred'}
