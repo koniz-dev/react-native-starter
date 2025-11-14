@@ -33,6 +33,78 @@ This starter includes everything you need to build a production-ready React Nati
 - ✅ **ESLint + Prettier** - Code quality and formatting tools
 - ✅ **Example Screens** - See features in action
 
+## State Management Options
+
+This starter template provides multiple state management solutions to choose from. Each option is available as a separate branch with a corresponding pull request for easy review and integration:
+
+### 🔴 Redux Toolkit
+**Branch:** [`state-management/redux`](https://github.com/koniz-dev/react-native-starter/tree/state-management/redux)  
+**Pull Request:** [#2](https://github.com/koniz-dev/react-native-starter/pull/2)
+
+A complete Redux Toolkit implementation with typed hooks, auth slice, and todos slice. Perfect for large-scale applications requiring predictable state management.
+
+**Features:**
+- Redux Toolkit with typed hooks
+- Auth slice for authentication state
+- Todos slice for todo management
+- Full TypeScript support
+
+### 🔵 React Context API
+**Branch:** [`state-management/react-context`](https://github.com/koniz-dev/react-native-starter/tree/state-management/react-context)  
+**Pull Request:** [#3](https://github.com/koniz-dev/react-native-starter/pull/3)
+
+Built-in React Context API with `useReducer` for state management. No external dependencies required, perfect for smaller to medium-sized applications.
+
+**Features:**
+- AuthContext and TodosContext
+- useReducer pattern for state updates
+- Zero external dependencies
+- Native React solution
+
+### 🟢 Zustand
+**Branch:** [`state-management/zustand`](https://github.com/koniz-dev/react-native-starter/tree/state-management/zustand)  
+**Pull Request:** [#4](https://github.com/koniz-dev/react-native-starter/pull/4)
+
+Lightweight and simple state management library with minimal boilerplate. Great balance between simplicity and power.
+
+**Features:**
+- Minimal boilerplate
+- Simple API
+- Small bundle size
+- Easy to learn
+
+### 🟡 Jotai
+**Branch:** [`state-management/jotai`](https://github.com/koniz-dev/react-native-starter/tree/state-management/jotai)  
+**Pull Request:** [#5](https://github.com/koniz-dev/react-native-starter/pull/5)
+
+Atomic state management with fine-grained reactivity. Excellent for component-level state that needs to be shared across the app.
+
+**Features:**
+- Atomic state composition
+- Fine-grained reactivity
+- Great performance
+- Flexible architecture
+
+### How to Use
+
+To try out any of these state management solutions:
+
+1. **Checkout the branch:**
+   ```bash
+   git checkout state-management/redux  # or react-context, zustand, jotai
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Review the Pull Request** to see what changes were made
+
+4. **Merge or cherry-pick** the changes you want into your project
+
+Each branch includes complete implementation examples and updated documentation.
+
 ## Getting Started
 
 For detailed installation and setup instructions, see the [Getting Started Guide](docs/getting-started.md).
