@@ -11,7 +11,11 @@ import React, {
   useEffect,
   ReactNode,
 } from 'react';
-import { authService, type AuthResponse, type LoginCredentials } from '@/services/auth';
+import {
+  authService,
+  type AuthResponse,
+  type LoginCredentials,
+} from '@/services/auth';
 import { getItem, STORAGE_KEYS } from '@/services/storage';
 
 // ============================================================================
@@ -29,11 +33,17 @@ interface AuthState {
 
 type AuthAction =
   | { type: 'AUTH_START' }
-  | { type: 'AUTH_SUCCESS'; payload: { user: AuthResponse['user']; token: string } }
+  | {
+      type: 'AUTH_SUCCESS';
+      payload: { user: AuthResponse['user']; token: string };
+    }
   | { type: 'AUTH_FAILURE'; payload: { error: string } }
   | { type: 'AUTH_LOGOUT' }
   | { type: 'AUTH_INIT_START' }
-  | { type: 'AUTH_INIT_SUCCESS'; payload: { user: AuthResponse['user'] | null; token: string | null } }
+  | {
+      type: 'AUTH_INIT_SUCCESS';
+      payload: { user: AuthResponse['user'] | null; token: string | null };
+    }
   | { type: 'AUTH_INIT_FAILURE' }
   | { type: 'SET_USER'; payload: { user: AuthResponse['user'] } }
   | { type: 'CLEAR_ERROR' };
@@ -195,7 +205,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : 'Login failed. Please try again.';
+        error instanceof Error
+          ? error.message
+          : 'Login failed. Please try again.';
       dispatch({
         type: 'AUTH_FAILURE',
         payload: { error: errorMessage },
@@ -260,4 +272,3 @@ export function useAuth(): AuthContextValue {
 
   return context;
 }
-

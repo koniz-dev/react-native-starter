@@ -221,36 +221,39 @@ export function TodosProvider({
   }, []);
 
   // Add a new todo
-  const addTodo = useCallback(async (todoData: Omit<Todo, 'id'>): Promise<Todo | null> => {
-    dispatch({ type: 'TODO_ADD_START' });
+  const addTodo = useCallback(
+    async (todoData: Omit<Todo, 'id'>): Promise<Todo | null> => {
+      dispatch({ type: 'TODO_ADD_START' });
 
-    try {
-      // Note: JSONPlaceholder API doesn't actually create todos,
-      // so we'll simulate it by generating an ID and adding to local state
-      // In a real app, you'd call: const newTodo = await todosApi.create(todoData);
-      const newTodo: Todo = {
-        ...todoData,
-        id: Date.now(), // Temporary ID generation
-      };
+      try {
+        // Note: JSONPlaceholder API doesn't actually create todos,
+        // so we'll simulate it by generating an ID and adding to local state
+        // In a real app, you'd call: const newTodo = await todosApi.create(todoData);
+        const newTodo: Todo = {
+          ...todoData,
+          id: Date.now(), // Temporary ID generation
+        };
 
-      dispatch({
-        type: 'TODO_ADD_SUCCESS',
-        payload: { todo: newTodo },
-      });
+        dispatch({
+          type: 'TODO_ADD_SUCCESS',
+          payload: { todo: newTodo },
+        });
 
-      return newTodo;
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : 'Failed to add todo. Please try again.';
-      dispatch({
-        type: 'TODO_ADD_FAILURE',
-        payload: { error: errorMessage },
-      });
-      throw error;
-    }
-  }, []);
+        return newTodo;
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : 'Failed to add todo. Please try again.';
+        dispatch({
+          type: 'TODO_ADD_FAILURE',
+          payload: { error: errorMessage },
+        });
+        throw error;
+      }
+    },
+    []
+  );
 
   // Update an existing todo
   const updateTodo = useCallback(
@@ -343,7 +346,9 @@ export function TodosProvider({
   );
 
   return (
-    <TodosContext.Provider value={contextValue}>{children}</TodosContext.Provider>
+    <TodosContext.Provider value={contextValue}>
+      {children}
+    </TodosContext.Provider>
   );
 }
 
@@ -364,4 +369,3 @@ export function useTodos(): TodosContextValue {
 
   return context;
 }
-

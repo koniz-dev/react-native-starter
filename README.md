@@ -293,6 +293,7 @@ This starter includes **React Context API** for state management with production
 - ✅ **Performance optimized** - Memoized values and actions
 
 See the [State Management with Context API](docs/state-management-context.md) guide for:
+
 - When to use Context vs other solutions
 - Best practices and patterns
 - Performance optimization

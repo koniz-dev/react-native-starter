@@ -193,12 +193,8 @@ export function Provider({ children }: { children: ReactNode }) {
   const value: ContextValue = {
     // state and actions
   };
-  
-  return (
-    <Context.Provider value={value}>
-      {children}
-    </Context.Provider>
-  );
+
+  return <Context.Provider value={value}>{children}</Context.Provider>;
 }
 
 // 4. Create custom hook
@@ -269,8 +265,8 @@ function reducer(state: State, action: Action): State {
 // 4. Use in provider
 function Provider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  
-  const login = async (credentials) => {
+
+  const login = async credentials => {
     dispatch({ type: 'LOGIN_START' });
     try {
       const user = await authService.login(credentials);
@@ -279,11 +275,9 @@ function Provider({ children }) {
       dispatch({ type: 'LOGIN_FAILURE', payload: { error: error.message } });
     }
   };
-  
+
   return (
-    <Context.Provider value={{ ...state, login }}>
-      {children}
-    </Context.Provider>
+    <Context.Provider value={{ ...state, login }}>{children}</Context.Provider>
   );
 }
 ```
@@ -325,7 +319,7 @@ const value = useMemo(
 Memoize action functions to keep context value stable:
 
 ```tsx
-const login = useCallback(async (credentials) => {
+const login = useCallback(async credentials => {
   // ...
 }, []); // Empty deps if no external dependencies
 
@@ -392,10 +386,7 @@ type AuthAction =
   | { type: 'LOGOUT' };
 
 // Type-safe reducer
-function authReducer(
-  state: AuthState,
-  action: AuthAction
-): AuthState {
+function authReducer(state: AuthState, action: AuthAction): AuthState {
   // TypeScript knows the shape of each action
   switch (action.type) {
     case 'LOGIN_SUCCESS':
@@ -422,11 +413,11 @@ Always create custom hooks for context consumption:
 ```tsx
 export function useAuth(): AuthContextValue {
   const context = useContext(AuthContext);
-  
+
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
-  
+
   return context;
 }
 ```
@@ -498,7 +489,7 @@ Contexts should integrate with existing services, not replace them:
 // Context uses service, doesn't duplicate logic
 export function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(authReducer, initialState);
-  
+
   const login = useCallback(async (credentials: LoginCredentials) => {
     dispatch({ type: 'LOGIN_START' });
     try {
@@ -509,7 +500,7 @@ export function AuthProvider({ children }) {
       dispatch({ type: 'LOGIN_FAILURE', payload: { error: error.message } });
     }
   }, []);
-  
+
   // ...
 }
 ```
@@ -543,14 +534,18 @@ const value = useMemo(() => ({ state, setState }), [state]);
 **❌ Bad:**
 
 ```tsx
-const login = async (credentials) => { /* ... */ };
+const login = async credentials => {
+  /* ... */
+};
 const value = useMemo(() => ({ login }), [state]);
 ```
 
 **✅ Good:**
 
 ```tsx
-const login = useCallback(async (credentials) => { /* ... */ }, []);
+const login = useCallback(async credentials => {
+  /* ... */
+}, []);
 const value = useMemo(() => ({ login }), [login]);
 ```
 
@@ -645,7 +640,7 @@ import { useAuth, useTodos } from '@/contexts';
 function MyComponent() {
   const { user, login, logout, isLoading } = useAuth();
   const { todos, fetchTodos, addTodo } = useTodos();
-  
+
   // Use context values and actions
 }
 ```
@@ -663,4 +658,3 @@ React Context API is a powerful tool for state management when used correctly:
 - ✅ Optimize for performance
 
 When used with these patterns, Context API can handle most state management needs in React Native applications without external dependencies.
-

@@ -16,7 +16,7 @@ export default function LoginScreen() {
   const { login, isLoading, error, isAuthenticated, clearError } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [validationError, setValidationError] = useState('');
 
   // Navigate to main app when authenticated
   useEffect(() => {
@@ -25,27 +25,18 @@ export default function LoginScreen() {
     }
   }, [isAuthenticated]);
 
-  // Show snackbar when error changes
-  useEffect(() => {
-    if (error) {
-      setSnackbarVisible(true);
-    }
-  }, [error]);
-
   const handleLogin = async () => {
     if (!email || !password) {
-      // For validation errors, we can still use local state
-      // or add validation to the context
-      setSnackbarVisible(true);
+      setValidationError('Please enter both email and password');
       return;
     }
 
+    setValidationError('');
     try {
       await login({ email, password });
       // Navigation will happen automatically via useEffect when isAuthenticated changes
-    } catch (err) {
+    } catch {
       // Error is already handled by context
-      // Snackbar will show via useEffect
     }
   };
 
@@ -114,21 +105,21 @@ export default function LoginScreen() {
       </ScrollView>
 
       <Snackbar
-        visible={snackbarVisible}
+        visible={!!error || !!validationError}
         onDismiss={() => {
-          setSnackbarVisible(false);
           clearError();
+          setValidationError('');
         }}
         duration={4000}
         action={{
           label: 'Dismiss',
           onPress: () => {
-            setSnackbarVisible(false);
             clearError();
+            setValidationError('');
           },
         }}
       >
-        {error || 'An error occurred'}
+        {error || validationError || 'An error occurred'}
       </Snackbar>
     </SafeAreaView>
   );
