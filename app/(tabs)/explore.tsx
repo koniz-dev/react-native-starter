@@ -1,33 +1,41 @@
 /**
  * Explore Screen
  * Example screen demonstrating API integration with loading, error, and success states
- * Uses the useFetch hook for simplified data fetching
+ * Uses Zustand store for state management (alternative to useFetch hook)
  */
+import { useEffect } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card, Text, Button, useTheme } from 'react-native-paper';
-import { todosApi } from '@/services/api';
-import { useFetch } from '@/hooks/useFetch';
+import {
+  useTodosStore,
+  useTodos,
+  useTodosLoading,
+  useTodosError,
+} from '@/stores';
 import { LoadingScreen } from '@/components/LoadingScreen';
-import type { Todo } from '@/types/api';
 
 export default function ExploreScreen() {
   const theme = useTheme();
 
-  // Use useFetch hook to simplify data fetching
-  const {
-    data: todos,
-    loading,
-    error,
-    refetch,
-  } = useFetch<Todo[]>(async () => {
-    const data = await todosApi.getAll();
-    // Limit to 10 todos for demo
-    return data.slice(0, 10);
-  });
+  // Use Zustand store for todos state management
+  // No provider needed - Zustand works globally!
+  const todos = useTodos();
+  const loading = useTodosLoading();
+  const error = useTodosError();
+  const fetchTodos = useTodosStore(state => state.fetchTodos);
+  const clearError = useTodosStore(state => state.clearError);
+
+  // Fetch todos on mount
+  useEffect(() => {
+    fetchTodos();
+  }, [fetchTodos]);
+
+  // Limit to 10 todos for demo (computed selector)
+  const displayedTodos = todos.slice(0, 10);
 
   // Show full-screen loading on initial load
-  if (loading && !todos && !error) {
+  if (loading && todos.length === 0 && !error) {
     return (
       <SafeAreaView
         style={[styles.container, { backgroundColor: theme.colors.background }]}
@@ -50,7 +58,7 @@ export default function ExploreScreen() {
             variant="bodyMedium"
             style={{ color: theme.colors.onSurfaceVariant }}
           >
-            Fetching todos from JSONPlaceholder API
+            Fetching todos from JSONPlaceholder API using Zustand
           </Text>
         </View>
 
@@ -58,12 +66,21 @@ export default function ExploreScreen() {
         <View style={styles.buttonContainer}>
           <Button
             mode="contained"
-            onPress={refetch}
+            onPress={fetchTodos}
             disabled={loading}
             icon="refresh"
           >
             {loading ? 'Loading...' : 'Retry'}
           </Button>
+          {error && (
+            <Button
+              mode="text"
+              onPress={clearError}
+              style={styles.clearButton}
+            >
+              Clear Error
+            </Button>
+          )}
         </View>
 
         {/* Error State */}
@@ -92,12 +109,12 @@ export default function ExploreScreen() {
         )}
 
         {/* Success State - Todo List */}
-        {!loading && !error && todos && todos.length > 0 && (
+        {!loading && !error && displayedTodos && displayedTodos.length > 0 && (
           <View style={styles.todosContainer}>
             <Text variant="titleMedium" style={styles.sectionTitle}>
-              Todos ({todos.length})
+              Todos ({displayedTodos.length} of {todos.length} total)
             </Text>
-            {todos.map(todo => (
+            {displayedTodos.map(todo => (
               <Card key={todo.id} style={styles.todoCard}>
                 <Card.Content>
                   <View style={styles.todoHeader}>
@@ -135,6 +152,12 @@ export default function ExploreScreen() {
         {!loading && !error && todos && todos.length === 0 && (
           <View style={styles.centerContainer}>
             <Text variant="bodyMedium">No todos found</Text>
+            <Text
+              variant="bodySmall"
+              style={[styles.note, { color: theme.colors.onSurfaceVariant }]}
+            >
+              State managed with Zustand - no provider needed!
+            </Text>
           </View>
         )}
       </ScrollView>
@@ -201,5 +224,13 @@ const styles = StyleSheet.create({
   },
   todoMeta: {
     opacity: 0.6,
+  },
+  clearButton: {
+    marginTop: 8,
+  },
+  note: {
+    marginTop: 8,
+    textAlign: 'center',
+    opacity: 0.7,
   },
 });
