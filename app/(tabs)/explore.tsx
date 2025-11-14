@@ -1,33 +1,45 @@
 /**
  * Explore Screen
- * Example screen demonstrating API integration with loading, error, and success states
- * Uses the useFetch hook for simplified data fetching
+ * Example screen demonstrating Jotai state management
+ * Uses Jotai atoms for todos state with loading, error, and success states
+ * Demonstrates useAtomValue for read-only access and useSetAtom for actions
  */
+import { useEffect } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card, Text, Button, useTheme } from 'react-native-paper';
-import { todosApi } from '@/services/api';
-import { useFetch } from '@/hooks/useFetch';
+import { useAtomValue, useSetAtom } from 'jotai';
+import {
+  todosAtom,
+  todosLoadingAtom,
+  todosErrorAtom,
+  fetchTodosAtom,
+} from '@/atoms';
 import { LoadingScreen } from '@/components/LoadingScreen';
-import type { Todo } from '@/types/api';
 
 export default function ExploreScreen() {
   const theme = useTheme();
 
-  // Use useFetch hook to simplify data fetching
-  const {
-    data: todos,
-    loading,
-    error,
-    refetch,
-  } = useFetch<Todo[]>(async () => {
-    const data = await todosApi.getAll();
-    // Limit to 10 todos for demo
-    return data.slice(0, 10);
-  });
+  // Use Jotai atoms: useAtomValue for read-only access
+  // This demonstrates Jotai's atomic state approach - components only re-render
+  // when the specific atoms they subscribe to change
+  const todos = useAtomValue(todosAtom);
+  const loading = useAtomValue(todosLoadingAtom);
+  const error = useAtomValue(todosErrorAtom);
+
+  // useSetAtom for write-only access to fetchTodosAtom
+  const fetchTodos = useSetAtom(fetchTodosAtom);
+
+  // Fetch todos on mount
+  useEffect(() => {
+    fetchTodos();
+  }, [fetchTodos]);
+
+  // Limit to 10 todos for demo display
+  const displayedTodos = todos.slice(0, 10);
 
   // Show full-screen loading on initial load
-  if (loading && !todos && !error) {
+  if (loading && todos.length === 0 && !error) {
     return (
       <SafeAreaView
         style={[styles.container, { backgroundColor: theme.colors.background }]}
@@ -58,7 +70,7 @@ export default function ExploreScreen() {
         <View style={styles.buttonContainer}>
           <Button
             mode="contained"
-            onPress={refetch}
+            onPress={() => fetchTodos()}
             disabled={loading}
             icon="refresh"
           >
@@ -92,12 +104,12 @@ export default function ExploreScreen() {
         )}
 
         {/* Success State - Todo List */}
-        {!loading && !error && todos && todos.length > 0 && (
+        {!loading && !error && displayedTodos && displayedTodos.length > 0 && (
           <View style={styles.todosContainer}>
             <Text variant="titleMedium" style={styles.sectionTitle}>
-              Todos ({todos.length})
+              Todos ({displayedTodos.length} of {todos.length})
             </Text>
-            {todos.map(todo => (
+            {displayedTodos.map(todo => (
               <Card key={todo.id} style={styles.todoCard}>
                 <Card.Content>
                   <View style={styles.todoHeader}>
@@ -132,11 +144,14 @@ export default function ExploreScreen() {
         )}
 
         {/* Empty State */}
-        {!loading && !error && todos && todos.length === 0 && (
-          <View style={styles.centerContainer}>
-            <Text variant="bodyMedium">No todos found</Text>
-          </View>
-        )}
+        {!loading &&
+          !error &&
+          displayedTodos &&
+          displayedTodos.length === 0 && (
+            <View style={styles.centerContainer}>
+              <Text variant="bodyMedium">No todos found</Text>
+            </View>
+          )}
       </ScrollView>
     </SafeAreaView>
   );
