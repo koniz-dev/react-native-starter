@@ -31,6 +31,7 @@ This starter includes everything you need to build a production-ready React Nati
 - ✅ **TypeScript** - Full type safety throughout
 - ✅ **ESLint + Prettier** - Code quality and formatting tools
 - ✅ **Example Screens** - See features in action
+- ✅ **Redux Toolkit** - State management with TypeScript support (redux branch)
 
 ## Getting Started
 
@@ -253,6 +254,24 @@ Expo Go is a free app for testing your app on physical devices:
 
 > **Note:** Expo Go is great for learning and prototyping, but not recommended for production apps. Use development builds instead.
 
+## State Management Options
+
+This starter provides multiple state management implementations across different branches:
+
+- **main branch** - React hooks and Context API (built-in)
+- **redux branch** - Redux Toolkit for complex state management
+- **zustand branch** - Zustand for lightweight global state
+- **react-context branch** - Advanced Context API patterns
+
+Choose the branch that fits your project needs:
+
+- **Use main branch** for simple apps with minimal shared state
+- **Use redux branch** for complex apps requiring predictable state management, time-travel debugging, and team collaboration
+- **Use zustand branch** for lightweight global state without Redux boilerplate
+- **Use react-context branch** for apps that need Context API patterns with performance optimizations
+
+**📖 For Redux Toolkit implementation details, see [State Management with Redux Toolkit](docs/state-management-redux.md)**
+
 ## Documentation
 
 ### Essential Guides
@@ -267,6 +286,7 @@ Expo Go is a free app for testing your app on physical devices:
 - **[UI Library](docs/ui-library.md)** - React Native Paper components
 - **[Color Themes](docs/color-themes.md)** - Theming and dark mode
 - **[Error and Loading Handling](docs/error-and-loading.md)** - State management
+- **[State Management with Redux Toolkit](docs/state-management-redux.md)** - Redux Toolkit guide (redux branch)
 
 ### Additional Guides
 
