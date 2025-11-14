@@ -28,6 +28,7 @@ This starter includes everything you need to build a production-ready React Nati
 - ✅ **Error Boundary** - Global error handling component
 - ✅ **Loading States** - Built-in loading screen component
 - ✅ **Authentication Example** - Complete login flow with token management
+- ✅ **State Management** - React Context API with TypeScript and useReducer patterns
 - ✅ **TypeScript** - Full type safety throughout
 - ✅ **ESLint + Prettier** - Code quality and formatting tools
 - ✅ **Example Screens** - See features in action
@@ -266,7 +267,8 @@ Expo Go is a free app for testing your app on physical devices:
 - **[API and Storage](docs/api-and-storage.md)** - Backend integration guide
 - **[UI Library](docs/ui-library.md)** - React Native Paper components
 - **[Color Themes](docs/color-themes.md)** - Theming and dark mode
-- **[Error and Loading Handling](docs/error-and-loading.md)** - State management
+- **[Error and Loading Handling](docs/error-and-loading.md)** - Error and loading states
+- **[State Management with Context API](docs/state-management-context.md)** - React Context patterns
 
 ### Additional Guides
 
@@ -278,6 +280,26 @@ Expo Go is a free app for testing your app on physical devices:
 - [Animation](docs/animation.md)
 - [Store Data](docs/store-data.md)
 - [Environment Variables](docs/environment-variables.md)
+
+## State Management
+
+This starter includes **React Context API** for state management with production-ready patterns:
+
+- ✅ **AuthContext** - Authentication state with login/logout
+- ✅ **TodosContext** - CRUD operations with async handling
+- ✅ **useReducer pattern** - Complex state management
+- ✅ **TypeScript support** - Full type safety
+- ✅ **Custom hooks** - `useAuth()` and `useTodos()` for easy consumption
+- ✅ **Performance optimized** - Memoized values and actions
+
+See the [State Management with Context API](docs/state-management-context.md) guide for:
+- When to use Context vs other solutions
+- Best practices and patterns
+- Performance optimization
+- Integration with services
+- Common pitfalls and solutions
+
+**Note:** This branch demonstrates Context API patterns. For other state management solutions (Redux, Zustand, etc.), see their respective branches.
 
 ## Resources
 
