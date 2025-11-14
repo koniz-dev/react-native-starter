@@ -1,20 +1,23 @@
 /**
  * Explore Screen
  * Example screen demonstrating API integration with loading, error, and success states
- * Uses the useFetch hook for simplified data fetching
+ * Shows both useFetch hook pattern and Context API pattern for state management
  */
+import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Card, Text, Button, useTheme } from 'react-native-paper';
+import { Card, Text, Button, useTheme, Divider } from 'react-native-paper';
 import { todosApi } from '@/services/api';
 import { useFetch } from '@/hooks/useFetch';
+import { useTodos } from '@/contexts';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import type { Todo } from '@/types/api';
 
 export default function ExploreScreen() {
   const theme = useTheme();
+  const [showContextExample, setShowContextExample] = useState(false);
 
-  // Use useFetch hook to simplify data fetching
+  // Pattern 1: Use useFetch hook to simplify data fetching
   const {
     data: todos,
     loading,
@@ -25,6 +28,22 @@ export default function ExploreScreen() {
     // Limit to 10 todos for demo
     return data.slice(0, 10);
   });
+
+  // Pattern 2: Use TodosContext for global state management
+  const {
+    todos: contextTodos,
+    isLoading: contextLoading,
+    error: contextError,
+    fetchTodos,
+    refetch: contextRefetch,
+  } = useTodos();
+
+  // Fetch todos from context when switching to context example
+  useEffect(() => {
+    if (showContextExample && contextTodos.length === 0 && !contextLoading) {
+      fetchTodos();
+    }
+  }, [showContextExample, contextTodos.length, contextLoading, fetchTodos]);
 
   // Show full-screen loading on initial load
   if (loading && !todos && !error) {
@@ -44,98 +63,235 @@ export default function ExploreScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
           <Text variant="headlineMedium" style={styles.title}>
-            API Example
+            State Management Examples
           </Text>
           <Text
             variant="bodyMedium"
             style={{ color: theme.colors.onSurfaceVariant }}
           >
-            Fetching todos from JSONPlaceholder API
+            Compare useFetch hook vs Context API patterns
           </Text>
         </View>
 
-        {/* Retry Button */}
+        {/* Toggle Button */}
         <View style={styles.buttonContainer}>
           <Button
-            mode="contained"
-            onPress={refetch}
-            disabled={loading}
-            icon="refresh"
+            mode={showContextExample ? 'outlined' : 'contained'}
+            onPress={() => setShowContextExample(!showContextExample)}
+            icon={showContextExample ? 'hook' : 'account-switch'}
           >
-            {loading ? 'Loading...' : 'Retry'}
+            {showContextExample
+              ? 'Show useFetch Pattern'
+              : 'Show Context Pattern'}
           </Button>
         </View>
 
-        {/* Error State */}
-        {error && !loading && (
-          <Card
-            style={[
-              styles.errorCard,
-              { backgroundColor: theme.colors.errorContainer },
-            ]}
-          >
-            <Card.Content>
-              <Text
-                variant="titleMedium"
-                style={[styles.errorTitle, { color: theme.colors.error }]}
-              >
-                Error
-              </Text>
-              <Text
-                variant="bodyMedium"
-                style={{ color: theme.colors.onErrorContainer }}
-              >
-                {error}
-              </Text>
-            </Card.Content>
-          </Card>
-        )}
+        <Divider style={styles.divider} />
 
-        {/* Success State - Todo List */}
-        {!loading && !error && todos && todos.length > 0 && (
-          <View style={styles.todosContainer}>
-            <Text variant="titleMedium" style={styles.sectionTitle}>
-              Todos ({todos.length})
-            </Text>
-            {todos.map(todo => (
-              <Card key={todo.id} style={styles.todoCard}>
+        {!showContextExample ? (
+          // Pattern 1: useFetch Hook
+          <>
+            <View style={styles.sectionHeader}>
+              <Text variant="titleLarge" style={styles.sectionTitle}>
+                Pattern 1: useFetch Hook
+              </Text>
+              <Text
+                variant="bodySmall"
+                style={{ color: theme.colors.onSurfaceVariant }}
+              >
+                Local state management with custom hook
+              </Text>
+            </View>
+
+            {/* Retry Button */}
+            <View style={styles.buttonContainer}>
+              <Button
+                mode="contained"
+                onPress={refetch}
+                disabled={loading}
+                icon="refresh"
+              >
+                {loading ? 'Loading...' : 'Retry'}
+              </Button>
+            </View>
+
+            {/* Error State */}
+            {error && !loading && (
+              <Card
+                style={[
+                  styles.errorCard,
+                  { backgroundColor: theme.colors.errorContainer },
+                ]}
+              >
                 <Card.Content>
-                  <View style={styles.todoHeader}>
-                    <Text
-                      variant="titleSmall"
-                      style={[
-                        styles.todoTitle,
-                        todo.completed && styles.completedTodo,
-                      ]}
-                    >
-                      {todo.title}
-                    </Text>
-                    {todo.completed && (
-                      <Text
-                        variant="labelSmall"
-                        style={[
-                          styles.completedBadge,
-                          { color: theme.colors.primary },
-                        ]}
-                      >
-                        ✓ Done
-                      </Text>
-                    )}
-                  </View>
-                  <Text variant="bodySmall" style={styles.todoMeta}>
-                    User ID: {todo.userId} • ID: {todo.id}
+                  <Text
+                    variant="titleMedium"
+                    style={[styles.errorTitle, { color: theme.colors.error }]}
+                  >
+                    Error
+                  </Text>
+                  <Text
+                    variant="bodyMedium"
+                    style={{ color: theme.colors.onErrorContainer }}
+                  >
+                    {error}
                   </Text>
                 </Card.Content>
               </Card>
-            ))}
-          </View>
-        )}
+            )}
 
-        {/* Empty State */}
-        {!loading && !error && todos && todos.length === 0 && (
-          <View style={styles.centerContainer}>
-            <Text variant="bodyMedium">No todos found</Text>
-          </View>
+            {/* Success State - Todo List */}
+            {!loading && !error && todos && todos.length > 0 && (
+              <View style={styles.todosContainer}>
+                <Text variant="titleMedium" style={styles.sectionTitle}>
+                  Todos ({todos.length})
+                </Text>
+                {todos.slice(0, 10).map(todo => (
+                  <Card key={todo.id} style={styles.todoCard}>
+                    <Card.Content>
+                      <View style={styles.todoHeader}>
+                        <Text
+                          variant="titleSmall"
+                          style={[
+                            styles.todoTitle,
+                            todo.completed && styles.completedTodo,
+                          ]}
+                        >
+                          {todo.title}
+                        </Text>
+                        {todo.completed && (
+                          <Text
+                            variant="labelSmall"
+                            style={[
+                              styles.completedBadge,
+                              { color: theme.colors.primary },
+                            ]}
+                          >
+                            ✓ Done
+                          </Text>
+                        )}
+                      </View>
+                      <Text variant="bodySmall" style={styles.todoMeta}>
+                        User ID: {todo.userId} • ID: {todo.id}
+                      </Text>
+                    </Card.Content>
+                  </Card>
+                ))}
+              </View>
+            )}
+
+            {/* Empty State */}
+            {!loading && !error && todos && todos.length === 0 && (
+              <View style={styles.centerContainer}>
+                <Text variant="bodyMedium">No todos found</Text>
+              </View>
+            )}
+          </>
+        ) : (
+          // Pattern 2: Context API
+          <>
+            <View style={styles.sectionHeader}>
+              <Text variant="titleLarge" style={styles.sectionTitle}>
+                Pattern 2: Context API
+              </Text>
+              <Text
+                variant="bodySmall"
+                style={{ color: theme.colors.onSurfaceVariant }}
+              >
+                Global state management with React Context
+              </Text>
+            </View>
+
+            {/* Retry Button */}
+            <View style={styles.buttonContainer}>
+              <Button
+                mode="contained"
+                onPress={contextRefetch}
+                disabled={contextLoading}
+                icon="refresh"
+              >
+                {contextLoading ? 'Loading...' : 'Refetch from Context'}
+              </Button>
+            </View>
+
+            {/* Error State */}
+            {contextError && !contextLoading && (
+              <Card
+                style={[
+                  styles.errorCard,
+                  { backgroundColor: theme.colors.errorContainer },
+                ]}
+              >
+                <Card.Content>
+                  <Text
+                    variant="titleMedium"
+                    style={[styles.errorTitle, { color: theme.colors.error }]}
+                  >
+                    Error
+                  </Text>
+                  <Text
+                    variant="bodyMedium"
+                    style={{ color: theme.colors.onErrorContainer }}
+                  >
+                    {contextError}
+                  </Text>
+                </Card.Content>
+              </Card>
+            )}
+
+            {/* Success State - Todo List from Context */}
+            {!contextLoading &&
+              !contextError &&
+              contextTodos &&
+              contextTodos.length > 0 && (
+                <View style={styles.todosContainer}>
+                  <Text variant="titleMedium" style={styles.sectionTitle}>
+                    Todos from Context ({contextTodos.length})
+                  </Text>
+                  {contextTodos.slice(0, 10).map(todo => (
+                    <Card key={todo.id} style={styles.todoCard}>
+                      <Card.Content>
+                        <View style={styles.todoHeader}>
+                          <Text
+                            variant="titleSmall"
+                            style={[
+                              styles.todoTitle,
+                              todo.completed && styles.completedTodo,
+                            ]}
+                          >
+                            {todo.title}
+                          </Text>
+                          {todo.completed && (
+                            <Text
+                              variant="labelSmall"
+                              style={[
+                                styles.completedBadge,
+                                { color: theme.colors.primary },
+                              ]}
+                            >
+                              ✓ Done
+                            </Text>
+                          )}
+                        </View>
+                        <Text variant="bodySmall" style={styles.todoMeta}>
+                          User ID: {todo.userId} • ID: {todo.id}
+                        </Text>
+                      </Card.Content>
+                    </Card>
+                  ))}
+                </View>
+              )}
+
+            {/* Empty State */}
+            {!contextLoading &&
+              !contextError &&
+              contextTodos &&
+              contextTodos.length === 0 && (
+                <View style={styles.centerContainer}>
+                  <Text variant="bodyMedium">No todos found</Text>
+                </View>
+              )}
+          </>
         )}
       </ScrollView>
     </SafeAreaView>
@@ -160,6 +316,12 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginBottom: 24,
     alignItems: 'center',
+  },
+  divider: {
+    marginVertical: 24,
+  },
+  sectionHeader: {
+    marginBottom: 16,
   },
   centerContainer: {
     alignItems: 'center',

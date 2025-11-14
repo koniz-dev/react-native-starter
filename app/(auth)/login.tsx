@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -9,37 +9,34 @@ import {
   Snackbar,
 } from 'react-native-paper';
 import { router } from 'expo-router';
-import { authService } from '@/services/auth';
+import { useAuth } from '@/contexts';
 
 export default function LoginScreen() {
   const theme = useTheme();
+  const { login, isLoading, error, isAuthenticated, clearError } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [validationError, setValidationError] = useState('');
+
+  // Navigate to main app when authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace('/(tabs)');
+    }
+  }, [isAuthenticated]);
 
   const handleLogin = async () => {
     if (!email || !password) {
-      setError('Please fill in all fields');
-      setSnackbarVisible(true);
+      setValidationError('Please enter both email and password');
       return;
     }
 
-    setLoading(true);
-    setError(null);
-
+    setValidationError('');
     try {
-      await authService.login({ email, password });
-      // Navigate to main app after successful login
-      router.replace('/(tabs)');
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Login failed. Please try again.';
-      setError(errorMessage);
-      setSnackbarVisible(true);
-    } finally {
-      setLoading(false);
+      await login({ email, password });
+      // Navigation will happen automatically via useEffect when isAuthenticated changes
+    } catch {
+      // Error is already handled by context
     }
   };
 
@@ -89,8 +86,8 @@ export default function LoginScreen() {
           <Button
             mode="contained"
             onPress={handleLogin}
-            loading={loading}
-            disabled={loading}
+            loading={isLoading}
+            disabled={isLoading}
             style={styles.button}
           >
             Sign In
@@ -108,15 +105,21 @@ export default function LoginScreen() {
       </ScrollView>
 
       <Snackbar
-        visible={snackbarVisible}
-        onDismiss={() => setSnackbarVisible(false)}
+        visible={!!error || !!validationError}
+        onDismiss={() => {
+          clearError();
+          setValidationError('');
+        }}
         duration={4000}
         action={{
           label: 'Dismiss',
-          onPress: () => setSnackbarVisible(false),
+          onPress: () => {
+            clearError();
+            setValidationError('');
+          },
         }}
       >
-        {error || 'An error occurred'}
+        {error || validationError || 'An error occurred'}
       </Snackbar>
     </SafeAreaView>
   );
