@@ -9,7 +9,8 @@ import {
   Snackbar,
 } from 'react-native-paper';
 import { router } from 'expo-router';
-import { authService } from '@/services/auth';
+import { useSetAtom } from 'jotai';
+import { loginAtom } from '@/atoms';
 
 export default function LoginScreen() {
   const theme = useTheme();
@@ -18,6 +19,10 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
+
+  // Use Jotai atoms: useSetAtom for write-only access to loginAtom
+  // This demonstrates Jotai's atomic state approach
+  const login = useSetAtom(loginAtom);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -30,7 +35,8 @@ export default function LoginScreen() {
     setError(null);
 
     try {
-      await authService.login({ email, password });
+      // Call login atom - it will update userAtom and tokenAtom atomically
+      await login({ email, password });
       // Navigate to main app after successful login
       router.replace('/(tabs)');
     } catch (err) {

@@ -32,6 +32,20 @@ This starter includes everything you need to build a production-ready React Nati
 - ✅ **ESLint + Prettier** - Code quality and formatting tools
 - ✅ **Example Screens** - See features in action
 
+## State Management
+
+This starter uses React hooks and Context API by default.
+
+For Jotai implementation with atomic state management, check the `jotai` branch. The Jotai branch includes:
+
+- Atomic state management with Jotai
+- Auth atoms with async operations
+- Todos atoms with CRUD operations
+- Derived atoms examples
+- Complete integration examples
+
+See [State Management Guide](docs/state-management.md) for detailed documentation.
+
 ## Getting Started
 
 For detailed installation and setup instructions, see the [Getting Started Guide](docs/getting-started.md).
