@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -9,37 +9,47 @@ import {
   Snackbar,
 } from 'react-native-paper';
 import { router } from 'expo-router';
-import { authService } from '@/services/auth';
+import { useAuthStore, useAuthLoading, useAuthError } from '@/stores';
 
 export default function LoginScreen() {
   const theme = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
+
+  // Use Zustand store for auth state
+  const login = useAuthStore(state => state.login);
+  const clearError = useAuthStore(state => state.clearError);
+  const loading = useAuthLoading();
+  const error = useAuthError();
+
+  // Show snackbar when error changes
+  useEffect(() => {
+    if (error) {
+      // Defer state update to avoid synchronous setState in effect
+      setTimeout(() => {
+        setSnackbarVisible(true);
+      }, 0);
+    }
+  }, [error]);
 
   const handleLogin = async () => {
     if (!email || !password) {
-      setError('Please fill in all fields');
+      // For validation errors, show snackbar directly
       setSnackbarVisible(true);
       return;
     }
 
-    setLoading(true);
-    setError(null);
+    clearError();
+    setSnackbarVisible(false);
 
     try {
-      await authService.login({ email, password });
+      await login({ email, password });
       // Navigate to main app after successful login
       router.replace('/(tabs)');
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Login failed. Please try again.';
-      setError(errorMessage);
-      setSnackbarVisible(true);
-    } finally {
-      setLoading(false);
+    } catch {
+      // Error is already set in the store, snackbar will show via useEffect
+      // No need to set snackbarVisible here as useEffect handles it
     }
   };
 
@@ -102,21 +112,27 @@ export default function LoginScreen() {
           >
             Note: This is a demo. Update the API endpoint in{' '}
             <Text style={styles.monospace}>services/auth.ts</Text> to connect to
-            your backend.
+            your backend. State is managed with Zustand (no provider needed!).
           </Text>
         </View>
       </ScrollView>
 
       <Snackbar
         visible={snackbarVisible}
-        onDismiss={() => setSnackbarVisible(false)}
+        onDismiss={() => {
+          setSnackbarVisible(false);
+          clearError();
+        }}
         duration={4000}
         action={{
           label: 'Dismiss',
-          onPress: () => setSnackbarVisible(false),
+          onPress: () => {
+            setSnackbarVisible(false);
+            clearError();
+          },
         }}
       >
-        {error || 'An error occurred'}
+        {error || 'Please fill in all fields'}
       </Snackbar>
     </SafeAreaView>
   );

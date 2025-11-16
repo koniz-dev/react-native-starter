@@ -24,6 +24,7 @@ This starter includes everything you need to build a production-ready React Nati
 - ✅ **Dark/Light Mode** - Automatic system preference detection
 - ✅ **API Client** - Axios with interceptors for authentication and error handling
 - ✅ **Storage Service** - AsyncStorage wrapper with TypeScript support
+- ✅ **State Management** - Zustand with persistence and TypeScript support
 - ✅ **Custom Hooks** - `useFetch` for data fetching with loading/error states
 - ✅ **Error Boundary** - Global error handling component
 - ✅ **Loading States** - Built-in loading screen component
@@ -156,6 +157,10 @@ react-native-starter/
 │   └── LoadingScreen.tsx
 ├── hooks/            # Custom React hooks
 │   └── useFetch.ts   # Data fetching hook
+├── stores/           # Zustand state management stores
+│   ├── useAuthStore.ts    # Authentication store
+│   ├── useTodosStore.ts   # Todos store
+│   └── index.ts           # Store exports
 ├── services/         # API & storage services
 │   ├── api.ts        # Axios client with interceptors
 │   └── storage.ts    # AsyncStorage wrapper
@@ -173,6 +178,7 @@ react-native-starter/
 - **`app/`** - All screens go here. Files automatically become routes (Expo Router).
 - **`components/`** - Reusable UI components used across screens.
 - **`hooks/`** - Custom React hooks for shared logic (e.g., `useFetch`).
+- **`stores/`** - Zustand state management stores (auth, todos, etc.).
 - **`services/`** - API client and storage utilities.
 - **`constants/`** - App-wide constants like colors and theme config.
 - **`types/`** - TypeScript interfaces and types.
@@ -231,6 +237,39 @@ import { Image } from 'react-native';
 ```
 
 See [Assets Guide](docs/assets.md) for more information.
+
+### State Management (Zustand)
+
+This project includes **Zustand** for state management - a simple, lightweight alternative to Redux with minimal boilerplate.
+
+**Key advantages:**
+
+- No provider needed - works globally
+- Minimal boilerplate - just create and use
+- Built-in persistence with AsyncStorage
+- Full TypeScript support
+- Better performance than Context API
+
+**Quick example:**
+
+```tsx
+import { useAuthStore } from '@/stores';
+
+export default function LoginScreen() {
+  const login = useAuthStore(state => state.login);
+  const loading = useAuthStore(state => state.loading);
+
+  const handleLogin = async () => {
+    await login({ email, password });
+  };
+
+  return (
+    // Your UI
+  );
+}
+```
+
+See [State Management with Zustand](docs/state-management-zustand.md) for comprehensive documentation.
 
 ### Environment Variables
 
@@ -336,9 +375,10 @@ Expo Go is a free app for testing your app on physical devices:
 ### Feature Guides
 
 - **[API and Storage](docs/api-and-storage.md)** - Backend integration guide
+- **[State Management with Zustand](docs/state-management-zustand.md)** - Zustand state management guide
 - **[UI Library](docs/ui-library.md)** - React Native Paper components
 - **[Color Themes](docs/color-themes.md)** - Theming and dark mode
-- **[Error and Loading Handling](docs/error-and-loading.md)** - State management
+- **[Error and Loading Handling](docs/error-and-loading.md)** - Error and loading state patterns
 
 ### Additional Guides
 
