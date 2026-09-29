@@ -142,6 +142,7 @@ For more information, see:
 - `npm run lint` - Check code quality
 - `npm run lint:fix` - Fix linting issues automatically
 - `npm run format` - Format code with Prettier
+- `npm run type-check` - Check TypeScript types without emitting files
 - `npm test` - Run tests
 
 ## Project Structure

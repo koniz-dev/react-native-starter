@@ -17,6 +17,9 @@ npm run test
 # Run tests once (for CI/CD)
 npm run test:ci
 
+# Check TypeScript types without emitting files
+npm run type-check
+
 # Run tests with coverage report
 npm run test:coverage
 ```
