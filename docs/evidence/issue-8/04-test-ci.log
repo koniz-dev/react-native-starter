@@ -1,0 +1,14 @@
+
+> react-native-starter@1.0.0 test:ci
+> jest
+
+PASS __tests__/utils/sum.test.ts
+PASS __tests__/utils/logger.test.ts
+PASS __tests__/components/LoadingScreen.test.tsx
+PASS __tests__/components/HomeScreen.test.tsx
+
+Test Suites: 4 passed, 4 total
+Tests:       33 passed, 33 total
+Snapshots:   0 total
+Time:        2.29 s, estimated 3 s
+Ran all test suites.

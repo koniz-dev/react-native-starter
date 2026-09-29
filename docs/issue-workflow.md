@@ -16,24 +16,24 @@ Native issue types (Bug / Feature / Task) are an organization-level GitHub featu
 this repository is user-owned, so a label family stands in for them, reusing the two
 default labels that already existed.
 
-| Family     | Labels                                                                   | Meaning                                              |
-| ---------- | ------------------------------------------------------------------------ | ---------------------------------------------------- |
-| Type       | `bug`, `enhancement`, `task`                                             | What kind of work this is (exactly one per issue)     |
-| Epic       | `epic:navigation`, `epic:ui`, `epic:services`, `epic:state`, `epic:testing`, `epic:docs`, `epic:tooling` | Which functional area it belongs to |
-| Priority   | `priority:P0`, `priority:P1`, `priority:P2`, `priority:P3`               | P0 = drop everything, P3 = nice to have              |
-| Status     | `status:todo`, `status:in-progress`, `status:needs-uat`, `status:blocked` | Where the issue is in its lifecycle                  |
+| Family   | Labels                                                                                                   | Meaning                                           |
+| -------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| Type     | `bug`, `enhancement`, `task`                                                                             | What kind of work this is (exactly one per issue) |
+| Epic     | `epic:navigation`, `epic:ui`, `epic:services`, `epic:state`, `epic:testing`, `epic:docs`, `epic:tooling` | Which functional area it belongs to               |
+| Priority | `priority:P0`, `priority:P1`, `priority:P2`, `priority:P3`                                               | P0 = drop everything, P3 = nice to have           |
+| Status   | `status:todo`, `status:in-progress`, `status:needs-uat`, `status:blocked`                                | Where the issue is in its lifecycle               |
 
 Epic areas map to the codebase:
 
-| Epic              | Covers                                                        |
-| ----------------- | ------------------------------------------------------------- |
-| `epic:navigation` | `app/` routes, layouts, Expo Router configuration             |
-| `epic:ui`         | `components/`, `constants/` (Colors, Theme), Paper theming    |
-| `epic:services`   | `services/` (api, auth, storage), `hooks/`, `types/`          |
+| Epic              | Covers                                                          |
+| ----------------- | --------------------------------------------------------------- |
+| `epic:navigation` | `app/` routes, layouts, Expo Router configuration               |
+| `epic:ui`         | `components/`, `constants/` (Colors, Theme), Paper theming      |
+| `epic:services`   | `services/` (api, auth, storage), `hooks/`, `types/`            |
 | `epic:state`      | State-management variants and the `state-management/*` branches |
-| `epic:testing`    | `__tests__/`, Jest/RNTL configuration                         |
-| `epic:docs`       | `README.md`, `docs/`, per-directory READMEs                   |
-| `epic:tooling`    | ESLint, Prettier, TypeScript config, `scripts/`, CI, `.env`   |
+| `epic:testing`    | `__tests__/`, Jest/RNTL configuration                           |
+| `epic:docs`       | `README.md`, `docs/`, per-directory READMEs                     |
+| `epic:tooling`    | ESLint, Prettier, TypeScript config, `scripts/`, CI, `.env`     |
 
 The canonical source for the epic list is `scripts/bootstrap-issue-labels.sh`. If an
 epic is added, renamed, or removed, change it there first, run the script, then update
@@ -68,7 +68,7 @@ These are rules, not suggestions. They are what allows the loop to run unattende
    prevents issues from falling into invisible limbo.
 
 2. **Acceptance criteria live in the issue body**, under an exact `## Acceptance
-   criteria` heading: concrete, observable steps that someone (or a browser agent) can
+criteria` heading: concrete, observable steps that someone (or a browser agent) can
    run — not developer notes. Steps only a human can perform are marked
    `(human-only)`. An issue without acceptance criteria is not startable: triage must
    add them before applying `status:todo`.
