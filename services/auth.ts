@@ -4,6 +4,11 @@
  */
 import axios from 'axios';
 import { setItem, removeItem, getItem, STORAGE_KEYS } from './storage';
+import {
+  getSecureItem,
+  removeSecureItem,
+  setSecureItem,
+} from './secureStorage';
 
 export interface LoginCredentials {
   username: string;
@@ -86,7 +91,7 @@ export const authService = {
     const { token, user } = authResponse;
 
     // Store token - API client will automatically add it to requests
-    await setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+    await setSecureItem(STORAGE_KEYS.AUTH_TOKEN, token);
     await setItem(STORAGE_KEYS.USER_DATA, user);
 
     return authResponse;
@@ -96,7 +101,7 @@ export const authService = {
    * Logout - removes auth token and user data
    */
   logout: async (): Promise<void> => {
-    await removeItem(STORAGE_KEYS.AUTH_TOKEN);
+    await removeSecureItem(STORAGE_KEYS.AUTH_TOKEN);
     await removeItem(STORAGE_KEYS.USER_DATA);
   },
 
@@ -104,7 +109,7 @@ export const authService = {
    * Check if user is authenticated
    */
   isAuthenticated: async (): Promise<boolean> => {
-    const token = await getItem<string>(STORAGE_KEYS.AUTH_TOKEN);
+    const token = await getSecureItem(STORAGE_KEYS.AUTH_TOKEN);
     return token !== null;
   },
 

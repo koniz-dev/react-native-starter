@@ -3,8 +3,8 @@
  * Axios instance with interceptors for authentication and error handling
  */
 import axios, { AxiosInstance, AxiosError } from 'axios';
-import { getItem } from './storage';
 import { STORAGE_KEYS } from './storage';
+import { getSecureItem } from './secureStorage';
 import type { ApiError } from '@/types/api';
 
 // Get base URL from environment variable
@@ -23,7 +23,7 @@ const api: AxiosInstance = axios.create({
 api.interceptors.request.use(
   async config => {
     // Get auth token from storage
-    const token = await getItem<string>(STORAGE_KEYS.AUTH_TOKEN);
+    const token = await getSecureItem(STORAGE_KEYS.AUTH_TOKEN);
 
     // Add token to Authorization header if available
     if (token) {

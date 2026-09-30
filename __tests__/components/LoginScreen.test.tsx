@@ -9,6 +9,13 @@ jest.mock('@react-native-async-storage/async-storage', () =>
   )
 );
 
+jest.mock('expo-secure-store', () => ({
+  isAvailableAsync: jest.fn(() => Promise.resolve(true)),
+  setItemAsync: jest.fn(() => Promise.resolve()),
+  getItemAsync: jest.fn(() => Promise.resolve(null)),
+  deleteItemAsync: jest.fn(() => Promise.resolve()),
+}));
+
 jest.mock('expo-router', () => ({
   router: { replace: jest.fn() },
 }));

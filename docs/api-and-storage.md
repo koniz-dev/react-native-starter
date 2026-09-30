@@ -69,14 +69,21 @@ const response = await api.post('/custom-endpoint', {
 
 ### Authentication
 
-The API client automatically adds authentication tokens from storage:
+Authentication tokens are stored through `services/secureStorage.ts`, which uses the
+native iOS Keychain / Android Keystore via Expo SecureStore. General-purpose values
+such as user profile data and cached Todos continue to use AsyncStorage. SecureStore is
+not available for this starter's web flow; on web, `isAuthenticated()` returns false
+until an adopter supplies an appropriate web authentication strategy.
 
-1. Store token using storage service:
+The API client automatically adds authentication tokens from secure storage:
+
+1. Store a token using the secure storage service:
 
 ```tsx
-import { setItem, STORAGE_KEYS } from '@/services/storage';
+import { setSecureItem } from '@/services/secureStorage';
+import { STORAGE_KEYS } from '@/services/storage';
 
-await setItem(STORAGE_KEYS.AUTH_TOKEN, 'your-token-here');
+await setSecureItem(STORAGE_KEYS.AUTH_TOKEN, 'your-token-here');
 ```
 
 2. Token is automatically added to `Authorization: Bearer <token>` header on all requests.
