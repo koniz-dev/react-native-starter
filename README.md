@@ -125,6 +125,13 @@ For detailed installation and setup instructions, see the [Getting Started Guide
 3. **Run:** `npm start`
 4. **Code:** Start editing `app/(tabs)/index.tsx`
 
+### Authentication demo
+
+The starter uses DummyJSON for the runnable login example, separately from the
+JSONPlaceholder Todos API. Sign in with username `emilys` and password `emilyspass`.
+For a real backend, set `EXPO_PUBLIC_AUTH_API_URL` and adapt the request/response
+mapping in `services/auth.ts` to the backend contract.
+
 ## Navigation
 
 This project uses **Expo Router** for navigation, which is the recommended approach for Expo projects. Expo Router provides:

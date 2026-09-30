@@ -9,6 +9,7 @@ import {
   Snackbar,
   useTheme,
 } from 'react-native-paper';
+import { router } from 'expo-router';
 
 export default function HomeScreen() {
   const theme = useTheme();
@@ -29,6 +30,13 @@ export default function HomeScreen() {
           >
             Material Design 3 Components
           </Text>
+          <Button
+            mode="outlined"
+            onPress={() => router.push('/(auth)/login')}
+            style={styles.authDemoButton}
+          >
+            Try authentication demo
+          </Button>
         </View>
 
         {/* Text Variants */}
@@ -148,6 +156,9 @@ const styles = StyleSheet.create({
   title: {
     marginBottom: 8,
     fontWeight: 'bold',
+  },
+  authDemoButton: {
+    marginTop: 16,
   },
   section: {
     marginBottom: 24,

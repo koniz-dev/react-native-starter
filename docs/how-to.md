@@ -311,14 +311,20 @@ Edit `constants/Colors.ts` for app-specific colors. See [Color Themes](color-the
 
 **To use it:**
 
-1. **Update the API endpoint** in `services/auth.ts` to match your backend:
+1. **Try the runnable demo** from the Home tab's **Try authentication demo** button.
+   Sign in with username `emilys` and password `emilyspass`.
+
+2. **Connect your backend** by setting `EXPO_PUBLIC_AUTH_API_URL` and adapting the
+   request/response mapping in `services/auth.ts` to match its authentication contract:
 
 ```tsx
-// Change this line in services/auth.ts
-const response = await api.post<AuthResponse>('/auth/login', credentials);
+const response = await authApi.post<DemoAuthResponse>('/auth/login', {
+  ...credentials,
+  expiresInMins: 60,
+});
 ```
 
-2. **Navigate to login screen:**
+3. **Navigate to login screen programmatically:**
 
 ```tsx
 import { router } from 'expo-router';
@@ -326,7 +332,7 @@ import { router } from 'expo-router';
 router.push('/(auth)/login');
 ```
 
-3. **Check authentication status:**
+4. **Check authentication status:**
 
 ```tsx
 import { authService } from '@/services/auth';
@@ -337,7 +343,7 @@ if (!isAuthenticated) {
 }
 ```
 
-4. **Logout:**
+5. **Logout:**
 
 ```tsx
 await authService.logout();

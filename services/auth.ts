@@ -2,11 +2,11 @@
  * Authentication Service
  * Handles login, logout, and token management
  */
+import axios from 'axios';
 import { setItem, removeItem, getItem, STORAGE_KEYS } from './storage';
-import api from './api';
 
 export interface LoginCredentials {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -19,23 +19,77 @@ export interface AuthResponse {
   };
 }
 
+interface DemoAuthResponse {
+  accessToken?: string;
+  token?: string;
+  id?: number;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  user?: AuthResponse['user'];
+}
+
+const authBaseURL =
+  process.env.EXPO_PUBLIC_AUTH_API_URL || 'https://dummyjson.com';
+
+export const authApi = axios.create({
+  baseURL: authBaseURL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+function normalizeAuthResponse(data: DemoAuthResponse): AuthResponse {
+  const token = data.accessToken || data.token;
+
+  if (!token) {
+    throw new Error(
+      'The authentication response did not include an access token'
+    );
+  }
+
+  if (data.user) {
+    return { token, user: data.user };
+  }
+
+  if (!data.id || !data.email) {
+    throw new Error(
+      'The authentication response did not include user information'
+    );
+  }
+
+  return {
+    token,
+    user: {
+      id: data.id,
+      email: data.email,
+      name:
+        [data.firstName, data.lastName].filter(Boolean).join(' ') || data.email,
+    },
+  };
+}
+
 /**
  * Authentication service for handling login/logout
  */
 export const authService = {
   /**
-   * Login with email and password
+   * Login with username and password
    * Stores the auth token in storage for automatic API requests
    */
   login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
-    const response = await api.post<AuthResponse>('/auth/login', credentials);
-    const { token, user } = response.data;
+    const response = await authApi.post<DemoAuthResponse>('/auth/login', {
+      ...credentials,
+      expiresInMins: 60,
+    });
+    const authResponse = normalizeAuthResponse(response.data);
+    const { token, user } = authResponse;
 
     // Store token - API client will automatically add it to requests
     await setItem(STORAGE_KEYS.AUTH_TOKEN, token);
     await setItem(STORAGE_KEYS.USER_DATA, user);
 
-    return response.data;
+    return authResponse;
   },
 
   /**

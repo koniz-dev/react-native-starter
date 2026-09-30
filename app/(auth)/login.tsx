@@ -13,14 +13,14 @@ import { authService } from '@/services/auth';
 
 export default function LoginScreen() {
   const theme = useTheme();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
   const handleLogin = async () => {
-    if (!email || !password) {
+    if (!username || !password) {
       setError('Please fill in all fields');
       setSnackbarVisible(true);
       return;
@@ -30,7 +30,7 @@ export default function LoginScreen() {
     setError(null);
 
     try {
-      await authService.login({ email, password });
+      await authService.login({ username, password });
       // Navigate to main app after successful login
       router.replace('/(tabs)');
     } catch (err) {
@@ -65,14 +65,14 @@ export default function LoginScreen() {
 
         <View style={styles.form}>
           <TextInput
-            label="Email"
-            value={email}
-            onChangeText={setEmail}
+            label="Username"
+            value={username}
+            onChangeText={setUsername}
             mode="outlined"
-            keyboardType="email-address"
             autoCapitalize="none"
-            autoComplete="email"
+            autoComplete="username"
             style={styles.input}
+            testID="login-username"
           />
 
           <TextInput
@@ -84,6 +84,7 @@ export default function LoginScreen() {
             autoCapitalize="none"
             autoComplete="password"
             style={styles.input}
+            testID="login-password"
           />
 
           <Button
@@ -92,6 +93,7 @@ export default function LoginScreen() {
             loading={loading}
             disabled={loading}
             style={styles.button}
+            testID="login-submit"
           >
             Sign In
           </Button>
@@ -100,8 +102,10 @@ export default function LoginScreen() {
             variant="bodySmall"
             style={[styles.note, { color: theme.colors.onSurfaceVariant }]}
           >
-            Note: This is a demo. Update the API endpoint in{' '}
-            <Text style={styles.monospace}>services/auth.ts</Text> to connect to
+            Demo credentials: <Text style={styles.monospace}>emilys</Text> /{' '}
+            <Text style={styles.monospace}>emilyspass</Text>. Set{' '}
+            <Text style={styles.monospace}>EXPO_PUBLIC_AUTH_API_URL</Text> and
+            adapt <Text style={styles.monospace}>services/auth.ts</Text> for
             your backend.
           </Text>
         </View>

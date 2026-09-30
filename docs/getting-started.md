@@ -44,11 +44,17 @@ npm install
 cp .env.example .env
 ```
 
-Edit `.env` and add your API URL if needed:
+Edit `.env` and add your API URLs if needed:
 
 ```bash
 EXPO_PUBLIC_API_URL=https://api.example.com
+EXPO_PUBLIC_AUTH_API_URL=https://auth.example.com
 ```
+
+The unmodified starter uses JSONPlaceholder for its todos example and DummyJSON for
+its authentication demo. Use username `emilys` and password `emilyspass` to sign in.
+When connecting your own backend, set `EXPO_PUBLIC_AUTH_API_URL` and adapt the request
+and response mapping in `services/auth.ts` to that backend's authentication contract.
 
 ## Running the App
 
