@@ -1,0 +1,54 @@
+# Issue 15 verification — Expo SDK 57 migration
+
+Verified on 2026-10-02 (Node v26.7.0, npm 11.x, macOS). This evidence was
+created from a clean dependency tree using the committed lockfile.
+
+## Dependency set
+
+- Expo `57.0.26`, React Native `0.86.3`, React `19.2.3`, Expo Router
+  `57.0.24`, and Jest Expo `57.0.5` are installed.
+- `axios` was upgraded to `^1.20.0`; it is no longer among the production
+  critical/high findings.
+- Jest uses the React Native `0.86.3` preset and Hermes parser `0.36.0`.
+  Version `0.36.1` declares but omits `dist/index.js`; pinning the compatible
+  `0.36.0` artifact restores the Expo Babel transform without patching
+  `node_modules`.
+
+## Automated checks
+
+| Command                                                                            | Result                                                                                             |
+| ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `npm ci --legacy-peer-deps`                                                        | PASS — 1,279 packages installed from the lockfile.                                                 |
+| `npm run lint`                                                                     | PASS.                                                                                              |
+| `npm run type-check`                                                               | PASS.                                                                                              |
+| `npm run test:ci -- --runInBand`                                                   | PASS — 6 suites, 40 tests.                                                                         |
+| `npm run format:check`                                                             | PASS — all matched files formatted.                                                                |
+| `npx expo-doctor`                                                                  | PASS — 21/21 checks.                                                                               |
+| `npx expo export --platform web --output-dir /tmp/react-native-starter-web-export` | PASS — bundled 1,058 modules and exported `index.html`, `metadata.json`, assets, and a web bundle. |
+
+The initial default `npm ci` reports the Expo worklets optional-peer conflict;
+the lockfile was created with npm's legacy peer resolver and reproducibly
+installs with `npm ci --legacy-peer-deps`. This constraint is a follow-up item,
+not a claim that a plain clean install works.
+
+## Audit result and decision
+
+`npm audit --omit=dev --json` after the axios update reports **1 critical and
+6 high** findings (20 total findings across all severities). Remaining
+critical/high package paths are transitive:
+
+- `expo@57.0.26` -> `@expo/cli@57.0.27` -> `node-forge@1.4.0` and its
+  `@expo/code-signing-certificates` path;
+- Expo CLI/Metro resolver paths -> `picomatch`, `shell-quote`, and `ws`.
+
+The audit tool's offered Expo remediation is an incompatible downgrade to Expo
+`44.0.6`; it is not applied. **Decision: do not accept these findings as
+release-ready risk.** They are tracked by [issue #16](https://github.com/koniz-dev/react-native-starter/issues/16), which requires supported remediation or an explicitly owned, time-bound risk decision. Therefore this migration does not establish MVP or maintenance readiness.
+
+## Human UAT still required
+
+Native interactions cannot be established by this environment. On both iOS and
+Android, a human must install/launch the app, navigate tabs, sign in with the
+documented demo credentials, log out and relaunch, toggle light/dark mode,
+exercise keyboard input and safe areas/system bars, and verify an API failure
+and retry state. Record device/simulator model and OS version with the result.

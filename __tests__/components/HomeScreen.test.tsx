@@ -3,6 +3,10 @@ import { render } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { PaperProvider, MD3LightTheme } from 'react-native-paper';
 
+jest.mock('expo-router', () => ({
+  router: { replace: jest.fn() },
+}));
+
 import HomeScreen from '@/app/(tabs)/index';
 
 const TestWrapper = ({ children }: { children: React.ReactNode }) => (

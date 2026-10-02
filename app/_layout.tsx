@@ -6,7 +6,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const theme = getTheme(colorScheme ?? null);
+  const theme = getTheme(colorScheme === 'dark' ? 'dark' : 'light');
 
   return (
     <ErrorBoundary>
