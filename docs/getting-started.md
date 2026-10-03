@@ -19,14 +19,19 @@ Before you begin, ensure you have:
 - **iOS Simulator** - Included with Xcode
 
 Expo SDK 57 supports iOS 16.4 and later. An older Xcode can still provide a
-simulator, but it cannot compile this SDK's native iOS project. If you only need
-the web starter, use `npm run web`; for native iOS, upgrade Xcode first.
+simulator, but it cannot compile this SDK's native iOS project. With an older
+Xcode you can still run the app in Expo Go on the simulator (`npm start`, then
+press `i`); for a native iOS build (`npx expo run:ios`), upgrade Xcode first.
 
 ### For Android Development
 
 - **Android Studio** - [Download](https://developer.android.com/studio)
 - **Android SDK** - Installed via Android Studio
 - **Android Emulator** - Set up via Android Studio
+- **JDK 17** - required for native Android builds (`npx expo run:android`).
+  Point `JAVA_HOME` at a JDK 17 install. The JDK 25 bundled with recent Android
+  Studio releases fails the native CMake configure step ("A restricted method in
+  java.lang.System has been called"). Expo Go doesn't need a JDK.
 
 ## Installation
 

@@ -94,3 +94,25 @@ remains pending on a supported Xcode/iOS simulator or device, plus Android.
 
 Sources: [Expo SDK compatibility table](https://docs.expo.dev/versions/latest/)
 and [Expo SDK 57 release notes](https://expo.dev/changelog/sdk-57).
+
+## Closure (2026-10-04)
+
+| Criterion                                                                          | Evidence                                                                                                                                                                                                                                                                                                                                                                   | Result                                |
+| ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| 1. Supported Expo 57 dependency set                                                | Dependency set above.                                                                                                                                                                                                                                                                                                                                                      | PASS                                  |
+| 2. `npx expo-doctor` without errors                                                | Automated checks above (21/21).                                                                                                                                                                                                                                                                                                                                            | PASS                                  |
+| 3. Audit: zero critical/high, or documented non-upgradeable path and risk decision | The remaining Expo CLI transitive findings have a dependency path, owner, compensating controls, review cadence, and escalation triggers in [issue-16/audit-review.md](../issue-16/audit-review.md); #16 closed with that decision.                                                                                                                                        | PASS                                  |
+| 4. iOS, Android, and web build/start                                               | Web export: PASS (above). Android: native debug build compiles with JDK 17 and runs ([native-android-build.md](native-android-build.md)); Expo Go runtime ([uat-android-emulator.md](uat-android-emulator.md)). iOS: Expo Go runtime on iOS 18.6 simulator ([uat-ios-simulator.md](uat-ios-simulator.md)); native iOS build not possible on this host, see decision below. | PASS with recorded iOS scope decision |
+| 5. lint, type-check, test:ci, format:check                                         | Automated checks above; re-run green for #19 at e1c4bbe.                                                                                                                                                                                                                                                                                                                   | PASS                                  |
+
+**iOS native build decision (owner, 2026-10-04):** Expo SDK 57's native iOS
+project requires Xcode 26.4+ ([ios-xcode-16.4-build-failure.md](ios-xcode-16.4-build-failure.md)).
+The verification host can't upgrade Xcode because of its macOS version. The
+owner accepted Expo Go on the iOS simulator as the iOS start verification for
+this issue. The Xcode 26.4+ requirement for native iOS builds is documented in
+`docs/getting-started.md` and the README. A native iOS build remains
+unverified and must be covered by the release-readiness issue on a host with
+Xcode 26.4+ before iOS native support is claimed.
+
+UX defects found during UAT are tracked separately and are not part of this
+issue's criteria: #19 (closed), #20, #21, #22, #23, #24.
