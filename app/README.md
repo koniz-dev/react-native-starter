@@ -133,6 +133,20 @@ export default function MainLayout() {
 }
 ```
 
+**Anchor the initial route when the root has several groups.** Without an
+anchor, a launch URL that doesn't match a route (Expo Go on Android sends one)
+falls back to the alphabetically first group, so `(auth)` can open before the
+main app. This starter anchors the root stack in `app/_layout.tsx`:
+
+```tsx
+export const unstable_settings = {
+  initialRouteName: '(tabs)',
+};
+```
+
+This also keeps the tabs underneath a deep-linked `/login`, so Back returns to
+Home instead of exiting the app.
+
 ### Dynamic Routes with Parameters
 
 Use square brackets `[param]` to create dynamic routes that accept parameters:
