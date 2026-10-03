@@ -8,7 +8,7 @@ This directory contains reusable React Native components.
 
 A text component that automatically adapts to light and dark color schemes.
 
-**Create `components/ThemedText.tsx`:**
+Shipped as [`ThemedText.tsx`](ThemedText.tsx).
 
 ```tsx
 import { Text, type TextProps, StyleSheet } from 'react-native';
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
 
 A view component that automatically adapts to light and dark color schemes.
 
-**Create `components/ThemedView.tsx`:**
+Shipped as [`ThemedView.tsx`](ThemedView.tsx).
 
 ```tsx
 import { View, type ViewProps } from 'react-native';
@@ -105,7 +105,8 @@ export function ThemedView({
 ## Usage
 
 ```tsx
-import { ThemedText, ThemedView } from '@/components/ThemedText';
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 
 export default function MyScreen() {
   return (

@@ -8,7 +8,7 @@ This directory contains React Hooks that allow sharing common behavior between c
 
 A hook that returns a color based on the current theme (light or dark mode).
 
-**Create `hooks/useThemeColor.ts`:**
+Shipped as [`useThemeColor.ts`](useThemeColor.ts).
 
 ```tsx
 import { useColorScheme } from 'react-native';
