@@ -37,6 +37,69 @@ Before a PASS, run every acceptance criterion and save retrievable evidence unde
 screenshot yourself, post a PASS summary linking it, and only then close the issue.
 Never repeat a subagent's PASS without inspecting the artifacts yourself.
 
+## MVP and maintenance readiness
+
+This repository's product is a **React Native starter**, not a finished consumer
+application. Its MVP is a trustworthy, documented starting point from which a team
+can build an app. Closing a collection of implementation issues is not, by itself,
+evidence that the starter has reached MVP or may enter maintenance.
+
+An agent may describe the starter as **MVP-ready** only when a dedicated open
+release-readiness issue has explicit acceptance criteria, all criteria have PASS
+evidence, and the following conditions are true:
+
+- The release issue defines the supported Expo SDK, Node version, and platform scope
+  (iOS, Android, and/or web), as well as explicit non-goals. It must not imply a
+  production backend, store submission, analytics, push notifications, or a chosen
+  state-management library unless those are deliberately in scope.
+- A clean checkout can follow the committed instructions using `npm ci`, create the
+  documented environment configuration, and start the app. Every command, import,
+  route, sample credential, and endpoint referenced by the in-scope documentation
+  either works or is expressly marked as an optional example to be implemented by
+  the adopter.
+- The shipped baseline flows work end to end within their stated scope: initial
+  navigation, light/dark theming, API loading/error/retry behavior, and the chosen
+  authentication example (including logout and session persistence, if auth remains
+  part of the starter). Tokens on native platforms use protected storage; a web
+  limitation or fallback is documented.
+- Automated gates pass from the clean dependency tree: lint, formatting, type check,
+  and tests. Tests cover the baseline services and failure paths, not merely static
+  rendering. Dependency audit results contain no unreviewed critical or high finding;
+  an unavoidable finding needs a documented dependency path, risk decision, and a
+  tracked remediation issue.
+- Native and visual claims have human UAT evidence for every platform advertised as
+  supported. At minimum this covers install/launch, tab navigation, login/logout or
+  the documented auth alternative, keyboard interaction, safe areas/system bars,
+  light/dark mode, an offline/API-failure state, and no crash on relaunch. Web-export
+  evidence is useful but is never proof of iOS or Android behavior.
+- The release issue links committed logs and screenshots under
+  `docs/evidence/issue-<N>/`, records the tested device/simulator and OS versions,
+  and distinguishes automated PASS from human UAT PASS. Any unmet human-only
+  criterion keeps the release issue in `status:needs-uat`, not closed.
+
+The repository may move from feature development to **maintenance mode** only after
+MVP readiness is evidenced and all of the following hold:
+
+- At least one tagged or otherwise immutable baseline revision has passed the release
+  gate; its supported platforms, SDK/Node versions, and known limitations are
+  recorded in the release issue or release notes.
+- There are no open P0 or P1 defects/security issues, and no unresolved issue that
+  invalidates a published setup, platform-support, or security claim. P2/P3 backlog
+  items have been consciously deferred rather than treated as invisible scope.
+- CI is green on the baseline revision, release dependencies are reproducible via the
+  lockfile, and the dependency/security review has a repeatable cadence and owner.
+- The team has a documented support policy: how to report a defect, how security
+  updates are triaged, what compatibility updates are accepted, and when an Expo or
+  React Native upgrade is required.
+
+In maintenance mode, accept only security fixes, reproducible regressions,
+compatibility/toolchain updates, documentation corrections, and narrowly scoped
+reliability improvements. A new user-facing capability, a new supported platform, a
+new required backend integration, or a change to the starter's promised baseline
+reopens feature development and requires a new release-readiness issue. Agents must
+state which release-gate criteria remain unverified; green unit tests alone never
+justify declaring MVP or maintenance readiness.
+
 ## Taxonomy source
 
 `scripts/bootstrap-issue-labels.sh` is the canonical source of the `epic:*` list.
