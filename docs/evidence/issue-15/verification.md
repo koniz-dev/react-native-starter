@@ -53,6 +53,25 @@ documented demo credentials, log out and relaunch, toggle light/dark mode,
 exercise keyboard input and safe areas/system bars, and verify an API failure
 and retry state. Record device/simulator model and OS version with the result.
 
+### iOS Expo Go runtime launch (2026-10-03)
+
+Expo Go 57.0.9 was installed by Expo CLI on the available iPhone 16 Pro
+simulator (iOS 18.6). Direct LAN and localhost connections failed from Expo Go,
+but `npx expo start --ios --tunnel` connected and Metro reported:
+
+```
+Tunnel connected.
+Tunnel ready.
+iOS Bundled 11403ms index.ts (1486 modules)
+```
+
+The captured screen is [ios-simulator-expo-go-first-launch.png](ios-simulator-expo-go-first-launch.png).
+It shows the React Native Paper home screen after the JavaScript bundle loaded.
+Expo Go's first-launch Developer menu onboarding overlay is still on top and
+requires tapping Continue; native tapping is not driveable in this environment.
+Therefore this is evidence of iOS launch/bundle PASS only, not a substitute for
+the remaining interaction UAT.
+
 ## iOS native-build preflight (2026-10-03)
 
 An iPhone 16 Pro simulator running iOS 18.6 was available. To avoid modifying
