@@ -4,6 +4,22 @@ Expo / React Native starter (Expo Router, TypeScript strict, React Native Paper,
 Jest + React Native Testing Library). Single repo; work ships directly to `main` in
 small, single-issue commits.
 
+## Project goal
+
+The product is a **trustworthy, documented React Native starter**, not a finished app.
+The target is the MVP release gate, then maintenance mode, both defined in
+[AGENTS.md](AGENTS.md#mvp-and-maintenance-readiness). Judge every issue, UAT finding,
+and "can we accept this?" question against that gate:
+
+- Baseline flows must work end to end on every advertised platform: initial
+  navigation, light/dark theming, API loading/error/retry, and the auth example
+  including logout and session persistence. A missing piece of these is a defect,
+  not an acceptable limitation.
+- MVP readiness is declared only through a dedicated release-readiness issue with
+  PASS evidence; closed issues and green tests alone never establish it.
+- Before citing another issue's state (e.g. "tracked in #N"), re-check it with `gh`;
+  comments go stale.
+
 ## Workflow
 
 GitHub issues are the single source of truth for all work. Full spec, invariants, and
