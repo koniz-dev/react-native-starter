@@ -1,0 +1,39 @@
+diff --git a/app/(tabs)/index.tsx b/app/(tabs)/index.tsx
+index 31d4a47..99b0982 100644
+--- a/app/(tabs)/index.tsx
++++ b/app/(tabs)/index.tsx
+@@ -1,4 +1,5 @@
+-import { useState } from 'react';
++import { useEffect, useState } from 'react';
++import { authService } from '@/services/auth'; // UAT-PROBE
+ import { ScrollView, StyleSheet, View } from 'react-native';
+ import { SafeAreaView } from 'react-native-safe-area-context';
+ import {
+@@ -14,6 +15,17 @@ import { router } from 'expo-router';
+ export default function HomeScreen() {
+   const theme = useTheme();
+   const [snackbarVisible, setSnackbarVisible] = useState(false);
++  const [probe, setProbe] = useState('checking'); // UAT-PROBE
++  const refreshProbe = async () => { // UAT-PROBE
++    try {
++      const ok = await authService.isAuthenticated();
++      const u = await authService.getCurrentUser();
++      setProbe(`isAuthenticated=${ok} user=${u ? u.name : 'null'}`);
++    } catch (e) {
++      setProbe(`error=${String(e)}`);
++    }
++  };
++  useEffect(() => { refreshProbe(); }, []); // UAT-PROBE
+ 
+   return (
+     <SafeAreaView
+@@ -37,6 +49,9 @@ export default function HomeScreen() {
+           >
+             Try authentication demo
+           </Button>
++          <Text testID="uat-probe">UAT probe: {probe}</Text>
++          <Button onPress={async () => { await authService.logout(); await refreshProbe(); }}>UAT logout</Button>
++          <Button onPress={refreshProbe}>UAT refresh</Button>
+         </View>
+ 
+         {/* Text Variants */}
