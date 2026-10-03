@@ -52,3 +52,26 @@ Android, a human must install/launch the app, navigate tabs, sign in with the
 documented demo credentials, log out and relaunch, toggle light/dark mode,
 exercise keyboard input and safe areas/system bars, and verify an API failure
 and retry state. Record device/simulator model and OS version with the result.
+
+## iOS native-build preflight (2026-10-03)
+
+An iPhone 16 Pro simulator running iOS 18.6 was available. To avoid modifying
+the managed project's worktree, a temporary copy was generated with
+`npx expo prebuild --platform ios --no-install`, followed by `pod install` and
+an `xcodebuild` Debug build for that simulator. Prebuild and CocoaPods completed,
+but the native build did **not** pass on the installed Xcode 16.4 (build 16F6):
+
+```
+[ExpoModulesJSI] Building framework slice for iphonesimulator...
+xcodebuild: error: Could not resolve package dependencies:
+  package 'apple' is using Swift tools version 6.2.0 but the installed version is 6.1.0
+```
+
+This is an unsupported toolchain, not a passing iOS UAT result. Expo's SDK
+compatibility table requires Xcode 26.4+ for SDK 57, and lists iOS 16.4+ as the
+minimum OS. The setup documentation now names those requirements so a clean
+checkout does not claim that Xcode 16.4 can build the native project. Native UAT
+remains pending on a supported Xcode/iOS simulator or device, plus Android.
+
+Sources: [Expo SDK compatibility table](https://docs.expo.dev/versions/latest/)
+and [Expo SDK 57 release notes](https://expo.dev/changelog/sdk-57).

@@ -6,7 +6,7 @@ Get up and running with React Native Starter in under 5 minutes.
 
 Before you begin, ensure you have:
 
-- **Node.js** (v18 or later) - [Download](https://nodejs.org/)
+- **Node.js** v20 or later - [Download](https://nodejs.org/)
 - **npm** or **yarn** - Comes with Node.js
 - **Expo Go app** (optional) - For testing on physical devices
   - [iOS App Store](https://apps.apple.com/app/expo-go/id982107779)
@@ -14,8 +14,13 @@ Before you begin, ensure you have:
 
 ### For iOS Development (macOS only)
 
-- **Xcode** (latest version) - [Download from App Store](https://apps.apple.com/app/xcode/id497799835)
+- **Xcode 26.4 or later** - required by Expo SDK 57 for native iOS builds; verify
+  with `xcodebuild -version` before running a native build. [Download from App Store](https://apps.apple.com/app/xcode/id497799835)
 - **iOS Simulator** - Included with Xcode
+
+Expo SDK 57 supports iOS 16.4 and later. An older Xcode can still provide a
+simulator, but it cannot compile this SDK's native iOS project. If you only need
+the web starter, use `npm run web`; for native iOS, upgrade Xcode first.
 
 ### For Android Development
 
@@ -35,8 +40,12 @@ cd react-native-starter
 2. **Install dependencies:**
 
 ```bash
-npm install
+npm ci --legacy-peer-deps
 ```
+
+The lockfile currently relies on npm's legacy peer resolver for an Expo worklets
+optional-peer constraint. Do not delete the lockfile as a troubleshooting step;
+see the issue tracker for its remediation status.
 
 3. **Set up environment variables (optional):**
 

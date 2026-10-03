@@ -120,8 +120,9 @@ For detailed installation and setup instructions, see the [Getting Started Guide
 
 **Quick overview:**
 
-1. **Prerequisites:** Node.js v18+, npm/yarn
-2. **Install:** `npm install`
+1. **Prerequisites:** Node.js v20+; iOS native builds also require Xcode 26.4+
+   for Expo SDK 57
+2. **Install:** `npm ci --legacy-peer-deps`
 3. **Run:** `npm start`
 4. **Code:** Start editing `app/(tabs)/index.tsx`
 
