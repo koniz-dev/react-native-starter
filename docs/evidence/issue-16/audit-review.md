@@ -48,19 +48,23 @@ the committed lockfile, installing from a trusted registry, and not running
 the CLI against untrusted project configuration or in a privileged production
 runtime.
 
-## Required owner decision
+## Owner decision
 
-No agent may accept a high-severity dependency risk for the project owner.
-`koniz-dev` must choose one of the following before this issue can close:
+On 2026-10-03, `koniz-dev` selected the current stable Expo managed baseline,
+which is the community-standard toolchain for this starter. The unresolved
+Expo CLI/node-forge chain is accepted as a bounded development/build-tooling
+risk, not evidence that the shipped application bundle executes the affected
+code.
 
-1. Accept the bounded development/build-tooling risk until the next supported
-   Expo patch, recording an owner and a review date; or
-2. Reject the risk and keep the starter unreleased while a supported Expo
-   upgrade removes `node-forge`.
+The decision does not waive security review: rerun
+`npm audit --omit=dev --json` for every Expo patch or SDK upgrade and at least
+monthly. Escalate immediately if a finding becomes reachable from the app
+runtime, build credentials, CI secrets, or a production service. The tracked
+remediation trigger remains a supported Expo update that removes `node-forge`.
 
-The remediation trigger is any new Expo 57 patch or the next supported Expo
-SDK that removes the advisory; re-run `npm audit --omit=dev --json` at that
-time. Until the decision is recorded, this is not MVP or maintenance-ready.
+This decision unblocks ordinary starter development, but does not by itself
+establish MVP or maintenance readiness; the dedicated release gate still
+requires clean-install, automated, and native UAT evidence.
 
 ## Regression checks
 
