@@ -57,6 +57,17 @@ const customColor = useThemeColor(
 );
 ```
 
+## Session Hook
+
+### useAuthSession
+
+Shipped as [`useAuthSession.ts`](useAuthSession.ts). Reads the authentication session
+through `authService`: `status` is `'loading'`, `'signedIn'` (token present in secure
+storage; `user` is the stored profile, or `null` if none), or `'signedOut'`. A storage
+failure counts as signed out. `logout()` calls `authService.logout()` and re-reads the
+session. The hook reads once on mount; call `refresh()` from `useFocusEffect` so a screen
+updates after the user signs in elsewhere (see `app/(tabs)/index.tsx`).
+
 ## Data Fetching Hook
 
 ### useFetch

@@ -308,11 +308,16 @@ Edit `constants/Colors.ts` for app-specific colors. See [Color Themes](color-the
 
 - **Auth service:** `services/auth.ts` - Handles login, logout, and token management
 - **Login screen:** `app/(auth)/login.tsx` - Complete login form with error handling
+- **Session state and logout:** `hooks/useAuthSession.ts`, shown at the top of the Home
+  tab (`app/(tabs)/index.tsx`): "Signed in as …" with a **Log out** button, or
+  "Not signed in" with the **Try authentication demo** button
 
 **To use it:**
 
 1. **Try the runnable demo** from the Home tab's **Try authentication demo** button.
-   Sign in with username `emilys` and password `emilyspass`.
+   Sign in with username `emilys` and password `emilyspass`. Home then shows who is
+   signed in; restart the app and the session is still there. **Log out** deletes the
+   token from secure storage and the profile from AsyncStorage.
 
 2. **Connect your backend** by setting `EXPO_PUBLIC_AUTH_API_URL` and adapting the
    request/response mapping in `services/auth.ts` to match its authentication contract:
@@ -332,7 +337,24 @@ import { router } from 'expo-router';
 router.push('/(auth)/login');
 ```
 
-4. **Check authentication status:**
+4. **Read the session in a screen** with `useAuthSession`, refreshing when the screen
+   regains focus (for example after returning from login):
+
+```tsx
+import { useCallback } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useAuthSession } from '@/hooks/useAuthSession';
+
+const { session, refresh, logout } = useAuthSession();
+useFocusEffect(
+  useCallback(() => {
+    refresh();
+  }, [refresh])
+);
+// session.status: 'loading' | 'signedIn' | 'signedOut'; session.user?.name
+```
+
+5. **Check authentication status imperatively:**
 
 ```tsx
 import { authService } from '@/services/auth';
@@ -343,7 +365,8 @@ if (!isAuthenticated) {
 }
 ```
 
-5. **Logout:**
+6. **Logout:** in a screen using `useAuthSession`, call its `logout()` (as the Home
+   tab's **Log out** button does) so the UI updates; elsewhere:
 
 ```tsx
 await authService.logout();

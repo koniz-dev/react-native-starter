@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -9,11 +9,20 @@ import {
   Snackbar,
   useTheme,
 } from 'react-native-paper';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
+import { useAuthSession } from '@/hooks/useAuthSession';
 
 export default function HomeScreen() {
   const theme = useTheme();
   const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const { session, refresh, logout } = useAuthSession();
+
+  // Re-read the session whenever Home is shown, e.g. after signing in.
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh])
+  );
 
   return (
     <SafeAreaView
@@ -30,13 +39,38 @@ export default function HomeScreen() {
           >
             Material Design 3 Components
           </Text>
-          <Button
-            mode="outlined"
-            onPress={() => router.push('/(auth)/login')}
-            style={styles.authDemoButton}
-          >
-            Try authentication demo
-          </Button>
+          <View style={styles.session}>
+            <Text
+              variant="bodyMedium"
+              style={{ color: theme.colors.onSurfaceVariant }}
+              testID="session-status"
+            >
+              {session.status === 'loading'
+                ? 'Checking session…'
+                : session.status === 'signedIn'
+                  ? `Signed in as ${session.user?.name ?? 'demo user'}`
+                  : 'Not signed in'}
+            </Text>
+            {session.status === 'signedIn' ? (
+              <Button
+                mode="outlined"
+                onPress={logout}
+                style={styles.authDemoButton}
+                testID="logout-button"
+              >
+                Log out
+              </Button>
+            ) : (
+              <Button
+                mode="outlined"
+                onPress={() => router.push('/(auth)/login')}
+                style={styles.authDemoButton}
+                disabled={session.status === 'loading'}
+              >
+                Try authentication demo
+              </Button>
+            )}
+          </View>
         </View>
 
         {/* Text Variants */}
@@ -157,8 +191,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     fontWeight: 'bold',
   },
-  authDemoButton: {
+  session: {
     marginTop: 16,
+    alignItems: 'center',
+  },
+  authDemoButton: {
+    marginTop: 8,
   },
   section: {
     marginBottom: 24,

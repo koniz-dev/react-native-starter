@@ -1,0 +1,16 @@
+PASS __tests__/components/HomeScreen.test.tsx
+  <HomeScreen />
+    ✓ renders correctly with title (167 ms)
+    ✓ renders all text variants section (77 ms)
+    ✓ renders buttons section (79 ms)
+  <HomeScreen /> session
+    ✓ shows the signed-out state with the entry to the login demo (76 ms)
+    ✓ shows the signed-in user from the stored session (76 ms)
+    ✓ logging out clears the session and returns to the signed-out state (127 ms)
+    ✓ treats a secure storage failure as signed out (73 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       7 passed, 7 total
+Snapshots:   0 total
+Time:        1.994 s, estimated 3 s
+Ran all test suites matching /__tests__\/components\/HomeScreen/i.
