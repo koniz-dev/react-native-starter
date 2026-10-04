@@ -1,5 +1,12 @@
-import { useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { useRef, useState } from 'react';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+  type TextInput as NativeTextInput,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Text,
@@ -18,6 +25,7 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const passwordRef = useRef<NativeTextInput>(null);
 
   const handleLogin = async () => {
     if (!username || !password) {
@@ -47,69 +55,80 @@ export default function LoginScreen() {
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
-      <ScrollView
-        contentContainerStyle={styles.content}
-        keyboardShouldPersistTaps="handled"
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <View style={styles.header}>
-          <Text variant="headlineMedium" style={styles.title}>
-            Welcome Back
-          </Text>
-          <Text
-            variant="bodyMedium"
-            style={{ color: theme.colors.onSurfaceVariant }}
-          >
-            Sign in to continue
-          </Text>
-        </View>
+        <ScrollView
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.header}>
+            <Text variant="headlineMedium" style={styles.title}>
+              Welcome Back
+            </Text>
+            <Text
+              variant="bodyMedium"
+              style={{ color: theme.colors.onSurfaceVariant }}
+            >
+              Sign in to continue
+            </Text>
+          </View>
 
-        <View style={styles.form}>
-          <TextInput
-            label="Username"
-            value={username}
-            onChangeText={setUsername}
-            mode="outlined"
-            autoCapitalize="none"
-            autoComplete="username"
-            style={styles.input}
-            testID="login-username"
-          />
+          <View style={styles.form}>
+            <TextInput
+              label="Username"
+              value={username}
+              onChangeText={setUsername}
+              mode="outlined"
+              autoCapitalize="none"
+              autoComplete="username"
+              returnKeyType="next"
+              submitBehavior="submit"
+              onSubmitEditing={() => passwordRef.current?.focus()}
+              style={styles.input}
+              testID="login-username"
+            />
 
-          <TextInput
-            label="Password"
-            value={password}
-            onChangeText={setPassword}
-            mode="outlined"
-            secureTextEntry
-            autoCapitalize="none"
-            autoComplete="password"
-            style={styles.input}
-            testID="login-password"
-          />
+            <TextInput
+              ref={passwordRef}
+              label="Password"
+              value={password}
+              onChangeText={setPassword}
+              mode="outlined"
+              secureTextEntry
+              autoCapitalize="none"
+              autoComplete="password"
+              returnKeyType="go"
+              onSubmitEditing={handleLogin}
+              style={styles.input}
+              testID="login-password"
+            />
 
-          <Button
-            mode="contained"
-            onPress={handleLogin}
-            loading={loading}
-            disabled={loading}
-            style={styles.button}
-            testID="login-submit"
-          >
-            Sign In
-          </Button>
+            <Button
+              mode="contained"
+              onPress={handleLogin}
+              loading={loading}
+              disabled={loading}
+              style={styles.button}
+              testID="login-submit"
+            >
+              Sign In
+            </Button>
 
-          <Text
-            variant="bodySmall"
-            style={[styles.note, { color: theme.colors.onSurfaceVariant }]}
-          >
-            Demo credentials: <Text style={styles.monospace}>emilys</Text> /{' '}
-            <Text style={styles.monospace}>emilyspass</Text>. Set{' '}
-            <Text style={styles.monospace}>EXPO_PUBLIC_AUTH_API_URL</Text> and
-            adapt <Text style={styles.monospace}>services/auth.ts</Text> for
-            your backend.
-          </Text>
-        </View>
-      </ScrollView>
+            <Text
+              variant="bodySmall"
+              style={[styles.note, { color: theme.colors.onSurfaceVariant }]}
+            >
+              Demo credentials: <Text style={styles.monospace}>emilys</Text> /{' '}
+              <Text style={styles.monospace}>emilyspass</Text>. Set{' '}
+              <Text style={styles.monospace}>EXPO_PUBLIC_AUTH_API_URL</Text> and
+              adapt <Text style={styles.monospace}>services/auth.ts</Text> for
+              your backend.
+            </Text>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
 
       <Snackbar
         visible={snackbarVisible}

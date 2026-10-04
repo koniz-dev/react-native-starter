@@ -1,0 +1,13 @@
+PASS __tests__/components/LoginScreen.test.tsx
+  <LoginScreen />
+    ✓ submits the documented demo credentials and enters the tabs route (144 ms)
+    ✓ keeps the user on the login screen and shows a clear request error (66 ms)
+    ✓ moves from username to password with the next key (7 ms)
+    ✓ submits the form from the password return key (62 ms)
+    ✓ wraps the form in a keyboard-avoiding container (6 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+Time:        1.47 s, estimated 3 s
+Ran all test suites matching /__tests__\/components\/LoginScreen/i.
