@@ -37,6 +37,39 @@ Before a PASS, run every acceptance criterion and save retrievable evidence unde
 screenshot yourself, post a PASS summary linking it, and only then close the issue.
 Never repeat a subagent's PASS without inspecting the artifacts yourself.
 
+## Product positioning
+
+The starter is **production-ready by configuration, not by installation**:
+
+- **Configure, don't rewrite.** An adopter reaches a releasable app by supplying
+  configuration only: API/auth base URLs, app name, bundle/package IDs, icons,
+  environment values, and their own service keys. Core concerns (error handling,
+  auth/session, secure storage, environment separation, build profiles, CI) already
+  work and need no code changes to ship.
+- **Opinionated structure, vendor-neutral integrations.** Folder layout, conventions,
+  and data flow are decided. Every external integration (crash/error reporting,
+  analytics, push, remote config/feature flags, OTA updates, a real backend) sits
+  behind a small, typed seam (interface or adapter) with a working default (no-op or
+  console) and a documented example of plugging in a common provider.
+- **The starter itself installs and configures none of those services.** It ships no
+  third-party SDKs that need accounts, keys, or credentials, and it runs fully with
+  only `.env.example` values. Adding a provider must not require restructuring code.
+- **Not loose either.** Things every production app needs are implemented and
+  working, not TODOs: validated environment config with clear startup errors, an API
+  client with timeout, error normalization and 401/session-expiry handling, an error
+  boundary and logger wired to the reporting seam, per-environment build profiles,
+  and green CI.
+- **Demo code is separable.** Showcase screens and demo backends (DummyJSON,
+  JSONPlaceholder) live apart from the foundation and can be removed without breaking
+  it; the removal path is documented.
+
+**Verification scope follows from this.** Acceptance criteria and UAT verify the
+seams and their default implementations (for example: the reporting seam receives
+the error and the default logs it; the 401 path clears the session), never a real
+third-party service, store submission, or anything that needs credentials. A
+criterion that requires credentials the repository does not have is out of scope,
+not `status:needs-uat`.
+
 ## MVP and maintenance readiness
 
 This repository's product is a **React Native starter**, not a finished consumer
@@ -76,6 +109,19 @@ evidence, and the following conditions are true:
   `docs/evidence/issue-<N>/`, records the tested device/simulator and OS versions,
   and distinguishes automated PASS from human UAT PASS. Any unmet human-only
   criterion keeps the release issue in `status:needs-uat`, not closed.
+- The codebase meets the positioning above: no dead code or parallel systems (one
+  theming system, no unused components/hooks/utilities), demo code isolated from the
+  foundation, no hard-coded environment values outside validated config, no
+  hand-written type shims for packages that ship types, and lint passes with zero
+  warnings.
+- Every integration seam listed in the positioning exists with a default
+  implementation, a unit test for the default, and a docs page showing how to plug in
+  a provider.
+- In-scope documentation has been checked against the code: every snippet compiles
+  against the current APIs and every described behavior matches the app.
+- Optional examples kept in this repository (for example the `state-management/*`
+  branches) are either verified against the current `main` or explicitly marked as
+  unmaintained.
 
 The repository may move from feature development to **maintenance mode** only after
 MVP readiness is evidenced and all of the following hold:

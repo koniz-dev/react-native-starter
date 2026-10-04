@@ -15,6 +15,10 @@ and "can we accept this?" question against that gate:
   navigation, light/dark theming, API loading/error/retry, and the auth example
   including logout and session persistence. A missing piece of these is a defect,
   not an acceptable limitation.
+- Positioning: production-ready by configuration, not by installation; vendor-neutral
+  seams with no-op/console defaults; the starter ships no credentialed third-party
+  services, so UAT verifies seams and defaults only (see AGENTS.md "Product
+  positioning").
 - MVP readiness is declared only through a dedicated release-readiness issue with
   PASS evidence; closed issues and green tests alone never establish it.
 - Before citing another issue's state (e.g. "tracked in #N"), re-check it with `gh`;
@@ -71,7 +75,9 @@ What this tooling **cannot** verify — route these criteria to `status:needs-ua
 - Visual polish judgments (spacing "looks right", animations feel smooth, dark-mode
   aesthetics beyond token correctness).
 - Push notifications, deep links from cold start, app-store/EAS build and submit flows,
-  and anything requiring secrets not present in `.env`.
+  and anything requiring secrets not present in `.env`. Per the AGENTS.md positioning,
+  criteria that need credentials the repo doesn't have are out of scope rather than
+  `status:needs-uat`; verify the seam and its default instead.
 
 Evidence discipline:
 
