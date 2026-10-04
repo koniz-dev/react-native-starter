@@ -10,6 +10,20 @@ System bars include the status bar (top) and navigation bar (bottom on Android).
 
 The status bar displays system information like time, battery, and network status.
 
+### What This Starter Ships
+
+`expo-status-bar` and `expo-system-ui` are installed. `app/_layout.tsx` renders
+`<StatusBar style={theme.dark ? 'light' : 'dark'} />`, so the status bar icons
+follow the app's active Paper theme: dark icons on the light theme, light icons on
+the dark theme. `expo-system-ui` applies `app.json`'s
+`"userInterfaceStyle": "automatic"` in native Android builds, and
+`npx expo prebuild` no longer warns about it.
+
+Expo Go manages the status bar itself, so check status bar contrast in a native
+build (`npx expo run:android` / `run:ios`) as well. Without the `StatusBar`
+component, a native Android build keeps light icons on the light theme, where
+they're invisible.
+
 ### Installation
 
 ```bash

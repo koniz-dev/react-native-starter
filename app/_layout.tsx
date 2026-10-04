@@ -2,6 +2,7 @@ import { PaperProvider } from 'react-native-paper';
 import { useColorScheme } from 'react-native';
 import { getNavigationTheme, getTheme } from '@/constants/Theme';
 import { Stack, ThemeProvider } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 // Anchor the root stack on the tabs so that a launch URL that does not match a
@@ -20,6 +21,8 @@ export default function RootLayout() {
     <ErrorBoundary>
       <PaperProvider theme={theme}>
         <ThemeProvider value={getNavigationTheme(theme)}>
+          {/* Dark icons on the light theme, light icons on the dark theme. */}
+          <StatusBar style={theme.dark ? 'light' : 'dark'} />
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="(auth)" />

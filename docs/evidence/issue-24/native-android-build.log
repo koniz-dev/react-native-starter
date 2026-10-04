@@ -1,0 +1,19 @@
+# npx expo prebuild --platform android --no-install (temporary copy of the working tree with this change)
+› Android package name: com.anonymous.reactnativestarter
+- Creating native directory (./android)
+✔ Created native directory
+- Updating package.json
+✔ Updated package.json
+- Running prebuild
+✔ Finished prebuild
+
+# grep -ci 'userInterfaceStyle|warn' on the output above: 0
+
+# ./gradlew assembleDebug -PreactNativeArchitectures=x86_64 (Temurin JDK 17)
+BUILD SUCCESSFUL in 5m 11s
+362 actionable tasks: 362 executed
+exit=0
+
+# adb shell dumpsys window | grep mLastAppearance (native debug build, Home rendered)
+light mode:    mLastAppearance=LIGHT_STATUS_BARS LIGHT_NAVIGATION_BARS
+dark mode:     mLastAppearance=LIGHT_NAVIGATION_BARS
