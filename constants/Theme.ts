@@ -4,6 +4,7 @@ import {
   configureFonts,
 } from 'react-native-paper';
 import type { MD3Theme } from 'react-native-paper';
+import { DarkTheme, DefaultTheme, type Theme } from 'expo-router';
 import { Colors } from './Colors';
 
 /**
@@ -82,4 +83,40 @@ export const darkTheme: MD3Theme = {
  */
 export function getTheme(colorScheme: 'light' | 'dark' | null): MD3Theme {
   return colorScheme === 'dark' ? darkTheme : lightTheme;
+}
+
+/**
+ * React Navigation theme derived from a Paper theme, so navigator chrome
+ * (screen backgrounds, headers, the tab bar) follows the same light/dark
+ * palette as Paper components.
+ */
+export function getNavigationTheme(theme: MD3Theme): Theme {
+  const base = theme.dark ? DarkTheme : DefaultTheme;
+  return {
+    ...base,
+    dark: theme.dark,
+    colors: {
+      ...base.colors,
+      primary: theme.colors.primary,
+      background: theme.colors.background,
+      card: theme.colors.surface,
+      text: theme.colors.onSurface,
+      border: theme.colors.outlineVariant,
+      notification: theme.colors.error,
+    },
+  };
+}
+
+/**
+ * Tab bar colors for the active theme. Active and inactive tints use the
+ * tab icon tokens from Colors.ts; background and border use the Paper theme.
+ */
+export function getTabBarColors(theme: MD3Theme) {
+  const palette = theme.dark ? Colors.dark : Colors.light;
+  return {
+    background: theme.colors.surface,
+    border: theme.colors.outlineVariant,
+    active: palette.tabIconSelected,
+    inactive: palette.tabIconDefault,
+  };
 }

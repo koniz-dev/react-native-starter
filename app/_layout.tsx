@@ -1,7 +1,7 @@
 import { PaperProvider } from 'react-native-paper';
 import { useColorScheme } from 'react-native';
-import { getTheme } from '@/constants/Theme';
-import { Stack } from 'expo-router';
+import { getNavigationTheme, getTheme } from '@/constants/Theme';
+import { Stack, ThemeProvider } from 'expo-router';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 // Anchor the root stack on the tabs so that a launch URL that does not match a
@@ -19,10 +19,12 @@ export default function RootLayout() {
   return (
     <ErrorBoundary>
       <PaperProvider theme={theme}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="(auth)" />
-        </Stack>
+        <ThemeProvider value={getNavigationTheme(theme)}>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="(auth)" />
+          </Stack>
+        </ThemeProvider>
       </PaperProvider>
     </ErrorBoundary>
   );

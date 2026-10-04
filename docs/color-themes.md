@@ -57,6 +57,25 @@ export const Colors = {
 };
 ```
 
+## Navigator Chrome (Tab Bar and Screen Backgrounds)
+
+React Navigation draws the tab bar and screen backgrounds itself, so Paper's
+`PaperProvider` alone doesn't theme them. This starter derives both from the
+active Paper theme in `constants/Theme.ts`:
+
+- `getNavigationTheme(theme)` builds a React Navigation theme (`background`,
+  `card`, `text`, `border`, `primary`) from the Paper theme. `app/_layout.tsx`
+  passes it to expo-router's `ThemeProvider`.
+- `getTabBarColors(theme)` returns the tab bar background and border (Paper
+  `surface` / `outlineVariant`) and the active/inactive tints
+  (`tabIconSelected` / `tabIconDefault` above). `app/(tabs)/_layout.tsx`
+  applies them through `tabBarStyle`, `tabBarActiveTintColor`, and
+  `tabBarInactiveTintColor`.
+
+Don't set only `tabBarActiveTintColor` from `Colors`: the tab bar keeps React
+Navigation's default light background, and in dark mode the white active tint
+disappears against it.
+
 ## Using Colors with Hook
 
 Create a custom hook to easily access theme colors:
