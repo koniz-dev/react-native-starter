@@ -88,13 +88,29 @@ await setSecureItem(STORAGE_KEYS.AUTH_TOKEN, 'your-token-here');
 
 2. Token is automatically added to `Authorization: Bearer <token>` header on all requests.
 
-3. Remove token on logout:
+3. Remove token on logout (or call `authService.logout()`, which also removes the
+   stored profile):
 
 ```tsx
-import { removeItem, STORAGE_KEYS } from '@/services/storage';
+import { removeSecureItem } from '@/services/secureStorage';
+import { STORAGE_KEYS } from '@/services/storage';
 
-await removeItem(STORAGE_KEYS.AUTH_TOKEN);
+await removeSecureItem(STORAGE_KEYS.AUTH_TOKEN);
 ```
+
+#### Cookies from the auth server
+
+React Native's `XMLHttpRequest` defaults `withCredentials` to `true`, so without an
+explicit setting the native cookie store (iOS `NSHTTPCookieStorage`, Android's OkHttp
+cookie jar) keeps any cookies the login response sets. The DummyJSON demo sets
+`accessToken` and `refreshToken` cookies, which would leave a second, unprotected copy
+of the token on the device that `logout()` doesn't clear.
+
+`authApi` in `services/auth.ts` is therefore created with `withCredentials: false`:
+auth requests neither store nor send cookies (iOS sets `HTTPShouldHandleCookies = NO`,
+Android uses `CookieJar.NO_COOKIES`), and the token lives only in secure storage. If
+your backend authenticates with cookie sessions instead of bearer tokens, this is the
+setting to revisit.
 
 ### Error Handling
 

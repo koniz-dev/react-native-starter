@@ -11,6 +11,7 @@ jest.mock('expo-secure-store', () => ({
   deleteItemAsync: jest.fn(() => Promise.resolve()),
 }));
 
+import type { InternalAxiosRequestConfig } from 'axios';
 import { authApi, authService } from '@/services/auth';
 import * as storage from '@/services/storage';
 import * as SecureStore from 'expo-secure-store';
@@ -109,5 +110,45 @@ describe('authService.login', () => {
     expect(SecureStore.getItemAsync).toHaveBeenCalledWith('auth_token');
     expect(SecureStore.deleteItemAsync).toHaveBeenCalledWith('auth_token');
     expect(storage.removeItem).toHaveBeenCalledWith('user_data');
+  });
+});
+
+describe('authApi cookie handling', () => {
+  const originalAdapter = authApi.defaults.adapter;
+
+  afterEach(() => {
+    authApi.defaults.adapter = originalAdapter;
+    jest.restoreAllMocks();
+  });
+
+  it('does not store or send cookies for auth requests', () => {
+    expect(authApi.defaults.withCredentials).toBe(false);
+  });
+
+  it('sends the login request with withCredentials disabled', async () => {
+    jest.spyOn(storage, 'setItem').mockResolvedValue(undefined);
+    jest.mocked(SecureStore.isAvailableAsync).mockResolvedValue(true);
+    let requestConfig: InternalAxiosRequestConfig | undefined;
+    authApi.defaults.adapter = async config => {
+      requestConfig = config;
+      return {
+        data: {
+          accessToken: 'demo-token',
+          id: 1,
+          email: 'emily.johnson@x.dummyjson.com',
+          firstName: 'Emily',
+          lastName: 'Johnson',
+        },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config,
+      };
+    };
+
+    await authService.login({ username: 'emilys', password: 'emilyspass' });
+
+    expect(requestConfig?.url).toBe('/auth/login');
+    expect(requestConfig?.withCredentials).toBe(false);
   });
 });

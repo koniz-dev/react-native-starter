@@ -42,6 +42,11 @@ export const authApi = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  // React Native's XMLHttpRequest defaults withCredentials to true, so the
+  // native cookie store would keep any token cookies the auth server sets
+  // (DummyJSON sets accessToken/refreshToken). The token belongs in secure
+  // storage only, so don't store or send cookies for auth requests.
+  withCredentials: false,
 });
 
 function normalizeAuthResponse(data: DemoAuthResponse): AuthResponse {
