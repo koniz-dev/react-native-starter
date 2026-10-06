@@ -1,0 +1,320 @@
+Verify	Set up job	﻿2026-10-06T16:28:25.9148073Z Current runner version: '2.337.0'
+Verify	Set up job	2026-10-06T16:28:25.9176469Z ##[group]Runner Image Provisioner
+Verify	Set up job	2026-10-06T16:28:25.9177431Z Hosted Compute Agent
+Verify	Set up job	2026-10-06T16:28:25.9178120Z Version: 20260901.588
+Verify	Set up job	2026-10-06T16:28:25.9179112Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+Verify	Set up job	2026-10-06T16:28:25.9180011Z Build Date: 2026-09-01T19:56:44Z
+Verify	Set up job	2026-10-06T16:28:25.9180712Z Worker ID: {67c90472-dc9f-4130-bb13-233d1212d0c1}
+Verify	Set up job	2026-10-06T16:28:25.9181420Z Azure Region: westcentralus
+Verify	Set up job	2026-10-06T16:28:25.9182138Z ##[endgroup]
+Verify	Set up job	2026-10-06T16:28:25.9184036Z ##[group]Operating System
+Verify	Set up job	2026-10-06T16:28:25.9184807Z Ubuntu
+Verify	Set up job	2026-10-06T16:28:25.9185353Z 24.04.5
+Verify	Set up job	2026-10-06T16:28:25.9185855Z LTS
+Verify	Set up job	2026-10-06T16:28:25.9186428Z ##[endgroup]
+Verify	Set up job	2026-10-06T16:28:25.9187048Z ##[group]Runner Image
+Verify	Set up job	2026-10-06T16:28:25.9187722Z Image: ubuntu-24.04
+Verify	Set up job	2026-10-06T16:28:25.9188311Z Version: 20260927.320.1
+Verify	Set up job	2026-10-06T16:28:25.9189700Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/Ubuntu2404-Readme.md
+Verify	Set up job	2026-10-06T16:28:25.9191588Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+Verify	Set up job	2026-10-06T16:28:25.9192995Z ##[endgroup]
+Verify	Set up job	2026-10-06T16:28:25.9194181Z ##[group]GITHUB_TOKEN Permissions
+Verify	Set up job	2026-10-06T16:28:25.9196372Z Contents: read
+Verify	Set up job	2026-10-06T16:28:25.9197069Z Metadata: read
+Verify	Set up job	2026-10-06T16:28:25.9197647Z ##[endgroup]
+Verify	Set up job	2026-10-06T16:28:25.9200168Z Secret source: Actions
+Verify	Set up job	2026-10-06T16:28:25.9201122Z Cache mode: write
+Verify	Set up job	2026-10-06T16:28:25.9202112Z Prepare workflow directory
+Verify	Set up job	2026-10-06T16:28:25.9554763Z Prepare all required actions
+Verify	Set up job	2026-10-06T16:28:25.9603603Z Getting action download info
+Verify	Set up job	2026-10-06T16:28:26.2702362Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+Verify	Set up job	2026-10-06T16:28:26.3704614Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+Verify	Set up job	2026-10-06T16:28:26.5757770Z Complete job name: Verify
+Verify	Check out repository	﻿2026-10-06T16:28:26.6538408Z ##[group]Run actions/checkout@v4
+Verify	Check out repository	2026-10-06T16:28:26.6539571Z with:
+Verify	Check out repository	2026-10-06T16:28:26.6540075Z   repository: koniz-dev/react-native-starter
+Verify	Check out repository	2026-10-06T16:28:26.6543761Z   token: ***
+Verify	Check out repository	2026-10-06T16:28:26.6544192Z   ssh-strict: true
+Verify	Check out repository	2026-10-06T16:28:26.6544627Z   ssh-user: git
+Verify	Check out repository	2026-10-06T16:28:26.6545064Z   persist-credentials: true
+Verify	Check out repository	2026-10-06T16:28:26.6545554Z   clean: true
+Verify	Check out repository	2026-10-06T16:28:26.6545993Z   sparse-checkout-cone-mode: true
+Verify	Check out repository	2026-10-06T16:28:26.6546513Z   fetch-depth: 1
+Verify	Check out repository	2026-10-06T16:28:26.6546945Z   fetch-tags: false
+Verify	Check out repository	2026-10-06T16:28:26.6547384Z   show-progress: true
+Verify	Check out repository	2026-10-06T16:28:26.6547823Z   lfs: false
+Verify	Check out repository	2026-10-06T16:28:26.6548233Z   submodules: false
+Verify	Check out repository	2026-10-06T16:28:26.6548841Z   set-safe-directory: true
+Verify	Check out repository	2026-10-06T16:28:26.6549380Z   allow-unsafe-pr-checkout: false
+Verify	Check out repository	2026-10-06T16:28:26.6550234Z ##[endgroup]
+Verify	Check out repository	2026-10-06T16:28:26.7564177Z Syncing repository: koniz-dev/react-native-starter
+Verify	Check out repository	2026-10-06T16:28:26.7567347Z ##[group]Getting Git version info
+Verify	Check out repository	2026-10-06T16:28:26.7569085Z Working directory is '/home/runner/work/react-native-starter/react-native-starter'
+Verify	Check out repository	2026-10-06T16:28:26.7571314Z [command]/usr/bin/git version
+Verify	Check out repository	2026-10-06T16:28:26.7674474Z git version 2.55.0
+Verify	Check out repository	2026-10-06T16:28:26.7702817Z ##[endgroup]
+Verify	Check out repository	2026-10-06T16:28:26.7719380Z Temporarily overriding HOME='/home/runner/work/_temp/1a246196-2921-4128-9df9-86b5558697ea' before making global git config changes
+Verify	Check out repository	2026-10-06T16:28:26.7721795Z Adding repository directory to the temporary git global config as a safe directory
+Verify	Check out repository	2026-10-06T16:28:26.7725455Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/react-native-starter/react-native-starter
+Verify	Check out repository	2026-10-06T16:28:26.7785159Z Deleting the contents of '/home/runner/work/react-native-starter/react-native-starter'
+Verify	Check out repository	2026-10-06T16:28:26.7789655Z ##[group]Initializing the repository
+Verify	Check out repository	2026-10-06T16:28:26.7794989Z [command]/usr/bin/git init /home/runner/work/react-native-starter/react-native-starter
+Verify	Check out repository	2026-10-06T16:28:26.7924898Z hint: Using 'master' as the name for the initial branch. This default branch name
+Verify	Check out repository	2026-10-06T16:28:26.7926715Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Verify	Check out repository	2026-10-06T16:28:26.7928776Z hint: to use in all of your new repositories, which will suppress this warning,
+Verify	Check out repository	2026-10-06T16:28:26.7930109Z hint: call:
+Verify	Check out repository	2026-10-06T16:28:26.7930740Z hint:
+Verify	Check out repository	2026-10-06T16:28:26.7931559Z hint: 	git config --global init.defaultBranch <name>
+Verify	Check out repository	2026-10-06T16:28:26.7932643Z hint:
+Verify	Check out repository	2026-10-06T16:28:26.7933592Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Verify	Check out repository	2026-10-06T16:28:26.7935095Z hint: 'development'. The just-created branch can be renamed via this command:
+Verify	Check out repository	2026-10-06T16:28:26.7936278Z hint:
+Verify	Check out repository	2026-10-06T16:28:26.7936975Z hint: 	git branch -m <name>
+Verify	Check out repository	2026-10-06T16:28:26.7937804Z hint:
+Verify	Check out repository	2026-10-06T16:28:26.7939027Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Verify	Check out repository	2026-10-06T16:28:26.7942523Z Initialized empty Git repository in /home/runner/work/react-native-starter/react-native-starter/.git/
+Verify	Check out repository	2026-10-06T16:28:26.7956028Z [command]/usr/bin/git remote add origin https://github.com/koniz-dev/react-native-starter
+Verify	Check out repository	2026-10-06T16:28:26.8013253Z ##[endgroup]
+Verify	Check out repository	2026-10-06T16:28:26.8014825Z ##[group]Disabling automatic garbage collection
+Verify	Check out repository	2026-10-06T16:28:26.8017728Z [command]/usr/bin/git config --local gc.auto 0
+Verify	Check out repository	2026-10-06T16:28:26.8053618Z ##[endgroup]
+Verify	Check out repository	2026-10-06T16:28:26.8055459Z ##[group]Setting up auth
+Verify	Check out repository	2026-10-06T16:28:26.8062581Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Verify	Check out repository	2026-10-06T16:28:26.8101680Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Verify	Check out repository	2026-10-06T16:28:26.8503656Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Verify	Check out repository	2026-10-06T16:28:26.8540636Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Verify	Check out repository	2026-10-06T16:28:26.8774750Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Verify	Check out repository	2026-10-06T16:28:26.8814578Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Verify	Check out repository	2026-10-06T16:28:26.9062957Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Verify	Check out repository	2026-10-06T16:28:26.9105485Z ##[endgroup]
+Verify	Check out repository	2026-10-06T16:28:26.9106822Z ##[group]Fetching the repository
+Verify	Check out repository	2026-10-06T16:28:26.9115895Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +1c2e344133dbb1c55aa4121500b4573070504116:refs/remotes/origin/main
+Verify	Check out repository	2026-10-06T16:28:28.8669830Z From https://github.com/koniz-dev/react-native-starter
+Verify	Check out repository	2026-10-06T16:28:28.8671561Z  * [new ref]         1c2e344133dbb1c55aa4121500b4573070504116 -> origin/main
+Verify	Check out repository	2026-10-06T16:28:28.8676370Z ##[endgroup]
+Verify	Check out repository	2026-10-06T16:28:28.8677986Z ##[group]Determining the checkout info
+Verify	Check out repository	2026-10-06T16:28:28.8679915Z ##[endgroup]
+Verify	Check out repository	2026-10-06T16:28:28.8684583Z [command]/usr/bin/git sparse-checkout disable
+Verify	Check out repository	2026-10-06T16:28:28.8760205Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Verify	Check out repository	2026-10-06T16:28:28.8802345Z ##[group]Checking out the ref
+Verify	Check out repository	2026-10-06T16:28:28.8809525Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Verify	Check out repository	2026-10-06T16:28:28.9457653Z Switched to a new branch 'main'
+Verify	Check out repository	2026-10-06T16:28:28.9462336Z branch 'main' set up to track 'origin/main'.
+Verify	Check out repository	2026-10-06T16:28:28.9473128Z ##[endgroup]
+Verify	Check out repository	2026-10-06T16:28:28.9522877Z [command]/usr/bin/git log -1 --format=%H
+Verify	Check out repository	2026-10-06T16:28:28.9551846Z 1c2e344133dbb1c55aa4121500b4573070504116
+Verify	Set up Node.js	﻿2026-10-06T16:28:28.9937779Z ##[group]Run actions/setup-node@v4
+Verify	Set up Node.js	2026-10-06T16:28:28.9939283Z with:
+Verify	Set up Node.js	2026-10-06T16:28:28.9940267Z   node-version-file: .nvmrc
+Verify	Set up Node.js	2026-10-06T16:28:28.9941354Z   cache: npm
+Verify	Set up Node.js	2026-10-06T16:28:28.9942315Z   always-auth: false
+Verify	Set up Node.js	2026-10-06T16:28:28.9943342Z   check-latest: false
+Verify	Set up Node.js	2026-10-06T16:28:28.9952313Z   token: ***
+Verify	Set up Node.js	2026-10-06T16:28:28.9953381Z ##[endgroup]
+Verify	Set up Node.js	2026-10-06T16:28:29.1376690Z Resolved .nvmrc as 24
+Verify	Set up Node.js	2026-10-06T16:28:29.1433054Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/x64
+Verify	Set up Node.js	2026-10-06T16:28:29.1436573Z (node:2335) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Verify	Set up Node.js	2026-10-06T16:28:29.1439767Z (Use `node --trace-deprecation ...` to show where the warning was created)
+Verify	Set up Node.js	2026-10-06T16:28:29.1442445Z ##[group]Environment details
+Verify	Set up Node.js	2026-10-06T16:28:29.5947237Z node: v24.21.0
+Verify	Set up Node.js	2026-10-06T16:28:29.5947890Z npm: 11.19.0
+Verify	Set up Node.js	2026-10-06T16:28:29.5948277Z yarn: 1.22.22
+Verify	Set up Node.js	2026-10-06T16:28:29.5949628Z ##[endgroup]
+Verify	Set up Node.js	2026-10-06T16:28:29.5971385Z [command]/opt/hostedtoolcache/node/24.21.0/x64/bin/npm config get cache
+Verify	Set up Node.js	2026-10-06T16:28:29.7169994Z /home/runner/.npm
+Verify	Set up Node.js	2026-10-06T16:28:29.9189664Z npm cache is not found
+Verify	Install dependencies	﻿2026-10-06T16:28:29.9324121Z ##[group]Run npm ci
+Verify	Install dependencies	2026-10-06T16:28:29.9324515Z ^[[36;1mnpm ci^[[0m
+Verify	Install dependencies	2026-10-06T16:28:29.9631543Z shell: /usr/bin/bash -e {0}
+Verify	Install dependencies	2026-10-06T16:28:29.9632077Z ##[endgroup]
+Verify	Install dependencies	2026-10-06T16:28:34.5443033Z npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+Verify	Install dependencies	2026-10-06T16:28:34.8147374Z npm warn deprecated uuid@7.0.3: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+Verify	Install dependencies	2026-10-06T16:28:35.3646535Z npm warn deprecated domexception@4.0.0: Use your platform's native DOMException instead
+Verify	Install dependencies	2026-10-06T16:28:35.8757345Z npm warn deprecated abab@2.0.6: Use your platform's native atob() and btoa() methods instead
+Verify	Install dependencies	2026-10-06T16:28:37.4711001Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Verify	Install dependencies	2026-10-06T16:28:37.7839739Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Verify	Install dependencies	2026-10-06T16:28:37.7870193Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Verify	Install dependencies	2026-10-06T16:28:38.1786592Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Verify	Install dependencies	2026-10-06T16:28:41.2288041Z npm warn deprecated react-native-vector-icons@10.3.0: react-native-vector-icons package has moved to a new model of per-icon-family packages. See the https://github.com/oblador/react-native-vector-icons/blob/master/MIGRATION.md on how to migrate
+Verify	Install dependencies	2026-10-06T16:28:56.0126207Z 
+Verify	Install dependencies	2026-10-06T16:28:56.0127510Z added 1070 packages, and audited 1071 packages in 26s
+Verify	Install dependencies	2026-10-06T16:28:56.0128098Z 
+Verify	Install dependencies	2026-10-06T16:28:56.0128502Z 180 packages are looking for funding
+Verify	Install dependencies	2026-10-06T16:28:56.0129685Z   run `npm fund` for details
+Verify	Install dependencies	2026-10-06T16:28:56.1939841Z 
+Verify	Install dependencies	2026-10-06T16:28:56.1940844Z 69 vulnerabilities (1 low, 14 moderate, 54 high)
+Verify	Install dependencies	2026-10-06T16:28:56.1941390Z 
+Verify	Install dependencies	2026-10-06T16:28:56.1941760Z To address issues that do not require attention, run:
+Verify	Install dependencies	2026-10-06T16:28:56.1942227Z   npm audit fix
+Verify	Install dependencies	2026-10-06T16:28:56.1942435Z 
+Verify	Install dependencies	2026-10-06T16:28:56.1942747Z To address all issues (including breaking changes), run:
+Verify	Install dependencies	2026-10-06T16:28:56.1943240Z   npm audit fix --force
+Verify	Install dependencies	2026-10-06T16:28:56.1943453Z 
+Verify	Install dependencies	2026-10-06T16:28:56.1943626Z Run `npm audit` for details.
+Verify	Lint	﻿2026-10-06T16:28:56.2771031Z ##[group]Run npm run lint
+Verify	Lint	2026-10-06T16:28:56.2771356Z ^[[36;1mnpm run lint^[[0m
+Verify	Lint	2026-10-06T16:28:56.2838396Z shell: /usr/bin/bash -e {0}
+Verify	Lint	2026-10-06T16:28:56.2839009Z ##[endgroup]
+Verify	Lint	2026-10-06T16:28:56.3912568Z 
+Verify	Lint	2026-10-06T16:28:56.3913266Z > react-native-starter@1.0.0 lint
+Verify	Lint	2026-10-06T16:28:56.3913876Z > eslint .
+Verify	Lint	2026-10-06T16:28:56.3914119Z 
+Verify	Lint	2026-10-06T16:29:01.6309411Z 
+Verify	Lint	2026-10-06T16:29:01.6350056Z /home/runner/work/react-native-starter/react-native-starter/components/ThemedText.tsx
+Verify	Lint	2026-10-06T16:29:01.6408059Z ##[warning]  24:3  warning  Unused style detected: styles.default          react-native/no-unused-styles
+Verify	Lint	2026-10-06T16:29:01.6450973Z ##[warning]  25:3  warning  Unused style detected: styles.defaultSemiBold  react-native/no-unused-styles
+Verify	Lint	2026-10-06T16:29:01.6453740Z ##[warning]  26:3  warning  Unused style detected: styles.title            react-native/no-unused-styles
+Verify	Lint	2026-10-06T16:29:01.6455881Z ##[warning]  27:3  warning  Unused style detected: styles.subtitle         react-native/no-unused-styles
+Verify	Lint	2026-10-06T16:29:01.6457990Z ##[warning]  28:3  warning  Unused style detected: styles.link             react-native/no-unused-styles
+Verify	Lint	2026-10-06T16:29:01.6460404Z ##[warning]  28:9  warning  Color literal: { color: '#0a7ea4' }            react-native/no-color-literals
+Verify	Lint	2026-10-06T16:29:01.6461685Z 
+Verify	Lint	2026-10-06T16:29:01.6462244Z ✖ 6 problems (0 errors, 6 warnings)
+Verify	Lint	2026-10-06T16:29:01.6462542Z 
+Verify	Check formatting	﻿2026-10-06T16:29:01.9477663Z ##[group]Run npm run format:check
+Verify	Check formatting	2026-10-06T16:29:01.9478008Z ^[[36;1mnpm run format:check^[[0m
+Verify	Check formatting	2026-10-06T16:29:01.9542373Z shell: /usr/bin/bash -e {0}
+Verify	Check formatting	2026-10-06T16:29:01.9542682Z ##[endgroup]
+Verify	Check formatting	2026-10-06T16:29:02.0560415Z 
+Verify	Check formatting	2026-10-06T16:29:02.0560867Z > react-native-starter@1.0.0 format:check
+Verify	Check formatting	2026-10-06T16:29:02.0564486Z > prettier --check "**/*.{ts,tsx,js,jsx,json,md}"
+Verify	Check formatting	2026-10-06T16:29:02.0564932Z 
+Verify	Check formatting	2026-10-06T16:29:02.1453252Z Checking formatting...
+Verify	Check formatting	2026-10-06T16:29:03.7785609Z All matched files use Prettier code style!
+Verify	Type-check	﻿2026-10-06T16:29:03.8116795Z ##[group]Run npm run type-check
+Verify	Type-check	2026-10-06T16:29:03.8117146Z ^[[36;1mnpm run type-check^[[0m
+Verify	Type-check	2026-10-06T16:29:03.8181953Z shell: /usr/bin/bash -e {0}
+Verify	Type-check	2026-10-06T16:29:03.8182242Z ##[endgroup]
+Verify	Type-check	2026-10-06T16:29:03.9208043Z 
+Verify	Type-check	2026-10-06T16:29:03.9208837Z > react-native-starter@1.0.0 type-check
+Verify	Type-check	2026-10-06T16:29:03.9209348Z > tsc --noEmit
+Verify	Type-check	2026-10-06T16:29:03.9209534Z 
+Verify	Run Jest tests	﻿2026-10-06T16:29:06.5475841Z ##[group]Run npm run test:ci
+Verify	Run Jest tests	2026-10-06T16:29:06.5476153Z ^[[36;1mnpm run test:ci^[[0m
+Verify	Run Jest tests	2026-10-06T16:29:06.5540133Z shell: /usr/bin/bash -e {0}
+Verify	Run Jest tests	2026-10-06T16:29:06.5540402Z ##[endgroup]
+Verify	Run Jest tests	2026-10-06T16:29:06.6550051Z 
+Verify	Run Jest tests	2026-10-06T16:29:06.6550577Z > react-native-starter@1.0.0 test:ci
+Verify	Run Jest tests	2026-10-06T16:29:06.6551120Z > jest
+Verify	Run Jest tests	2026-10-06T16:29:06.6551314Z 
+Verify	Run Jest tests	2026-10-06T16:29:11.1659797Z PASS __tests__/utils/logger.test.ts
+Verify	Run Jest tests	2026-10-06T16:29:11.4090332Z PASS __tests__/services/api.test.ts
+Verify	Run Jest tests	2026-10-06T16:29:11.4271284Z   ● Console
+Verify	Run Jest tests	2026-10-06T16:29:11.4271888Z 
+Verify	Run Jest tests	2026-10-06T16:29:11.4272482Z     console.error
+Verify	Run Jest tests	2026-10-06T16:29:11.4273198Z       API Error: { message: 'Unavailable', status: 503, data: { message: 'Try again' } }
+Verify	Run Jest tests	2026-10-06T16:29:11.4273771Z 
+Verify	Run Jest tests	2026-10-06T16:29:11.4274075Z     ^[[0m ^[[90m 93 |^[[39m
+Verify	Run Jest tests	2026-10-06T16:29:11.4274725Z      ^[[90m 94 |^[[39m     ^[[90m// Log error for debugging^[[39m
+Verify	Run Jest tests	2026-10-06T16:29:11.4275896Z     ^[[31m^[[1m>^[[22m^[[39m^[[90m 95 |^[[39m     console^[[33m.^[[39merror(^[[32m'API Error:'^[[39m^[[33m,^[[39m apiError)^[[33m;^[[39m
+Verify	Run Jest tests	2026-10-06T16:29:11.4277197Z      ^[[90m    |^[[39m             ^[[31m^[[1m^^[[22m^[[39m
+Verify	Run Jest tests	2026-10-06T16:29:11.4277802Z      ^[[90m 96 |^[[39m
+Verify	Run Jest tests	2026-10-06T16:29:11.4278913Z      ^[[90m 97 |^[[39m     ^[[36mreturn^[[39m ^[[33mPromise^[[39m^[[33m.^[[39mreject(apiError)^[[33m;^[[39m
+Verify	Run Jest tests	2026-10-06T16:29:11.4282574Z      ^[[90m 98 |^[[39m   }^[[0m
+Verify	Run Jest tests	2026-10-06T16:29:11.4282873Z 
+Verify	Run Jest tests	2026-10-06T16:29:11.4283143Z       at error (services/api.ts:95:13)
+Verify	Run Jest tests	2026-10-06T16:29:11.4283898Z       at Axios.request (node_modules/axios/dist/browser/axios.cjs:5245:14)
+Verify	Run Jest tests	2026-10-06T16:29:11.4284416Z 
+Verify	Run Jest tests	2026-10-06T16:29:11.4590894Z PASS __tests__/config/env.test.ts
+Verify	Run Jest tests	2026-10-06T16:29:11.6496864Z PASS __tests__/services/auth.test.ts
+Verify	Run Jest tests	2026-10-06T16:29:20.7160345Z PASS __tests__/components/LoginScreen.test.tsx (12.519 s)
+Verify	Run Jest tests	2026-10-06T16:29:21.0172136Z PASS __tests__/components/HomeScreen.test.tsx (9.552 s)
+Verify	Run Jest tests	2026-10-06T16:29:23.4400163Z PASS __tests__/navigation/statusBar.test.tsx
+Verify	Run Jest tests	2026-10-06T16:29:23.6462519Z PASS __tests__/navigation/tabBarTheme.test.tsx (11.991 s)
+Verify	Run Jest tests	2026-10-06T16:29:23.9810627Z PASS __tests__/components/LoadingScreen.test.tsx
+Verify	Run Jest tests	2026-10-06T16:29:24.0345512Z PASS __tests__/navigation/initialRoute.test.tsx
+Verify	Run Jest tests	2026-10-06T16:29:24.1629991Z PASS __tests__/services/storage.test.ts
+Verify	Run Jest tests	2026-10-06T16:29:24.1659823Z   ● Console
+Verify	Run Jest tests	2026-10-06T16:29:24.1729071Z 
+Verify	Run Jest tests	2026-10-06T16:29:24.1759425Z     console.error
+Verify	Run Jest tests	2026-10-06T16:29:24.1789938Z       Error retrieving bad-json: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+Verify	Run Jest tests	2026-10-06T16:29:24.1839354Z           at JSON.parse (<anonymous>)
+Verify	Run Jest tests	2026-10-06T16:29:24.1843715Z           at parse (/home/runner/work/react-native-starter/react-native-starter/services/storage.ts:34:38)
+Verify	Run Jest tests	2026-10-06T16:29:24.1844895Z           at Generator.next (<anonymous>)
+Verify	Run Jest tests	2026-10-06T16:29:24.1846319Z           at asyncGeneratorStep (/home/runner/work/react-native-starter/react-native-starter/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+Verify	Run Jest tests	2026-10-06T16:29:24.1848251Z           at _next (/home/runner/work/react-native-starter/react-native-starter/node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+Verify	Run Jest tests	2026-10-06T16:29:24.1850012Z           at processTicksAndRejections (node:internal/process/task_queues:104:5)
+Verify	Run Jest tests	2026-10-06T16:29:24.1850610Z 
+Verify	Run Jest tests	2026-10-06T16:29:24.1852278Z     ^[[0m ^[[90m 34 |^[[39m     ^[[36mreturn^[[39m jsonValue ^[[33m!=^[[39m ^[[36mnull^[[39m ^[[33m?^[[39m (^[[33mJSON^[[39m^[[33m.^[[39mparse(jsonValue) ^[[36mas^[[39m ^[[33mT^[[39m) ^[[33m:^[[39m ^[[36mnull^[[39m^[[33m;^[[39m
+Verify	Run Jest tests	2026-10-06T16:29:24.1853761Z      ^[[90m 35 |^[[39m   } ^[[36mcatch^[[39m (error) {
+Verify	Run Jest tests	2026-10-06T16:29:24.1855056Z     ^[[31m^[[1m>^[[22m^[[39m^[[90m 36 |^[[39m     console^[[33m.^[[39merror(^[[32m`Error retrieving ${key}:`^[[39m^[[33m,^[[39m error)^[[33m;^[[39m
+Verify	Run Jest tests	2026-10-06T16:29:24.1856206Z      ^[[90m    |^[[39m             ^[[31m^[[1m^^[[22m^[[39m
+Verify	Run Jest tests	2026-10-06T16:29:24.1857030Z      ^[[90m 37 |^[[39m     ^[[36mreturn^[[39m ^[[36mnull^[[39m^[[33m;^[[39m
+Verify	Run Jest tests	2026-10-06T16:29:24.1857709Z      ^[[90m 38 |^[[39m   }
+Verify	Run Jest tests	2026-10-06T16:29:24.1858205Z      ^[[90m 39 |^[[39m }^[[0m
+Verify	Run Jest tests	2026-10-06T16:29:24.1859221Z 
+Verify	Run Jest tests	2026-10-06T16:29:24.1859467Z       at error (services/storage.ts:36:13)
+Verify	Run Jest tests	2026-10-06T16:29:24.1860391Z       at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+Verify	Run Jest tests	2026-10-06T16:29:24.1861515Z       at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+Verify	Run Jest tests	2026-10-06T16:29:24.1862055Z 
+Verify	Run Jest tests	2026-10-06T16:29:24.1862403Z PASS __tests__/navigation/configError.test.tsx
+Verify	Run Jest tests	2026-10-06T16:29:24.2500123Z PASS __tests__/hooks/useFetch.test.tsx
+Verify	Run Jest tests	2026-10-06T16:29:24.2834950Z PASS __tests__/utils/sum.test.ts
+Verify	Run Jest tests	2026-10-06T16:29:24.4025444Z 
+Verify	Run Jest tests	2026-10-06T16:29:24.4029709Z Test Suites: 14 passed, 14 total
+Verify	Run Jest tests	2026-10-06T16:29:24.4030556Z Tests:       91 passed, 91 total
+Verify	Run Jest tests	2026-10-06T16:29:24.4031410Z Snapshots:   0 total
+Verify	Run Jest tests	2026-10-06T16:29:24.4031878Z Time:        17.059 s
+Verify	Run Jest tests	2026-10-06T16:29:24.4032298Z Ran all test suites.
+Verify	Expo Doctor	﻿2026-10-06T16:29:24.4224072Z ##[group]Run npx expo-doctor
+Verify	Expo Doctor	2026-10-06T16:29:24.4224388Z ^[[36;1mnpx expo-doctor^[[0m
+Verify	Expo Doctor	2026-10-06T16:29:24.4286983Z shell: /usr/bin/bash -e {0}
+Verify	Expo Doctor	2026-10-06T16:29:24.4287250Z ##[endgroup]
+Verify	Expo Doctor	2026-10-06T16:29:25.3918135Z npm warn exec The following package was not found and will be installed: expo-doctor@1.20.4
+Verify	Expo Doctor	2026-10-06T16:29:25.9919271Z Running 21 checks on your project...
+Verify	Expo Doctor	2026-10-06T16:29:29.7379190Z 21/21 checks passed. No issues detected!
+Verify	Export web build	﻿2026-10-06T16:29:29.7818142Z ##[group]Run npx expo export --platform web --output-dir dist
+Verify	Export web build	2026-10-06T16:29:29.7819246Z ^[[36;1mnpx expo export --platform web --output-dir dist^[[0m
+Verify	Export web build	2026-10-06T16:29:29.7883400Z shell: /usr/bin/bash -e {0}
+Verify	Export web build	2026-10-06T16:29:29.7883663Z ##[endgroup]
+Verify	Export web build	2026-10-06T16:29:30.6310208Z Starting Metro Bundler
+Verify	Export web build	2026-10-06T16:29:30.6310588Z 
+Verify	Export web build	2026-10-06T16:29:48.7952378Z Web Bundled 17885ms index.ts (1158 modules)
+Verify	Export web build	2026-10-06T16:29:49.2125159Z 
+Verify	Export web build	2026-10-06T16:29:49.2132045Z › Assets (19):
+Verify	Export web build	2026-10-06T16:29:49.2207862Z node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.6e435534bd35da5fef04168860a9b8fa.ttf (1.3MB)
+Verify	Export web build	2026-10-06T16:29:49.2209950Z node_modules/expo-router/assets/arrow_down.017bc6ba3fc25503e5eb5e53826d48a8.png (9.5KB)
+Verify	Export web build	2026-10-06T16:29:49.2211280Z node_modules/expo-router/assets/error.d1ea1496f9057eb392d5bbf3732a61b7.png (469B)
+Verify	Export web build	2026-10-06T16:29:49.2212525Z node_modules/expo-router/assets/file.19eeb73b9593a38f8e9f418337fc7d10.png (138B)
+Verify	Export web build	2026-10-06T16:29:49.2213825Z node_modules/expo-router/assets/forward.d8b800c443b8972542883e0b9de2bdc6.png (188B)
+Verify	Export web build	2026-10-06T16:29:49.2215630Z node_modules/expo-router/assets/pkg.ab19f4cbc543357183a20571f68380a3.png (364B)
+Verify	Export web build	2026-10-06T16:29:49.2217219Z node_modules/expo-router/assets/react-navigation/elements/back-icon-mask.0a328cd9c1afd0afe8e3b1ec5165b1b4.png (653B)
+Verify	Export web build	2026-10-06T16:29:49.2219228Z node_modules/expo-router/assets/react-navigation/elements/back-icon.35ba0eaec5a4f5ed12ca16fabeae451d.png (207B)
+Verify	Export web build	2026-10-06T16:29:49.2221038Z node_modules/expo-router/assets/react-navigation/elements/clear-icon.c94f6478e7ae0cdd9f15de1fcb9e5e55.png (4 variations | 425B)
+Verify	Export web build	2026-10-06T16:29:49.2222892Z node_modules/expo-router/assets/react-navigation/elements/close-icon.808e1b1b9b53114ec2838071a7e6daa7.png (4 variations | 235B)
+Verify	Export web build	2026-10-06T16:29:49.2224644Z node_modules/expo-router/assets/react-navigation/elements/search-icon.286d67d3f74808a60a78d3ebf1a5fb57.png (928B)
+Verify	Export web build	2026-10-06T16:29:49.2226015Z node_modules/expo-router/assets/sitemap.412dd9275b6b48ad28f5e3d81bb1f626.png (465B)
+Verify	Export web build	2026-10-06T16:29:49.2227291Z node_modules/expo-router/assets/unmatched.20e71bdf79e3a97bf55fd9e164041578.png (4.8KB)
+Verify	Export web build	2026-10-06T16:29:49.2239285Z 
+Verify	Export web build	2026-10-06T16:29:49.2239692Z › web bundles (1):
+Verify	Export web build	2026-10-06T16:29:49.2263926Z _expo/static/js/web/index-61a8bd59874c302aa20175f9afde0e17.js (2.3MB)
+Verify	Export web build	2026-10-06T16:29:49.2264501Z 
+Verify	Export web build	2026-10-06T16:29:49.2264790Z › Files (3):
+Verify	Export web build	2026-10-06T16:29:49.2265339Z favicon.ico (15KB)
+Verify	Export web build	2026-10-06T16:29:49.2266074Z index.html (1.2KB)
+Verify	Export web build	2026-10-06T16:29:49.2266648Z metadata.json (49B)
+Verify	Export web build	2026-10-06T16:29:49.2371850Z 
+Verify	Export web build	2026-10-06T16:29:49.2374991Z Exported: dist
+Verify	Post Set up Node.js	﻿2026-10-06T16:29:49.3824277Z Post job cleanup.
+Verify	Post Set up Node.js	2026-10-06T16:29:49.5050261Z (node:2813) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Verify	Post Set up Node.js	2026-10-06T16:29:49.5051728Z (Use `node --trace-deprecation ...` to show where the warning was created)
+Verify	Post Set up Node.js	2026-10-06T16:29:49.5301603Z [command]/usr/bin/tar --posix -cf cache.tzst --exclude cache.tzst -P -C /home/runner/work/react-native-starter/react-native-starter --files-from manifest.txt --use-compress-program zstdmt
+Verify	Post Set up Node.js	2026-10-06T16:29:50.2529836Z (node:2813) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+Verify	Post Set up Node.js	2026-10-06T16:29:51.2440036Z Sent 20227393 of 154445121 (13.1%), 19.3 MBs/sec
+Verify	Post Set up Node.js	2026-10-06T16:29:51.7909781Z Sent 154445121 of 154445121 (100.0%), 95.0 MBs/sec
+Verify	Post Set up Node.js	2026-10-06T16:29:52.0353436Z Cache saved with the key: node-cache-Linux-x64-npm-a9f06e45157970685f44ee1962c4f041d9a63bc5898f074ca05a7a6d413afbd6
+Verify	Post Check out repository	﻿2026-10-06T16:29:52.0511779Z Post job cleanup.
+Verify	Post Check out repository	2026-10-06T16:29:52.1408477Z [command]/usr/bin/git version
+Verify	Post Check out repository	2026-10-06T16:29:52.1452635Z git version 2.55.0
+Verify	Post Check out repository	2026-10-06T16:29:52.1491310Z Temporarily overriding HOME='/home/runner/work/_temp/1264c0bc-3db6-4930-b618-71bebac8e6e3' before making global git config changes
+Verify	Post Check out repository	2026-10-06T16:29:52.1492916Z Adding repository directory to the temporary git global config as a safe directory
+Verify	Post Check out repository	2026-10-06T16:29:52.1496492Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/react-native-starter/react-native-starter
+Verify	Post Check out repository	2026-10-06T16:29:52.1533762Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Verify	Post Check out repository	2026-10-06T16:29:52.1569034Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Verify	Post Check out repository	2026-10-06T16:29:52.1816314Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Verify	Post Check out repository	2026-10-06T16:29:52.1845562Z http.https://github.com/.extraheader
+Verify	Post Check out repository	2026-10-06T16:29:52.1858807Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+Verify	Post Check out repository	2026-10-06T16:29:52.1893634Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Verify	Post Check out repository	2026-10-06T16:29:52.2156196Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Verify	Post Check out repository	2026-10-06T16:29:52.2198165Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Verify	Complete job	﻿2026-10-06T16:29:52.2623264Z Cleaning up orphan processes
+Verify	Complete job	2026-10-06T16:29:52.3020284Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
