@@ -129,6 +129,49 @@ react-native-starter/
 - **`constants/`** - App-wide constants like colors and theme config.
 - **`types/`** - TypeScript interfaces and types.
 
+## Make It Yours
+
+Everything below is configuration; no source code changes are needed to ship
+your own app identity and backends.
+
+| What                                                             | Where                                                                                                                                                                          |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| App name, slug, URL scheme, bundle/package ID, marketing version | `APP` block at the top of `app.config.ts`                                                                                                                                      |
+| Store build number (iOS `buildNumber`, Android `versionCode`)    | `APP_BUILD_NUMBER` environment variable at build time (default `1`)                                                                                                            |
+| App icon, Android adaptive icon, splash image, favicon           | Replace the files in `assets/` (see [Splash Screen and App Icon](splash-screen-and-app-icon.md))                                                                               |
+| Splash and adaptive-icon background colors                       | `APP.splashBackground` and `APP.adaptiveIconBackground` in `app.config.ts`                                                                                                     |
+| API and auth backends                                            | `EXPO_PUBLIC_API_URL`, `EXPO_PUBLIC_AUTH_API_URL` in `.env` / build profile; set `EXPO_PUBLIC_USE_DEMO_BACKENDS=false` (see [Environment Variables](environment-variables.md)) |
+| Extra hosts allowed to receive the auth token                    | `EXPO_PUBLIC_API_TRUSTED_ORIGINS`                                                                                                                                              |
+| Per-variant build settings and environment                       | `eas.json` build profiles                                                                                                                                                      |
+
+### Build variants
+
+`APP_VARIANT` selects one of three variants. Each has its own name, bundle ID, and
+scheme, so they install side by side:
+
+| Variant                 | Name                   | Bundle/package ID               | Scheme              | `EXPO_PUBLIC_APP_ENV` |
+| ----------------------- | ---------------------- | ------------------------------- | ------------------- | --------------------- |
+| `development` (default) | `RN Starter (Dev)`     | `com.example.rnstarter.dev`     | `rnstarter-dev`     | `development`         |
+| `preview`               | `RN Starter (Preview)` | `com.example.rnstarter.preview` | `rnstarter-preview` | `preview`             |
+| `production`            | `RN Starter`           | `com.example.rnstarter`         | `rnstarter`         | `production`          |
+
+- `npm start` runs the development variant; `npm run start:preview` and
+  `npm run start:production` run the others (production without dev mode).
+- `npm run prebuild:<variant>` generates the native `android/` and `ios/`
+  projects for a variant (both directories are gitignored), which you can build
+  locally with Android Studio / Xcode or `npx expo run:android|ios`.
+- `npm run config:print` shows the resolved configuration; prefix it with
+  `APP_VARIANT=preview` to inspect another variant.
+- `eas.json` defines matching `development`, `preview`, and `production` build
+  profiles for EAS Build. Using EAS requires your own Expo account; nothing else
+  in the starter does.
+- Preview and production builds use `https` URLs only; set the backend URLs in
+  the build profile's `env` or with `eas env:create`, because `.env` is not
+  committed.
+
+The scripts use POSIX `VAR=value command` syntax (macOS, Linux, WSL). On Windows
+without WSL, set the variables in your shell first.
+
 ## Next Steps
 
 Now that you're running, here's where to start coding:
@@ -141,7 +184,10 @@ Now that you're running, here's where to start coding:
 
 ## Available Scripts
 
-- `npm start` - Start Expo dev server
+- `npm start` - Start Expo dev server (development variant)
+- `npm run start:preview` / `npm run start:production` - Start another variant
+- `npm run prebuild:development|preview|production` - Generate native projects for a variant
+- `npm run config:print` - Print the resolved app configuration
 - `npm run android` - Run on Android emulator/device
 - `npm run ios` - Run on iOS simulator/device
 - `npm run web` - Run in web browser

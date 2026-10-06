@@ -293,7 +293,7 @@ npm install -g eas-cli
 
 Common commands:
 
-- `eas build` - Create development, preview, or production builds
+- `eas build --profile development|preview|production` - Build a variant using the profiles in `eas.json` (requires your own Expo account)
 - `eas submit` - Submit your app to app stores
 - `eas update` - Create over-the-air (OTA) updates
 

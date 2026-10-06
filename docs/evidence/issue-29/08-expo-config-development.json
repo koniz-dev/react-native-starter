@@ -1,0 +1,43 @@
+{
+  "name": "RN Starter (Dev)",
+  "slug": "react-native-starter",
+  "scheme": "rnstarter-dev",
+  "version": "1.0.0",
+  "orientation": "portrait",
+  "userInterfaceStyle": "automatic",
+  "icon": "./assets/icon.png",
+  "ios": {
+    "bundleIdentifier": "com.example.rnstarter.dev",
+    "buildNumber": "1"
+  },
+  "android": {
+    "package": "com.example.rnstarter.dev",
+    "versionCode": 1,
+    "adaptiveIcon": {
+      "foregroundImage": "./assets/adaptive-icon.png",
+      "backgroundColor": "#ffffff"
+    }
+  },
+  "plugins": [
+    "expo-font",
+    "expo-secure-store",
+    "expo-status-bar",
+    "expo-router",
+    [
+      "expo-splash-screen",
+      {
+        "image": "./assets/splash-icon.png",
+        "imageWidth": 200,
+        "resizeMode": "contain",
+        "backgroundColor": "#ffffff",
+        "dark": {
+          "backgroundColor": "#151718"
+        }
+      }
+    ]
+  ],
+  "extra": {
+    "appVariant": "development",
+    "router": {}
+  }
+}

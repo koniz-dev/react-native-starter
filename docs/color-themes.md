@@ -185,7 +185,7 @@ export function useTheme() {
 
 ## App Configuration
 
-Configure theme in `app.json`:
+Configure the system appearance in `app.config.ts` (the starter sets `userInterfaceStyle: 'automatic'`):
 
 ```json
 {

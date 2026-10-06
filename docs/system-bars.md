@@ -15,8 +15,8 @@ The status bar displays system information like time, battery, and network statu
 `expo-status-bar` and `expo-system-ui` are installed. `app/_layout.tsx` renders
 `<StatusBar style={theme.dark ? 'light' : 'dark'} />`, so the status bar icons
 follow the app's active Paper theme: dark icons on the light theme, light icons on
-the dark theme. `expo-system-ui` applies `app.json`'s
-`"userInterfaceStyle": "automatic"` in native Android builds, and
+the dark theme. `expo-system-ui` applies `app.config.ts`'s
+`userInterfaceStyle: 'automatic'` in native Android builds, and
 `npx expo prebuild` no longer warns about it.
 
 Expo Go manages the status bar itself, so check status bar contrast in a native
@@ -53,7 +53,7 @@ export default function App() {
 
 ### Platform-Specific Configuration
 
-You can configure the status bar in `app.json`:
+You can configure the status bar in `app.config.ts` (shown here in JSON form):
 
 ```json
 {
@@ -125,7 +125,7 @@ Edge-to-edge layout allows your app content to extend behind system bars for a m
 
 ### Enable Edge-to-Edge
 
-In `app.json`:
+In `app.config.ts` (shown here in JSON form):
 
 ```json
 {
