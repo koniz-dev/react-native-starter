@@ -5,8 +5,8 @@ A clean starter template for React Native with Expo Router, TypeScript, and file
 ## Quick Start
 
 ```bash
-# Install dependencies
-npm install
+# Install dependencies (Node 24 from .nvmrc, or 22.13+)
+npm ci
 
 # Start development server
 npm start
@@ -120,9 +120,9 @@ For detailed installation and setup instructions, see the [Getting Started Guide
 
 **Quick overview:**
 
-1. **Prerequisites:** Node.js v20+; iOS native builds also require Xcode 26.4+
-   for Expo SDK 57
-2. **Install:** `npm ci --legacy-peer-deps`
+1. **Prerequisites:** Node.js 24 (`.nvmrc`) or 22.13+; iOS native builds also
+   require Xcode 26.4+ for Expo SDK 57
+2. **Install:** `npm ci`
 3. **Run:** `npm start`
 4. **Code:** Start editing `app/(tabs)/index.tsx`
 

@@ -6,8 +6,9 @@ Get up and running with React Native Starter in under 5 minutes.
 
 Before you begin, ensure you have:
 
-- **Node.js** v20 or later - [Download](https://nodejs.org/)
-- **npm** or **yarn** - Comes with Node.js
+- **Node.js** 24 (pinned in `.nvmrc`; run `nvm use`) or 22.13+, matching React
+  Native 0.86's supported range - [Download](https://nodejs.org/)
+- **npm** - comes with Node.js; the repository ships a `package-lock.json`
 - **Expo Go app** (optional) - For testing on physical devices
   - [iOS App Store](https://apps.apple.com/app/expo-go/id982107779)
   - [Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent)
@@ -45,12 +46,11 @@ cd react-native-starter
 2. **Install dependencies:**
 
 ```bash
-npm ci --legacy-peer-deps
+npm ci
 ```
 
-The lockfile currently relies on npm's legacy peer resolver for an Expo worklets
-optional-peer constraint. Do not delete the lockfile as a troubleshooting step;
-see the issue tracker for its remediation status.
+`npm ci` installs exactly what `package-lock.json` records. Use `npx expo install
+<package>` to add Expo-related packages so their versions match SDK 57.
 
 3. **Set up environment variables (optional):**
 
@@ -173,9 +173,13 @@ npm start -- --clear
 **Node modules issues:**
 
 ```bash
-rm -rf node_modules package-lock.json
-npm install
+rm -rf node_modules
+npm ci
+npx expo-doctor
 ```
+
+Keep `package-lock.json`; regenerating it can pull peer versions that don't match
+the Expo SDK.
 
 **iOS build issues (macOS):**
 
