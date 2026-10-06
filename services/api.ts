@@ -5,6 +5,7 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { STORAGE_KEYS } from './storage';
 import { getSecureItem } from './secureStorage';
+import { authBaseURL } from './auth';
 import type { ApiError } from '@/types/api';
 
 // Get base URL from environment variable
@@ -19,13 +20,54 @@ const api: AxiosInstance = axios.create({
   },
 });
 
-// Request interceptor: Add auth token to requests
+/**
+ * Returns the normalized origin (`scheme://host[:port]`, lowercase, default
+ * ports dropped) of an absolute URL, or null if the URL is not absolute.
+ * Parsed by hand because React Native's URL implementation is incomplete.
+ */
+export function getOrigin(url: string): string | null {
+  const match = /^([a-z][a-z0-9+.-]*):\/\/([^/?#@]+@)?([^/?#]+)/i.exec(url);
+  if (!match) {
+    return null;
+  }
+  const scheme = match[1].toLowerCase();
+  let host = match[3].toLowerCase();
+  if (
+    (scheme === 'https' && host.endsWith(':443')) ||
+    (scheme === 'http' && host.endsWith(':80'))
+  ) {
+    host = host.slice(0, host.lastIndexOf(':'));
+  }
+  return `${scheme}://${host}`;
+}
+
+/**
+ * Origins that may receive the bearer token. The token is issued by the auth
+ * backend, so by default only its origin (EXPO_PUBLIC_AUTH_API_URL) is
+ * trusted; add other first-party hosts, such as an API on a separate domain,
+ * to EXPO_PUBLIC_API_TRUSTED_ORIGINS (comma-separated). Requests to any other
+ * origin, including absolute URLs passed to `api`, are sent without the
+ * Authorization header. In the demo, the JSONPlaceholder API is a different
+ * third party from DummyJSON and therefore never receives the token.
+ */
+export const trustedTokenOrigins: ReadonlySet<string> = new Set(
+  [
+    authBaseURL,
+    ...(process.env.EXPO_PUBLIC_API_TRUSTED_ORIGINS ?? '').split(','),
+  ]
+    .map(value => getOrigin(value.trim()))
+    .filter((origin): origin is string => origin !== null)
+);
+
+// Request interceptor: add the auth token only for trusted origins
 api.interceptors.request.use(
   async config => {
-    // Get auth token from storage
-    const token = await getSecureItem(STORAGE_KEYS.AUTH_TOKEN);
+    const origin = getOrigin(api.getUri(config));
+    if (!origin || !trustedTokenOrigins.has(origin)) {
+      return config;
+    }
 
-    // Add token to Authorization header if available
+    const token = await getSecureItem(STORAGE_KEYS.AUTH_TOKEN);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

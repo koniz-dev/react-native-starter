@@ -34,7 +34,7 @@ interface DemoAuthResponse {
   user?: AuthResponse['user'];
 }
 
-const authBaseURL =
+export const authBaseURL =
   process.env.EXPO_PUBLIC_AUTH_API_URL || 'https://dummyjson.com';
 
 export const authApi = axios.create({

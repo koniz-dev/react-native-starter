@@ -86,7 +86,8 @@ import { STORAGE_KEYS } from '@/services/storage';
 await setSecureItem(STORAGE_KEYS.AUTH_TOKEN, 'your-token-here');
 ```
 
-2. Token is automatically added to `Authorization: Bearer <token>` header on all requests.
+2. The token is added as `Authorization: Bearer <token>` only to requests whose
+   origin is trusted (see "Which hosts receive the token" below).
 
 3. Remove token on logout (or call `authService.logout()`, which also removes the
    stored profile):
@@ -97,6 +98,26 @@ import { STORAGE_KEYS } from '@/services/storage';
 
 await removeSecureItem(STORAGE_KEYS.AUTH_TOKEN);
 ```
+
+#### Which hosts receive the token
+
+The bearer token is issued by the auth backend, so `services/api.ts` attaches it
+only when a request's resolved origin (`scheme://host[:port]`, compared
+case-insensitively, default ports ignored) is in `trustedTokenOrigins`:
+
+- by default, only the origin of `EXPO_PUBLIC_AUTH_API_URL`;
+- plus any origins listed in `EXPO_PUBLIC_API_TRUSTED_ORIGINS`
+  (comma-separated), for example an API on a separate first-party domain:
+
+```bash
+EXPO_PUBLIC_API_TRUSTED_ORIGINS=https://api.example.com,https://files.example.com
+```
+
+Requests to any other origin, including absolute URLs passed to `api`, go out
+without the `Authorization` header. If your API and auth server share one host,
+no extra configuration is needed. In the demo, JSONPlaceholder
+(`EXPO_PUBLIC_API_URL`) is a different third party from DummyJSON, so it never
+receives the DummyJSON token.
 
 #### Cookies from the auth server
 

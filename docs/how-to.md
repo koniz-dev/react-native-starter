@@ -103,7 +103,7 @@ import { postsApi } from '@/services/api';
 const posts = await postsApi.getAll();
 ```
 
-The API client automatically adds auth tokens from storage. See [API and Storage](api-and-storage.md) for details.
+The API client adds the auth token from secure storage to requests for trusted origins only. See [API and Storage](api-and-storage.md#which-hosts-receive-the-token) for details.
 
 ## How to Add Custom Hooks
 
@@ -373,7 +373,7 @@ await authService.logout();
 router.replace('/(auth)/login');
 ```
 
-The API client automatically adds the token to requests once stored. See [API and Storage](api-and-storage.md) for details.
+Once stored, the API client adds the token to requests for trusted origins (the auth backend by default). See [API and Storage](api-and-storage.md#which-hosts-receive-the-token).
 
 ## See Also
 
