@@ -156,4 +156,21 @@ module.exports = [
       },
     },
   },
+
+  // Environment variables are read only by the validated config module.
+  {
+    files: ['**/*.{ts,tsx,js,jsx}'],
+    ignores: ['config/env.ts', '__tests__/**', 'jest.setup.env.js'],
+    rules: {
+      'no-restricted-properties': [
+        'error',
+        {
+          object: 'process',
+          property: 'env',
+          message:
+            'Read environment values through config/env.ts (getConfig / configResult).',
+        },
+      ],
+    },
+  },
 ];

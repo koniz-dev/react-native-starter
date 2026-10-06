@@ -8,6 +8,9 @@ A clean starter template for React Native with Expo Router, TypeScript, and file
 # Install dependencies (Node 24 from .nvmrc, or 22.13+)
 npm ci
 
+# Configure (enables the public demo backends)
+cp .env.example .env
+
 # Start development server
 npm start
 ```
@@ -123,8 +126,9 @@ For detailed installation and setup instructions, see the [Getting Started Guide
 1. **Prerequisites:** Node.js 24 (`.nvmrc`) or 22.13+; iOS native builds also
    require Xcode 26.4+ for Expo SDK 57
 2. **Install:** `npm ci`
-3. **Run:** `npm start`
-4. **Code:** Start editing `app/(tabs)/index.tsx`
+3. **Configure:** `cp .env.example .env`
+4. **Run:** `npm start`
+5. **Code:** Start editing `app/(tabs)/index.tsx`
 
 ### Authentication demo
 
@@ -254,7 +258,7 @@ See [Assets Guide](docs/assets.md) for more information.
 
 ### Environment Variables
 
-This project uses environment variables for configuration. Copy `.env.example` to `.env` and fill in your values:
+Configuration comes from validated `EXPO_PUBLIC_*` variables (`config/env.ts`); a missing or invalid value shows a configuration error screen at startup. Copy `.env.example` to `.env` (it enables the public demo backends) and adjust:
 
 ```bash
 cp .env.example .env

@@ -1,316 +1,96 @@
 # Environment Variables
 
-Learn how to use environment variables in your Expo project.
+The starter reads all configuration from `EXPO_PUBLIC_*` variables through one
+module, [`config/env.ts`](../config/env.ts). It validates them with a zod schema
+when the app starts and shows a **Configuration error** screen naming each
+missing or invalid variable, instead of silently falling back to a demo backend.
 
-## Overview
-
-Environment variables are key-value pairs configured outside your source code that allow your app to behave differently depending on the environment. For example, you can enable or disable certain features when building a test version of your app, or switch to a different API endpoint when building for production.
-
-## Quick Start
-
-### Create .env File
-
-Create a `.env` file in the root of your project directory:
+## Quick start
 
 ```bash
-# .env
-EXPO_PUBLIC_API_URL=https://staging.example.com
-EXPO_PUBLIC_API_KEY=abc123
+cp .env.example .env
+npm start
 ```
 
-### Use in Code
+`.env.example` turns on the public demo backends, so the app runs without any
+accounts. Without a `.env` (or with `EXPO_PUBLIC_USE_DEMO_BACKENDS` unset), the
+app starts on the configuration error screen.
 
-Access environment variables using `process.env.EXPO_PUBLIC_[NAME]`:
+## Variables
 
-```tsx
-import { Button } from 'react-native';
+| Variable                          | Required                         | Default                                        | Purpose                                                                                                                                                                               |
+| --------------------------------- | -------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXPO_PUBLIC_API_URL`             | Yes, unless demo backends are on | JSONPlaceholder when demo backends are on      | Base URL of your API (`services/api.ts`).                                                                                                                                             |
+| `EXPO_PUBLIC_AUTH_API_URL`        | Yes, unless demo backends are on | DummyJSON when demo backends are on            | Base URL of your auth backend (`services/auth.ts`). Its origin is the only one that receives the auth token by default.                                                               |
+| `EXPO_PUBLIC_API_TRUSTED_ORIGINS` | No                               | none                                           | Comma-separated extra origins allowed to receive the auth token, e.g. an API on a separate first-party host. See [API and Storage](api-and-storage.md#which-hosts-receive-the-token). |
+| `EXPO_PUBLIC_USE_DEMO_BACKENDS`   | No                               | `false`                                        | `true` fills missing URLs with the public demo backends. Leave it unset or `false` in real builds so a missing URL fails loudly.                                                      |
+| `EXPO_PUBLIC_APP_ENV`             | No                               | `development` in dev builds, else `production` | `development`, `preview`, or `production`. Outside `development`, every URL must use `https`.                                                                                         |
 
-function Post() {
-  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+Validation rules:
 
-  async function onPress() {
-    await fetch(apiUrl, { ... });
-  }
+- URLs must be absolute `http(s)` URLs; an empty value (`KEY=`) counts as unset.
+- Outside `development`, `http://` URLs and trusted origins are rejected.
+- `EXPO_PUBLIC_APP_ENV` and `EXPO_PUBLIC_USE_DEMO_BACKENDS` accept only the
+  values listed above.
 
-  return <Button onPress={onPress} title="Post" />;
-}
+## Reading configuration in code
+
+Never read `process.env` directly; ESLint (`no-restricted-properties`) rejects it
+outside `config/env.ts`. Use the validated values:
+
+```ts
+import { getConfig } from '@/config/env';
+
+const { apiUrl, authApiUrl, appEnv } = getConfig();
 ```
 
-## Important Rules
-
-### Prefix Requirement
-
-**All environment variables used in JavaScript code must be prefixed with `EXPO_PUBLIC_`:**
-
-```bash
-# ✅ Correct
-EXPO_PUBLIC_API_URL=https://api.example.com
-
-# ❌ Wrong - won't be available in JavaScript
-API_URL=https://api.example.com
-```
-
-### Static Reference
-
-Environment variables must be statically referenced using dot notation:
-
-```tsx
-// ✅ Correct - will be inlined
-const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-
-// ❌ Wrong - won't be inlined
-const apiUrl = process.env['EXPO_PUBLIC_API_URL'];
-
-// ❌ Wrong - won't be inlined
-const { EXPO_PUBLIC_API_URL } = process.env;
-```
-
-## Multiple .env Files
-
-You can use multiple `.env` files for different environments:
-
-```
-.env              # Default (can be committed)
-.env.local        # Local overrides (should be gitignored)
-.env.development  # Development environment
-.env.production   # Production environment
-```
-
-### Priority Order
-
-Files are loaded in this priority order (later files override earlier ones):
-
-1. `.env`
-2. `.env.local`
-3. `.env.[NODE_ENV]`
-4. `.env.[NODE_ENV].local`
-
-### Gitignore
-
-Add `.env*.local` to your `.gitignore`:
-
-```gitignore
-# .gitignore
-.env*.local
-```
-
-This prevents committing local environment-specific configurations.
-
-## Example Setup
-
-### .env (committed)
-
-```bash
-# Default/development values
-EXPO_PUBLIC_API_URL=https://api.staging.example.com
-EXPO_PUBLIC_ENABLE_ANALYTICS=false
-```
-
-### .env.local (gitignored)
-
-```bash
-# Local overrides
-EXPO_PUBLIC_API_URL=http://localhost:3000
-```
-
-### .env.production (committed)
-
-```bash
-# Production values
-EXPO_PUBLIC_API_URL=https://api.example.com
-EXPO_PUBLIC_ENABLE_ANALYTICS=true
-```
-
-## TypeScript Support
-
-For TypeScript, you can create a type definition file:
-
-```typescript
-// types/env.d.ts
-declare namespace NodeJS {
-  interface ProcessEnv {
-    EXPO_PUBLIC_API_URL: string;
-    EXPO_PUBLIC_API_KEY: string;
-    EXPO_PUBLIC_ENABLE_ANALYTICS: string;
-  }
-}
-```
-
-## EAS Build and Update
-
-### EAS Build
-
-EAS Build uses Metro Bundler to build your JavaScript bundle, so it will use `.env` files uploaded with your build job. You can also define environment variables in `eas.json`:
-
-```json
-{
-  "build": {
-    "production": {
-      "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.example.com"
-      }
-    }
-  }
-}
-```
-
-### EAS Update
-
-EAS Update uses Metro Bundler in your local environment or CI, so it will use available `.env` files.
-
-### EAS Secrets
-
-For sensitive values, use EAS Secrets instead of environment variables:
-
-```bash
-eas secret:create --scope project --name EXPO_PUBLIC_API_KEY --value your-secret-key
-```
-
-## Disabling Environment Variables
-
-If you need to disable environment variable loading:
-
-### Disable .env File Loading
-
-```bash
-EXPO_NO_DOTENV=1 npx expo start
-```
-
-### Disable Client Variable Inlining
-
-```bash
-EXPO_NO_CLIENT_ENV_VARS=1 npx expo start
-```
-
-## Security Considerations
-
-> **⚠️ Important:** Never store sensitive information in `EXPO_PUBLIC_` variables!
-
-### What NOT to Store
-
-- Private keys
-- API secrets
-- Database passwords
-- Authentication tokens
-- Any sensitive credentials
-
-### Why?
-
-Variables prefixed with `EXPO_PUBLIC_` are:
-
-- Embedded in your compiled JavaScript bundle
-- Visible in plain text
-- Accessible to anyone who inspects your app
-
-### What to Store Instead
-
-- Public API endpoints (non-sensitive)
-- Feature flags
-- Public configuration values
-- Build-time constants
-
-### For Sensitive Data
-
-Use:
-
-- **EAS Secrets** for build-time secrets
-- **SecureStore** for runtime secrets (see [Store Data Guide](store-data.md))
-- **Backend API** for sensitive operations
-
-## Migration from Other Solutions
-
-### From react-native-config
-
-1. Update `.env` files to prefix variables with `EXPO_PUBLIC_`:
-
-```bash
-# Before
-API_URL=https://myapi.com
-
-# After
-EXPO_PUBLIC_API_URL=https://myapi.com
-```
-
-2. Update your code:
-
-```tsx
-// Before
-import Config from 'react-native-config';
-const apiUrl = Config.API_URL;
-
-// After
-const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-```
-
-3. Remove `react-native-config` from dependencies:
-
-```bash
-npm uninstall react-native-config
-```
-
-### From babel-plugin-transform-inline-environment-variables
-
-1. Update variable names to use `EXPO_PUBLIC_` prefix
-2. Remove the plugin from `babel.config.js`:
-
-```js
-module.exports = function (api) {
-  api.cache(true);
-  return {
-    presets: ['babel-preset-expo'],
-    // Remove this line:
-    // plugins: ['transform-inline-environment-variables'],
-  };
-};
-```
-
-3. Clear cache:
-
-```bash
-npx expo start --clear
-```
-
-## Best Practices
-
-1. **Use Descriptive Names**: Make variable names clear and descriptive
-2. **Document Variables**: Add comments in `.env` files explaining what each variable does
-3. **Use .env.local for Secrets**: Keep sensitive local overrides in `.env.local` (gitignored)
-4. **Validate Variables**: Check that required variables exist at runtime
-5. **Type Safety**: Use TypeScript definitions for better IDE support
-6. **Default Values**: Provide sensible defaults when possible
-
-### Example with Validation
-
-```tsx
-const getApiUrl = () => {
-  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-
-  if (!apiUrl) {
-    throw new Error('EXPO_PUBLIC_API_URL is not defined');
-  }
-
-  return apiUrl;
-};
-```
-
-## Troubleshooting
-
-### Variables Not Updating
-
-1. **Full Reload**: Shake device → Reload (or press `r` in terminal)
-2. **Clear Cache**: `npx expo start --clear`
-3. **Check Prefix**: Ensure variables start with `EXPO_PUBLIC_`
-4. **Check Syntax**: Use dot notation, not bracket notation
-
-### Variables Not Available
-
-1. **Check File Location**: `.env` must be in project root
-2. **Check Prefix**: Must use `EXPO_PUBLIC_` prefix
-3. **Check Reference**: Must use `process.env.EXPO_PUBLIC_[NAME]` syntax
-4. **Restart Expo**: Stop and restart `npx expo start`
+Call `getConfig()` when you need a value (inside a function or request
+interceptor), not at module top level. Expo Router imports every route module
+at startup, so reading configuration during import would throw before the
+configuration error screen can render.
+
+To add a variable:
+
+1. Add it to `readRawEnv()` by its full name (`process.env.EXPO_PUBLIC_MY_VAR`).
+   Expo only inlines references written out in full, so
+   `process.env[name]` doesn't work.
+2. Add it to the zod schema and to `AppConfig` in `config/env.ts`.
+3. Add it to `.env.example` and to the table above, and add a test in
+   `__tests__/config/env.test.ts`.
+
+## Files and precedence
+
+Expo CLI loads `.env` files when it starts the bundler. Files listed first take
+precedence:
+
+1. `.env.$NODE_ENV.local`
+2. `.env.local` (not loaded when `NODE_ENV` is `test`)
+3. `.env.$NODE_ENV`
+4. `.env`
+
+`NODE_ENV` is `development` for `npx expo start` and `production` for
+`npx expo export` and release builds. The repository's `.gitignore` keeps `.env`
+and `.env*.local` out of git; `.env.example` is the committed template. Restart
+the bundler with `npx expo start --clear` after changing variables.
+
+For builds made with EAS Build, set the same variables in the build profile's
+`env` (in `eas.json`) or with `eas env:create`; they are read at build time.
+
+## Security
+
+`EXPO_PUBLIC_*` values are compiled into the JavaScript bundle and can be read
+by anyone who has the app. Put only public configuration here (URLs, feature
+switches). Keep secrets such as API keys with write access on your server, and
+store user tokens with secure storage (`services/secureStorage.ts`), never in
+environment variables.
+
+## Testing
+
+`jest.setup.env.js` sets `EXPO_PUBLIC_USE_DEMO_BACKENDS=true` before each test
+file, mirroring a fresh checkout with `.env.example`. Validation tests call
+`parseEnv(raw, isDevBuild)` directly with explicit values.
 
 ## References
 
-- [Expo: Environment Variables](https://docs.expo.dev/guides/environment-variables/)
-- [EAS Build: Environment Variables](https://docs.expo.dev/build-reference/variables/)
-- [EAS Update: Environment Variables](https://docs.expo.dev/eas-update/environment-variables/)
+- [Expo: environment variables](https://docs.expo.dev/guides/environment-variables/)
+- [EAS: environment variables](https://docs.expo.dev/eas/environment-variables/)

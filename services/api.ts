@@ -5,16 +5,13 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { STORAGE_KEYS } from './storage';
 import { getSecureItem } from './secureStorage';
-import { authBaseURL } from './auth';
 import type { ApiError } from '@/types/api';
+import { getConfig } from '@/config/env';
 
-// Get base URL from environment variable
-const baseURL =
-  process.env.EXPO_PUBLIC_API_URL || 'https://jsonplaceholder.typicode.com';
-
-// Create Axios instance
+// Create Axios instance. The base URL comes from validated config and is
+// applied per request (see the request interceptor), so importing this module
+// never reads configuration.
 const api: AxiosInstance = axios.create({
-  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -50,20 +47,22 @@ export function getOrigin(url: string): string | null {
  * Authorization header. In the demo, the JSONPlaceholder API is a different
  * third party from DummyJSON and therefore never receives the token.
  */
-export const trustedTokenOrigins: ReadonlySet<string> = new Set(
-  [
-    authBaseURL,
-    ...(process.env.EXPO_PUBLIC_API_TRUSTED_ORIGINS ?? '').split(','),
-  ]
-    .map(value => getOrigin(value.trim()))
-    .filter((origin): origin is string => origin !== null)
-);
+export function getTrustedTokenOrigins(): ReadonlySet<string> {
+  const { authApiUrl, apiTrustedOrigins } = getConfig();
+  return new Set(
+    [authApiUrl, ...apiTrustedOrigins]
+      .map(getOrigin)
+      .filter((origin): origin is string => origin !== null)
+  );
+}
 
 // Request interceptor: add the auth token only for trusted origins
 api.interceptors.request.use(
   async config => {
+    config.baseURL ??= getConfig().apiUrl;
+
     const origin = getOrigin(api.getUri(config));
-    if (!origin || !trustedTokenOrigins.has(origin)) {
+    if (!origin || !getTrustedTokenOrigins().has(origin)) {
       return config;
     }
 

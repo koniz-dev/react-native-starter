@@ -6,8 +6,10 @@ jest.mock('@react-native-async-storage/async-storage', () =>
   )
 );
 
-import api, { getOrigin, trustedTokenOrigins } from '@/services/api';
-import { authBaseURL } from '@/services/auth';
+import api, { getOrigin, getTrustedTokenOrigins } from '@/services/api';
+import { getConfig } from '@/config/env';
+
+const authBaseURL = getConfig().authApiUrl;
 import * as secureStorage from '@/services/secureStorage';
 
 jest.mock('@/services/secureStorage', () => ({
@@ -66,7 +68,7 @@ function captureRequest(url: string) {
 
 describe('token origin allow-list', () => {
   const authOrigin = getOrigin(authBaseURL) ?? '';
-  const apiOrigin = getOrigin(api.defaults.baseURL ?? '') ?? '';
+  const apiOrigin = getOrigin(getConfig().apiUrl) ?? '';
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -74,7 +76,7 @@ describe('token origin allow-list', () => {
   });
 
   it('trusts only the auth backend origin by default', () => {
-    expect([...trustedTokenOrigins]).toEqual([authOrigin]);
+    expect([...getTrustedTokenOrigins()]).toEqual([authOrigin]);
   });
 
   it('does not send the auth token to the separate demo API host', async () => {
@@ -108,7 +110,7 @@ describe('token origin allow-list', () => {
 
   it('trusts origins listed in EXPO_PUBLIC_API_TRUSTED_ORIGINS, including the API', async () => {
     const previous = process.env.EXPO_PUBLIC_API_TRUSTED_ORIGINS;
-    process.env.EXPO_PUBLIC_API_TRUSTED_ORIGINS = ` ${apiOrigin.toUpperCase()}:443 , not-a-url,https://cdn.example.com `;
+    process.env.EXPO_PUBLIC_API_TRUSTED_ORIGINS = ` ${apiOrigin.toUpperCase()}:443 , ,https://cdn.example.com `;
     try {
       let isolatedApi: typeof import('@/services/api') | undefined;
       let isolatedSecure: typeof secureStorage | undefined;
@@ -116,7 +118,7 @@ describe('token origin allow-list', () => {
         isolatedSecure = jest.requireMock('@/services/secureStorage');
         isolatedApi = jest.requireActual('@/services/api');
       });
-      const origins = isolatedApi!.trustedTokenOrigins;
+      const origins = isolatedApi!.getTrustedTokenOrigins();
       expect(origins.has(apiOrigin)).toBe(true);
       expect(origins.has('https://cdn.example.com')).toBe(true);
       expect(origins.size).toBe(3);

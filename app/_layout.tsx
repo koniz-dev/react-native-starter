@@ -4,6 +4,8 @@ import { getNavigationTheme, getTheme } from '@/constants/Theme';
 import { Stack, ThemeProvider } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { ConfigErrorScreen } from '@/components/ConfigErrorScreen';
+import { configResult } from '@/config/env';
 
 // Anchor the root stack on the tabs so that a launch URL that does not match a
 // route (as Expo Go sends on Android) falls back to Home rather than to the
@@ -23,10 +25,14 @@ export default function RootLayout() {
         <ThemeProvider value={getNavigationTheme(theme)}>
           {/* Dark icons on the light theme, light icons on the dark theme. */}
           <StatusBar style={theme.dark ? 'light' : 'dark'} />
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="(auth)" />
-          </Stack>
+          {configResult.success ? (
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen name="(auth)" />
+            </Stack>
+          ) : (
+            <ConfigErrorScreen issues={configResult.issues} />
+          )}
         </ThemeProvider>
       </PaperProvider>
     </ErrorBoundary>

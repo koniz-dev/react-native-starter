@@ -3,6 +3,7 @@
  * Handles login, logout, and token management
  */
 import axios from 'axios';
+import { getConfig } from '@/config/env';
 import { setItem, removeItem, getItem, STORAGE_KEYS } from './storage';
 import {
   getSecureItem,
@@ -34,11 +35,7 @@ interface DemoAuthResponse {
   user?: AuthResponse['user'];
 }
 
-export const authBaseURL =
-  process.env.EXPO_PUBLIC_AUTH_API_URL || 'https://dummyjson.com';
-
 export const authApi = axios.create({
-  baseURL: authBaseURL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -47,6 +44,13 @@ export const authApi = axios.create({
   // (DummyJSON sets accessToken/refreshToken). The token belongs in secure
   // storage only, so don't store or send cookies for auth requests.
   withCredentials: false,
+});
+
+// The base URL comes from validated config, applied per request so that
+// importing this module never reads configuration.
+authApi.interceptors.request.use(config => {
+  config.baseURL ??= getConfig().authApiUrl;
+  return config;
 });
 
 function normalizeAuthResponse(data: DemoAuthResponse): AuthResponse {

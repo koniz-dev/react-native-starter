@@ -52,23 +52,21 @@ npm ci
 `npm ci` installs exactly what `package-lock.json` records. Use `npx expo install
 <package>` to add Expo-related packages so their versions match SDK 57.
 
-3. **Set up environment variables (optional):**
+3. **Set up environment variables (required):**
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` and add your API URLs if needed:
+`.env.example` sets `EXPO_PUBLIC_USE_DEMO_BACKENDS=true`, so the starter uses
+JSONPlaceholder for its todos example and DummyJSON for its authentication demo
+(username `emilys`, password `emilyspass`). Without a `.env`, the app opens on a
+**Configuration error** screen that lists the missing variables.
 
-```bash
-EXPO_PUBLIC_API_URL=https://api.example.com
-EXPO_PUBLIC_AUTH_API_URL=https://auth.example.com
-```
-
-The unmodified starter uses JSONPlaceholder for its todos example and DummyJSON for
-its authentication demo. Use username `emilys` and password `emilyspass` to sign in.
-When connecting your own backend, set `EXPO_PUBLIC_AUTH_API_URL` and adapt the request
-and response mapping in `services/auth.ts` to that backend's authentication contract.
+To use your own backends, set `EXPO_PUBLIC_API_URL` and `EXPO_PUBLIC_AUTH_API_URL`
+and turn the demo flag off; then adapt the request and response mapping in
+`services/auth.ts` to your backend's authentication contract. See
+[Environment Variables](environment-variables.md) for every variable and its rules.
 
 ## Running the App
 

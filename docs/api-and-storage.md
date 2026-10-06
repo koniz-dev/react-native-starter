@@ -30,7 +30,10 @@ Set your API URL in `.env`:
 EXPO_PUBLIC_API_URL=https://api.example.com
 ```
 
-The client defaults to JSONPlaceholder (`https://jsonplaceholder.typicode.com`) if no URL is set.
+The value is validated by `config/env.ts`. JSONPlaceholder
+(`https://jsonplaceholder.typicode.com`) is used only when
+`EXPO_PUBLIC_USE_DEMO_BACKENDS=true`; otherwise a missing URL shows the
+configuration error screen. See [Environment Variables](environment-variables.md).
 
 ### Usage
 
@@ -103,7 +106,7 @@ await removeSecureItem(STORAGE_KEYS.AUTH_TOKEN);
 
 The bearer token is issued by the auth backend, so `services/api.ts` attaches it
 only when a request's resolved origin (`scheme://host[:port]`, compared
-case-insensitively, default ports ignored) is in `trustedTokenOrigins`:
+case-insensitively, default ports ignored) is in `getTrustedTokenOrigins()`:
 
 - by default, only the origin of `EXPO_PUBLIC_AUTH_API_URL`;
 - plus any origins listed in `EXPO_PUBLIC_API_TRUSTED_ORIGINS`
