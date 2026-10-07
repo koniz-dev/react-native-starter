@@ -306,18 +306,22 @@ Edit `constants/Colors.ts` for app-specific colors. See [Color Themes](color-the
 
 **A complete authentication example is included in the starter!**
 
-- **Auth service:** `services/auth.ts` - Handles login, logout, and token management
-- **Login screen:** `app/(auth)/login.tsx` - Complete login form with error handling
-- **Session state and logout:** `hooks/useAuthSession.ts`, shown at the top of the Home
-  tab (`app/(tabs)/index.tsx`): "Signed in as …" with a **Log out** button, or
-  "Not signed in" with the **Try authentication demo** button
+- **Auth service:** `services/auth.ts` - login, logout, and token storage
+- **Session state:** `providers/SessionProvider.tsx` - the single source of truth,
+  mounted in `app/_layout.tsx`; read it anywhere with `useSession()`
+- **Login screen:** `app/(auth)/login.tsx` - shown only while signed out
+- **Protected screens:** `app/(app)/` - shown only while signed in (example:
+  `app/(app)/profile.tsx`)
+- **Home** (`app/(tabs)/index.tsx`) shows "Signed in as …" with **View profile**
+  and **Log out**, or "Not signed in" with **Try authentication demo**
 
 **To use it:**
 
 1. **Try the runnable demo** from the Home tab's **Try authentication demo** button.
    Sign in with username `emilys` and password `emilyspass`. Home then shows who is
-   signed in; restart the app and the session is still there. **Log out** deletes the
-   token from secure storage and the profile from AsyncStorage.
+   signed in and **View profile** opens the protected screen; restart the app and
+   the session is still there. **Log out** deletes the token from secure storage
+   and the profile from AsyncStorage.
 
 2. **Connect your backend** by setting `EXPO_PUBLIC_AUTH_API_URL` and adapting the
    request/response mapping in `services/auth.ts` to match its authentication contract:
@@ -329,49 +333,50 @@ const response = await authApi.post<DemoAuthResponse>('/auth/login', {
 });
 ```
 
-3. **Navigate to login screen programmatically:**
+3. **Read the session or sign in/out in any screen:**
 
 ```tsx
-import { router } from 'expo-router';
+import { useSession } from '@/providers/SessionProvider';
 
-router.push('/(auth)/login');
-```
-
-4. **Read the session in a screen** with `useAuthSession`, refreshing when the screen
-   regains focus (for example after returning from login):
-
-```tsx
-import { useCallback } from 'react';
-import { useFocusEffect } from 'expo-router';
-import { useAuthSession } from '@/hooks/useAuthSession';
-
-const { session, refresh, logout } = useAuthSession();
-useFocusEffect(
-  useCallback(() => {
-    refresh();
-  }, [refresh])
-);
+const { session, signIn, signOut } = useSession();
 // session.status: 'loading' | 'signedIn' | 'signedOut'; session.user?.name
+await signIn({ username, password }); // rejects with an ApiError on failure
+await signOut();
 ```
 
-5. **Check authentication status imperatively:**
+Every consumer re-renders when the session changes: sign-in, sign-out, and a
+session that expires because the API returned 401 (see
+[Expired sessions](api-and-storage.md#expired-sessions-401)).
+
+4. **Add a protected screen** by creating it in `app/(app)/` and listing it in
+   `app/(app)/_layout.tsx`. The root layout guards the group:
 
 ```tsx
-import { authService } from '@/services/auth';
-
-const isAuthenticated = await authService.isAuthenticated();
-if (!isAuthenticated) {
-  router.replace('/(auth)/login');
-}
+// app/_layout.tsx (RootNavigator)
+<Stack>
+  <Stack.Screen name="(tabs)" />
+  <Stack.Protected guard={!signedIn}>
+    <Stack.Screen name="(auth)" />
+  </Stack.Protected>
+  <Stack.Protected guard={signedIn}>
+    <Stack.Screen name="(app)" />
+  </Stack.Protected>
+</Stack>
 ```
 
-6. **Logout:** in a screen using `useAuthSession`, call its `logout()` (as the Home
-   tab's **Log out** button does) so the UI updates; elsewhere:
+When the guard is false, the group's screens can't be opened: deep links and
+`router.push` into them land on Home, and a user who signs out (or whose session
+expires) on a protected screen is sent back to Home. Signing in removes the
+login screen the same way, so it needs no navigation code. The root layout
+renders routes only after the stored session has been read (the splash screen
+stays up meanwhile), so a cold-start deep link into `(app)` works for a
+signed-in user.
 
-```tsx
-await authService.logout();
-router.replace('/(auth)/login');
-```
+The group has its own stack, so its first screen would have no header back
+button; `app/(app)/_layout.tsx` adds one that returns to the screen that opened
+the group. The example profile screen also reloads the user from the auth
+backend (`refreshUser()`, `GET /auth/me` with the token), which is where an
+expired token shows up as a 401.
 
 Once stored, the API client adds the token to requests for trusted origins (the auth backend by default). See [API and Storage](api-and-storage.md#which-hosts-receive-the-token).
 

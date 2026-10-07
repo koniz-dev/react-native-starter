@@ -1,5 +1,5 @@
 import React from 'react';
-import { KeyboardAvoidingView, Platform } from 'react-native';
+import { KeyboardAvoidingView, Platform, Text } from 'react-native';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { MD3LightTheme, PaperProvider } from 'react-native-paper';
@@ -60,7 +60,7 @@ jest.mock('react-native-paper', () => {
 });
 
 import LoginScreen from '@/app/(auth)/login';
-import { router } from 'expo-router';
+import { SessionProvider, useSession } from '@/providers/SessionProvider';
 import { authService } from '@/services/auth';
 
 const TestWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -70,9 +70,20 @@ const TestWrapper = ({ children }: { children: React.ReactNode }) => (
       insets: { top: 0, left: 0, right: 0, bottom: 0 },
     }}
   >
-    <PaperProvider theme={MD3LightTheme}>{children}</PaperProvider>
+    <PaperProvider theme={MD3LightTheme}>
+      <SessionProvider>
+        {children}
+        <SessionProbe />
+      </SessionProvider>
+    </PaperProvider>
   </SafeAreaProvider>
 );
+
+/** Shows the provider's session status so tests can see sign-in take effect. */
+function SessionProbe() {
+  const { session } = useSession();
+  return <Text testID="session-probe">{session.status}</Text>;
+}
 
 describe('<LoginScreen />', () => {
   beforeEach(() => {
@@ -97,7 +108,7 @@ describe('<LoginScreen />', () => {
         username: 'emilys',
         password: 'emilyspass',
       });
-      expect(router.replace).toHaveBeenCalledWith('/(tabs)');
+      expect(getByTestId('session-probe').props.children).toBe('signedIn');
     });
   });
 
@@ -116,7 +127,7 @@ describe('<LoginScreen />', () => {
     await waitFor(() => {
       expect(getByText('Invalid credentials')).toBeTruthy();
     });
-    expect(router.replace).not.toHaveBeenCalled();
+    expect(getByTestId('session-probe').props.children).toBe('signedOut');
   });
 
   it('moves from username to password with the next key', () => {
@@ -148,7 +159,7 @@ describe('<LoginScreen />', () => {
         username: 'emilys',
         password: 'emilyspass',
       });
-      expect(router.replace).toHaveBeenCalledWith('/(tabs)');
+      expect(getByTestId('session-probe').props.children).toBe('signedIn');
     });
   });
 

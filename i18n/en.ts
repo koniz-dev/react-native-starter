@@ -15,6 +15,15 @@ export const en = {
   'home.session.signedOut': 'Not signed in',
   'home.session.tryDemo': 'Try authentication demo',
   'home.session.logOut': 'Log out',
+  'home.session.viewProfile': 'View profile',
+
+  // Profile (protected example screen)
+  'profile.title': 'Profile',
+  'profile.intro':
+    'This screen is in the protected (app) route group: it is only reachable while signed in.',
+  'profile.name': 'Name',
+  'profile.email': 'Email',
+  'profile.refreshFailed': 'Could not refresh your profile: {message}',
 
   // Login
   'login.title': 'Welcome Back',

@@ -42,17 +42,10 @@ export const authApi = createHttpClient({
   withCredentials: false,
 });
 
-function normalizeAuthResponse(data: DemoAuthResponse): AuthResponse {
-  const token = data.accessToken || data.token;
-
-  if (!token) {
-    throw new Error(
-      'The authentication response did not include an access token'
-    );
-  }
-
+/** Maps a DummyJSON-style user payload to the app's user shape. */
+function normalizeUser(data: DemoAuthResponse): AuthResponse['user'] {
   if (data.user) {
-    return { token, user: data.user };
+    return data.user;
   }
 
   if (!data.id || !data.email) {
@@ -62,15 +55,33 @@ function normalizeAuthResponse(data: DemoAuthResponse): AuthResponse {
   }
 
   return {
-    token,
-    user: {
-      id: data.id,
-      email: data.email,
-      name:
-        [data.firstName, data.lastName].filter(Boolean).join(' ') || data.email,
-    },
+    id: data.id,
+    email: data.email,
+    name:
+      [data.firstName, data.lastName].filter(Boolean).join(' ') || data.email,
   };
 }
+
+function normalizeAuthResponse(data: DemoAuthResponse): AuthResponse {
+  const token = data.accessToken || data.token;
+
+  if (!token) {
+    throw new Error(
+      'The authentication response did not include an access token'
+    );
+  }
+
+  return { token, user: normalizeUser(data) };
+}
+
+// Authenticated requests to the auth backend (e.g. the current user). Unlike
+// authApi, it sends the stored token, so a 401 here means the session expired
+// and triggers the HTTP client's 401 handling (services/session.ts).
+const authenticatedAuthApi = createHttpClient({
+  getBaseURL: () => getConfig().authApiUrl,
+  authenticated: true,
+  withCredentials: false,
+});
 
 /**
  * Authentication service for handling login/logout
@@ -115,5 +126,18 @@ export const authService = {
    */
   getCurrentUser: async () => {
     return getItem<AuthResponse['user']>(STORAGE_KEYS.USER_DATA);
+  },
+
+  /**
+   * Fetches the signed-in user from the auth backend (GET /auth/me) with the
+   * stored token and updates the stored profile. Rejects with an ApiError; a
+   * 401 also clears the session (expired or revoked token).
+   */
+  fetchProfile: async (): Promise<AuthResponse['user']> => {
+    const response =
+      await authenticatedAuthApi.get<DemoAuthResponse>('/auth/me');
+    const user = normalizeUser(response.data);
+    await setItem(STORAGE_KEYS.USER_DATA, user);
+    return user;
   },
 };

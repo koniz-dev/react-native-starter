@@ -15,8 +15,7 @@ import {
   useTheme,
   Snackbar,
 } from 'react-native-paper';
-import { router } from 'expo-router';
-import { authService } from '@/services/auth';
+import { useSession } from '@/providers/SessionProvider';
 import { t } from '@/i18n';
 
 export default function LoginScreen() {
@@ -27,6 +26,7 @@ export default function LoginScreen() {
   const [error, setError] = useState<string | null>(null);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const passwordRef = useRef<NativeTextInput>(null);
+  const { signIn } = useSession();
 
   const handleLogin = async () => {
     if (!username || !password) {
@@ -39,9 +39,9 @@ export default function LoginScreen() {
     setError(null);
 
     try {
-      await authService.login({ username, password });
-      // Navigate to main app after successful login
-      router.replace('/(tabs)');
+      // Signing in flips the route guards in app/_layout.tsx: this screen
+      // (signed-out only) is removed and the app returns to Home.
+      await signIn({ username, password });
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : t('login.error.generic');

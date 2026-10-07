@@ -201,7 +201,7 @@ When a request that carried the auth token gets a 401:
    refresh). If it returns a new token, the request is retried once with it.
 2. Otherwise, or if the refresh fails or the retry gets another 401, the
    unauthorized handler runs. The default clears the stored token and profile
-   and emits `session-expired`; `useAuthSession` listens for it, so Home shows
+   and emits `session-expired`; `SessionProvider` listens for it, so every screen shows
    "Not signed in" right away.
 3. The request still rejects with an `ApiError` whose `code` is
    `unauthorized`.

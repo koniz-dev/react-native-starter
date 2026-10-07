@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -9,21 +9,14 @@ import {
   Snackbar,
   useTheme,
 } from 'react-native-paper';
-import { router, useFocusEffect } from 'expo-router';
-import { useAuthSession } from '@/hooks/useAuthSession';
+import { router } from 'expo-router';
+import { useSession } from '@/providers/SessionProvider';
 import { t } from '@/i18n';
 
 export default function HomeScreen() {
   const theme = useTheme();
   const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const { session, refresh, logout } = useAuthSession();
-
-  // Re-read the session whenever Home is shown, e.g. after signing in.
-  useFocusEffect(
-    useCallback(() => {
-      refresh();
-    }, [refresh])
-  );
+  const { session, signOut } = useSession();
 
   return (
     <SafeAreaView
@@ -57,14 +50,24 @@ export default function HomeScreen() {
                   : t('home.session.signedOut')}
             </Text>
             {session.status === 'signedIn' ? (
-              <Button
-                mode="outlined"
-                onPress={logout}
-                style={styles.authDemoButton}
-                testID="logout-button"
-              >
-                {t('home.session.logOut')}
-              </Button>
+              <View style={styles.sessionActions}>
+                <Button
+                  mode="contained-tonal"
+                  onPress={() => router.push('/profile')}
+                  style={styles.authDemoButton}
+                  testID="profile-button"
+                >
+                  {t('home.session.viewProfile')}
+                </Button>
+                <Button
+                  mode="outlined"
+                  onPress={signOut}
+                  style={styles.authDemoButton}
+                  testID="logout-button"
+                >
+                  {t('home.session.logOut')}
+                </Button>
+              </View>
             ) : (
               <Button
                 mode="outlined"
@@ -199,6 +202,10 @@ const styles = StyleSheet.create({
   session: {
     marginTop: 16,
     alignItems: 'center',
+  },
+  sessionActions: {
+    flexDirection: 'row',
+    gap: 8,
   },
   authDemoButton: {
     marginTop: 8,

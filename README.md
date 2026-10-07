@@ -134,8 +134,9 @@ For detailed installation and setup instructions, see the [Getting Started Guide
 
 The starter uses DummyJSON for the runnable login example, separately from the
 JSONPlaceholder Todos API. Sign in with username `emilys` and password `emilyspass`.
-The Home tab then shows "Signed in as …" with a **Log out** button; the session
-survives an app restart and logging out clears it. For a real backend, set `EXPO_PUBLIC_AUTH_API_URL` and adapt the request/response
+The Home tab then shows "Signed in as …" with **View profile** (a screen that
+requires sign-in) and **Log out**; the session survives an app restart and
+logging out clears it. For a real backend, set `EXPO_PUBLIC_AUTH_API_URL` and adapt the request/response
 mapping in `services/auth.ts` to the backend contract.
 
 ## Navigation

@@ -36,6 +36,7 @@ jest.mock('expo-router', () => {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 import HomeScreen from '@/app/(tabs)/index';
+import { SessionProvider } from '@/providers/SessionProvider';
 import { getItem, setItem, STORAGE_KEYS } from '@/services/storage';
 import { defaultUnauthorizedHandler } from '@/services/session';
 
@@ -46,7 +47,9 @@ const TestWrapper = ({ children }: { children: React.ReactNode }) => (
       insets: { top: 0, left: 0, right: 0, bottom: 0 },
     }}
   >
-    <PaperProvider theme={MD3LightTheme}>{children}</PaperProvider>
+    <PaperProvider theme={MD3LightTheme}>
+      <SessionProvider>{children}</SessionProvider>
+    </PaperProvider>
   </SafeAreaProvider>
 );
 

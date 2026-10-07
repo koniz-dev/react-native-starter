@@ -57,16 +57,11 @@ const customColor = useThemeColor(
 );
 ```
 
-## Session Hook
+## Session
 
-### useAuthSession
-
-Shipped as [`useAuthSession.ts`](useAuthSession.ts). Reads the authentication session
-through `authService`: `status` is `'loading'`, `'signedIn'` (token present in secure
-storage; `user` is the stored profile, or `null` if none), or `'signedOut'`. A storage
-failure counts as signed out. `logout()` calls `authService.logout()` and re-reads the
-session. The hook reads once on mount; call `refresh()` from `useFocusEffect` so a screen
-updates after the user signs in elsewhere (see `app/(tabs)/index.tsx`).
+The authentication session is React context, not a hook in this folder: use
+`useSession()` from [`providers/SessionProvider.tsx`](../providers/SessionProvider.tsx).
+See [How to Add Authentication](../docs/how-to.md#how-to-add-authentication).
 
 ## Data Fetching Hook
 
