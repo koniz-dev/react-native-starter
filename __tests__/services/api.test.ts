@@ -1,4 +1,5 @@
-import type { AxiosRequestConfig } from 'axios';
+import { AxiosError, AxiosHeaders, type AxiosRequestConfig } from 'axios';
+import { ApiError } from '@/services/apiError';
 
 jest.mock('@react-native-async-storage/async-storage', () =>
   jest.requireActual(
@@ -39,15 +40,28 @@ describe('api interceptors', () => {
     expect(receivedConfig?.headers?.Authorization).toBe('Bearer demo-token');
   });
 
-  it('rejects a normalized API error', async () => {
-    const error = Object.assign(new Error('Unavailable'), {
-      response: { status: 503, data: { message: 'Try again' } },
-    });
+  it('rejects with an ApiError carrying the server message and status', async () => {
+    const error = new AxiosError(
+      'Request failed with status code 503',
+      'ERR_BAD_RESPONSE',
+      undefined,
+      undefined,
+      {
+        status: 503,
+        data: { message: 'Try again' },
+        statusText: 'Service Unavailable',
+        headers: {},
+        config: { headers: new AxiosHeaders() },
+      }
+    );
 
-    await expect(
-      api.get('/unavailable', { adapter: async () => Promise.reject(error) })
-    ).rejects.toEqual({
-      message: 'Unavailable',
+    const rejection = api.get('/unavailable', {
+      adapter: async () => Promise.reject(error),
+    });
+    await expect(rejection).rejects.toBeInstanceOf(ApiError);
+    await expect(rejection).rejects.toMatchObject({
+      message: 'Try again',
+      code: 'server',
       status: 503,
       data: { message: 'Try again' },
     });

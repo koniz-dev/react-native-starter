@@ -15,12 +15,33 @@ These are simple foundations you can build upon, not a complete API layer.
 
 ### Setup
 
-The API client is configured in `services/api.ts` with:
+Every HTTP client is created with `createHttpClient()` from
+[`services/httpClient.ts`](../services/httpClient.ts): the API client
+(`services/api.ts`, base URL `EXPO_PUBLIC_API_URL`) and the auth client
+(`authApi` in `services/auth.ts`, base URL `EXPO_PUBLIC_AUTH_API_URL`). The
+factory gives every client the same behavior:
 
-- Base URL from environment variable (`EXPO_PUBLIC_API_URL`)
-- Request interceptor for authentication tokens
-- Response interceptor for error handling
-- Default JSON headers
+- base URL and timeout from validated config (`EXPO_PUBLIC_API_TIMEOUT_MS`,
+  default 15 s), read per request;
+- the auth token attached only for trusted origins (see
+  [Which hosts receive the token](#which-hosts-receive-the-token));
+- every failure rejected as an `ApiError` (see [Error Handling](#error-handling));
+- 401 handling with an optional token refresh (see
+  [Expired sessions (401)](#expired-sessions-401));
+- failures logged through `utils/logger.ts` as method, path, code, and status,
+  without headers or bodies.
+
+To add a client for another backend, create it with the factory:
+
+```ts
+import { createHttpClient } from '@/services/httpClient';
+import { getConfig } from '@/config/env';
+
+export const paymentsApi = createHttpClient({
+  getBaseURL: () => getConfig().apiUrl, // or a new validated variable
+  authenticated: true, // attach the token (trusted origins only) and handle 401s
+});
+```
 
 ### Configuration
 
@@ -138,21 +159,79 @@ setting to revisit.
 
 ### Error Handling
 
-Errors are automatically formatted with consistent structure:
+Every client rejects with `ApiError` (`services/apiError.ts`), an `Error`
+subclass, so `error.message` is always safe to show. The message prefers the
+server's own `message` (or `error`) field, so a failed login shows
+"Invalid credentials" rather than "Request failed with status code 400".
+
+| `code`         | When                                                      |
+| -------------- | --------------------------------------------------------- |
+| `network`      | No response: offline, DNS failure, connection refused     |
+| `timeout`      | The request took longer than `EXPO_PUBLIC_API_TIMEOUT_MS` |
+| `unauthorized` | HTTP 401                                                  |
+| `client`       | Any other HTTP 4xx                                        |
+| `server`       | HTTP 5xx                                                  |
+| `canceled`     | The caller aborted the request (`AbortController`)        |
+| `unknown`      | Anything else                                             |
 
 ```tsx
 import { todosApi } from '@/services/api';
-import type { ApiError } from '@/types/api';
+import { ApiError, toApiError } from '@/services/apiError';
 
 try {
   const todos = await todosApi.getAll();
 } catch (error) {
-  const apiError = error as ApiError;
-  console.error(apiError.message); // Error message
-  console.error(apiError.status); // HTTP status code
-  console.error(apiError.data); // Response data
+  const apiError = toApiError(error); // already an ApiError for HTTP calls
+  if (apiError.code === 'network') {
+    // show an offline state
+  }
+  apiError.status; // HTTP status, if there was a response
+  apiError.data; // response body, if any
 }
 ```
+
+`toApiError(unknown)` converts anything (axios errors, plain `Error`s, other
+values) into an `ApiError`, so screens and hooks can handle one shape.
+
+### Expired sessions (401)
+
+When a request that carried the auth token gets a 401:
+
+1. If a refresh handler is registered, it runs once (concurrent 401s share one
+   refresh). If it returns a new token, the request is retried once with it.
+2. Otherwise, or if the refresh fails or the retry gets another 401, the
+   unauthorized handler runs. The default clears the stored token and profile
+   and emits `session-expired`; `useAuthSession` listens for it, so Home shows
+   "Not signed in" right away.
+3. The request still rejects with an `ApiError` whose `code` is
+   `unauthorized`.
+
+A 401 from the auth client itself (wrong credentials) or on a request sent
+without a token does not touch the session.
+
+Register a refresh handler (for example in `integrations/setup.ts`) if your
+backend issues refresh tokens. It must store the new access token and return
+it, or return `null`:
+
+```ts
+import { setRefreshTokenHandler } from '@/services/session';
+import { setSecureItem } from '@/services/secureStorage';
+import { STORAGE_KEYS } from '@/services/storage';
+import { authApi } from '@/services/auth';
+
+setRefreshTokenHandler(async () => {
+  const { data } = await authApi.post('/auth/refresh', {
+    refreshToken: await getStoredRefreshToken(), // your storage
+  });
+  await setSecureItem(STORAGE_KEYS.AUTH_TOKEN, data.accessToken);
+  return data.accessToken;
+});
+```
+
+To react differently when a session can't be recovered (for example, navigate
+to the login screen), replace the default with `setUnauthorizedHandler()`; call
+`clearStoredSession()` and `emitSessionExpired()` from `services/session.ts` if
+you still want that behavior. Subscribe anywhere with `onSessionExpired()`.
 
 ### Adding New Endpoints
 

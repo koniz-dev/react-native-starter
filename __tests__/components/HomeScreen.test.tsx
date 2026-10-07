@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react-native';
+import { act, fireEvent, render } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { PaperProvider, MD3LightTheme } from 'react-native-paper';
 
@@ -37,6 +37,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 import HomeScreen from '@/app/(tabs)/index';
 import { getItem, setItem, STORAGE_KEYS } from '@/services/storage';
+import { defaultUnauthorizedHandler } from '@/services/session';
 
 const TestWrapper = ({ children }: { children: React.ReactNode }) => (
   <SafeAreaProvider
@@ -143,5 +144,19 @@ describe('<HomeScreen /> session', () => {
     const { findByText } = render(<HomeScreen />, { wrapper: TestWrapper });
 
     expect(await findByText('Not signed in')).toBeTruthy();
+  });
+
+  test('switches to signed out when the API reports the session expired', async () => {
+    mockSecureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
+    await setItem(STORAGE_KEYS.USER_DATA, user);
+    const { findByText } = render(<HomeScreen />, { wrapper: TestWrapper });
+    await findByText('Signed in as Emily Johnson');
+
+    await act(async () => {
+      await defaultUnauthorizedHandler();
+    });
+
+    expect(await findByText('Not signed in')).toBeTruthy();
+    expect(mockSecureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
   });
 });

@@ -21,6 +21,8 @@ export interface AppConfig {
   authApiUrl: string;
   /** Extra origins allowed to receive the auth token (see services/api.ts). */
   apiTrustedOrigins: string[];
+  /** Request timeout for the HTTP clients, in milliseconds. */
+  apiTimeoutMs: number;
 }
 
 /** Public demo backends, used only when EXPO_PUBLIC_USE_DEMO_BACKENDS=true. */
@@ -40,6 +42,7 @@ export function readRawEnv(): RawEnv {
     EXPO_PUBLIC_AUTH_API_URL: process.env.EXPO_PUBLIC_AUTH_API_URL,
     EXPO_PUBLIC_API_TRUSTED_ORIGINS:
       process.env.EXPO_PUBLIC_API_TRUSTED_ORIGINS,
+    EXPO_PUBLIC_API_TIMEOUT_MS: process.env.EXPO_PUBLIC_API_TIMEOUT_MS,
   };
 }
 
@@ -70,7 +73,18 @@ const schema = z.object({
   EXPO_PUBLIC_API_URL: urlField,
   EXPO_PUBLIC_AUTH_API_URL: urlField,
   EXPO_PUBLIC_API_TRUSTED_ORIGINS: optionalString,
+  EXPO_PUBLIC_API_TIMEOUT_MS: optionalString.refine(
+    value =>
+      value === undefined ||
+      (/^\d+$/.test(value) && Number(value) >= 1000 && Number(value) <= 120000),
+    {
+      message: 'must be a whole number of milliseconds between 1000 and 120000',
+    }
+  ),
 });
+
+/** Default request timeout when EXPO_PUBLIC_API_TIMEOUT_MS is not set. */
+export const DEFAULT_API_TIMEOUT_MS = 15000;
 
 export interface ConfigIssue {
   variable: string;
@@ -155,7 +169,16 @@ export function parseEnv(raw: RawEnv, isDevBuild: boolean): ConfigResult {
   }
   return {
     success: true,
-    config: { appEnv, useDemoBackends, apiUrl, authApiUrl, apiTrustedOrigins },
+    config: {
+      appEnv,
+      useDemoBackends,
+      apiUrl,
+      authApiUrl,
+      apiTrustedOrigins,
+      apiTimeoutMs: env.EXPO_PUBLIC_API_TIMEOUT_MS
+        ? Number(env.EXPO_PUBLIC_API_TIMEOUT_MS)
+        : DEFAULT_API_TIMEOUT_MS,
+    },
   };
 }
 

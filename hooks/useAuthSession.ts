@@ -4,6 +4,7 @@
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { authService, type AuthResponse } from '@/services/auth';
+import { onSessionExpired } from '@/services/session';
 
 export type AuthSession =
   | { status: 'loading'; user: null }
@@ -54,8 +55,18 @@ export function useAuthSession(): UseAuthSessionResult {
         setSession(next);
       }
     });
+    // An API 401 that a token refresh couldn't fix clears the stored session
+    // (services/session.ts); re-read it so the UI shows "signed out".
+    const unsubscribe = onSessionExpired(() => {
+      readSession().then(next => {
+        if (isMountedRef.current) {
+          setSession(next);
+        }
+      });
+    });
     return () => {
       isMountedRef.current = false;
+      unsubscribe();
     };
   }, []);
 

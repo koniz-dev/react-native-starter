@@ -1,0 +1,100 @@
+PASS __tests__/config/env.test.ts
+  parseEnv
+    ✓ accepts a complete production configuration (6 ms)
+    ✓ parses and validates the API timeout (4 ms)
+    ✓ reports every missing required URL when demo backends are off (1 ms)
+    ✓ treats an empty value (KEY=) as missing (1 ms)
+    ✓ rejects a URL that is not absolute http(s) (1 ms)
+    ✓ rejects http outside development and allows it in development (1 ms)
+    ✓ fills missing URLs from the demo backends only when the flag is on (1 ms)
+    ✓ prefers explicit URLs over the demo backends (1 ms)
+    ✓ defaults the app environment from the build type
+    ✓ rejects unknown values for enums and booleans
+    ✓ parses and validates trusted origins (1 ms)
+  getConfig
+    ✓ throws a ConfigError naming the variables when configuration is invalid (36 ms)
+
+  console.warn
+    ⚠️ API request failed: server (503)
+
+      44 |         console.warn(`⚠️ ${message}`, context);
+      45 |       } else {
+    > 46 |         console.warn(`⚠️ ${message}`);
+         |                 ^
+      47 |       }
+      48 |     }
+      49 |   },
+
+      at Object.warn (utils/logger.ts:46:17)
+      at warn (services/httpClient.ts:136:12)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12
+      at apply (services/httpClient.ts:142:4)
+      at Axios.request (node_modules/axios/dist/browser/axios.cjs:5245:14)
+
+PASS __tests__/services/httpClient.test.ts
+  createHttpClient
+    ✓ applies the configured timeout and base URL (11 ms)
+    ✓ maps a timeout to code "timeout" (7 ms)
+    ✓ maps a request without a response to code "network" (11 ms)
+    ✓ maps an aborted request to code "canceled" (3 ms)
+    ✓ clears the session and emits session-expired on a 401 with no refresh handler (5 ms)
+    ✓ refreshes once and retries the request with the new token (4 ms)
+    ✓ clears the session when the refresh handler fails (2 ms)
+    ✓ does not refresh twice when the retried request is rejected again (3 ms)
+    ✓ shares one refresh between concurrent 401s (4 ms)
+    ✓ leaves the session alone for a 401 on a request sent without a token (2 ms)
+    ✓ runs a custom unauthorized handler instead of the default (2 ms)
+  auth client
+    ✓ rejects wrong credentials with the server message and keeps any session (2 ms)
+    ✓ never sends a token to the auth backend (1 ms)
+  toApiError
+    ✓ maps HTTP 401 to unauthorized
+    ✓ maps HTTP 403 to client (1 ms)
+    ✓ maps HTTP 404 to client
+    ✓ maps HTTP 422 to client
+    ✓ maps HTTP 500 to server
+    ✓ maps HTTP 503 to server
+    ✓ prefers the server message, then axios, for HTTP errors
+    ✓ wraps non-axios errors as unknown and returns ApiErrors unchanged (1 ms)
+
+PASS __tests__/services/api.test.ts
+  api interceptors
+    ✓ injects the protected token into an outgoing request (16 ms)
+    ✓ rejects with an ApiError carrying the server message and status (58 ms)
+  token origin allow-list
+    ✓ trusts only the auth backend origin by default (1 ms)
+    ✓ does not send the auth token to the separate demo API host (2 ms)
+    ✓ attaches the token to the auth origin, with or without the default port (1 ms)
+    ✓ does not attach or read the token for another origin (4 ms)
+    ✓ does not attach the token to a look-alike host (2 ms)
+    ✓ sends no Authorization header when no token is stored (1 ms)
+    ✓ trusts origins listed in EXPO_PUBLIC_API_TRUSTED_ORIGINS, including the API (27 ms)
+  getOrigin
+    ✓ https://API.Example.com/v1?x=1 -> https://api.example.com (1 ms)
+    ✓ https://api.example.com:443/v1 -> https://api.example.com
+    ✓ http://localhost:80 -> http://localhost
+    ✓ http://localhost:3000/x -> http://localhost:3000
+    ✓ https://user:pass@api.example.com/x -> https://api.example.com (1 ms)
+    ✓ /relative/path -> null
+    ✓  -> null
+
+PASS __tests__/components/HomeScreen.test.tsx
+  <HomeScreen />
+    ✓ renders correctly with title (183 ms)
+    ✓ renders all text variants section (80 ms)
+    ✓ renders buttons section (77 ms)
+  <HomeScreen /> session
+    ✓ shows the signed-out state with the entry to the login demo (78 ms)
+    ✓ shows the signed-in user from the stored session (77 ms)
+    ✓ logging out clears the session and returns to the signed-out state (132 ms)
+    ✓ treats a secure storage failure as signed out (72 ms)
+    ✓ switches to signed out when the API reports the session expired (88 ms)
+
+Test Suites: 4 passed, 4 total
+Tests:       57 passed, 57 total
+Snapshots:   0 total
+Time:        2.934 s, estimated 4 s
+Ran all test suites matching /__tests__\/services\/httpClient|__tests__\/services\/api|__tests__\/components\/HomeScreen|__tests__\/config\/env/i.

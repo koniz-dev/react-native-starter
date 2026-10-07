@@ -1,4 +1,9 @@
-import { DEMO_BACKENDS, parseEnv, type RawEnv } from '@/config/env';
+import {
+  DEFAULT_API_TIMEOUT_MS,
+  DEMO_BACKENDS,
+  parseEnv,
+  type RawEnv,
+} from '@/config/env';
 
 const valid: RawEnv = {
   EXPO_PUBLIC_APP_ENV: 'production',
@@ -21,8 +26,24 @@ describe('parseEnv', () => {
         apiUrl: 'https://api.example.com',
         authApiUrl: 'https://auth.example.com',
         apiTrustedOrigins: [],
+        apiTimeoutMs: DEFAULT_API_TIMEOUT_MS,
       },
     });
+  });
+
+  it('parses and validates the API timeout', () => {
+    const ok = parseEnv(
+      { ...valid, EXPO_PUBLIC_API_TIMEOUT_MS: '30000' },
+      false
+    );
+    expect(ok.success && ok.config.apiTimeoutMs).toBe(30000);
+    for (const bad of ['abc', '500', '999999', '1.5']) {
+      expect(
+        issuesOf({ ...valid, EXPO_PUBLIC_API_TIMEOUT_MS: bad }).map(
+          issue => issue.variable
+        )
+      ).toEqual(['EXPO_PUBLIC_API_TIMEOUT_MS']);
+    }
   });
 
   it('reports every missing required URL when demo backends are off', () => {

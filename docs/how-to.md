@@ -272,7 +272,7 @@ const { data } = useFetch(() => userApi.getById(userId), [userId]);
 
 ```tsx
 import { todosApi } from '@/services/api';
-import type { ApiError } from '@/types/api';
+import type { ApiError } from '@/services/apiError';
 
 try {
   const todos = await todosApi.getAll();

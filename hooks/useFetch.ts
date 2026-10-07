@@ -3,7 +3,7 @@
  * Generic custom hook for data fetching with loading and error states
  */
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { ApiError } from '@/types/api';
+import type { ApiError } from '@/services/apiError';
 
 interface UseFetchResult<T> {
   data: T | null;

@@ -2,14 +2,11 @@
  * Authentication Service
  * Handles login, logout, and token management
  */
-import axios from 'axios';
 import { getConfig } from '@/config/env';
-import { setItem, removeItem, getItem, STORAGE_KEYS } from './storage';
-import {
-  getSecureItem,
-  removeSecureItem,
-  setSecureItem,
-} from './secureStorage';
+import { createHttpClient } from './httpClient';
+import { clearStoredSession } from './session';
+import { setItem, getItem, STORAGE_KEYS } from './storage';
+import { getSecureItem, setSecureItem } from './secureStorage';
 
 export interface LoginCredentials {
   username: string;
@@ -35,22 +32,14 @@ interface DemoAuthResponse {
   user?: AuthResponse['user'];
 }
 
-export const authApi = axios.create({
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  // React Native's XMLHttpRequest defaults withCredentials to true, so the
-  // native cookie store would keep any token cookies the auth server sets
-  // (DummyJSON sets accessToken/refreshToken). The token belongs in secure
-  // storage only, so don't store or send cookies for auth requests.
+// The auth backend's own client. Not `authenticated`: a 401 here means wrong
+// credentials, not an expired session. withCredentials is off because React
+// Native's XMLHttpRequest defaults it to true, so the native cookie store would
+// keep any token cookies the auth server sets (DummyJSON sets
+// accessToken/refreshToken); the token belongs in secure storage only.
+export const authApi = createHttpClient({
+  getBaseURL: () => getConfig().authApiUrl,
   withCredentials: false,
-});
-
-// The base URL comes from validated config, applied per request so that
-// importing this module never reads configuration.
-authApi.interceptors.request.use(config => {
-  config.baseURL ??= getConfig().authApiUrl;
-  return config;
 });
 
 function normalizeAuthResponse(data: DemoAuthResponse): AuthResponse {
@@ -110,8 +99,7 @@ export const authService = {
    * Logout - removes auth token and user data
    */
   logout: async (): Promise<void> => {
-    await removeSecureItem(STORAGE_KEYS.AUTH_TOKEN);
-    await removeItem(STORAGE_KEYS.USER_DATA);
+    await clearStoredSession();
   },
 
   /**

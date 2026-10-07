@@ -20,10 +20,3 @@ export interface Todo {
   title: string;
   completed: boolean;
 }
-
-// API error response structure
-export interface ApiError {
-  message: string;
-  status?: number;
-  data?: unknown;
-}
