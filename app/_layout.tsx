@@ -39,8 +39,9 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <ErrorBoundary>
-      <PaperProvider theme={theme}>
+    <PaperProvider theme={theme}>
+      {/* Inside the theme provider, so the fallback follows light/dark. */}
+      <ErrorBoundary>
         <ThemeProvider value={getNavigationTheme(theme)}>
           {/* Dark icons on the light theme, light icons on the dark theme. */}
           <StatusBar style={theme.dark ? 'light' : 'dark'} />
@@ -52,8 +53,8 @@ export default function RootLayout() {
             <ConfigErrorScreen issues={configResult.issues} />
           )}
         </ThemeProvider>
-      </PaperProvider>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </PaperProvider>
   );
 }
 

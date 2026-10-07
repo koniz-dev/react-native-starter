@@ -157,6 +157,23 @@ module.exports = [
     },
   },
 
+  // App code logs through utils/logger.ts, which forwards errors to the
+  // error-reporting seam; only the logger and the default reporter write to
+  // the console directly.
+  {
+    files: ['**/*.{ts,tsx,js,jsx}'],
+    ignores: [
+      'utils/logger.ts',
+      'integrations/errorReporter.ts',
+      '__tests__/**',
+      'scripts/**',
+      'jest.setup*.js',
+    ],
+    rules: {
+      'no-console': 'error',
+    },
+  },
+
   // Environment variables are read only by the validated config module.
   {
     files: ['**/*.{ts,tsx,js,jsx}'],

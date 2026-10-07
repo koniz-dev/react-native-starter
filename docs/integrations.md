@@ -6,15 +6,14 @@ app runs as-is. To use a real provider, install it yourself and register an
 adapter in [`integrations/setup.ts`](../integrations/setup.ts), which runs once
 from `app/_layout.tsx` before the first screen renders. No other code changes.
 
-| Seam               | Module                              | Default                                                                       | Call it with                                 |
-| ------------------ | ----------------------------------- | ----------------------------------------------------------------------------- | -------------------------------------------- |
-| Analytics          | `integrations/analytics.ts`         | Logs `track` / `screen` / `identify` at debug level (development builds only) | `getAnalytics().track('event', props)`       |
-| Feature flags      | `integrations/featureFlags.ts`      | Static values from `config/featureFlags.ts`                                   | `getFeatureFlags().isEnabled('flag')`        |
-| Push notifications | `integrations/pushNotifications.ts` | "Not configured": no permission, no token, no notifications                   | `getPushNotifications().requestPermission()` |
-| OTA updates        | `integrations/updates.ts`           | Never finds an update                                                         | `getUpdates().checkForUpdate()`              |
-| i18n               | `i18n/index.ts`                     | English dictionary in `i18n/en.ts`                                            | `t('login.title')`                           |
-
-Error reporting gets its own seam in the logging work; see the issue tracker.
+| Seam               | Module                              | Default                                                                       | Call it with                                                                 |
+| ------------------ | ----------------------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Analytics          | `integrations/analytics.ts`         | Logs `track` / `screen` / `identify` at debug level (development builds only) | `getAnalytics().track('event', props)`                                       |
+| Feature flags      | `integrations/featureFlags.ts`      | Static values from `config/featureFlags.ts`                                   | `getFeatureFlags().isEnabled('flag')`                                        |
+| Push notifications | `integrations/pushNotifications.ts` | "Not configured": no permission, no token, no notifications                   | `getPushNotifications().requestPermission()`                                 |
+| OTA updates        | `integrations/updates.ts`           | Never finds an update                                                         | `getUpdates().checkForUpdate()`                                              |
+| i18n               | `i18n/index.ts`                     | English dictionary in `i18n/en.ts`                                            | `t('login.title')`                                                           |
+| Error reporting    | `integrations/errorReporter.ts`     | One console line per report                                                   | `logger.error('message', error)` (see [Error reporting](error-reporting.md)) |
 
 Every seam is created with `createSeam(default)` and exposes `set()` and
 `reset()`; tests use `reset()` in `afterEach`.

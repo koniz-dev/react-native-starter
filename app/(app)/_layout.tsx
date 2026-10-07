@@ -3,6 +3,10 @@ import { Stack } from 'expo-router';
 import { Appbar } from 'react-native-paper';
 import { t } from '@/i18n';
 
+// Render errors in this group's screens show a themed fallback with
+// "Try again" and "Go home" and are reported (components/ErrorBoundary.tsx).
+export { RouteErrorBoundary as ErrorBoundary } from '@/components/ErrorBoundary';
+
 /**
  * Screens that require a signed-in user. The root layout wraps this group in
  * <Stack.Protected guard={signedIn}>, so a signed-out user (including after

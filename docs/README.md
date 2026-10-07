@@ -43,6 +43,9 @@ This directory contains additional guides and documentation for common developme
 - **[Integrations](integrations.md)**  
   Analytics, feature flags, push notifications, OTA updates, and i18n seams with no-account defaults
 
+- **[Error Reporting and Logging](error-reporting.md)**  
+  Logger levels and redaction, the error-reporter seam, error boundaries, and plugging in a provider
+
 ## Quick Reference
 
 All guides include:

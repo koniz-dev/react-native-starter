@@ -3,6 +3,7 @@
  * AsyncStorage wrapper with JSON serialization and TypeScript support
  */
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { logger } from '@/utils/logger';
 
 // Common storage keys used across the app
 export const STORAGE_KEYS = {
@@ -20,7 +21,7 @@ export async function setItem<T>(key: string, value: T): Promise<void> {
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem(key, jsonValue);
   } catch (error) {
-    console.error(`Error storing ${key}:`, error);
+    logger.error(`Error storing ${key}`, error);
     throw error;
   }
 }
@@ -33,7 +34,7 @@ export async function getItem<T>(key: string): Promise<T | null> {
     const jsonValue = await AsyncStorage.getItem(key);
     return jsonValue != null ? (JSON.parse(jsonValue) as T) : null;
   } catch (error) {
-    console.error(`Error retrieving ${key}:`, error);
+    logger.error(`Error retrieving ${key}`, error);
     return null;
   }
 }
@@ -45,7 +46,7 @@ export async function removeItem(key: string): Promise<void> {
   try {
     await AsyncStorage.removeItem(key);
   } catch (error) {
-    console.error(`Error removing ${key}:`, error);
+    logger.error(`Error removing ${key}`, error);
     throw error;
   }
 }
@@ -57,7 +58,7 @@ export async function clear(): Promise<void> {
   try {
     await AsyncStorage.clear();
   } catch (error) {
-    console.error('Error clearing storage:', error);
+    logger.error('Error clearing storage', error);
     throw error;
   }
 }

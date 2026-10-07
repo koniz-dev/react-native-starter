@@ -1,235 +1,312 @@
-import { logger, formatApiError, logApiError } from '@/utils/logger';
+import {
+  createLogger,
+  redact,
+  settingsFromConfig,
+  type LoggerSettings,
+} from '@/utils/logger';
+import {
+  consoleErrorReporter,
+  errorReporterSeam,
+  getErrorReporter,
+  setErrorReporter,
+  type ErrorReporter,
+} from '@/integrations/errorReporter';
+import { ApiError } from '@/services/apiError';
 
-// Mock console methods
-const originalConsoleWarn = console.warn;
-const originalConsoleError = console.error;
-const originalConsoleLog = console.log;
+const PRODUCTION: LoggerSettings = { minLevel: 'warn', development: false };
+const DEVELOPMENT: LoggerSettings = { minLevel: 'debug', development: true };
 
-describe('logger utility', () => {
+function mockReporter(): jest.Mocked<ErrorReporter> {
+  return {
+    captureException: jest.fn(),
+    captureMessage: jest.fn(),
+    setUser: jest.fn(),
+  };
+}
+
+describe('logger', () => {
+  let reporter: jest.Mocked<ErrorReporter>;
+  let consoleSpies: Record<
+    'debug' | 'info' | 'warn' | 'error',
+    jest.SpyInstance
+  >;
+
   beforeEach(() => {
-    // Reset mocks before each test
-    jest.clearAllMocks();
-    console.warn = jest.fn();
-    console.error = jest.fn();
-    console.log = jest.fn();
+    reporter = mockReporter();
+    errorReporterSeam.set(reporter);
+    consoleSpies = {
+      debug: jest.spyOn(console, 'debug').mockImplementation(() => {}),
+      info: jest.spyOn(console, 'info').mockImplementation(() => {}),
+      warn: jest.spyOn(console, 'warn').mockImplementation(() => {}),
+      error: jest.spyOn(console, 'error').mockImplementation(() => {}),
+    };
   });
 
-  afterAll(() => {
-    // Restore original console methods
-    console.warn = originalConsoleWarn;
-    console.error = originalConsoleError;
-    console.log = originalConsoleLog;
+  afterEach(() => {
+    errorReporterSeam.reset();
+    jest.restoreAllMocks();
   });
 
-  describe('logger.warn', () => {
-    test('logs warning message without context in development', () => {
-      // Mock __DEV__ as true
-      (global as { __DEV__?: boolean }).__DEV__ = true;
+  describe('levels', () => {
+    it('writes only messages at or above the minimum level', () => {
+      const logger = createLogger(() => PRODUCTION);
 
-      logger.warn('Test warning');
+      logger.debug('debug message');
+      logger.info('info message');
+      logger.warn('warn message');
+      logger.error('error message');
 
-      expect(console.warn).toHaveBeenCalledWith('⚠️ Test warning');
+      expect(consoleSpies.debug).not.toHaveBeenCalled();
+      expect(consoleSpies.info).not.toHaveBeenCalled();
+      expect(consoleSpies.warn).toHaveBeenCalledWith('warn message');
+      expect(consoleSpies.error).toHaveBeenCalledWith('error message');
     });
 
-    test('logs warning message with Error context', () => {
-      (global as { __DEV__?: boolean }).__DEV__ = true;
-      const error = new Error('Test error');
+    it('writes every level in development', () => {
+      const logger = createLogger(() => DEVELOPMENT);
 
-      logger.warn('Test warning', error);
+      logger.debug('debug message', { a: 1 });
+      logger.info('info message');
 
-      expect(console.warn).toHaveBeenCalledWith('⚠️ Test warning', error);
+      expect(consoleSpies.debug).toHaveBeenCalledWith('debug message', {
+        a: 1,
+      });
+      expect(consoleSpies.info).toHaveBeenCalledWith('info message');
     });
 
-    test('logs warning message with object context', () => {
-      (global as { __DEV__?: boolean }).__DEV__ = true;
-      const context = { userId: 123, action: 'login' };
+    it('writes nothing to the console when silent', () => {
+      const logger = createLogger(() => ({
+        minLevel: 'silent',
+        development: false,
+      }));
 
-      logger.warn('Test warning', context);
+      logger.warn('warn message');
+      logger.error('error message', new Error('boom'));
 
-      expect(console.warn).toHaveBeenCalledWith('⚠️ Test warning', context);
+      expect(consoleSpies.warn).not.toHaveBeenCalled();
+      expect(consoleSpies.error).not.toHaveBeenCalled();
+      // Reporting does not depend on the console level.
+      expect(reporter.captureException).toHaveBeenCalledTimes(1);
     });
 
-    test('does not log in production mode', () => {
-      (global as { __DEV__?: boolean }).__DEV__ = false;
+    it('reads the settings on every call', () => {
+      let settings = PRODUCTION;
+      const logger = createLogger(() => settings);
 
-      logger.warn('Test warning');
+      logger.info('hidden');
+      settings = DEVELOPMENT;
+      logger.info('shown');
 
-      expect(console.warn).not.toHaveBeenCalled();
+      expect(consoleSpies.info).toHaveBeenCalledTimes(1);
+      expect(consoleSpies.info).toHaveBeenCalledWith('shown');
+    });
+
+    it('uses the configured level from config/env.ts', () => {
+      // jest.setup.env.js runs tests as a development build.
+      expect(settingsFromConfig()).toEqual({
+        minLevel: 'debug',
+        development: true,
+      });
     });
   });
 
-  describe('logger.error', () => {
-    test('logs error message without context', () => {
-      logger.error('Test error');
+  describe('forwarding to the error reporter in production', () => {
+    it('reports an Error with the message and redacted context', () => {
+      const logger = createLogger(() => PRODUCTION);
+      const error = new Error('disk full');
 
-      expect(console.error).toHaveBeenCalledWith('❌ Test error');
+      logger.error('Failed to save', error, {
+        key: 'settings',
+        headers: { Authorization: 'Bearer secret-token' },
+      });
+
+      expect(reporter.captureException).toHaveBeenCalledWith(error, {
+        message: 'Failed to save',
+        extra: { key: 'settings', headers: { Authorization: '[redacted]' } },
+      });
     });
 
-    test('logs error message with Error object and stack trace in development', () => {
-      (global as { __DEV__?: boolean }).__DEV__ = true;
-      const error = new Error('Test error');
-      error.stack = 'Error: Test error\n    at test.js:1:1';
+    it('reports a message when there is no Error', () => {
+      const logger = createLogger(() => PRODUCTION);
 
-      logger.error('Test error', error);
+      logger.error('Payment declined', undefined, { orderId: 7 });
 
-      expect(console.error).toHaveBeenCalledWith('❌ Test error', error);
-      expect(console.error).toHaveBeenCalledWith('Stack trace:', error.stack);
+      expect(reporter.captureMessage).toHaveBeenCalledWith(
+        'Payment declined',
+        'error',
+        { message: 'Payment declined', extra: { orderId: 7 } }
+      );
+      expect(reporter.captureException).not.toHaveBeenCalled();
     });
 
-    test('logs error message with Error object but no stack trace in production', () => {
-      (global as { __DEV__?: boolean }).__DEV__ = false;
-      const error = new Error('Test error');
-      error.stack = 'Error: Test error\n    at test.js:1:1';
+    it('reports a thrown non-Error value as a message with the value', () => {
+      const logger = createLogger(() => PRODUCTION);
 
-      logger.error('Test error', error);
+      logger.error('Unexpected rejection', { reason: 'nope', token: 'abc' });
 
-      expect(console.error).toHaveBeenCalledWith('❌ Test error', error);
-      expect(console.error).not.toHaveBeenCalledWith(
-        'Stack trace:',
-        expect.anything()
+      expect(reporter.captureMessage).toHaveBeenCalledWith(
+        'Unexpected rejection',
+        'error',
+        {
+          message: 'Unexpected rejection',
+          extra: { error: { reason: 'nope', token: '[redacted]' } },
+        }
       );
     });
 
-    test('logs error message with object context', () => {
-      const context = { status: 500, message: 'Server error' };
+    it('does not forward warnings', () => {
+      createLogger(() => PRODUCTION).warn('slow response');
 
-      logger.error('Test error', context);
-
-      expect(console.error).toHaveBeenCalledWith('❌ Test error', context);
+      expect(reporter.captureException).not.toHaveBeenCalled();
+      expect(reporter.captureMessage).not.toHaveBeenCalled();
     });
 
-    test('logs error message with Error object without stack', () => {
-      (global as { __DEV__?: boolean }).__DEV__ = true;
-      const error = new Error('Test error');
-      delete (error as { stack?: string }).stack;
+    it('also forwards in development', () => {
+      const error = new Error('boom');
+      createLogger(() => DEVELOPMENT).error('Failed', error);
 
-      logger.error('Test error', error);
+      expect(reporter.captureException).toHaveBeenCalledWith(error, {
+        message: 'Failed',
+        extra: undefined,
+      });
+    });
 
-      expect(console.error).toHaveBeenCalledWith('❌ Test error', error);
-      expect(console.error).not.toHaveBeenCalledWith(
-        'Stack trace:',
-        expect.anything()
+    it('setErrorReporter registers a provider', () => {
+      errorReporterSeam.reset();
+      const provider = mockReporter();
+      setErrorReporter(provider);
+
+      createLogger(() => PRODUCTION).error('Failed', new Error('boom'));
+
+      expect(getErrorReporter()).toBe(provider);
+      expect(provider.captureException).toHaveBeenCalledTimes(1);
+    });
+
+    it('keeps working when the reporter throws', () => {
+      reporter.captureException.mockImplementation(() => {
+        throw new Error('reporter down');
+      });
+      const logger = createLogger(() => PRODUCTION);
+
+      expect(() => logger.error('Failed', new Error('boom'))).not.toThrow();
+      expect(consoleSpies.error).toHaveBeenCalled();
+    });
+
+    it('the default reporter writes one console line', () => {
+      errorReporterSeam.reset();
+      createLogger(() => PRODUCTION).error('Failed to save', new Error('boom'));
+
+      expect(errorReporterSeam.get()).toBe(consoleErrorReporter);
+      expect(consoleSpies.info).toHaveBeenCalledWith(
+        '[error-reporter] exception: Error: boom (Failed to save)'
       );
     });
   });
 
-  describe('logger.info', () => {
-    test('logs info message without context in development', () => {
-      (global as { __DEV__?: boolean }).__DEV__ = true;
+  describe('redaction', () => {
+    it('always redacts auth headers, cookies, tokens, and passwords', () => {
+      const input = {
+        headers: {
+          Authorization: 'Bearer abc',
+          Cookie: 'session=1',
+          Accept: 'application/json',
+        },
+        credentials: { username: 'emilys', password: 'emilyspass' },
+        accessToken: 'abc',
+        refresh_token: 'def',
+      };
 
-      logger.info('Test info');
-
-      expect(console.log).toHaveBeenCalledWith('ℹ️ Test info');
+      for (const development of [true, false]) {
+        expect(redact(input, development)).toEqual({
+          headers: {
+            Authorization: '[redacted]',
+            Cookie: '[redacted]',
+            Accept: 'application/json',
+          },
+          credentials: { username: 'emilys', password: '[redacted]' },
+          accessToken: '[redacted]',
+          refresh_token: '[redacted]',
+        });
+      }
     });
 
-    test('logs info message with context in development', () => {
-      (global as { __DEV__?: boolean }).__DEV__ = true;
-      const context = { userId: 123 };
+    it('redacts response bodies outside development only', () => {
+      const input = { status: 500, data: { user: 'emily' }, body: '{}' };
 
-      logger.info('Test info', context);
-
-      expect(console.log).toHaveBeenCalledWith('ℹ️ Test info', context);
+      expect(redact(input, false)).toEqual({
+        status: 500,
+        data: '[redacted]',
+        body: '[redacted]',
+      });
+      expect(redact(input, true)).toEqual(input);
     });
 
-    test('does not log in production mode', () => {
-      (global as { __DEV__?: boolean }).__DEV__ = false;
+    it('reduces Errors to name, message, code, and status outside development', () => {
+      const error = new ApiError('Server error', {
+        code: 'server',
+        status: 500,
+        data: { secret: 'response body' },
+      });
 
-      logger.info('Test info');
-
-      expect(console.log).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('logger.debug', () => {
-    test('logs debug message without context in development', () => {
-      (global as { __DEV__?: boolean }).__DEV__ = true;
-
-      logger.debug('Test debug');
-
-      expect(console.log).toHaveBeenCalledWith('🐛 Test debug');
-    });
-
-    test('logs debug message with context in development', () => {
-      (global as { __DEV__?: boolean }).__DEV__ = true;
-      const context = { debug: true };
-
-      logger.debug('Test debug', context);
-
-      expect(console.log).toHaveBeenCalledWith('🐛 Test debug', context);
+      expect(redact({ error }, false)).toEqual({
+        error: {
+          name: 'ApiError',
+          message: 'Server error',
+          code: 'server',
+          status: 500,
+        },
+      });
+      expect(redact({ error }, true)).toEqual({
+        error: expect.objectContaining({ stack: expect.any(String) }),
+      });
     });
 
-    test('does not log in production mode', () => {
-      (global as { __DEV__?: boolean }).__DEV__ = false;
+    it('prints a redacted Error summary in production and the Error in development', () => {
+      const error = new ApiError('Server error', {
+        code: 'server',
+        status: 500,
+        data: { user: 'emily' },
+      });
 
-      logger.debug('Test debug');
+      createLogger(() => PRODUCTION).error('Request failed', error);
+      expect(consoleSpies.error).toHaveBeenLastCalledWith('Request failed', {
+        name: 'ApiError',
+        message: 'Server error',
+        code: 'server',
+        status: 500,
+      });
 
-      expect(console.log).not.toHaveBeenCalled();
+      createLogger(() => DEVELOPMENT).error('Request failed', error);
+      expect(consoleSpies.error).toHaveBeenLastCalledWith(
+        'Request failed',
+        error
+      );
     });
-  });
-});
 
-describe('formatApiError', () => {
-  test('formats Error object', () => {
-    const error = new Error('Network error');
-    expect(formatApiError(error)).toBe('Network error');
-  });
+    it('handles circular and deeply nested values', () => {
+      const circular: Record<string, unknown> = { name: 'loop' };
+      circular.self = circular;
+      const deep = { a: { b: { c: { d: { e: { f: 1 } } } } } };
 
-  test('formats API error object with message and status', () => {
-    const error = { message: 'Not found', status: 404, data: null };
-    expect(formatApiError(error)).toBe('[404] Not found');
-  });
+      expect(redact(circular, false)).toEqual({
+        name: 'loop',
+        self: '[circular]',
+      });
+      expect(redact(deep, false)).toEqual({
+        a: { b: { c: { d: { e: '[truncated]' } } } },
+      });
+    });
 
-  test('formats API error object with message only', () => {
-    const error = { message: 'Server error', data: null };
-    expect(formatApiError(error)).toBe('Server error');
-  });
+    it('redacts what the logger writes outside development', () => {
+      createLogger(() => PRODUCTION).warn('Request failed', {
+        config: { headers: { Authorization: 'Bearer abc' } },
+        response: { status: 401, data: { message: 'expired' } },
+      });
 
-  test('formats unknown error', () => {
-    expect(formatApiError(null)).toBe('An unknown error occurred');
-    expect(formatApiError(undefined)).toBe('An unknown error occurred');
-    expect(formatApiError('string error')).toBe('An unknown error occurred');
-  });
-
-  test('formats API error object without message', () => {
-    const error = { status: 500, data: { code: 'ERR_500' } };
-    expect(formatApiError(error)).toBe('An unknown error occurred');
-  });
-});
-
-describe('logApiError', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    console.error = jest.fn();
-  });
-
-  afterAll(() => {
-    console.error = originalConsoleError;
-  });
-
-  test('logs API error with Error object', () => {
-    const error = new Error('Network error');
-    logApiError('Failed to fetch', error);
-
-    expect(console.error).toHaveBeenCalledWith(
-      '❌ Failed to fetch: Network error',
-      error
-    );
-  });
-
-  test('logs API error with API error object', () => {
-    const error = { message: 'Not found', status: 404 };
-    logApiError('Failed to fetch', error);
-
-    expect(console.error).toHaveBeenCalledWith(
-      '❌ Failed to fetch: [404] Not found'
-    );
-  });
-
-  test('logs API error with unknown error', () => {
-    logApiError('Failed to fetch', null);
-
-    expect(console.error).toHaveBeenCalledWith(
-      '❌ Failed to fetch: An unknown error occurred'
-    );
+      expect(consoleSpies.warn).toHaveBeenCalledWith('Request failed', {
+        config: { headers: { Authorization: '[redacted]' } },
+        response: { status: 401, data: '[redacted]' },
+      });
+    });
   });
 });

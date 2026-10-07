@@ -27,6 +27,7 @@ describe('parseEnv', () => {
         authApiUrl: 'https://auth.example.com',
         apiTrustedOrigins: [],
         apiTimeoutMs: DEFAULT_API_TIMEOUT_MS,
+        logLevel: 'warn',
       },
     });
   });
@@ -44,6 +45,35 @@ describe('parseEnv', () => {
         )
       ).toEqual(['EXPO_PUBLIC_API_TIMEOUT_MS']);
     }
+  });
+
+  it('defaults the log level per environment and accepts an override', () => {
+    const levelFor = (raw: RawEnv) => {
+      const result = parseEnv(raw, false);
+      return result.success ? result.config.logLevel : null;
+    };
+    const devUrls = {
+      EXPO_PUBLIC_API_URL: 'http://localhost:3000',
+      EXPO_PUBLIC_AUTH_API_URL: 'http://localhost:3001',
+    };
+
+    expect(levelFor({ ...devUrls, EXPO_PUBLIC_APP_ENV: 'development' })).toBe(
+      'debug'
+    );
+    expect(levelFor({ ...valid, EXPO_PUBLIC_APP_ENV: 'preview' })).toBe('info');
+    expect(levelFor(valid)).toBe('warn');
+    expect(levelFor({ ...valid, EXPO_PUBLIC_LOG_LEVEL: 'error' })).toBe(
+      'error'
+    );
+    expect(levelFor({ ...valid, EXPO_PUBLIC_LOG_LEVEL: 'silent' })).toBe(
+      'silent'
+    );
+    expect(issuesOf({ ...valid, EXPO_PUBLIC_LOG_LEVEL: 'verbose' })).toEqual([
+      {
+        variable: 'EXPO_PUBLIC_LOG_LEVEL',
+        message: 'must be debug, info, warn, error, or silent',
+      },
+    ]);
   });
 
   it('reports every missing required URL when demo backends are off', () => {

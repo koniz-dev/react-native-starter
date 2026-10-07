@@ -296,12 +296,19 @@ Jest configuration is in `package.json`:
 {
   "jest": {
     "preset": "jest-expo",
-    "transformIgnorePatterns": [
-      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg))"
-    ]
+    "testTimeout": 15000,
+    "setupFiles": ["<rootDir>/jest.setup.env.js"],
+    "transformIgnorePatterns": ["node_modules/(?!(...))"]
   }
 }
 ```
+
+- `testTimeout` is 15 s rather than Jest's 5 s: the first
+  `renderRouter('./app')` in each test file loads every route module, which
+  takes about 1.5 s alone but can pass 5 s while several such files run in
+  parallel workers. Later renders in the same file take well under a second.
+- `jest.setup.env.js` gives tests a valid development configuration (see
+  [Environment variables](environment-variables.md)).
 
 ## Dependencies
 

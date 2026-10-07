@@ -1,0 +1,361 @@
+
+> react-native-starter@1.0.0 test:ci
+> jest
+
+PASS __tests__/integrations/i18n.test.tsx (5.979 s)
+  ● Console
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /login
+
+      at debug (utils/logger.ts:133:18)
+
+PASS __tests__/navigation/tabBarTheme.test.tsx (6.878 s)
+  ● Console
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+PASS __tests__/navigation/initialRoute.test.tsx (6.975 s)
+  ● Console
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /login
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /login
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+PASS __tests__/integrations/screenTracking.test.tsx
+PASS __tests__/components/ErrorBoundary.test.tsx (8.073 s)
+  ● Console
+
+    console.debug
+      [analytics] screen /boom
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /boom
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /boom
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /boom
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /boom
+
+      at debug (utils/logger.ts:133:18)
+
+PASS __tests__/components/HomeScreen.test.tsx
+PASS __tests__/components/LoginScreen.test.tsx
+  ● Console
+
+    console.error
+      An update to SessionProvider inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+      83 |     readStoredSession().then(restored => {
+      84 |       if (!changedRef.current && isMountedRef.current) {
+    > 85 |         setSession(restored);
+         |         ^
+      86 |       }
+      87 |     });
+      88 |     // The HTTP client has already cleared the stored session.
+
+      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14402:19
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2315:13)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14401:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12086:9)
+      at dispatchSetStateInternal (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6208:13)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6165:7)
+      at setSession (providers/SessionProvider.tsx:85:9)
+
+    console.error
+      An update to SessionProvider inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+      83 |     readStoredSession().then(restored => {
+      84 |       if (!changedRef.current && isMountedRef.current) {
+    > 85 |         setSession(restored);
+         |         ^
+      86 |       }
+      87 |     });
+      88 |     // The HTTP client has already cleared the stored session.
+
+      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14402:19
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2315:13)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14401:9)
+      at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12086:9)
+      at dispatchSetStateInternal (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6208:13)
+      at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6165:7)
+      at setSession (providers/SessionProvider.tsx:85:9)
+
+PASS __tests__/navigation/statusBar.test.tsx
+  ● Console
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+PASS __tests__/components/LoadingScreen.test.tsx
+PASS __tests__/services/httpClient.test.ts
+PASS __tests__/integrations/seams.test.ts
+PASS __tests__/services/api.test.ts
+  ● Console
+
+    console.warn
+      API request failed: server (503)
+
+      129 |     const args = [message, ...details.filter(item => item !== undefined)];
+      130 |     if (level === 'error') console.error(...args);
+    > 131 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      132 |     else if (level === 'info') console.info(...args);
+      133 |     else console.debug(...args);
+      134 |   };
+
+      at warn (utils/logger.ts:131:40)
+      at Object.write [as warn] (utils/logger.ts:142:33)
+      at warn (services/httpClient.ts:136:12)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12
+      at apply (services/httpClient.ts:142:4)
+      at Axios.request (node_modules/axios/dist/browser/axios.cjs:5245:14)
+
+PASS __tests__/services/auth.test.ts
+PASS __tests__/hooks/useFetch.test.tsx
+PASS __tests__/config/env.test.ts
+PASS __tests__/services/storage.test.ts
+  ● Console
+
+    console.error
+      Error retrieving bad-json SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+          at JSON.parse (<anonymous>)
+          at parse (/Users/nguyenanhkiet/Playground/react-native-starter/services/storage.ts:35:38)
+          at Generator.next (<anonymous>)
+          at asyncGeneratorStep (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+          at _next (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+          at processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+      128 |     if (LEVEL_ORDER[level] < LEVEL_ORDER[minLevel]) return;
+      129 |     const args = [message, ...details.filter(item => item !== undefined)];
+    > 130 |     if (level === 'error') console.error(...args);
+          |                                    ^
+      131 |     else if (level === 'warn') console.warn(...args);
+      132 |     else if (level === 'info') console.info(...args);
+      133 |     else console.debug(...args);
+
+      at error (utils/logger.ts:130:36)
+      at Object.write (utils/logger.ts:154:7)
+      at error (services/storage.ts:37:12)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+    console.info
+      [error-reporter] exception: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2) (Error retrieving bad-json)
+
+      at Object.info [as captureException] (integrations/errorReporter.ts:51:13)
+
+PASS __tests__/config/appConfig.test.ts
+PASS __tests__/navigation/configError.test.tsx
+  ● Console
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+PASS __tests__/utils/sum.test.ts
+PASS __tests__/navigation/sessionRoutes.test.tsx (10.711 s)
+  ● Console
+
+    console.debug
+      [analytics] screen /profile
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /profile
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /login
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /login
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /profile
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /profile
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /profile
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /profile
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /profile
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+    console.debug
+      [analytics] screen /profile
+
+      at debug (utils/logger.ts:133:18)
+
+PASS __tests__/utils/logger.test.ts
+
+Test Suites: 21 passed, 21 total
+Tests:       149 passed, 149 total
+Snapshots:   0 total
+Time:        11.653 s, estimated 22 s
+Ran all test suites.

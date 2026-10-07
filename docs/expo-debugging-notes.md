@@ -44,68 +44,17 @@ throw Error('Error message');
 
 ## Application to Project
 
-### Already Implemented
+- `components/ErrorBoundary.tsx`: an app-level boundary and route-level
+  boundaries (exported from the group layouts) with a themed fallback, "Try
+  again", and "Go home". The stack trace is shown in development only.
+- `utils/logger.ts`: `debug` / `info` / `warn` / `error` with a configurable
+  minimum level. `logger.warn` uses `console.warn` (a LogBox warning in
+  development) and `logger.error` uses `console.error` (a LogBox error).
+- Errors from the logger and the boundaries go to the error-reporting seam in
+  every build. App code does not call `console` directly (ESLint `no-console`).
 
-✅ **ErrorBoundary component** - Catches errors in component tree
-
-- Displays stack trace in development mode
-- Has user-friendly fallback UI
-- Logs errors using `console.error()` in `componentDidCatch`
-
-✅ **API error handling** - Consistent API error handling
-
-- Interceptor to format errors
-- Logs errors using `console.error()`
-
-### Improvements Added
-
-✅ **Logger utility** (`utils/logger.ts`)
-
-- `logger.warn()` - For warnings (Yellowbox)
-- `logger.error()` - For errors (Redbox)
-- `logger.info()` - For info (dev only)
-- `logger.debug()` - For debug (dev only)
-- `logApiError()` - Helper for API errors
-
-### How to Use the New Logger
-
-```typescript
-import { logger, logApiError } from '@/utils/logger';
-
-// Warning (Yellowbox)
-logger.warn('Deprecated API will be removed in v2');
-
-// Error (Redbox)
-logger.error('Failed to fetch data', error);
-
-// API Error
-try {
-  await api.get('/users');
-} catch (error) {
-  logApiError('Failed to fetch users', error);
-}
-```
-
-## Best Practices
-
-1. **Use the correct log type:**
-   - `console.warn()` / `logger.warn()` for warnings
-   - `console.error()` / `logger.error()` for errors
-   - Don't use `console.log()` for errors
-
-2. **Reading stack traces:**
-   - Find file and line number in stack trace
-   - Check call stack to understand flow
-   - Stack traces only display in development
-
-3. **Error handling:**
-   - Use ErrorBoundary for component errors
-   - Use try/catch for async operations
-   - Log errors with full context
-
-4. **Development vs Production:**
-   - Stack traces only display in `__DEV__`
-   - Logger utility automatically hides debug logs in production
+See [Error Reporting and Logging](error-reporting.md) for levels, redaction,
+and plugging in a crash-reporting provider.
 
 ## References
 

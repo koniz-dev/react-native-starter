@@ -296,8 +296,8 @@ const token = await getItem<string>(STORAGE_KEYS.AUTH_TOKEN);
 const user = await getItem<User>(STORAGE_KEYS.USER_DATA);
 
 // Check if value exists
-if (token) {
-  console.log('Token:', token);
+if (user) {
+  logger.debug('Restored user', { id: user.id });
 }
 ```
 
@@ -367,7 +367,7 @@ function TodosScreen() {
       // Cache results
       await setItem(STORAGE_KEYS.TODOS, data);
     } catch (error) {
-      console.error('Failed to load todos:', error);
+      logger.error('Failed to load todos', error);
     } finally {
       setLoading(false);
     }

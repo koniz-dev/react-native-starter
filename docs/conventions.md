@@ -253,7 +253,7 @@ const theme = useTheme();
 try {
   const data = await api.getData();
 } catch (error) {
-  console.error('Failed to fetch:', error);
+  logger.error('Failed to fetch', error); // reported, see docs/error-reporting.md
   // Show user-friendly error
 }
 

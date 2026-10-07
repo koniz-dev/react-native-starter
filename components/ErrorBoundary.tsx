@@ -1,12 +1,31 @@
 /**
- * ErrorBoundary Component
- * React Error Boundary that catches JavaScript errors in child component tree
- * and displays a fallback UI with error information.
+ * Error boundaries.
+ *
+ * - `ErrorBoundary` wraps the whole app in app/_layout.tsx (inside the theme
+ *   provider, so the fallback follows light/dark mode). It catches render
+ *   errors that no route boundary handled.
+ * - `RouteErrorBoundary` is exported as `ErrorBoundary` from the route group
+ *   layouts; Expo Router renders it in place of the group when one of its
+ *   screens throws.
+ *
+ * Both report through the logger, which forwards to the error-reporting seam
+ * in every build, and both offer "Try again" and "Go home".
  */
-import React, { Component, type ReactNode } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Card, Button, Text, useTheme } from 'react-native-paper';
+import { Component, useEffect, type ErrorInfo, type ReactNode } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { Button, Card, Text, useTheme } from 'react-native-paper';
+import { router, type ErrorBoundaryProps } from 'expo-router';
 import { t } from '@/i18n';
+import { logger } from '@/utils/logger';
+
+/** Navigates to Home. Safe to call before navigation is ready. */
+function goHome() {
+  try {
+    router.replace('/');
+  } catch (error) {
+    logger.warn('Go home failed', { error });
+  }
+}
 
 interface Props {
   children: ReactNode;
@@ -14,86 +33,83 @@ interface Props {
 }
 
 interface State {
-  hasError: boolean;
   error: Error | null;
 }
 
-/**
- * ErrorBoundary catches errors in child components and displays a fallback UI.
- *
- * @example
- * ```tsx
- * <ErrorBoundary>
- *   <YourComponent />
- * </ErrorBoundary>
- * ```
- */
 export class ErrorBoundary extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      hasError: false,
-      error: null,
-    };
-  }
+  state: State = { error: null };
 
   static getDerivedStateFromError(error: Error): State {
-    // Update state so the next render will show the fallback UI
-    return {
-      hasError: true,
-      error,
-    };
+    return { error };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Log error in development
-    if (__DEV__) {
-      console.error('ErrorBoundary caught an error:', error, errorInfo);
-    }
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    logger.error('Render error caught by the app error boundary', error, {
+      componentStack: errorInfo.componentStack ?? undefined,
+    });
   }
 
   resetError = () => {
-    this.setState({
-      hasError: false,
-      error: null,
-    });
+    this.setState({ error: null });
+  };
+
+  goHomeAndReset = () => {
+    goHome();
+    this.resetError();
   };
 
   render() {
-    if (this.state.hasError && this.state.error) {
-      // Use custom fallback if provided
-      if (this.props.fallback) {
-        return this.props.fallback(this.state.error, this.resetError);
-      }
-
-      // Default fallback UI
-      return (
-        <DefaultErrorFallback
-          error={this.state.error}
-          onReset={this.resetError}
-        />
-      );
-    }
-
-    return this.props.children;
+    const { error } = this.state;
+    if (!error) return this.props.children;
+    if (this.props.fallback) return this.props.fallback(error, this.resetError);
+    return (
+      <ErrorFallback
+        error={error}
+        onRetry={this.resetError}
+        onGoHome={this.goHomeAndReset}
+      />
+    );
   }
 }
 
 /**
- * Default error fallback UI component
+ * Route-level boundary for Expo Router. Export it from a layout:
+ * `export { RouteErrorBoundary as ErrorBoundary } from '@/components/ErrorBoundary';`
  */
-function DefaultErrorFallback({
+export function RouteErrorBoundary({ error, retry }: ErrorBoundaryProps) {
+  useEffect(() => {
+    logger.error('Render error caught by a route error boundary', error);
+  }, [error]);
+
+  return (
+    <ErrorFallback
+      error={error}
+      onRetry={() => {
+        void retry();
+      }}
+      onGoHome={() => {
+        goHome();
+        void retry();
+      }}
+    />
+  );
+}
+
+export function ErrorFallback({
   error,
-  onReset,
+  onRetry,
+  onGoHome,
 }: {
   error: Error;
-  onReset: () => void;
+  onRetry: () => void;
+  onGoHome: () => void;
 }) {
   const theme = useTheme();
 
   return (
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
+      testID="error-fallback"
     >
       <Card
         style={[styles.card, { backgroundColor: theme.colors.errorContainer }]}
@@ -111,24 +127,30 @@ function DefaultErrorFallback({
           >
             {error.message || t('errorBoundary.fallbackMessage')}
           </Text>
-          {__DEV__ && error.stack && (
-            <Text
-              variant="bodySmall"
-              style={[
-                styles.stackTrace,
-                { color: theme.colors.onErrorContainer },
-              ]}
-            >
-              {error.stack}
-            </Text>
-          )}
+          {__DEV__ && error.stack ? (
+            <ScrollView style={styles.stackScroll}>
+              <Text
+                variant="bodySmall"
+                style={[
+                  styles.stackTrace,
+                  { color: theme.colors.onErrorContainer },
+                ]}
+              >
+                {error.stack}
+              </Text>
+            </ScrollView>
+          ) : null}
         </Card.Content>
         <Card.Actions>
+          <Button mode="outlined" onPress={onGoHome} testID="error-go-home">
+            {t('errorBoundary.goHome')}
+          </Button>
           <Button
             mode="contained"
-            onPress={onReset}
+            onPress={onRetry}
             buttonColor={theme.colors.error}
             textColor={theme.colors.onError}
+            testID="error-retry"
           >
             {t('errorBoundary.retry')}
           </Button>
@@ -156,8 +178,10 @@ const styles = StyleSheet.create({
   message: {
     marginBottom: 16,
   },
+  stackScroll: {
+    maxHeight: 200,
+  },
   stackTrace: {
-    marginTop: 16,
     fontFamily: 'monospace',
     fontSize: 12,
     opacity: 0.8,

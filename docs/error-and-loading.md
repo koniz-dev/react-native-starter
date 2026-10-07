@@ -16,36 +16,33 @@ All utilities use React Native Paper components and follow Material Design 3 pat
 
 The `ErrorBoundary` component catches JavaScript errors anywhere in the child component tree and displays a fallback UI instead of crashing the app.
 
-### When to Use
+The app is already wrapped: `app/_layout.tsx` renders `ErrorBoundary` inside
+`PaperProvider`, and each route group layout exports `RouteErrorBoundary` as
+its `ErrorBoundary`, so a screen that throws shows a fallback in place of its
+group. Both report the error through the logger to the error-reporting seam
+in every build; see [Error Reporting and Logging](error-reporting.md).
 
-- Wrap top-level routes or major feature sections
-- Protect critical parts of your app from unexpected errors
-- Provide user-friendly error messages instead of white screens
+### Wrapping a section
 
-### Basic Usage
+Use it around a risky part of a screen so an error there doesn't replace the
+whole route:
 
 ```tsx
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 
-export default function App() {
-  return (
-    <ErrorBoundary>
-      <YourApp />
-    </ErrorBoundary>
-  );
-}
+<ErrorBoundary>
+  <RiskyWidget />
+</ErrorBoundary>;
 ```
 
 ### Custom Fallback UI
-
-You can provide a custom fallback component:
 
 ```tsx
 <ErrorBoundary
   fallback={(error, resetError) => (
     <View>
       <Text>Custom error: {error.message}</Text>
-      <Button onPress={resetError}>Try Again</Button>
+      <Button onPress={resetError}>Try again</Button>
     </View>
   )}
 >
@@ -55,11 +52,10 @@ You can provide a custom fallback component:
 
 ### Features
 
-- **Automatic error catching** - Catches errors in child components
-- **Development logging** - Logs errors to console in development mode
-- **Stack traces** - Shows stack traces in development only
-- **Reset functionality** - "Try Again" button to reset error state
-- **Theme support** - Uses React Native Paper theme colors
+- **Reporting** - Sends the error (with component stack) to the error reporter in every build
+- **Themed fallback** - Uses React Native Paper theme colors, light and dark
+- **Recovery** - "Try again" renders the children again; "Go home" navigates to `/` first
+- **Stack traces** - Shown in development only
 
 ### Important Notes
 
@@ -234,7 +230,7 @@ See `app/(tabs)/index.tsx` for a complete Snackbar example.
 1. **Use ErrorBoundary for component errors** - Wrap major sections
 2. **Use try/catch for async operations** - Event handlers, API calls
 3. **Show user-friendly messages** - Don't expose technical details
-4. **Provide recovery actions** - "Try Again" buttons, retry logic
+4. **Provide recovery actions** - "Try again" buttons, retry logic
 
 ### Loading States
 
@@ -260,21 +256,16 @@ See `app/(tabs)/index.tsx` for a complete Snackbar example.
 
 ## Common Patterns
 
-### Global Error Boundary
+### Global and route error boundaries
 
-Wrap your root component:
+Already set up: `app/_layout.tsx` wraps the app in `ErrorBoundary` inside
+`PaperProvider` (a boundary outside the theme provider would render its
+fallback with the default light theme), and the group layouts export a
+route-level boundary:
 
 ```tsx
-// app/_layout.tsx or App.tsx
-import { ErrorBoundary } from '@/components/ErrorBoundary';
-
-export default function RootLayout() {
-  return (
-    <ErrorBoundary>
-      <YourApp />
-    </ErrorBoundary>
-  );
-}
+// app/(tabs)/_layout.tsx
+export { RouteErrorBoundary as ErrorBoundary } from '@/components/ErrorBoundary';
 ```
 
 ### Loading with Error Handling

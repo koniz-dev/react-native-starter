@@ -55,7 +55,8 @@ export const en = {
   // Error boundary
   'errorBoundary.title': 'Something went wrong',
   'errorBoundary.fallbackMessage': 'An unexpected error occurred',
-  'errorBoundary.retry': 'Try Again',
+  'errorBoundary.retry': 'Try again',
+  'errorBoundary.goHome': 'Go home',
 
   // Configuration error screen
   'configError.title': 'Configuration error',

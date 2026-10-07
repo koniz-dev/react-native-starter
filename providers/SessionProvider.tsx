@@ -23,6 +23,7 @@ import {
   type LoginCredentials,
 } from '@/services/auth';
 import { onSessionExpired } from '@/services/session';
+import { getErrorReporter } from '@/integrations/errorReporter';
 
 export type SessionUser = AuthResponse['user'];
 
@@ -91,6 +92,17 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       unsubscribe();
     };
   }, [update]);
+
+  // Attach error reports to the signed-in user (by id only).
+  const userId = session.user ? String(session.user.id) : null;
+  useEffect(() => {
+    if (session.status === 'loading') return;
+    try {
+      getErrorReporter().setUser(userId ? { id: userId } : null);
+    } catch {
+      // Reporting must never break the session.
+    }
+  }, [session.status, userId]);
 
   const signIn = useCallback(
     async (credentials: LoginCredentials) => {

@@ -13,6 +13,16 @@ import { z } from 'zod';
 
 export type AppEnv = 'development' | 'preview' | 'production';
 
+/** Minimum level the logger writes to the console (see utils/logger.ts). */
+export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'silent';
+
+/** Console log level per environment when EXPO_PUBLIC_LOG_LEVEL is not set. */
+export const DEFAULT_LOG_LEVELS: Record<AppEnv, LogLevel> = {
+  development: 'debug',
+  preview: 'info',
+  production: 'warn',
+};
+
 export interface AppConfig {
   appEnv: AppEnv;
   /** True when the public demo backends fill in missing URLs. */
@@ -23,6 +33,8 @@ export interface AppConfig {
   apiTrustedOrigins: string[];
   /** Request timeout for the HTTP clients, in milliseconds. */
   apiTimeoutMs: number;
+  /** Minimum level the logger writes to the console. */
+  logLevel: LogLevel;
 }
 
 /** Public demo backends, used only when EXPO_PUBLIC_USE_DEMO_BACKENDS=true. */
@@ -43,6 +55,7 @@ export function readRawEnv(): RawEnv {
     EXPO_PUBLIC_API_TRUSTED_ORIGINS:
       process.env.EXPO_PUBLIC_API_TRUSTED_ORIGINS,
     EXPO_PUBLIC_API_TIMEOUT_MS: process.env.EXPO_PUBLIC_API_TIMEOUT_MS,
+    EXPO_PUBLIC_LOG_LEVEL: process.env.EXPO_PUBLIC_LOG_LEVEL,
   };
 }
 
@@ -80,6 +93,12 @@ const schema = z.object({
     {
       message: 'must be a whole number of milliseconds between 1000 and 120000',
     }
+  ),
+  EXPO_PUBLIC_LOG_LEVEL: optionalString.refine(
+    value =>
+      value === undefined ||
+      ['debug', 'info', 'warn', 'error', 'silent'].includes(value),
+    { message: 'must be debug, info, warn, error, or silent' }
   ),
 });
 
@@ -178,6 +197,9 @@ export function parseEnv(raw: RawEnv, isDevBuild: boolean): ConfigResult {
       apiTimeoutMs: env.EXPO_PUBLIC_API_TIMEOUT_MS
         ? Number(env.EXPO_PUBLIC_API_TIMEOUT_MS)
         : DEFAULT_API_TIMEOUT_MS,
+      logLevel:
+        (env.EXPO_PUBLIC_LOG_LEVEL as LogLevel | undefined) ??
+        DEFAULT_LOG_LEVELS[appEnv],
     },
   };
 }
