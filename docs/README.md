@@ -40,6 +40,9 @@ This directory contains additional guides and documentation for common developme
 - **[Environment Variables](environment-variables.md)**  
   Use environment variables to configure your app for different environments.
 
+- **[Integrations](integrations.md)**  
+  Analytics, feature flags, push notifications, OTA updates, and i18n seams with no-account defaults
+
 ## Quick Reference
 
 All guides include:

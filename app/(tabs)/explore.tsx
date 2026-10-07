@@ -10,6 +10,7 @@ import { todosApi } from '@/services/api';
 import { useFetch } from '@/hooks/useFetch';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import type { Todo } from '@/types/api';
+import { t } from '@/i18n';
 
 export default function ExploreScreen() {
   const theme = useTheme();
@@ -32,7 +33,7 @@ export default function ExploreScreen() {
       <SafeAreaView
         style={[styles.container, { backgroundColor: theme.colors.background }]}
       >
-        <LoadingScreen message="Loading todos..." />
+        <LoadingScreen message={t('explore.loading')} />
       </SafeAreaView>
     );
   }
@@ -44,13 +45,13 @@ export default function ExploreScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
           <Text variant="headlineMedium" style={styles.title}>
-            API Example
+            {t('explore.title')}
           </Text>
           <Text
             variant="bodyMedium"
             style={{ color: theme.colors.onSurfaceVariant }}
           >
-            Fetching todos from JSONPlaceholder API
+            {t('explore.subtitle')}
           </Text>
         </View>
 
@@ -62,7 +63,7 @@ export default function ExploreScreen() {
             disabled={loading}
             icon="refresh"
           >
-            {loading ? 'Loading...' : 'Retry'}
+            {loading ? t('explore.retrying') : t('explore.retry')}
           </Button>
         </View>
 
@@ -79,7 +80,7 @@ export default function ExploreScreen() {
                 variant="titleMedium"
                 style={[styles.errorTitle, { color: theme.colors.error }]}
               >
-                Error
+                {t('explore.errorTitle')}
               </Text>
               <Text
                 variant="bodyMedium"
@@ -95,7 +96,7 @@ export default function ExploreScreen() {
         {!loading && !error && todos && todos.length > 0 && (
           <View style={styles.todosContainer}>
             <Text variant="titleMedium" style={styles.sectionTitle}>
-              Todos ({todos.length})
+              {t('explore.listTitle', { count: todos.length })}
             </Text>
             {todos.map(todo => (
               <Card key={todo.id} style={styles.todoCard}>
@@ -118,12 +119,15 @@ export default function ExploreScreen() {
                           { color: theme.colors.primary },
                         ]}
                       >
-                        ✓ Done
+                        {t('explore.done')}
                       </Text>
                     )}
                   </View>
                   <Text variant="bodySmall" style={styles.todoMeta}>
-                    User ID: {todo.userId} • ID: {todo.id}
+                    {t('explore.todoMeta', {
+                      userId: todo.userId,
+                      id: todo.id,
+                    })}
                   </Text>
                 </Card.Content>
               </Card>
@@ -134,7 +138,7 @@ export default function ExploreScreen() {
         {/* Empty State */}
         {!loading && !error && todos && todos.length === 0 && (
           <View style={styles.centerContainer}>
-            <Text variant="bodyMedium">No todos found</Text>
+            <Text variant="bodyMedium">{t('explore.empty')}</Text>
           </View>
         )}
       </ScrollView>

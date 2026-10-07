@@ -17,6 +17,7 @@ import {
 } from 'react-native-paper';
 import { router } from 'expo-router';
 import { authService } from '@/services/auth';
+import { t } from '@/i18n';
 
 export default function LoginScreen() {
   const theme = useTheme();
@@ -29,7 +30,7 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     if (!username || !password) {
-      setError('Please fill in all fields');
+      setError(t('login.error.emptyFields'));
       setSnackbarVisible(true);
       return;
     }
@@ -43,7 +44,7 @@ export default function LoginScreen() {
       router.replace('/(tabs)');
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : 'Login failed. Please try again.';
+        err instanceof Error ? err.message : t('login.error.generic');
       setError(errorMessage);
       setSnackbarVisible(true);
     } finally {
@@ -65,19 +66,19 @@ export default function LoginScreen() {
         >
           <View style={styles.header}>
             <Text variant="headlineMedium" style={styles.title}>
-              Welcome Back
+              {t('login.title')}
             </Text>
             <Text
               variant="bodyMedium"
               style={{ color: theme.colors.onSurfaceVariant }}
             >
-              Sign in to continue
+              {t('login.subtitle')}
             </Text>
           </View>
 
           <View style={styles.form}>
             <TextInput
-              label="Username"
+              label={t('login.username')}
               value={username}
               onChangeText={setUsername}
               mode="outlined"
@@ -92,7 +93,7 @@ export default function LoginScreen() {
 
             <TextInput
               ref={passwordRef}
-              label="Password"
+              label={t('login.password')}
               value={password}
               onChangeText={setPassword}
               mode="outlined"
@@ -113,18 +114,17 @@ export default function LoginScreen() {
               style={styles.button}
               testID="login-submit"
             >
-              Sign In
+              {t('login.submit')}
             </Button>
 
             <Text
               variant="bodySmall"
               style={[styles.note, { color: theme.colors.onSurfaceVariant }]}
             >
-              Demo credentials: <Text style={styles.monospace}>emilys</Text> /{' '}
-              <Text style={styles.monospace}>emilyspass</Text>. Set{' '}
-              <Text style={styles.monospace}>EXPO_PUBLIC_AUTH_API_URL</Text> and
-              adapt <Text style={styles.monospace}>services/auth.ts</Text> for
-              your backend.
+              {t('login.demoHint', {
+                username: 'emilys',
+                password: 'emilyspass',
+              })}
             </Text>
           </View>
         </ScrollView>
@@ -135,11 +135,11 @@ export default function LoginScreen() {
         onDismiss={() => setSnackbarVisible(false)}
         duration={4000}
         action={{
-          label: 'Dismiss',
+          label: t('common.dismiss'),
           onPress: () => setSnackbarVisible(false),
         }}
       >
-        {error || 'An error occurred'}
+        {error || t('common.unknownError')}
       </Snackbar>
     </SafeAreaView>
   );
@@ -176,8 +176,5 @@ const styles = StyleSheet.create({
     marginTop: 16,
     textAlign: 'center',
     opacity: 0.7,
-  },
-  monospace: {
-    fontFamily: 'monospace',
   },
 });

@@ -360,6 +360,7 @@ Expo Go is a free app for testing your app on physical devices:
 ### Feature Guides
 
 - **[API and Storage](docs/api-and-storage.md)** - Backend integration guide
+- **[Integrations](docs/integrations.md)** - Analytics, feature flags, push, OTA updates, and i18n seams
 - **[UI Library](docs/ui-library.md)** - React Native Paper components
 - **[Color Themes](docs/color-themes.md)** - Theming and dark mode
 - **[Error and Loading Handling](docs/error-and-loading.md)** - State management

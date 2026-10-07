@@ -11,6 +11,7 @@ import {
 } from 'react-native-paper';
 import { router, useFocusEffect } from 'expo-router';
 import { useAuthSession } from '@/hooks/useAuthSession';
+import { t } from '@/i18n';
 
 export default function HomeScreen() {
   const theme = useTheme();
@@ -46,10 +47,14 @@ export default function HomeScreen() {
               testID="session-status"
             >
               {session.status === 'loading'
-                ? 'Checking session…'
+                ? t('home.session.checking')
                 : session.status === 'signedIn'
-                  ? `Signed in as ${session.user?.name ?? 'demo user'}`
-                  : 'Not signed in'}
+                  ? t('home.session.signedIn', {
+                      name:
+                        session.user?.name ??
+                        t('home.session.signedInFallbackName'),
+                    })
+                  : t('home.session.signedOut')}
             </Text>
             {session.status === 'signedIn' ? (
               <Button
@@ -58,7 +63,7 @@ export default function HomeScreen() {
                 style={styles.authDemoButton}
                 testID="logout-button"
               >
-                Log out
+                {t('home.session.logOut')}
               </Button>
             ) : (
               <Button
@@ -67,7 +72,7 @@ export default function HomeScreen() {
                 style={styles.authDemoButton}
                 disabled={session.status === 'loading'}
               >
-                Try authentication demo
+                {t('home.session.tryDemo')}
               </Button>
             )}
           </View>

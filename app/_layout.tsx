@@ -6,6 +6,11 @@ import { StatusBar } from 'expo-status-bar';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ConfigErrorScreen } from '@/components/ConfigErrorScreen';
 import { configResult } from '@/config/env';
+import { configureIntegrations } from '@/integrations/setup';
+import { useScreenTracking } from '@/integrations/useScreenTracking';
+
+// Register integration providers before the first screen renders.
+configureIntegrations();
 
 // Anchor the root stack on the tabs so that a launch URL that does not match a
 // route (as Expo Go sends on Android) falls back to Home rather than to the
@@ -18,6 +23,7 @@ export const unstable_settings = {
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const theme = getTheme(colorScheme === 'dark' ? 'dark' : 'light');
+  useScreenTracking();
 
   return (
     <ErrorBoundary>

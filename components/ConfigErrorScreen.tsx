@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, useTheme } from 'react-native-paper';
 import type { ConfigIssue } from '@/config/env';
+import { t } from '@/i18n';
 
 interface ConfigErrorScreenProps {
   issues: ConfigIssue[];
@@ -21,15 +22,13 @@ export function ConfigErrorScreen({ issues }: ConfigErrorScreenProps) {
     >
       <ScrollView contentContainerStyle={styles.content}>
         <Text variant="headlineSmall" style={styles.title}>
-          Configuration error
+          {t('configError.title')}
         </Text>
         <Text
           variant="bodyMedium"
           style={[styles.body, { color: theme.colors.onSurfaceVariant }]}
         >
-          The environment variables for this build are missing or invalid. Fix
-          them in your .env file (see .env.example) or build profile, then
-          restart the app.
+          {t('configError.body')}
         </Text>
         {issues.map(issue => (
           <View

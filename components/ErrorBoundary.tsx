@@ -6,6 +6,7 @@
 import React, { Component, type ReactNode } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Card, Button, Text, useTheme } from 'react-native-paper';
+import { t } from '@/i18n';
 
 interface Props {
   children: ReactNode;
@@ -102,13 +103,13 @@ function DefaultErrorFallback({
             variant="titleLarge"
             style={[styles.title, { color: theme.colors.onErrorContainer }]}
           >
-            Something went wrong
+            {t('errorBoundary.title')}
           </Text>
           <Text
             variant="bodyMedium"
             style={[styles.message, { color: theme.colors.onErrorContainer }]}
           >
-            {error.message || 'An unexpected error occurred'}
+            {error.message || t('errorBoundary.fallbackMessage')}
           </Text>
           {__DEV__ && error.stack && (
             <Text
@@ -129,7 +130,7 @@ function DefaultErrorFallback({
             buttonColor={theme.colors.error}
             textColor={theme.colors.onError}
           >
-            Try Again
+            {t('errorBoundary.retry')}
           </Button>
         </Card.Actions>
       </Card>
