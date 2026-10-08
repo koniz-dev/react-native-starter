@@ -20,8 +20,7 @@ import axios, {
 import { getConfig } from '@/config/env';
 import { logger } from '@/utils/logger';
 import { toApiError } from './apiError';
-import { getSecureItem } from './secureStorage';
-import { STORAGE_KEYS } from './storage';
+import { getTokenStore } from './tokenStore';
 import { getUnauthorizedHandler, refreshAccessToken } from './session';
 
 export interface HttpClientOptions {
@@ -104,7 +103,7 @@ export function createHttpClient(options: HttpClientOptions): AxiosInstance {
     if (!origin || !getTrustedTokenOrigins().has(origin)) {
       return config;
     }
-    const token = await getSecureItem(STORAGE_KEYS.AUTH_TOKEN);
+    const token = await getTokenStore().get();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

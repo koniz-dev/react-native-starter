@@ -93,34 +93,64 @@ const response = await api.post('/custom-endpoint', {
 
 ### Authentication
 
-Authentication tokens are stored through `services/secureStorage.ts`, which uses the
-native iOS Keychain / Android Keystore via Expo SecureStore. General-purpose values
-such as user profile data and cached Todos continue to use AsyncStorage. SecureStore is
-not available for this starter's web flow; on web, `isAuthenticated()` returns false
-until an adopter supplies an appropriate web authentication strategy.
+The auth token goes through a `TokenStore` (`services/tokenStore.ts`); the
+user profile and cached data use AsyncStorage. The store is picked by
+platform:
 
-The API client automatically adds authentication tokens from secure storage:
+| Platform      | Token store                                        | After restart / reload |
+| ------------- | -------------------------------------------------- | ---------------------- |
+| iOS / Android | iOS Keychain / Android Keystore (Expo SecureStore) | Still signed in        |
+| Web           | Memory only (`createMemoryTokenStore()`)           | Signed out             |
 
-1. Store a token using the secure storage service:
+#### Why the token is not persisted on web
 
-```tsx
-import { setSecureItem } from '@/services/secureStorage';
-import { STORAGE_KEYS } from '@/services/storage';
+A browser has no storage that the page's scripts can read but injected
+scripts cannot: anything in `localStorage`, `sessionStorage`, IndexedDB, or a
+non-httpOnly cookie can be read by an XSS payload. Keeping the token in
+memory limits it to the open page, at the cost of signing the user out on
+reload. On a reload the stored profile (in `localStorage`) is cleared too, so
+no user data outlives the session.
 
-await setSecureItem(STORAGE_KEYS.AUTH_TOKEN, 'your-token-here');
+For sessions that survive a reload on web, the usual approach is an httpOnly,
+`Secure`, `SameSite` cookie set by your backend, which scripts cannot read.
+That is a backend change: send requests with `withCredentials: true` to that
+origin, and register a store that reflects the cookie session instead of
+holding a token, for example:
+
+```ts
+import { setTokenStore, type TokenStore } from '@/services/tokenStore';
+
+const cookieSessionStore: TokenStore = {
+  persistent: true,
+  get: async () => ((await hasCookieSession()) ? 'cookie' : null), // your check
+  set: async () => {}, // the server sets the cookie
+  clear: async () => {
+    await callLogoutEndpoint(); // the server clears the cookie
+  },
+};
+setTokenStore(cookieSessionStore);
 ```
 
+With a cookie session there is no bearer token to attach, so also adjust the
+`authenticated` clients in `services/httpClient.ts`.
+
+#### Using the token store
+
+The API client adds the stored token to requests automatically:
+
+1. `authService.login()` stores the token with `getTokenStore().set(token)`.
 2. The token is added as `Authorization: Bearer <token>` only to requests whose
    origin is trusted (see "Which hosts receive the token" below).
+3. `authService.logout()` (or a 401, see below) clears the token and the
+   stored profile.
 
-3. Remove token on logout (or call `authService.logout()`, which also removes the
-   stored profile):
+To use the store directly:
 
 ```tsx
-import { removeSecureItem } from '@/services/secureStorage';
-import { STORAGE_KEYS } from '@/services/storage';
+import { getTokenStore } from '@/services/tokenStore';
 
-await removeSecureItem(STORAGE_KEYS.AUTH_TOKEN);
+const token = await getTokenStore().get(); // null when signed out
+const survivesRestart = getTokenStore().persistent; // false on web
 ```
 
 #### Which hosts receive the token
@@ -153,7 +183,7 @@ of the token on the device that `logout()` doesn't clear.
 
 `authApi` in `services/auth.ts` is therefore created with `withCredentials: false`:
 auth requests neither store nor send cookies (iOS sets `HTTPShouldHandleCookies = NO`,
-Android uses `CookieJar.NO_COOKIES`), and the token lives only in secure storage. If
+Android uses `CookieJar.NO_COOKIES`), and the token lives only in the token store. If
 your backend authenticates with cookie sessions instead of bearer tokens, this is the
 setting to revisit.
 
@@ -215,15 +245,14 @@ it, or return `null`:
 
 ```ts
 import { setRefreshTokenHandler } from '@/services/session';
-import { setSecureItem } from '@/services/secureStorage';
-import { STORAGE_KEYS } from '@/services/storage';
+import { getTokenStore } from '@/services/tokenStore';
 import { authApi } from '@/services/auth';
 
 setRefreshTokenHandler(async () => {
   const { data } = await authApi.post('/auth/refresh', {
     refreshToken: await getStoredRefreshToken(), // your storage
   });
-  await setSecureItem(STORAGE_KEYS.AUTH_TOKEN, data.accessToken);
+  await getTokenStore().set(data.accessToken);
   return data.accessToken;
 });
 ```

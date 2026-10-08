@@ -83,7 +83,7 @@ For builds made with EAS Build, set the same variables in the build profile's
 `EXPO_PUBLIC_*` values are compiled into the JavaScript bundle and can be read
 by anyone who has the app. Put only public configuration here (URLs, feature
 switches). Keep secrets such as API keys with write access on your server, and
-store user tokens with secure storage (`services/secureStorage.ts`), never in
+store user tokens through the token store (`services/tokenStore.ts`), never in
 environment variables.
 
 ## Testing

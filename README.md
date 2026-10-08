@@ -30,7 +30,7 @@ This starter includes everything you need to build a production-ready React Nati
 - ✅ **Custom Hooks** - `useFetch` for data fetching with loading/error states
 - ✅ **Error Boundary** - Global error handling component
 - ✅ **Loading States** - Built-in loading screen component
-- ✅ **Authentication Example** - Complete login flow with token management
+- ✅ **Authentication Example** - Login, protected screen, and logout; the session persists across restarts on iOS and Android (token in the Keychain/Keystore) but not across reloads on web, where the token is kept in memory only (see [API and Storage](docs/api-and-storage.md#why-the-token-is-not-persisted-on-web))
 - ✅ **TypeScript** - Full type safety throughout
 - ✅ **ESLint + Prettier** - Code quality and formatting tools
 - ✅ **Example Screens** - See features in action

@@ -80,7 +80,9 @@ This starts the Expo development server. You'll see a QR code and options to:
 
 - Press `a` - Open on Android emulator/device
 - Press `i` - Open on iOS simulator (macOS only)
-- Press `w` - Open in web browser
+- Press `w` - Open in web browser (the auth demo works on web, but a page
+  reload signs you out: the token is kept in memory only; see
+  [API and Storage](api-and-storage.md#why-the-token-is-not-persisted-on-web))
 - Scan QR code - Open in Expo Go app on your device
 
 ### Platform-Specific Commands

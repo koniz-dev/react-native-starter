@@ -22,7 +22,7 @@ import {
   type AuthResponse,
   type LoginCredentials,
 } from '@/services/auth';
-import { onSessionExpired } from '@/services/session';
+import { clearStoredSession, onSessionExpired } from '@/services/session';
 import { getErrorReporter } from '@/integrations/errorReporter';
 
 export type SessionUser = AuthResponse['user'];
@@ -55,6 +55,9 @@ async function readStoredSession(): Promise<Session> {
     if (await authService.isAuthenticated()) {
       return { status: 'signedIn', user: await authService.getCurrentUser() };
     }
+    // No token, e.g. after a reload on web, where the token lives in memory
+    // only: drop the profile left in AsyncStorage (localStorage on web).
+    await clearStoredSession();
   } catch {
     // Fall through to signed out.
   }

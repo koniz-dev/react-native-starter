@@ -1,0 +1,13 @@
+17:01:36 Home shows "Not signed in"
+17:01:39 POST /auth/login -> 200
+17:01:39 Signed in; Home shows "Signed in as Emily Johnson" at /
+17:01:39 token received from server: yes
+17:01:39 token found in localStorage/sessionStorage/cookies: false
+17:01:39 localStorage keys: user_data
+17:01:39 sessionStorage keys: (none)
+17:01:41 Profile opened at /profile
+17:01:41 After reload: Home shows "Not signed in"; localStorage keys: (none)
+17:01:42 POST /auth/login -> 200
+17:01:42 Signed in again
+17:01:43 After logout: Home shows "Not signed in"; localStorage keys: (none)
+17:01:43 console errors: (none)

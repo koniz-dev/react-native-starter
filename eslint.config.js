@@ -21,6 +21,8 @@ module.exports = [
       'dist/**',
       'build/**',
       'coverage/**',
+      // Verification artifacts (scripts kept as evidence), not app code.
+      'docs/evidence/**',
       '*.min.js',
       '*.min.css',
       '*.config.js',

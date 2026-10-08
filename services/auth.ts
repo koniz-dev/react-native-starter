@@ -6,7 +6,7 @@ import { getConfig } from '@/config/env';
 import { createHttpClient } from './httpClient';
 import { clearStoredSession } from './session';
 import { setItem, getItem, STORAGE_KEYS } from './storage';
-import { getSecureItem, setSecureItem } from './secureStorage';
+import { getTokenStore } from './tokenStore';
 
 export interface LoginCredentials {
   username: string;
@@ -100,7 +100,7 @@ export const authService = {
     const { token, user } = authResponse;
 
     // Store token - API client will automatically add it to requests
-    await setSecureItem(STORAGE_KEYS.AUTH_TOKEN, token);
+    await getTokenStore().set(token);
     await setItem(STORAGE_KEYS.USER_DATA, user);
 
     return authResponse;
@@ -117,7 +117,7 @@ export const authService = {
    * Check if user is authenticated
    */
   isAuthenticated: async (): Promise<boolean> => {
-    const token = await getSecureItem(STORAGE_KEYS.AUTH_TOKEN);
+    const token = await getTokenStore().get();
     return token !== null;
   },
 

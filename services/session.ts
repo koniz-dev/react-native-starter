@@ -6,11 +6,11 @@
  * HTTP client).
  */
 import { removeItem, STORAGE_KEYS } from './storage';
-import { removeSecureItem } from './secureStorage';
+import { getTokenStore } from './tokenStore';
 
-/** Removes the stored token (secure storage) and profile (AsyncStorage). */
+/** Removes the stored token (token store) and profile (AsyncStorage). */
 export async function clearStoredSession(): Promise<void> {
-  await removeSecureItem(STORAGE_KEYS.AUTH_TOKEN);
+  await getTokenStore().clear();
   await removeItem(STORAGE_KEYS.USER_DATA);
 }
 
@@ -59,7 +59,7 @@ export function getUnauthorizedHandler(): UnauthorizedHandler {
 
 /**
  * Optional token refresh. It should obtain a new access token (for example
- * with a refresh token), store it with setSecureItem, and return it; return
+ * with a refresh token), store it with getTokenStore().set(), and return it; return
  * null when the session can't be refreshed. The HTTP client retries the
  * failed request once with the new token. No refresh handler is set by
  * default, so a 401 goes straight to the unauthorized handler.
