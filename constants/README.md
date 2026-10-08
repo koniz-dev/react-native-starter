@@ -1,54 +1,20 @@
 # Constants
 
-This directory contains constant values used throughout the app.
+## Theme.ts
 
-## Quick Start
-
-### Colors.ts
-
-Contains color definitions for both light and dark themes.
-
-**Create `constants/Colors.ts`:**
+The app's only theme: React Native Paper's Material Design 3 theme with the
+starter's brand colors (`palette`), plus helpers that derive the navigation
+theme (`getNavigationTheme`) and tab bar colors (`getTabBarColors`) from it.
 
 ```tsx
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
-
-export const Colors = {
-  light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
-  },
-  dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
-  },
-};
-```
-
-## Usage
-
-```tsx
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from 'react-native';
+import { useTheme } from 'react-native-paper';
 
 export default function MyComponent() {
-  const colorScheme = useColorScheme() ?? 'light';
-  const textColor = Colors[colorScheme].text;
-
-  return <Text style={{ color: textColor }}>Hello</Text>;
+  const theme = useTheme();
+  return <Text style={{ color: theme.colors.primary }}>Hello</Text>;
 }
 ```
+
+To rebrand, edit `palette` in `Theme.ts`; `__tests__/constants/theme.test.ts`
+checks that text colors keep WCAG AA contrast. See
+[Color Themes](../docs/color-themes.md).

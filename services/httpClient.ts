@@ -43,11 +43,12 @@ export interface HttpClientOptions {
  */
 export function getOrigin(url: string): string | null {
   const match = /^([a-z][a-z0-9+.-]*):\/\/([^/?#@]+@)?([^/?#]+)/i.exec(url);
-  if (!match) {
+  const [, rawScheme, , rawHost] = match ?? [];
+  if (!rawScheme || !rawHost) {
     return null;
   }
-  const scheme = match[1].toLowerCase();
-  let host = match[3].toLowerCase();
+  const scheme = rawScheme.toLowerCase();
+  let host = rawHost.toLowerCase();
   if (
     (scheme === 'https' && host.endsWith(':443')) ||
     (scheme === 'http' && host.endsWith(':80'))

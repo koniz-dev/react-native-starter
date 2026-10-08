@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native';
 import { renderRouter, screen } from 'expo-router/testing-library';
-import { Colors } from '@/constants/Colors';
 import { getTabBarColors, getTheme } from '@/constants/Theme';
 
 // The login route imports the auth service, which loads both storage modules.
@@ -54,8 +53,8 @@ describe.each(['light', 'dark'] as const)('tab bar in %s mode', scheme => {
     expect(expected).toEqual({
       background: theme.colors.surface,
       border: theme.colors.outlineVariant,
-      active: Colors[scheme].tabIconSelected,
-      inactive: Colors[scheme].tabIconDefault,
+      active: theme.colors.primary,
+      inactive: theme.colors.onSurfaceVariant,
     });
     expect(expected.active).not.toBe(expected.background);
     expect(expected.inactive).not.toBe(expected.background);
@@ -66,7 +65,7 @@ describe.each(['light', 'dark'] as const)('tab bar in %s mode', scheme => {
     await screen.findByText('React Native Paper');
 
     const [tabBar] = findTabBar(expected.background);
-    expect(tabBar).toBeDefined();
+    if (!tabBar) throw new Error('tab bar not found');
     expect(flatStyle(tabBar).borderTopColor).toBe(expected.border);
 
     expect(labelColor('Home')).toBe(expected.active);

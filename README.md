@@ -187,7 +187,6 @@ react-native-starter/
 ├── types/            # TypeScript type definitions
 │   └── api.ts        # API response types
 ├── constants/        # App constants
-│   ├── Colors.ts     # Color definitions
 │   └── Theme.ts      # React Native Paper theme
 ├── assets/           # Images, fonts, static files
 └── docs/             # Documentation

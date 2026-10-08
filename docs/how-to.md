@@ -135,16 +135,6 @@ See `hooks/useFetch.ts` for a more complex example with loading and error states
 
 Import constants from `constants/` directory.
 
-**Colors:**
-
-```tsx
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from 'react-native';
-
-const colorScheme = useColorScheme();
-const colors = Colors[colorScheme ?? 'light'];
-```
-
 **Theme (React Native Paper):**
 
 ```tsx
@@ -205,7 +195,7 @@ export default function UserScreen() {
 Use `npx expo install` for Expo-compatible packages:
 
 ```bash
-npx expo install react-native-vector-icons
+npx expo install expo-image
 ```
 
 For regular npm packages:
@@ -244,24 +234,25 @@ Fetch data with automatic loading and error states:
 
 ```tsx
 import { useFetch } from '@/hooks/useFetch';
-import { userApi } from '@/services/api';
+import { todosApi } from '@/services/api';
 import { LoadingScreen } from '@/components/LoadingScreen';
 
-export default function UsersScreen() {
-  const { data, loading, error, refetch } = useFetch(() => userApi.getAll());
+export default function TodosScreen() {
+  const { data, loading, error, refetch } = useFetch(() => todosApi.getAll());
 
   if (loading) return <LoadingScreen />;
   if (error) return <Text>Error: {error}</Text>;
   if (!data) return null;
 
-  return <UserList users={data} />;
+  return <TodoList todos={data} />;
 }
 ```
 
 **Refetch on dependency change:**
 
 ```tsx
-const { data } = useFetch(() => userApi.getById(userId), [userId]);
+// fetchUser is your own endpoint, e.g. api.get(`/users/${id}`)
+const { data } = useFetch(() => fetchUser(userId), [userId]);
 ```
 
 ## How to Handle Errors
@@ -300,7 +291,7 @@ export const lightTheme: MD3Theme = {
 };
 ```
 
-Edit `constants/Colors.ts` for app-specific colors. See [Color Themes](color-themes.md) for details.
+Edit `palette` in `constants/Theme.ts` for app-specific colors. See [Color Themes](color-themes.md) for details.
 
 ## How to Add Authentication
 

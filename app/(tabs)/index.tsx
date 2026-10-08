@@ -15,7 +15,9 @@ import { t } from '@/i18n';
 
 export default function HomeScreen() {
   const theme = useTheme();
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  // The showcase buttons report presses through the snackbar.
+  const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
+  const notify = (message: string) => () => setSnackbarMessage(message);
   const { session, signOut } = useSession();
 
   return (
@@ -98,13 +100,13 @@ export default function HomeScreen() {
             Buttons
           </Text>
           <View style={styles.buttonRow}>
-            <Button mode="contained" onPress={() => {}}>
+            <Button mode="contained" onPress={notify('Contained pressed')}>
               Contained
             </Button>
-            <Button mode="outlined" onPress={() => {}}>
+            <Button mode="outlined" onPress={notify('Outlined pressed')}>
               Outlined
             </Button>
-            <Button mode="text" onPress={() => {}}>
+            <Button mode="text" onPress={notify('Text pressed')}>
               Text
             </Button>
           </View>
@@ -123,8 +125,8 @@ export default function HomeScreen() {
               </Text>
             </Card.Content>
             <Card.Actions>
-              <Button onPress={() => {}}>Cancel</Button>
-              <Button onPress={() => {}}>Ok</Button>
+              <Button onPress={notify('Card: Cancel pressed')}>Cancel</Button>
+              <Button onPress={notify('Card: Ok pressed')}>Ok</Button>
             </Card.Actions>
           </Card>
         </View>
@@ -158,7 +160,7 @@ export default function HomeScreen() {
           </Text>
           <Button
             mode="contained"
-            onPress={() => setSnackbarVisible(true)}
+            onPress={notify('This is a snackbar message!')}
             style={styles.snackbarButton}
           >
             Show Snackbar
@@ -166,19 +168,16 @@ export default function HomeScreen() {
         </View>
       </ScrollView>
 
-      {/* Snackbar */}
-      {/* Note: You may see a warning about useNativeDriver - this is harmless in Expo
-          and the Snackbar will fall back to JS-based animations automatically */}
       <Snackbar
-        visible={snackbarVisible}
-        onDismiss={() => setSnackbarVisible(false)}
+        visible={snackbarMessage !== null}
+        onDismiss={() => setSnackbarMessage(null)}
         duration={3000}
         action={{
-          label: 'Dismiss',
-          onPress: () => setSnackbarVisible(false),
+          label: t('common.dismiss'),
+          onPress: () => setSnackbarMessage(null),
         }}
       >
-        This is a snackbar message!
+        {snackbarMessage}
       </Snackbar>
     </SafeAreaView>
   );

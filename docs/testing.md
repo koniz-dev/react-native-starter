@@ -31,7 +31,7 @@ Tests are organized in the `__tests__` directory, mirroring the source code stru
 ```
 __tests__/
 ├── utils/
-│   └── sum.test.ts              # Utility function tests
+│   └── logger.test.ts           # Utility function tests
 └── components/
     ├── LoadingScreen.test.tsx   # Reusable component tests (from components/)
     └── HomeScreen.test.tsx      # Screen tests (from app/)
@@ -53,25 +53,21 @@ This structure keeps tests organized while maintaining simplicity.
 Test pure functions and utilities without React components:
 
 ```typescript
-// __tests__/utils/sum.test.ts
-import { sum } from '@/utils/sum';
+// __tests__/utils/logger.test.ts (excerpt)
+import { redact } from '@/utils/logger';
 
-describe('sum utility function', () => {
-  test('adds two positive numbers correctly', () => {
-    expect(sum(2, 3)).toBe(5);
+describe('redact', () => {
+  test('replaces auth headers', () => {
+    expect(redact({ headers: { Authorization: 'Bearer abc' } }, true)).toEqual({
+      headers: { Authorization: '[redacted]' },
+    });
   });
 
-  test('adds negative numbers correctly', () => {
-    expect(sum(-1, -2)).toBe(-3);
-  });
-
-  test('adds positive and negative numbers correctly', () => {
-    expect(sum(5, -3)).toBe(2);
-  });
-
-  test('handles zero correctly', () => {
-    expect(sum(0, 0)).toBe(0);
-    expect(sum(5, 0)).toBe(5);
+  test('replaces response bodies outside development', () => {
+    expect(redact({ status: 500, data: { user: 'emily' } }, false)).toEqual({
+      status: 500,
+      data: '[redacted]',
+    });
   });
 });
 ```

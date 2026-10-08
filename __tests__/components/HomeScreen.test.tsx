@@ -88,6 +88,25 @@ describe('<HomeScreen />', () => {
   });
 });
 
+describe('<HomeScreen /> showcase', () => {
+  test.each([
+    ['Contained', 'Contained pressed'],
+    ['Outlined', 'Outlined pressed'],
+    ['Ok', 'Card: Ok pressed'],
+    ['Show Snackbar', 'This is a snackbar message!'],
+  ])('pressing %s shows "%s" in the snackbar', async (button, message) => {
+    const { getByText, findByText, queryByText } = render(<HomeScreen />, {
+      wrapper: TestWrapper,
+    });
+    await findByText('React Native Paper');
+    expect(queryByText(message)).toBeNull();
+
+    fireEvent.press(getByText(button));
+
+    expect(await findByText(message)).toBeTruthy();
+  });
+});
+
 describe('<HomeScreen /> session', () => {
   const user = { id: 1, email: 'emily@example.com', name: 'Emily Johnson' };
 

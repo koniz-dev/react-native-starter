@@ -12,7 +12,7 @@ This starter template includes **React Native Paper**, a Material Design 3 compo
 ## What's Included
 
 - **PaperProvider** configured in `app/_layout.tsx`
-- **Theme system** in `constants/Theme.ts` connected to `Colors.ts`
+- **Theme system** in `constants/Theme.ts` (the app's only color system)
 - **Automatic light/dark mode** support via system preference
 - **Example components** in `app/(tabs)/index.tsx`
 
@@ -67,18 +67,17 @@ Edit `constants/Theme.ts` to customize your theme:
 
 ### Colors
 
+Brand colors live in `palette` in `constants/Theme.ts` and are merged over
+Paper's MD3 baseline for each mode:
+
 ```tsx
-export const lightTheme: MD3Theme = {
-  ...MD3LightTheme,
-  colors: {
-    ...MD3LightTheme.colors,
-    primary: '#0a7ea4', // Your primary color
-    background: '#fff', // Background color
-    surface: '#fff', // Surface color
-    // Add more custom colors as needed
-  },
+const palette = {
+  light: { primary: '#0a7ea4', onPrimary: '#ffffff' /* ... */ },
+  dark: { primary: '#78d1f5', onPrimary: '#003549' /* ... */ },
 };
 ```
+
+See [Color Themes](color-themes.md#rebranding).
 
 ### Roundness
 
@@ -118,7 +117,7 @@ If you prefer a different UI library:
 1. **Uninstall packages:**
 
 ```bash
-   npm uninstall react-native-paper react-native-vector-icons
+   npm uninstall react-native-paper
 ```
 
 2. **Remove from `app/_layout.tsx`:**

@@ -21,7 +21,7 @@ interface UseFetchResult<T> {
  *
  * @example
  * ```tsx
- * const { data, loading, error, refetch } = useFetch<User[]>(() => userApi.getAll());
+ * const { data, loading, error, refetch } = useFetch(() => todosApi.getAll());
  *
  * if (loading) return <LoadingScreen />;
  * if (error) return <Text>Error: {error}</Text>;

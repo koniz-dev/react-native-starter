@@ -9,8 +9,6 @@ import { logger } from '@/utils/logger';
 export const STORAGE_KEYS = {
   AUTH_TOKEN: 'auth_token',
   USER_DATA: 'user_data',
-  SETTINGS: 'settings',
-  TODOS: 'todos',
 } as const;
 
 /**
@@ -47,18 +45,6 @@ export async function removeItem(key: string): Promise<void> {
     await AsyncStorage.removeItem(key);
   } catch (error) {
     logger.error(`Error removing ${key}`, error);
-    throw error;
-  }
-}
-
-/**
- * Clear all data from AsyncStorage
- */
-export async function clear(): Promise<void> {
-  try {
-    await AsyncStorage.clear();
-  } catch (error) {
-    logger.error('Error clearing storage', error);
     throw error;
   }
 }

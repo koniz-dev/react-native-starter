@@ -12,7 +12,7 @@
  * in every build, and both offer "Try again" and "Go home".
  */
 import { Component, useEffect, type ErrorInfo, type ReactNode } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Card, Text, useTheme } from 'react-native-paper';
 import { router, type ErrorBoundaryProps } from 'expo-router';
 import { t } from '@/i18n';
@@ -37,13 +37,13 @@ interface State {
 }
 
 export class ErrorBoundary extends Component<Props, State> {
-  state: State = { error: null };
+  override state: State = { error: null };
 
   static getDerivedStateFromError(error: Error): State {
     return { error };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     logger.error('Render error caught by the app error boundary', error, {
       componentStack: errorInfo.componentStack ?? undefined,
     });
@@ -58,7 +58,7 @@ export class ErrorBoundary extends Component<Props, State> {
     this.resetError();
   };
 
-  render() {
+  override render() {
     const { error } = this.state;
     if (!error) return this.props.children;
     if (this.props.fallback) return this.props.fallback(error, this.resetError);
@@ -182,7 +182,8 @@ const styles = StyleSheet.create({
     maxHeight: 200,
   },
   stackTrace: {
-    fontFamily: 'monospace',
+    // 'monospace' is not a font family on iOS.
+    fontFamily: Platform.select({ ios: 'Menlo', default: 'monospace' }),
     fontSize: 12,
     opacity: 0.8,
   },

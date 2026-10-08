@@ -137,22 +137,17 @@ const fontConfig = {
   },
 };
 
+// import { configureFonts } from 'react-native-paper';
 export const lightTheme: MD3Theme = {
   ...MD3LightTheme,
-  colors: {
-    // ... existing colors
-  },
+  colors: { ...MD3LightTheme.colors, ...palette.light },
   fonts: configureFonts({ config: fontConfig }),
-  roundness: 4,
 };
 
 export const darkTheme: MD3Theme = {
   ...MD3DarkTheme,
-  colors: {
-    // ... existing colors
-  },
+  colors: { ...MD3DarkTheme.colors, ...palette.dark },
   fonts: configureFonts({ config: fontConfig }),
-  roundness: 4,
 };
 ```
 

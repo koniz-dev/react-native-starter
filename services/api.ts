@@ -5,6 +5,7 @@
  * services/httpClient.ts.
  */
 import { getConfig } from '@/config/env';
+import type { Todo } from '@/types/api';
 import { createHttpClient } from './httpClient';
 
 export { getOrigin, getTrustedTokenOrigins } from './httpClient';
@@ -14,44 +15,10 @@ const api = createHttpClient({
   authenticated: true,
 });
 
-// Example API endpoints using JSONPlaceholder mock API
-
-/**
- * User API endpoints
- */
-export const userApi = {
-  // Get all users
-  getAll: async () => {
-    const response = await api.get('/users');
-    return response.data;
-  },
-
-  // Get user by ID
-  getById: async (id: number) => {
-    const response = await api.get(`/users/${id}`);
-    return response.data;
-  },
-};
-
-/**
- * Todos API endpoints
- */
+/** Demo endpoint used by the Explore tab (JSONPlaceholder). */
 export const todosApi = {
-  // Get all todos
-  getAll: async () => {
-    const response = await api.get('/todos');
-    return response.data;
-  },
-
-  // Get todos by user ID
-  getByUserId: async (userId: number) => {
-    const response = await api.get(`/todos?userId=${userId}`);
-    return response.data;
-  },
-
-  // Get todo by ID
-  getById: async (id: number) => {
-    const response = await api.get(`/todos/${id}`);
+  getAll: async (): Promise<Todo[]> => {
+    const response = await api.get<Todo[]>('/todos');
     return response.data;
   },
 };

@@ -8,11 +8,42 @@ const prettier = require('eslint-plugin-prettier');
 const prettierConfig = require('eslint-config-prettier');
 const globals = require('globals');
 
+/** Every rule is an error: `npm run lint` also runs with --max-warnings 0. */
+const asErrors = rules =>
+  Object.fromEntries(
+    Object.entries(rules).map(([name, level]) => [
+      name,
+      level === 'off' || level === 0 ? level : 'error',
+    ])
+  );
+
+const sharedGlobals = {
+  ...globals.node,
+  ...globals.es2021,
+  __DEV__: 'readonly',
+};
+
+// Rules for every source file, JavaScript and TypeScript alike.
+const sharedRules = {
+  ...react.configs.recommended.rules,
+  ...react.configs['jsx-runtime'].rules,
+  'react/react-in-jsx-scope': 'off',
+  'react/prop-types': 'off',
+
+  ...asErrors(reactHooks.configs.recommended.rules),
+
+  'react-native/no-unused-styles': 'error',
+  'react-native/split-platform-components': 'error',
+  'react-native/no-inline-styles': 'error',
+  'react-native/no-color-literals': 'error',
+
+  'prettier/prettier': 'error',
+  ...prettierConfig.rules,
+};
+
 module.exports = [
-  // Base ESLint recommended rules
   js.configs.recommended,
 
-  // Global ignores
   {
     ignores: [
       'node_modules/**',
@@ -21,142 +52,53 @@ module.exports = [
       'dist/**',
       'build/**',
       'coverage/**',
+      'android/**',
+      'ios/**',
       // Verification artifacts (scripts kept as evidence), not app code.
       'docs/evidence/**',
-      '*.min.js',
-      '*.min.css',
-      '*.config.js',
-      '*.config.ts',
     ],
   },
 
-  // TypeScript files configuration
+  {
+    files: ['**/*.{ts,tsx,js,jsx}'],
+    languageOptions: {
+      ecmaVersion: 2021,
+      sourceType: 'module',
+      parserOptions: { ecmaFeatures: { jsx: true } },
+      globals: sharedGlobals,
+    },
+    plugins: {
+      react,
+      'react-hooks': reactHooks,
+      'react-native': reactNative,
+      prettier,
+    },
+    settings: { react: { version: 'detect' } },
+    rules: sharedRules,
+  },
+
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       parser: typescriptParser,
-      parserOptions: {
-        ecmaVersion: 2021,
-        sourceType: 'module',
-        ecmaFeatures: {
-          jsx: true,
-        },
-        project: './tsconfig.json',
-      },
-      globals: {
-        ...globals.node,
-        ...globals.es2021,
-        __DEV__: 'readonly',
-      },
+      parserOptions: { project: './tsconfig.json' },
     },
-    plugins: {
-      '@typescript-eslint': typescript,
-      react: react,
-      'react-hooks': reactHooks,
-      'react-native': reactNative,
-      prettier: prettier,
-    },
-    settings: {
-      react: {
-        version: 'detect',
-      },
-    },
+    plugins: { '@typescript-eslint': typescript },
     rules: {
-      // TypeScript rules
-      ...typescript.configs.recommended.rules,
+      ...asErrors(typescript.configs.recommended.rules),
       '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
-
-      // React rules
-      ...react.configs.recommended.rules,
-      ...react.configs['jsx-runtime'].rules,
-      'react/react-in-jsx-scope': 'off',
-      'react/prop-types': 'off',
-
-      // React Hooks rules
-      ...reactHooks.configs.recommended.rules,
-      'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
-
-      // React Native rules
-      'react-native/no-unused-styles': 'warn',
-      'react-native/split-platform-components': 'warn',
-      'react-native/no-inline-styles': 'warn',
-      'react-native/no-color-literals': 'warn',
-
-      // Prettier integration
-      'prettier/prettier': 'error',
-
-      // Disable rules that conflict with Prettier
-      ...prettierConfig.rules,
     },
   },
 
-  // JavaScript files configuration
+  // Node config files (eslint.config.js, jest.setup.env.js) use CommonJS.
   {
-    files: ['**/*.{js,jsx}'],
-    languageOptions: {
-      ecmaVersion: 2021,
-      sourceType: 'module',
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
-      globals: {
-        ...globals.node,
-        ...globals.es2021,
-        __DEV__: 'readonly',
-      },
-    },
-    plugins: {
-      react: react,
-      'react-hooks': reactHooks,
-      'react-native': reactNative,
-      prettier: prettier,
-    },
-    settings: {
-      react: {
-        version: 'detect',
-      },
-    },
-    rules: {
-      // React rules
-      ...react.configs.recommended.rules,
-      ...react.configs['jsx-runtime'].rules,
-      'react/react-in-jsx-scope': 'off',
-      'react/prop-types': 'off',
-
-      // React Hooks rules
-      ...reactHooks.configs.recommended.rules,
-      'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
-
-      // React Native rules
-      'react-native/no-unused-styles': 'warn',
-      'react-native/split-platform-components': 'warn',
-      'react-native/no-inline-styles': 'warn',
-      'react-native/no-color-literals': 'warn',
-
-      // Prettier integration
-      'prettier/prettier': 'error',
-
-      // Disable rules that conflict with Prettier
-      ...prettierConfig.rules,
-    },
+    files: ['*.js'],
+    languageOptions: { sourceType: 'commonjs' },
   },
 
-  // Test files configuration
   {
     files: ['**/*.test.{ts,tsx,js,jsx}', '**/__tests__/**/*.{ts,tsx,js,jsx}'],
-    languageOptions: {
-      globals: {
-        ...globals.jest,
-        ...globals.node,
-        ...globals.es2021,
-        __DEV__: 'readonly',
-      },
-    },
+    languageOptions: { globals: { ...sharedGlobals, ...globals.jest } },
   },
 
   // App code logs through utils/logger.ts, which forwards errors to the
@@ -176,10 +118,16 @@ module.exports = [
     },
   },
 
-  // Environment variables are read only by the validated config module.
+  // Environment variables are read only by the validated config module
+  // (and by app.config.ts, which runs in Node at build time).
   {
     files: ['**/*.{ts,tsx,js,jsx}'],
-    ignores: ['config/env.ts', '__tests__/**', 'jest.setup.env.js'],
+    ignores: [
+      'config/env.ts',
+      'app.config.ts',
+      '__tests__/**',
+      'jest.setup.env.js',
+    ],
     rules: {
       'no-restricted-properties': [
         'error',

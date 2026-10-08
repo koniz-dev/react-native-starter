@@ -61,16 +61,10 @@ configuration error screen. See [Environment Variables](environment-variables.md
 #### Using Example Endpoints
 
 ```tsx
-import { todosApi, userApi } from '@/services/api';
+import { todosApi } from '@/services/api';
 
-// Fetch all todos
+// The demo endpoint behind the Explore tab
 const todos = await todosApi.getAll();
-
-// Fetch todos by user ID
-const userTodos = await todosApi.getByUserId(1);
-
-// Fetch all users
-const users = await userApi.getAll();
 ```
 
 #### Custom Requests
@@ -352,7 +346,6 @@ import { STORAGE_KEYS } from '@/services/storage';
 
 STORAGE_KEYS.AUTH_TOKEN; // 'auth_token'
 STORAGE_KEYS.USER_DATA; // 'user_data'
-STORAGE_KEYS.SETTINGS; // 'settings'
 ```
 
 Add custom keys as needed:
@@ -369,8 +362,10 @@ Here's a complete example combining API and storage:
 ```tsx
 import { useState, useEffect } from 'react';
 import { todosApi } from '@/services/api';
-import { getItem, setItem, STORAGE_KEYS } from '@/services/storage';
+import { getItem, setItem } from '@/services/storage';
 import type { Todo } from '@/types/api';
+
+const TODOS_CACHE_KEY = 'todos';
 
 function TodosScreen() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -384,7 +379,7 @@ function TodosScreen() {
     setLoading(true);
     try {
       // Check cache first
-      const cached = await getItem<Todo[]>(STORAGE_KEYS.TODOS);
+      const cached = await getItem<Todo[]>(TODOS_CACHE_KEY);
       if (cached) {
         setTodos(cached);
       }
@@ -394,7 +389,7 @@ function TodosScreen() {
       setTodos(data);
 
       // Cache results
-      await setItem(STORAGE_KEYS.TODOS, data);
+      await setItem(TODOS_CACHE_KEY, data);
     } catch (error) {
       logger.error('Failed to load todos', error);
     } finally {

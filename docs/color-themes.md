@@ -1,217 +1,76 @@
 # Color Themes
 
-Learn how to implement light and dark color themes in your Expo and React Native app.
+The starter has one theme system: React Native Paper's Material Design 3
+theme, defined in [`constants/Theme.ts`](../constants/Theme.ts). The app
+follows the system light/dark setting.
 
-## Overview
+## How it fits together
 
-Color themes allow your app to adapt to the user's system preferences (light or dark mode) or provide manual theme switching.
+- `palette` in `constants/Theme.ts` holds the brand colors for light and dark
+  mode (primary, containers, background, surface, text). `lightTheme` and
+  `darkTheme` merge them over Paper's `MD3LightTheme` / `MD3DarkTheme`.
+- `app/_layout.tsx` reads `useColorScheme()`, picks the theme with
+  `getTheme(scheme)`, and passes it to `PaperProvider`.
+- React Navigation draws screen backgrounds, headers, and the tab bar itself,
+  so `getNavigationTheme(theme)` derives a navigation theme (`background`,
+  `card`, `text`, `border`, `primary`) from the Paper theme for expo-router's
+  `ThemeProvider`.
+- `getTabBarColors(theme)` gives the tab bar its background and border
+  (`surface` / `outlineVariant`) and tints (`primary` for the active tab,
+  `onSurfaceVariant` for the others); `app/(tabs)/_layout.tsx` applies them.
+- The status bar icons follow the theme (`StatusBar style` in
+  `app/_layout.tsx`).
 
-## Using System Color Scheme
+## Using theme colors
 
-React Native provides `useColorScheme` hook to detect the system color scheme:
-
-```tsx
-import { useColorScheme } from 'react-native';
-
-export default function App() {
-  const colorScheme = useColorScheme(); // 'light' | 'dark' | null
-
-  return (
-    <View
-      style={{
-        backgroundColor: colorScheme === 'dark' ? '#000' : '#fff',
-      }}
-    >
-      {/* Your content */}
-    </View>
-  );
-}
-```
-
-## Defining Color Constants
-
-Create a `Colors` constant with light and dark variants:
+Read colors from Paper's theme, not from hard-coded values:
 
 ```tsx
-// constants/Colors.ts
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
-
-export const Colors = {
-  light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
-  },
-  dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
-  },
-};
-```
-
-## Navigator Chrome (Tab Bar and Screen Backgrounds)
-
-React Navigation draws the tab bar and screen backgrounds itself, so Paper's
-`PaperProvider` alone doesn't theme them. This starter derives both from the
-active Paper theme in `constants/Theme.ts`:
-
-- `getNavigationTheme(theme)` builds a React Navigation theme (`background`,
-  `card`, `text`, `border`, `primary`) from the Paper theme. `app/_layout.tsx`
-  passes it to expo-router's `ThemeProvider`.
-- `getTabBarColors(theme)` returns the tab bar background and border (Paper
-  `surface` / `outlineVariant`) and the active/inactive tints
-  (`tabIconSelected` / `tabIconDefault` above). `app/(tabs)/_layout.tsx`
-  applies them through `tabBarStyle`, `tabBarActiveTintColor`, and
-  `tabBarInactiveTintColor`.
-
-Don't set only `tabBarActiveTintColor` from `Colors`: the tab bar keeps React
-Navigation's default light background, and in dark mode the white active tint
-disappears against it.
-
-## Using Colors with Hook
-
-Create a custom hook to easily access theme colors:
-
-```tsx
-// hooks/useThemeColor.ts
-import { useColorScheme } from 'react-native';
-import { Colors } from '@/constants/Colors';
-
-export function useThemeColor(
-  props: { light?: string; dark?: string },
-  colorName: keyof typeof Colors.light & keyof typeof Colors.dark
-) {
-  const theme = useColorScheme() ?? 'light';
-  const colorFromProps = props[theme];
-
-  if (colorFromProps) {
-    return colorFromProps;
-  } else {
-    return Colors[theme][colorName];
-  }
-}
-```
-
-### Usage
-
-```tsx
-import { useThemeColor } from '@/hooks/useThemeColor';
+import { useTheme } from 'react-native-paper';
 
 export default function MyComponent() {
-  const textColor = useThemeColor({}, 'text');
-  const backgroundColor = useThemeColor({}, 'background');
-
+  const theme = useTheme();
   return (
-    <View style={{ backgroundColor }}>
-      <Text style={{ color: textColor }}>Hello</Text>
+    <View style={{ backgroundColor: theme.colors.surface }}>
+      <Text style={{ color: theme.colors.onSurface }}>Hello</Text>
     </View>
   );
 }
 ```
 
-## Themed Components
+Paper components (`Text`, `Button`, `Card`, ...) already use the theme. ESLint
+`react-native/no-color-literals` rejects color literals in styles.
 
-Create reusable components that automatically adapt to themes:
+## Rebranding
 
-```tsx
-// components/ThemedText.tsx
-import { Text, type TextProps } from 'react-native';
-import { useThemeColor } from '@/hooks/useThemeColor';
+Edit `palette` in `constants/Theme.ts`. Keep each `on*` color readable on its
+pair: `__tests__/constants/theme.test.ts` checks WCAG AA contrast (4.5:1) for
+the brand pairs and for `primary` on the background in both modes. Material's
+[theme builder](https://material-foundation.github.io/material-theme-builder/)
+can generate a full set of MD3 roles from one brand color.
 
-export type ThemedTextProps = TextProps & {
-  lightColor?: string;
-  darkColor?: string;
-};
+## Manual theme switching
 
-export function ThemedText({
-  style,
-  lightColor,
-  darkColor,
-  ...rest
-}: ThemedTextProps) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
-  return <Text style={[{ color }, style]} {...rest} />;
-}
-```
-
-## Manual Theme Switching
-
-To allow users to manually switch themes, use a context:
+The starter follows the system setting. To let users choose, keep their
+choice in state (and storage), and pass it to `getTheme` instead of the
+system scheme in `app/_layout.tsx`:
 
 ```tsx
-// contexts/ThemeContext.tsx
-import { createContext, useContext, useState, useEffect } from 'react';
-import { useColorScheme } from 'react-native';
-
-type Theme = 'light' | 'dark' | 'auto';
-
-interface ThemeContextType {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
-  actualTheme: 'light' | 'dark';
-}
-
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
-
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const systemTheme = useColorScheme() ?? 'light';
-  const [theme, setTheme] = useState<Theme>('auto');
-
-  const actualTheme = theme === 'auto' ? systemTheme : theme;
-
-  return (
-    <ThemeContext.Provider value={{ theme, setTheme, actualTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
-}
-
-export function useTheme() {
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error('useTheme must be used within ThemeProvider');
-  }
-  return context;
-}
+const systemScheme = useColorScheme();
+const [preference, setPreference] = useState<'system' | 'light' | 'dark'>(
+  'system'
+);
+const scheme = preference === 'system' ? systemScheme : preference;
+const theme = getTheme(scheme === 'dark' ? 'dark' : 'light');
 ```
 
-## App Configuration
+## App configuration
 
-Configure the system appearance in `app.config.ts` (the starter sets `userInterfaceStyle: 'automatic'`):
-
-```json
-{
-  "expo": {
-    "userInterfaceStyle": "automatic"
-  }
-}
-```
-
-Options:
-
-- `"automatic"` - Follows system theme
-- `"light"` - Always light mode
-- `"dark"` - Always dark mode
-
-## Best Practices
-
-1. **Define Colors Early**: Set up your color system before building components
-2. **Use Semantic Names**: Name colors by purpose (text, background) not by color (black, white)
-3. **Test Both Themes**: Always test your app in both light and dark modes
-4. **Consider Accessibility**: Ensure sufficient contrast ratios
-5. **Provide Overrides**: Allow components to override theme colors when needed
+`app.config.ts` sets `userInterfaceStyle: 'automatic'` so the native system
+UI follows the device setting. Use `'light'` or `'dark'` to force one mode.
 
 ## References
 
+- [React Native Paper: Theming](https://callstack.github.io/react-native-paper/docs/guides/theming)
 - [Expo: Color Themes](https://docs.expo.dev/develop/user-interface/color-themes/)
 - [React Native: useColorScheme](https://reactnative.dev/docs/usecolorscheme)
-- [Material Design: Dark Theme](https://material.io/design/color/dark-theme.html)
-- [Apple Human Interface Guidelines: Dark Mode](https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/dark-mode/)

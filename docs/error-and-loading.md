@@ -104,22 +104,20 @@ A generic custom hook that simplifies data fetching with automatic loading and e
 
 ```tsx
 import { useFetch } from '@/hooks/useFetch';
-import { userApi } from '@/services/api';
+import { todosApi } from '@/services/api';
 import { LoadingScreen } from '@/components/LoadingScreen';
 
-function UserList() {
-  const { data, loading, error, refetch } = useFetch<User[]>(() =>
-    userApi.getAll()
-  );
+function TodoList() {
+  const { data, loading, error, refetch } = useFetch(() => todosApi.getAll());
 
-  if (loading) return <LoadingScreen message="Loading users..." />;
+  if (loading) return <LoadingScreen message="Loading todos..." />;
   if (error) return <Text>Error: {error}</Text>;
   if (!data) return <Text>No data</Text>;
 
   return (
     <View>
-      {data.map(user => (
-        <Text key={user.id}>{user.name}</Text>
+      {data.map(todo => (
+        <Text key={todo.id}>{todo.title}</Text>
       ))}
       <Button onPress={refetch}>Refresh</Button>
     </View>
@@ -132,8 +130,9 @@ function UserList() {
 Refetch automatically when dependencies change:
 
 ```tsx
-const { data, loading, error } = useFetch<User>(
-  () => userApi.getById(userId),
+// fetchUser is your own endpoint, e.g. api.get(`/users/${id}`)
+const { data, loading, error } = useFetch(
+  () => fetchUser(userId),
   [userId] // Refetch when userId changes
 );
 ```
@@ -271,9 +270,7 @@ export { RouteErrorBoundary as ErrorBoundary } from '@/components/ErrorBoundary'
 ### Loading with Error Handling
 
 ```tsx
-const { data, loading, error, refetch } = useFetch<User[]>(() =>
-  userApi.getAll()
-);
+const { data, loading, error, refetch } = useFetch(() => todosApi.getAll());
 
 if (loading) return <LoadingScreen />;
 if (error) {

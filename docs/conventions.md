@@ -8,7 +8,7 @@ Project standards and best practices for maintaining consistency.
 - **Hooks:** camelCase with `use` prefix - `useFetch.ts`, `useToggle.ts`
 - **Services/Utils:** camelCase - `api.ts`, `storage.ts`, `formatDate.ts`
 - **Types:** camelCase - `api.ts`, `user.ts`
-- **Constants:** PascalCase - `Colors.ts`, `Theme.ts`
+- **Constants:** PascalCase - `Theme.ts`
 - **Screens:** PascalCase (Expo Router auto-converts) - `index.tsx` → `/`, `profile.tsx` → `/profile`
 
 ## Import Order
@@ -32,10 +32,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 
 import { useFetch } from '@/hooks/useFetch';
-import { userApi } from '@/services/api';
+import { todosApi } from '@/services/api';
 import { LoadingScreen } from '@/components/LoadingScreen';
 
-import type { User } from '@/types/api';
+import type { Todo } from '@/types/api';
 ```
 
 ## Component Structure
@@ -88,13 +88,13 @@ const styles = StyleSheet.create({
 
 ```tsx
 // Good
-function getUser(id: number): Promise<User> {
-  return userApi.getById(id);
+function getOpenTodos(todos: Todo[]): Todo[] {
+  return todos.filter(todo => !todo.completed);
 }
 
 // Avoid
-function getUser(id) {
-  return userApi.getById(id);
+function getOpenTodos(todos) {
+  return todos.filter(todo => !todo.completed);
 }
 ```
 

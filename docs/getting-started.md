@@ -116,7 +116,6 @@ react-native-starter/
 ├── types/            # TypeScript type definitions
 │   └── api.ts        # API response types
 ├── constants/        # App constants
-│   ├── Colors.ts     # Color definitions
 │   └── Theme.ts      # React Native Paper theme
 ├── assets/           # Images, fonts, static files
 └── docs/             # Documentation
@@ -180,7 +179,7 @@ Now that you're running, here's where to start coding:
 
 1. **Explore existing screens** - Check `app/(tabs)/index.tsx` to see example usage
 2. **Add a new screen** - See [How to Add a New Screen](how-to.md#how-to-add-a-new-screen)
-3. **Customize theme** - Edit `constants/Theme.ts` and `constants/Colors.ts`
+3. **Customize theme** - Edit `palette` in `constants/Theme.ts`
 4. **Connect to your API** - Update `EXPO_PUBLIC_API_URL` in `.env` and modify `services/api.ts`
 5. **Read the guides** - Check out [How-To Guides](how-to.md) for common tasks
 
