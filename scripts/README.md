@@ -21,6 +21,13 @@ Removes the demo features and `@demo`-marked code, leaving the foundation
 (`npm run remove-demo`, `-- --dry-run` to preview). See
 [`docs/remove-demo.md`](../docs/remove-demo.md).
 
+## `check-docs.js`
+
+Checks the docs against the code (`npm run docs:check`, also run in CI):
+compiles every TypeScript snippet in `README.md`, `docs/`, and the folder
+READMEs with `tsc`, and checks every `npm run` script, link, anchor, and repo
+path they mention. See [`docs/README.md`](../docs/README.md).
+
 ## No reset-project command
 
 This starter intentionally does not ship a destructive `reset-project` script.
