@@ -9,9 +9,10 @@ appId: ${APP_ID}
       - clearState
 - launchApp
 - openLink: ${APP_URL}
-# Overlays that can cover Home after a launch: Expo Go's developer-menu
-# introduction (and the menu itself on Android), and on slow emulators a
-# system "isn't responding" dialog. Dismiss them until Home is usable.
+# Until Home is usable: reopen the link if Expo Go is still on its own home
+# screen (the link can arrive before Expo Go is ready), and dismiss overlays:
+# Expo Go's developer-menu introduction (and the menu itself on Android), and
+# on slow emulators a system "isn't responding" dialog.
 - repeat:
     times: 10
     while:
@@ -23,6 +24,11 @@ appId: ${APP_ID}
             id: tab-home
           timeout: 15000
           optional: true
+      - runFlow:
+          when:
+            visible: Development servers
+          commands:
+            - openLink: ${APP_URL}
       - tapOn:
           text: Wait
           optional: true
