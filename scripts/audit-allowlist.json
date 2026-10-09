@@ -1,0 +1,29 @@
+{
+  "$comment": "High/critical npm audit advisories (npm audit --omit=dev) reviewed and accepted until reviewBy. Checked by scripts/check-audit.js (npm run audit:check). Review: docs/evidence/issue-41/audit-review.md.",
+  "advisories": [
+    {
+      "id": "GHSA-86w9-cpqp-85rv",
+      "package": "node-forge",
+      "severity": "high",
+      "path": "expo > @expo/cli > node-forge (also via @expo/code-signing-certificates)",
+      "exposure": "Build tool only: Expo CLI uses node-forge for code-signing certificates on the developer's or CI machine. Not in the iOS, Android, or web bundles.",
+      "fix": "None released: node-forge 1.4.0 is the latest and is in the affected range.",
+      "owner": "koniz-dev",
+      "reviewed": "2026-10-09",
+      "reviewBy": "2027-01-09",
+      "tracking": "https://github.com/koniz-dev/react-native-starter/issues/43"
+    },
+    {
+      "id": "GHSA-vfj7-8cjw-p6xm",
+      "package": "braces",
+      "severity": "high",
+      "path": "jest / metro / jest-haste-map > micromatch > braces",
+      "exposure": "Build tool only: glob matching in Metro and Jest over the project's own config patterns. Not in the iOS, Android, or web bundles.",
+      "fix": "None released: braces 3.0.3 is the latest and is in the affected range.",
+      "owner": "koniz-dev",
+      "reviewed": "2026-10-09",
+      "reviewBy": "2027-01-09",
+      "tracking": "https://github.com/koniz-dev/react-native-starter/issues/43"
+    }
+  ]
+}

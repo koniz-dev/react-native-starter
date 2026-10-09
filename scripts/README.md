@@ -28,6 +28,13 @@ compiles every TypeScript snippet in `README.md`, `docs/`, and the folder
 READMEs with `tsc`, and checks every `npm run` script, link, anchor, and repo
 path they mention. See [`docs/README.md`](../docs/README.md).
 
+## `check-audit.js`
+
+`npm run audit:check` (also in CI): runs `npm audit --omit=dev` and fails on
+any high or critical advisory that is not reviewed in `audit-allowlist.json`,
+or whose review date (`reviewBy`) has passed. Each allowlist entry records the
+dependency path, exposure, owner, review date, and tracking issue.
+
 ## No reset-project command
 
 This starter intentionally does not ship a destructive `reset-project` script.

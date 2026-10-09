@@ -1,0 +1,10 @@
+# Probe 1: the braces entry removed from the allowlist
+moderate uuid GHSA-w5hq-g745-h8pq: reported (not gated)
+npm audit --omit=dev: 5 advisories (records: 0 critical, 45 high, 16 moderate, 0 low).
+high braces GHSA-vfj7-8cjw-p6xm (braces vulnerable to stack-exhaustion denial of service through deeply nested patterns) is not in scripts/audit-allowlist.json: remediate it or review and allowlist it.
+exit status: 1
+
+# Probe 2: the node-forge entry with reviewBy in the past
+npm audit --omit=dev: 5 advisories (records: 0 critical, 45 high, 16 moderate, 0 low).
+node-forge GHSA-86w9-cpqp-85rv: allowlist review expired on 2026-01-01; re-review it (https://github.com/koniz-dev/react-native-starter/issues/43).
+exit status: 1

@@ -45,6 +45,9 @@ jobs:
       - name: Expo Doctor
         run: npx expo-doctor
 
+      - name: Audit production dependencies (reviewed allowlist)
+        run: npm run audit:check
+
       - name: Export web build
         run: npx expo export --platform web --output-dir dist
 

@@ -44,12 +44,13 @@ emulator), or `w` (web), or scan the QR code with Expo Go. On Home, tap
 | `npm run test:ci`                                             | Jest once, with coverage and its threshold                                                                    |
 | `npm run test:coverage`                                       | Jest with an HTML coverage report in `coverage/`                                                              |
 | `npm run docs:check`                                          | Compile the docs' TypeScript snippets and check their paths and scripts                                       |
+| `npm run audit:check`                                         | `npm audit --omit=dev`, failing on a high or critical advisory not reviewed in `scripts/audit-allowlist.json` |
 | `npm run remove-demo`                                         | Remove the demo features ([Remove the Demo](remove-demo.md))                                                  |
 
 The local gate before a commit is
 `npm run lint && npm run type-check && npm run test:ci`; CI also runs
-`npm run format:check`, `npm run docs:check`, `npx expo-doctor`, and a web
-export (`.github/workflows/ci.yml`).
+`npm run format:check`, `npm run docs:check`, `npm run audit:check`,
+`npx expo-doctor`, and a web export (`.github/workflows/ci.yml`).
 
 The variant scripts use POSIX `VAR=value command` syntax (macOS, Linux, WSL).
 

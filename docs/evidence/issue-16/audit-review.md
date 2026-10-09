@@ -1,3 +1,5 @@
+> **Superseded** on 2026-10-09 by [issue 41's review](../issue-41/audit-review.md).
+
 # Issue 16 audit remediation and risk review
 
 Verified on 2026-10-02 with Node v26.7.0 and npm 11.x after

@@ -1,0 +1,16 @@
+# Which audited packages ship in the app bundles (expo export --source-maps, sources under node_modules/)
+android: 66 npm packages bundled
+  decode-uri-component: index.js
+  query-string: index.js
+  @expo/cli: build/metro-require/require.js
+  not bundled: braces, micromatch, node-forge, sprintf-js, uuid, xcode, brace-expansion, minimatch, js-yaml, @expo/code-signing-certificates, metro, jest
+ios: 62 npm packages bundled
+  decode-uri-component: index.js
+  query-string: index.js
+  @expo/cli: build/metro-require/require.js
+  not bundled: braces, micromatch, node-forge, sprintf-js, uuid, xcode, brace-expansion, minimatch, js-yaml, @expo/code-signing-certificates, metro, jest
+web: 59 npm packages bundled
+  decode-uri-component: index.js
+  query-string: index.js
+  @expo/cli: build/metro-require/require.js
+  not bundled: braces, micromatch, node-forge, sprintf-js, uuid, xcode, brace-expansion, minimatch, js-yaml, @expo/code-signing-certificates, metro, jest

@@ -15,6 +15,7 @@
     "config:print": "expo config --type public",
     "remove-demo": "node scripts/remove-demo.js",
     "docs:check": "node scripts/check-docs.js",
+    "audit:check": "node scripts/check-audit.js",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix --max-warnings 0",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
