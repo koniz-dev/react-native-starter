@@ -277,4 +277,7 @@ to the `transformIgnorePatterns` allowlist in `package.json`.
 Earlier versions of the starter had `state-management/*` branches with a
 Redux, Context, Zustand, and Jotai variant of the whole app. They predate
 Expo SDK 57, store the token in AsyncStorage, and no longer merge with
-`main`; they are not maintained. Use the recipes above instead.
+`main`, so they were retired. Their last commits are kept as the tags
+`archive/state-management-redux`, `archive/state-management-react-context`,
+`archive/state-management-zustand`, and `archive/state-management-jotai`;
+use the recipes above instead.
