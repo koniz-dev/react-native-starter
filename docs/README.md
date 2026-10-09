@@ -37,6 +37,9 @@ This directory contains additional guides and documentation for common developme
 
 ### Project
 
+- **[Testing](testing.md)**  
+  Test layout, shared mocks and render helpers, full-app routing tests, and the coverage threshold.
+
 - **[Conventions](conventions.md)**  
   Project structure (`app/`, `features/`, `shared/`), naming, and patterns.
 

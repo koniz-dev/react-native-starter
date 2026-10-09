@@ -1,12 +1,6 @@
 import { AxiosError, AxiosHeaders, type AxiosRequestConfig } from 'axios';
 import { ApiError } from '@/shared/http/apiError';
 
-jest.mock('@react-native-async-storage/async-storage', () =>
-  jest.requireActual(
-    '@react-native-async-storage/async-storage/jest/async-storage-mock'
-  )
-);
-
 import api, { getOrigin, getTrustedTokenOrigins } from '@/shared/http/api';
 import { getConfig } from '@/shared/config/env';
 

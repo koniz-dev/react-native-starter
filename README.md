@@ -168,7 +168,8 @@ For more information, see:
 - `npm run lint:fix` - Fix linting issues automatically
 - `npm run format` - Format code with Prettier
 - `npm run type-check` - Check TypeScript types without emitting files
-- `npm test` - Run tests
+- `npm test` - Run tests in watch mode
+- `npm run test:ci` - Run tests once with coverage and the coverage threshold (see [Testing](docs/testing.md))
 
 ## Project Structure
 

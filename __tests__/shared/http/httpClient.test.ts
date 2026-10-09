@@ -5,7 +5,6 @@ import {
   type AxiosAdapter,
   type InternalAxiosRequestConfig,
 } from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ApiError, toApiError } from '@/shared/http/apiError';
 import { createHttpClient } from '@/shared/http/httpClient';
 import {
@@ -35,28 +34,7 @@ const testAuthAdapter: AuthAdapter = {
 };
 import { getItem, setItem, STORAGE_KEYS } from '@/shared/storage/storage';
 import { DEFAULT_API_TIMEOUT_MS, getConfig } from '@/shared/config/env';
-
-jest.mock('@react-native-async-storage/async-storage', () =>
-  jest.requireActual(
-    '@react-native-async-storage/async-storage/jest/async-storage-mock'
-  )
-);
-
-const mockSecureStore = new Map<string, string>();
-jest.mock('expo-secure-store', () => ({
-  isAvailableAsync: jest.fn(() => Promise.resolve(true)),
-  setItemAsync: jest.fn((key: string, value: string) => {
-    mockSecureStore.set(key, value);
-    return Promise.resolve();
-  }),
-  getItemAsync: jest.fn((key: string) =>
-    Promise.resolve(mockSecureStore.get(key) ?? null)
-  ),
-  deleteItemAsync: jest.fn((key: string) => {
-    mockSecureStore.delete(key);
-    return Promise.resolve();
-  }),
-}));
+import { secureStore } from '@/testing';
 
 jest.mock('@/shared/lib/logger', () => ({
   logger: {
@@ -102,7 +80,7 @@ function authenticatedClient(adapter: AxiosAdapter) {
 }
 
 async function signIn(token = 'old-token') {
-  mockSecureStore.set(STORAGE_KEYS.AUTH_TOKEN, token);
+  secureStore.set(STORAGE_KEYS.AUTH_TOKEN, token);
   await setItem(STORAGE_KEYS.USER_DATA, user);
 }
 
@@ -111,8 +89,6 @@ describe('createHttpClient', () => {
   let unsubscribe: () => void;
 
   beforeEach(async () => {
-    mockSecureStore.clear();
-    await AsyncStorage.clear();
     setRefreshTokenHandler(null);
     setUnauthorizedHandler(null);
     expired = jest.fn();
@@ -175,7 +151,7 @@ describe('createHttpClient', () => {
       status: 401,
       message: 'Token expired',
     });
-    expect(mockSecureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
+    expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
     expect(await getItem(STORAGE_KEYS.USER_DATA)).toBeNull();
     expect(expired).toHaveBeenCalledTimes(1);
   });
@@ -183,7 +159,7 @@ describe('createHttpClient', () => {
   it('refreshes once and retries the request with the new token', async () => {
     await signIn('old-token');
     setRefreshTokenHandler(async () => {
-      mockSecureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'new-token');
+      secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'new-token');
       return 'new-token';
     });
     const seenTokens: unknown[] = [];
@@ -199,7 +175,7 @@ describe('createHttpClient', () => {
       data: { ok: true },
     });
     expect(seenTokens).toEqual(['Bearer old-token', 'Bearer new-token']);
-    expect(mockSecureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('new-token');
+    expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('new-token');
     expect(await getItem(STORAGE_KEYS.USER_DATA)).toEqual(user);
     expect(expired).not.toHaveBeenCalled();
   });
@@ -216,7 +192,7 @@ describe('createHttpClient', () => {
     await expect(client.get('/me')).rejects.toMatchObject({
       code: 'unauthorized',
     });
-    expect(mockSecureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
+    expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
     expect(expired).toHaveBeenCalledTimes(1);
   });
 
@@ -241,7 +217,7 @@ describe('createHttpClient', () => {
   it('shares one refresh between concurrent 401s', async () => {
     await signIn('old-token');
     const refresh = jest.fn(async () => {
-      mockSecureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'new-token');
+      secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'new-token');
       return 'new-token';
     });
     setRefreshTokenHandler(refresh);
@@ -277,7 +253,7 @@ describe('createHttpClient', () => {
       code: 'unauthorized',
     });
     expect(handler).toHaveBeenCalledTimes(1);
-    expect(mockSecureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(true);
+    expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(true);
   });
 });
 
@@ -285,8 +261,6 @@ describe('auth client', () => {
   const originalAdapter = authApi.defaults.adapter;
 
   beforeEach(async () => {
-    mockSecureStore.clear();
-    await AsyncStorage.clear();
     setAuthAdapter(testAuthAdapter);
   });
 
@@ -312,7 +286,7 @@ describe('auth client', () => {
       message: 'Invalid credentials',
     });
     expect(expired).not.toHaveBeenCalled();
-    expect(mockSecureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(true);
+    expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(true);
     unsubscribe();
   });
 

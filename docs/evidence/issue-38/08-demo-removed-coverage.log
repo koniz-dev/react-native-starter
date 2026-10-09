@@ -1,0 +1,4 @@
+# npm run remove-demo on a scratch copy, then npm run test:ci (coverage threshold applies)
+All files               |   97.41 |     89.6 |   94.97 |   97.64 |                   
+Test Suites: 22 passed, 22 total
+Tests:       185 passed, 185 total

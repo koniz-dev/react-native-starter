@@ -97,7 +97,12 @@ module.exports = [
   },
 
   {
-    files: ['**/*.test.{ts,tsx,js,jsx}', '**/__tests__/**/*.{ts,tsx,js,jsx}'],
+    files: [
+      '**/*.test.{ts,tsx,js,jsx}',
+      '**/__tests__/**/*.{ts,tsx,js,jsx}',
+      'testing/**/*.{ts,tsx}',
+      'jest.setup.ts',
+    ],
     languageOptions: { globals: { ...sharedGlobals, ...globals.jest } },
   },
 

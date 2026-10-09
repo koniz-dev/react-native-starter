@@ -4,19 +4,6 @@ import { renderRouter, screen } from 'expo-router/testing-library';
 import { unstable_settings } from '@/app/_layout';
 
 // The login route imports the auth service, which loads both storage modules.
-jest.mock('@react-native-async-storage/async-storage', () =>
-  jest.requireActual(
-    '@react-native-async-storage/async-storage/jest/async-storage-mock'
-  )
-);
-
-jest.mock('expo-secure-store', () => ({
-  isAvailableAsync: jest.fn(() => Promise.resolve(true)),
-  setItemAsync: jest.fn(() => Promise.resolve()),
-  getItemAsync: jest.fn(() => Promise.resolve(null)),
-  deleteItemAsync: jest.fn(() => Promise.resolve()),
-}));
-
 describe('initial route', () => {
   test('anchors the root stack on the tabs group', () => {
     expect(unstable_settings.initialRouteName).toBe('(tabs)');

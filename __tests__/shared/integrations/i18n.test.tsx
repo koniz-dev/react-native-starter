@@ -9,19 +9,6 @@ import {
 } from '@/shared/i18n';
 import { en } from '@/shared/i18n/en';
 
-jest.mock('@react-native-async-storage/async-storage', () =>
-  jest.requireActual(
-    '@react-native-async-storage/async-storage/jest/async-storage-mock'
-  )
-);
-
-jest.mock('expo-secure-store', () => ({
-  isAvailableAsync: jest.fn(() => Promise.resolve(true)),
-  setItemAsync: jest.fn(() => Promise.resolve()),
-  getItemAsync: jest.fn(() => Promise.resolve(null)),
-  deleteItemAsync: jest.fn(() => Promise.resolve()),
-}));
-
 /** A pseudo-locale that wraps every English string, to spot hard-coded text. */
 const pseudo: Translations = Object.fromEntries(
   Object.entries(en).map(([key, value]) => [key, `[${value}]`])

@@ -20,8 +20,8 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "type-check": "tsc --noEmit",
     "test": "jest --watchAll",
-    "test:ci": "jest",
-    "test:coverage": "jest --coverage"
+    "test:ci": "jest --coverage",
+    "test:coverage": "jest --coverage --coverageReporters=html --coverageReporters=text"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
@@ -75,6 +75,23 @@
     "setupFiles": [
       "<rootDir>/jest.setup.env.js"
     ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.ts"
+    ],
+    "collectCoverageFrom": [
+      "app/**/*.{ts,tsx}",
+      "features/**/*.{ts,tsx}",
+      "shared/**/*.{ts,tsx}",
+      "!**/*.d.ts"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "statements": 95,
+        "branches": 88,
+        "functions": 92,
+        "lines": 95
+      }
+    },
     "transformIgnorePatterns": [
       "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|standard-navigation)"
     ]

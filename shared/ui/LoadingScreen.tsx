@@ -24,6 +24,7 @@ export function LoadingScreen({ message }: LoadingScreenProps) {
   return (
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
+      testID="loading-screen"
     >
       <ActivityIndicator size="large" color={theme.colors.primary} />
       {message && (

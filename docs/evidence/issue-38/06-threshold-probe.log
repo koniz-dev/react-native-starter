@@ -1,0 +1,5 @@
+# Probe: the same suite with the branch threshold raised to 99 (package.json unchanged; CLI override)
+Branches     : 90.35% ( 328/363 )
+Jest: "global" coverage threshold for branches (99%) not met: 90.35%
+Tests:       199 passed, 199 total
+exit status: 1

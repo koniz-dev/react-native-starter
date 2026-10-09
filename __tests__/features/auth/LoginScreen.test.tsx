@@ -1,21 +1,6 @@
 import React from 'react';
 import { KeyboardAvoidingView, Platform, Text } from 'react-native';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { MD3LightTheme, PaperProvider } from 'react-native-paper';
-
-jest.mock('@react-native-async-storage/async-storage', () =>
-  jest.requireActual(
-    '@react-native-async-storage/async-storage/jest/async-storage-mock'
-  )
-);
-
-jest.mock('expo-secure-store', () => ({
-  isAvailableAsync: jest.fn(() => Promise.resolve(true)),
-  setItemAsync: jest.fn(() => Promise.resolve()),
-  getItemAsync: jest.fn(() => Promise.resolve(null)),
-  deleteItemAsync: jest.fn(() => Promise.resolve()),
-}));
+import { fireEvent, waitFor } from '@testing-library/react-native';
 
 jest.mock('expo-router', () => ({
   router: { replace: jest.fn() },
@@ -59,31 +44,25 @@ jest.mock('react-native-paper', () => {
   };
 });
 
-import LoginScreen from '@/app/(auth)/login';
-import { SessionProvider, useSession } from '@/shared/session/SessionProvider';
+import { LoginScreen } from '@/features/auth/screens/LoginScreen';
+import { renderWithProviders } from '@/testing';
+import { useSession } from '@/shared/session/SessionProvider';
 import { authService } from '@/shared/session/authService';
-
-const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-  <SafeAreaProvider
-    initialMetrics={{
-      frame: { x: 0, y: 0, width: 0, height: 0 },
-      insets: { top: 0, left: 0, right: 0, bottom: 0 },
-    }}
-  >
-    <PaperProvider theme={MD3LightTheme}>
-      <SessionProvider>
-        {children}
-        <SessionProbe />
-      </SessionProvider>
-    </PaperProvider>
-  </SafeAreaProvider>
-);
 
 /** Shows the provider's session status so tests can see sign-in take effect. */
 function SessionProbe() {
   const { session } = useSession();
   return <Text testID="session-probe">{session.status}</Text>;
 }
+
+const renderLogin = () =>
+  renderWithProviders(
+    <>
+      <LoginScreen />
+      <SessionProbe />
+    </>,
+    { withSession: true }
+  );
 
 describe('<LoginScreen />', () => {
   beforeEach(() => {
@@ -95,9 +74,7 @@ describe('<LoginScreen />', () => {
       token: 'demo-token',
       user: { id: 1, email: 'demo@example.com', name: 'Demo User' },
     });
-    const { getByTestId, getByText } = render(<LoginScreen />, {
-      wrapper: TestWrapper,
-    });
+    const { getByTestId, getByText } = renderLogin();
 
     fireEvent.changeText(getByTestId('login-username'), 'emilys');
     fireEvent.changeText(getByTestId('login-password'), 'emilyspass');
@@ -116,9 +93,7 @@ describe('<LoginScreen />', () => {
     jest
       .spyOn(authService, 'login')
       .mockRejectedValue(new Error('Invalid credentials'));
-    const { getByTestId, getByText } = render(<LoginScreen />, {
-      wrapper: TestWrapper,
-    });
+    const { getByTestId, getByText } = renderLogin();
 
     fireEvent.changeText(getByTestId('login-username'), 'emilys');
     fireEvent.changeText(getByTestId('login-password'), 'wrong-password');
@@ -130,8 +105,28 @@ describe('<LoginScreen />', () => {
     expect(getByTestId('session-probe').props.children).toBe('signedOut');
   });
 
+  it.each([
+    ['both fields are empty', '', ''],
+    ['the password is empty', 'emilys', ''],
+    ['the username is empty', '', 'emilyspass'],
+  ])(
+    'asks for both fields and does not sign in when %s',
+    async (_case, username, password) => {
+      const login = jest.spyOn(authService, 'login');
+      const { getByTestId, getByText, findByText } = renderLogin();
+
+      fireEvent.changeText(getByTestId('login-username'), username);
+      fireEvent.changeText(getByTestId('login-password'), password);
+      fireEvent.press(getByText('Sign In'));
+
+      expect(await findByText('Please fill in all fields')).toBeTruthy();
+      expect(login).not.toHaveBeenCalled();
+      expect(getByTestId('session-probe').props.children).toBe('signedOut');
+    }
+  );
+
   it('moves from username to password with the next key', () => {
-    const { getByTestId } = render(<LoginScreen />, { wrapper: TestWrapper });
+    const { getByTestId } = renderLogin();
     const username = getByTestId('login-username');
 
     expect(username.props.returnKeyType).toBe('next');
@@ -146,7 +141,7 @@ describe('<LoginScreen />', () => {
       token: 'demo-token',
       user: { id: 1, email: 'demo@example.com', name: 'Demo User' },
     });
-    const { getByTestId } = render(<LoginScreen />, { wrapper: TestWrapper });
+    const { getByTestId } = renderLogin();
     const password = getByTestId('login-password');
 
     fireEvent.changeText(getByTestId('login-username'), 'emilys');
@@ -164,9 +159,7 @@ describe('<LoginScreen />', () => {
   });
 
   it('wraps the form in a keyboard-avoiding container', () => {
-    const { UNSAFE_getByType } = render(<LoginScreen />, {
-      wrapper: TestWrapper,
-    });
+    const { UNSAFE_getByType } = renderLogin();
 
     expect(UNSAFE_getByType(KeyboardAvoidingView).props.behavior).toBe(
       Platform.OS === 'ios' ? 'padding' : 'height'

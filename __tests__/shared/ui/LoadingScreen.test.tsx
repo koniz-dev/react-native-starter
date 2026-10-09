@@ -1,40 +1,34 @@
-import React from 'react';
-import { render } from '@testing-library/react-native';
-import { PaperProvider, MD3LightTheme } from 'react-native-paper';
-
+import { StyleSheet } from 'react-native';
+import { screen } from '@testing-library/react-native';
 import { LoadingScreen } from '@/shared/ui/LoadingScreen';
-
-// Mock ActivityIndicator to avoid animation issues in tests
-jest.mock('react-native-paper', () => {
-  const actual = jest.requireActual('react-native-paper');
-  return {
-    ...actual,
-    ActivityIndicator: () => null,
-  };
-});
-
-const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-  <PaperProvider theme={MD3LightTheme}>{children}</PaperProvider>
-);
+import { getTheme } from '@/shared/ui/theme';
+import { renderWithProviders } from '@/testing';
 
 describe('<LoadingScreen />', () => {
-  test('renders without crashing', () => {
-    const result = render(<LoadingScreen />, { wrapper: TestWrapper });
-    expect(result).toBeTruthy();
-  });
+  it.each(['light', 'dark'] as const)(
+    'shows a progress indicator and the message in the %s theme',
+    scheme => {
+      const theme = getTheme(scheme);
+      renderWithProviders(<LoadingScreen message="Loading data..." />, {
+        scheme,
+      });
 
-  test('displays message when provided', () => {
-    const message = 'Loading data...';
-    const { getByText } = render(<LoadingScreen message={message} />, {
-      wrapper: TestWrapper,
-    });
+      expect(screen.getByRole('progressbar')).toBeTruthy();
+      const message = screen.getByText('Loading data...');
+      expect(StyleSheet.flatten(message.props.style).color).toBe(
+        theme.colors.onSurfaceVariant
+      );
+      expect(
+        StyleSheet.flatten(screen.getByTestId('loading-screen').props.style)
+          .backgroundColor
+      ).toBe(theme.colors.background);
+    }
+  );
 
-    getByText(message);
-  });
+  it('shows only the indicator without a message', () => {
+    renderWithProviders(<LoadingScreen />);
 
-  test('does not display message when not provided', () => {
-    const { queryByText } = render(<LoadingScreen />, { wrapper: TestWrapper });
-
-    expect(queryByText(/loading/i)).toBeNull();
+    expect(screen.getByRole('progressbar')).toBeTruthy();
+    expect(screen.queryByText(/./)).toBeNull();
   });
 });

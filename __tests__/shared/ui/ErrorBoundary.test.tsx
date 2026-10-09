@@ -10,26 +10,9 @@ import {
   errorReporterSeam,
   type ErrorReporter,
 } from '@/shared/integrations/errorReporter';
+import { setColorScheme } from '@/testing';
 
 // The app's routes load the auth service, which loads both storage modules.
-jest.mock('@react-native-async-storage/async-storage', () =>
-  jest.requireActual(
-    '@react-native-async-storage/async-storage/jest/async-storage-mock'
-  )
-);
-jest.mock('expo-secure-store', () => ({
-  isAvailableAsync: jest.fn(() => Promise.resolve(true)),
-  setItemAsync: jest.fn(() => Promise.resolve()),
-  getItemAsync: jest.fn(() => Promise.resolve(null)),
-  deleteItemAsync: jest.fn(() => Promise.resolve()),
-}));
-
-const mockColorScheme = jest.fn<'light' | 'dark', []>(() => 'light');
-jest.mock('react-native/Libraries/Utilities/useColorScheme', () => ({
-  __esModule: true,
-  default: () => mockColorScheme(),
-}));
-
 // Lets a test make the root layout's session provider throw while rendering,
 // to reach the app-level boundary instead of a route boundary.
 let mockSessionProviderThrows = false;
@@ -84,7 +67,7 @@ describe('error boundaries', () => {
     const theme = getTheme(scheme);
 
     beforeEach(() => {
-      mockColorScheme.mockReturnValue(scheme);
+      setColorScheme(scheme);
     });
 
     it('a route boundary catches a throwing screen, reports it, and renders a themed fallback', async () => {
@@ -186,6 +169,38 @@ describe('error boundaries', () => {
 
       expect(replace).toHaveBeenCalledWith('/');
       expect(screen.getByText('Recovered')).toBeTruthy();
+    });
+
+    it('renders a custom fallback, which can reset the boundary', () => {
+      render(
+        <PaperProvider theme={getTheme('light')}>
+          <ErrorBoundary
+            fallback={(error, reset) => (
+              <Text onPress={reset} testID="custom-fallback">
+                {`Custom: ${error.message}`}
+              </Text>
+            )}
+          >
+            <Bomb />
+          </ErrorBoundary>
+        </PaperProvider>
+      );
+
+      expect(screen.getByText('Custom: Boom from a screen')).toBeTruthy();
+      expect(screen.queryByText('Something went wrong')).toBeNull();
+      expect(reporter.captureException).toHaveBeenCalledTimes(1);
+
+      shouldThrow = false;
+      fireEvent.press(screen.getByTestId('custom-fallback'));
+      expect(screen.getByText('Recovered')).toBeTruthy();
+    });
+
+    it('renders its children when nothing throws', () => {
+      shouldThrow = false;
+      renderBoundary();
+
+      expect(screen.getByText('Recovered')).toBeTruthy();
+      expect(reporter.captureException).not.toHaveBeenCalled();
     });
 
     it('reports in every build, with the component stack', () => {

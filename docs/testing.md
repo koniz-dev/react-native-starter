@@ -1,321 +1,156 @@
 # Testing Guide
 
-Learn how to write and run unit tests for your React Native Expo app using Jest and React Native Testing Library.
+Jest with the `jest-expo` preset and React Native Testing Library. Tests run
+in Node with native modules mocked; they are the starter's main verification
+harness, alongside manual runs on simulators (see the evidence folders).
 
-## Overview
-
-This project uses [Jest](https://jestjs.io/) as the testing framework and [React Native Testing Library](https://callstack.github.io/react-native-testing-library/) for testing React Native components. The setup follows [Expo's official testing documentation](https://docs.expo.dev/develop/unit-testing/).
-
-## Quick Start
-
-### Running Tests
+## Commands
 
 ```bash
-# Run tests in watch mode (recommended for development)
-npm run test
-
-# Run tests once (for CI/CD)
-npm run test:ci
-
-# Check TypeScript types without emitting files
-npm run type-check
-
-# Run tests with coverage report
-npm run test:coverage
+npm test               # watch mode
+npm run test:ci        # once, with coverage and the coverage threshold (the CI gate)
+npm run test:coverage  # once, with an HTML report in coverage/
+npx jest __tests__/features/auth   # one folder or file
 ```
 
-## Test Structure
+The full local gate is `npm run lint && npm run type-check && npm run test:ci`.
 
-Tests are organized in the `__tests__` directory, mirroring the source code structure:
+## Layout
 
 ```
-__tests__/
-├── app/                      # Routing: session guards, initial route, theme, status bar
+__tests__/                    mirrors the source tree
+├── app/                      full-app routing tests: guards, initial route, theme, status bar
 ├── features/
-│   ├── auth/                 # LoginScreen
-│   ├── home/                 # HomeScreen
-│   └── demo-*/               # Demo tests (removed by npm run remove-demo)
+│   ├── auth/  home/          screen tests
+│   └── demo-*/               demo tests (deleted by npm run remove-demo)
 └── shared/
     ├── config/  http/  session/  storage/
     ├── integrations/  lib/  ui/
+testing/                      shared helpers (import from '@/testing')
+├── render.tsx                renderWithProviders
+├── secureStore.ts            in-memory expo-secure-store
+└── colorScheme.ts            setColorScheme
+jest.setup.env.js             env for every test file (demo backends on)
+jest.setup.ts                 shared mocks, reset before each test
 ```
 
-**Organization:** the tree mirrors `app/`, `features/<name>/`, and
-`shared/<area>/`. Full-app tests render the real routes with
-`renderRouter('./app')`; component tests render one screen with providers.
+## Shared setup
 
-## Writing Tests
+`jest.setup.ts` runs for every test file (`setupFilesAfterEnv`) and mocks:
 
-### Utility Function Tests
+| Module                          | Mock                                                | Reset before each test     |
+| ------------------------------- | --------------------------------------------------- | -------------------------- |
+| AsyncStorage                    | the library's in-memory mock                        | cleared                    |
+| `expo-secure-store`             | an in-memory store (`secureStore` from `@/testing`) | emptied, defaults restored |
+| `useColorScheme` (React Native) | returns the scheme set with `setColorScheme()`      | back to `'light'`          |
 
-Test pure functions and utilities without React components:
+So tests don't repeat these mocks. Seed or inspect state directly:
 
-```typescript
-// __tests__/shared/lib/logger.test.ts (excerpt)
-import { redact } from '@/shared/lib/logger';
+```ts
+import * as SecureStore from 'expo-secure-store';
+import { secureStore, setColorScheme } from '@/testing';
+import { STORAGE_KEYS } from '@/shared/storage/storage';
 
-describe('redact', () => {
-  test('replaces auth headers', () => {
-    expect(redact({ headers: { Authorization: 'Bearer abc' } }, true)).toEqual({
-      headers: { Authorization: '[redacted]' },
-    });
-  });
+secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token'); // "signed in"
+setColorScheme('dark');
+jest
+  .mocked(SecureStore.getItemAsync)
+  .mockRejectedValueOnce(new Error('Keychain unavailable'));
+```
 
-  test('replaces response bodies outside development', () => {
-    expect(redact({ status: 500, data: { user: 'emily' } }, false)).toEqual({
-      status: 500,
-      data: '[redacted]',
-    });
-  });
+Anything else a test mocks (for example `expo-router` in a component test) is
+local to that file.
+
+`jest.setup.env.js` sets `EXPO_PUBLIC_USE_DEMO_BACKENDS=true`, so the app's
+config is valid in tests. Tests of config validation call `parseEnv()`
+directly.
+
+## Two kinds of UI tests
+
+**Screen or component tests** render one component with the providers the
+root layout gives every screen:
+
+```tsx
+import { screen } from '@testing-library/react-native';
+import { HomeScreen } from '@/features/home/screens/HomeScreen';
+import { renderWithProviders } from '@/testing';
+
+renderWithProviders(<HomeScreen />, { withSession: true }); // options: scheme, withSession
+expect(await screen.findByText('Not signed in')).toBeTruthy();
+```
+
+**Full-app tests** render the real routes, layouts, and guards with
+`renderRouter` from `expo-router/testing-library`, starting at a URL:
+
+```tsx
+import { renderRouter, screen } from 'expo-router/testing-library';
+
+const app = renderRouter('./app', { initialUrl: '/profile' });
+expect(await screen.findByText('Not signed in')).toBeTruthy();
+expect(app.getPathname()).toBe('/'); // the guard sent a signed-out user Home
+```
+
+Add a route just for a test with
+`renderRouter({ appDir: './app', overrides: { '(tabs)/boom': Bomb } })` (see
+`__tests__/shared/ui/ErrorBoundary.test.tsx`).
+
+## Network
+
+Tests never reach the network. Either stub a service
+(`jest.spyOn(authService, 'login')`), or replace the client's axios adapter to
+go through the real HTTP stack (`ApiError` mapping, 401 handling):
+
+```ts
+import { api } from '@/shared/http/api';
+
+api.defaults.adapter = async config => ({
+  data: [],
+  status: 200,
+  statusText: 'OK',
+  headers: {},
+  config,
 });
 ```
 
-### Component Tests
+`__tests__/features/demo-todos/TodosScreen.test.tsx` holds each request open
+to check the loading, error, Retry, and list states in order.
 
-Test React Native components with React Native Testing Library. Components using `react-native-paper` need to be wrapped with `PaperProvider`:
+## Coverage
 
-```typescript
-// __tests__/components/LoadingScreen.test.tsx
-import React from 'react';
-import { render } from '@testing-library/react-native';
-import { PaperProvider, MD3LightTheme } from 'react-native-paper';
-import { LoadingScreen } from '@/shared/ui/LoadingScreen';
+`collectCoverageFrom` covers every file in `app/`, `features/`, and `shared/`,
+so untested files count as uncovered. `npm run test:ci` fails below the
+global threshold in `package.json` (`coverageThreshold`): 95% statements, 88%
+branches, 92% functions, 95% lines. The threshold was set on 2026-10-09 just
+under the measured coverage (97.3 / 90.4 / 94.4 / 97.5) and still passes after
+`npm run remove-demo`; raise it as coverage grows.
 
-const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-  <PaperProvider theme={MD3LightTheme}>{children}</PaperProvider>
-);
+## Writing good tests
 
-describe('<LoadingScreen />', () => {
-  test('renders without crashing', () => {
-    const { toJSON } = render(<LoadingScreen />, { wrapper: TestWrapper });
-    expect(toJSON()).toBeTruthy();
-  });
+- Assert behavior a user or caller can observe: text shown, navigation,
+  stored values, requests sent. Avoid "renders without crashing" and
+  `expect(result).toBeTruthy()` on a render result.
+- Prefer `findBy*` / `waitFor` for anything async (session restore, requests).
+- Name tests after the behavior: "logging out clears the session and returns
+  to the signed-out state".
+- When a fix guards against a regression, check that the test fails without
+  the fix (the evidence folders record these mutation checks).
 
-  test('displays message when provided', () => {
-    const message = 'Loading data...';
-    const { getByText } = render(
-      <LoadingScreen message={message} />,
-      { wrapper: TestWrapper }
-    );
-    getByText(message);
-  });
+## Timeouts
 
-  test('does not display message when not provided', () => {
-    const { queryByText } = render(<LoadingScreen />, { wrapper: TestWrapper });
-    expect(queryByText(/loading/i)).toBeNull();
-  });
-});
-```
-
-### Screen Tests
-
-For screens from the `app/` directory that use `SafeAreaView` or other context providers, wrap them with both `SafeAreaProvider` and `PaperProvider`:
-
-```typescript
-// __tests__/components/HomeScreen.test.tsx
-import React from 'react';
-import { render } from '@testing-library/react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { PaperProvider, MD3LightTheme } from 'react-native-paper';
-import HomeScreen from '@/app/(tabs)/index';
-
-const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-  <SafeAreaProvider
-    initialMetrics={{
-      frame: { x: 0, y: 0, width: 0, height: 0 },
-      insets: { top: 0, left: 0, right: 0, bottom: 0 },
-    }}
-  >
-    <PaperProvider theme={MD3LightTheme}>
-      {children}
-    </PaperProvider>
-  </SafeAreaProvider>
-);
-
-describe('<HomeScreen />', () => {
-  test('renders correctly with title', () => {
-    const { getByText } = render(<HomeScreen />, { wrapper: TestWrapper });
-    getByText('React Native Paper');
-    getByText('Material Design 3 Components');
-  });
-
-  test('renders all text variants section', () => {
-    const { getByText } = render(<HomeScreen />, { wrapper: TestWrapper });
-    getByText('Text Variants');
-    getByText('Headline Small');
-    getByText('Title Large');
-  });
-
-  test('renders buttons section', () => {
-    const { getByText } = render(<HomeScreen />, { wrapper: TestWrapper });
-    getByText('Buttons');
-    getByText('Contained');
-    getByText('Outlined');
-    getByText('Text');
-  });
-});
-```
-
-**Note:** Screens are placed in `__tests__/components/` alongside reusable component tests for consistency.
-
-## Testing Library Queries
-
-React Native Testing Library provides several query methods:
-
-- `getByText` - Find element by text (throws if not found)
-- `getByTestId` - Find element by testID
-- `queryByText` - Find element by text (returns null if not found)
-- `findByText` - Find element asynchronously
-- `getAllByText` - Find all elements matching text
-
-See the [React Native Testing Library documentation](https://callstack.github.io/react-native-testing-library/docs/api-queries) for all available queries.
-
-## Best Practices
-
-### 1. Test User Behavior, Not Implementation
-
-Focus on what users see and interact with:
-
-```typescript
-// ✅ Good: Test what the user sees
-test('displays error message', () => {
-  const { getByText } = render(<ErrorComponent error="Something went wrong" />);
-  getByText('Something went wrong');
-});
-
-// ❌ Avoid: Testing implementation details
-test('has error state', () => {
-  const { getByTestId } = render(<ErrorComponent />);
-  expect(getByTestId('error-state')).toBeTruthy();
-});
-```
-
-### 2. Use Descriptive Test Names
-
-Make test names clear about what they're testing:
-
-```typescript
-// ✅ Good
-test('displays loading message when data is fetching', () => { ... });
-
-// ❌ Avoid
-test('test loading', () => { ... });
-```
-
-### 3. Keep Tests Simple
-
-Each test should verify one thing:
-
-```typescript
-// ✅ Good: One assertion per test
-test('adds positive numbers', () => {
-  expect(sum(2, 3)).toBe(5);
-});
-
-test('adds negative numbers', () => {
-  expect(sum(-1, -2)).toBe(-3);
-});
-```
-
-### 4. Provide Required Context
-
-Wrap components with necessary providers based on their dependencies:
-
-```typescript
-// Components using react-native-paper need PaperProvider
-import { PaperProvider, MD3LightTheme } from 'react-native-paper';
-
-const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-  <PaperProvider theme={MD3LightTheme}>{children}</PaperProvider>
-);
-
-// Components using SafeAreaView need SafeAreaProvider
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-
-const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-  <SafeAreaProvider
-    initialMetrics={{
-      frame: { x: 0, y: 0, width: 0, height: 0 },
-      insets: { top: 0, left: 0, right: 0, bottom: 0 },
-    }}
-  >
-    {children}
-  </SafeAreaProvider>
-);
-
-// Components using both need both providers
-const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-  <SafeAreaProvider initialMetrics={{...}}>
-    <PaperProvider theme={MD3LightTheme}>
-      {children}
-    </PaperProvider>
-  </SafeAreaProvider>
-);
-```
-
-## Common Patterns
-
-### Testing Async Operations
-
-```typescript
-test('loads data on mount', async () => {
-  const { findByText } = render(<DataComponent />);
-  await findByText('Data loaded');
-});
-```
-
-### Testing User Interactions
-
-```typescript
-import { fireEvent } from '@testing-library/react-native';
-
-test('calls onPress when button is pressed', () => {
-  const onPress = jest.fn();
-  const { getByText } = render(<Button onPress={onPress}>Click me</Button>);
-
-  fireEvent.press(getByText('Click me'));
-  expect(onPress).toHaveBeenCalledTimes(1);
-});
-```
-
-### Snapshot Testing
-
-While snapshot tests are available, Expo recommends end-to-end tests for UI testing. See the [E2E tests guide](https://docs.expo.dev/develop/eas-workflows/e2e-tests/) for more information.
+`testTimeout` is 15 s rather than Jest's 5 s: the first
+`renderRouter('./app')` in each test file loads every route module, which
+takes about 1.5 s alone but can pass 5 s while several such files run in
+parallel workers. Later renders in the same file take well under a second.
 
 ## Configuration
 
-Jest configuration is in `package.json`:
-
-```json
-{
-  "jest": {
-    "preset": "jest-expo",
-    "testTimeout": 15000,
-    "setupFiles": ["<rootDir>/jest.setup.env.js"],
-    "transformIgnorePatterns": ["node_modules/(?!(...))"]
-  }
-}
-```
-
-- `testTimeout` is 15 s rather than Jest's 5 s: the first
-  `renderRouter('./app')` in each test file loads every route module, which
-  takes about 1.5 s alone but can pass 5 s while several such files run in
-  parallel workers. Later renders in the same file take well under a second.
-- `jest.setup.env.js` gives tests a valid development configuration (see
-  [Environment variables](environment-variables.md)).
-
-## Dependencies
-
-The testing setup uses:
-
-- `jest` - Testing framework
-- `jest-expo` - Jest preset for Expo projects
-- `@testing-library/react-native` - React Native component testing utilities
-- `react-test-renderer` - Peer dependency (automatically managed, don't import directly)
+`package.json` → `jest`: preset `jest-expo`, `testTimeout`, `setupFiles`
+(`jest.setup.env.js`), `setupFilesAfterEnv` (`jest.setup.ts`),
+`collectCoverageFrom`, `coverageThreshold`, and `transformIgnorePatterns`
+for React Native packages shipped untranspiled.
 
 ## Resources
 
-- [Expo: Unit Testing](https://docs.expo.dev/develop/unit-testing/)
 - [React Native Testing Library](https://callstack.github.io/react-native-testing-library/)
-- [Jest Documentation](https://jestjs.io/docs/getting-started)
-- [Testing Best Practices](https://kentcdodds.com/blog/common-mistakes-with-react-testing-library)
+- [Expo Router: testing](https://docs.expo.dev/router/reference/testing/)
+- [Jest](https://jestjs.io/docs/getting-started)

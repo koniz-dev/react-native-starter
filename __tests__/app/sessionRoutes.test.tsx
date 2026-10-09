@@ -1,45 +1,21 @@
 import { act, fireEvent } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import { renderRouter, screen } from 'expo-router/testing-library';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { authService } from '@/shared/session/authService';
 import { defaultUnauthorizedHandler } from '@/shared/session/session';
 import { ApiError } from '@/shared/http/apiError';
 import { setItem, STORAGE_KEYS } from '@/shared/storage/storage';
-
-jest.mock('@react-native-async-storage/async-storage', () =>
-  jest.requireActual(
-    '@react-native-async-storage/async-storage/jest/async-storage-mock'
-  )
-);
-
-const mockSecureStore = new Map<string, string>();
-jest.mock('expo-secure-store', () => ({
-  isAvailableAsync: jest.fn(() => Promise.resolve(true)),
-  setItemAsync: jest.fn((key: string, value: string) => {
-    mockSecureStore.set(key, value);
-    return Promise.resolve();
-  }),
-  getItemAsync: jest.fn((key: string) =>
-    Promise.resolve(mockSecureStore.get(key) ?? null)
-  ),
-  deleteItemAsync: jest.fn((key: string) => {
-    mockSecureStore.delete(key);
-    return Promise.resolve();
-  }),
-}));
+import { secureStore } from '@/testing';
 
 const user = { id: 1, email: 'emily@example.com', name: 'Emily Johnson' };
 
 async function storeSession() {
-  mockSecureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
+  secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
   await setItem(STORAGE_KEYS.USER_DATA, user);
 }
 
 describe('session-guarded routes', () => {
   beforeEach(async () => {
-    mockSecureStore.clear();
-    await AsyncStorage.clear();
     jest.restoreAllMocks();
     // The profile screen reloads the user from the auth backend on open.
     jest.spyOn(authService, 'fetchProfile').mockResolvedValue(user);
@@ -111,7 +87,7 @@ describe('session-guarded routes', () => {
 
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     expect(app.getPathname()).toBe('/');
-    expect(mockSecureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
+    expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
   });
 
   it('a session-expired event (API 401) signs out and leaves the protected group', async () => {
@@ -146,7 +122,7 @@ describe('session-guarded routes', () => {
 
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     expect(app.getPathname()).toBe('/');
-    expect(mockSecureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
+    expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
   });
 
   it('shows a non-401 refresh failure on the protected screen and stays signed in', async () => {
