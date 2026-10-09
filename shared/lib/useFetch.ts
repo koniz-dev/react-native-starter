@@ -1,86 +1,101 @@
 /**
- * useFetch Hook
- * Generic custom hook for data fetching with loading and error states
+ * Loads data for a screen: runs an async function on mount and whenever
+ * `deps` change, and tracks loading, data, and a typed error.
+ *
+ * - `fetchFn` gets an AbortSignal; pass it to the request
+ *   (`api.get(url, { signal })`). The previous request is aborted when deps
+ *   change, on refetch, and on unmount.
+ * - Only the latest request updates state, so a slow, outdated response can't
+ *   overwrite a newer one (even if the server ignores the abort).
+ * - `error` is an ApiError (`code`, `status`, `message`), or null.
+ *
+ * For caching, background refetching, and mutations, use a data library
+ * instead; see docs/api-and-storage.md#loading-data-in-screens.
  */
-import { useState, useEffect, useCallback, useRef } from 'react';
-import type { ApiError } from '@/shared/http/apiError';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type DependencyList,
+} from 'react';
+import { toApiError, type ApiError } from '@/shared/http/apiError';
 
-interface UseFetchResult<T> {
+export interface UseFetchResult<T> {
   data: T | null;
   loading: boolean;
-  error: string | null;
+  error: ApiError | null;
+  /** Runs the request again (aborting one in flight). */
   refetch: () => Promise<void>;
 }
 
+function sameDeps(a: DependencyList, b: DependencyList): boolean {
+  return a.length === b.length && a.every((value, i) => Object.is(value, b[i]));
+}
+
 /**
- * useFetch is a generic hook for fetching data with automatic loading and error handling.
- *
- * @param fetchFn - Function that returns a Promise with the data to fetch
- * @param deps - Optional dependency array to trigger refetch when values change
- * @returns Object with data, loading, error, and refetch function
- *
  * @example
- * ```tsx
- * const { data, loading, error, refetch } = useFetch(() => todosApi.getAll());
- *
- * if (loading) return <LoadingScreen />;
- * if (error) return <Text>Error: {error}</Text>;
- * return <UserList users={data} />;
- * ```
+ * const { data, loading, error, refetch } = useFetch(
+ *   signal => postsApi.list({ signal }),
+ *   [userId]
+ * );
  */
 export function useFetch<T>(
-  fetchFn: () => Promise<T>,
-  deps: unknown[] = []
+  fetchFn: (signal: AbortSignal) => Promise<T>,
+  deps: DependencyList = []
 ): UseFetchResult<T> {
   const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const mountedRef = useRef<boolean>(true);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<ApiError | null>(null);
 
-  const fetchData = useCallback(async () => {
+  // Re-run when deps change, compared item by item like a hook's deps. The
+  // previous deps are kept in state (React's "information from previous
+  // renders" pattern) so callers can pass their own dependency list.
+  const [trackedDeps, setTrackedDeps] = useState(deps);
+  const [depsVersion, setDepsVersion] = useState(0);
+  if (!sameDeps(trackedDeps, deps)) {
+    setTrackedDeps(deps);
+    setDepsVersion(version => version + 1);
+  }
+
+  // The latest fetchFn, without making it a dependency (callers usually pass
+  // an inline function).
+  const fetchFnRef = useRef(fetchFn);
+  useEffect(() => {
+    fetchFnRef.current = fetchFn;
+  });
+
+  const controllerRef = useRef<AbortController | null>(null);
+
+  const run = useCallback(async () => {
+    controllerRef.current?.abort();
+    const controller = new AbortController();
+    controllerRef.current = controller;
+    const isCurrent = () =>
+      controllerRef.current === controller && !controller.signal.aborted;
+
     setLoading(true);
     setError(null);
-
     try {
-      const result = await fetchFn();
-
-      // Only update state if component is still mounted
-      if (mountedRef.current) {
-        setData(result);
-        setError(null);
-      }
-    } catch (err) {
-      // Only update state if component is still mounted
-      if (mountedRef.current) {
-        const apiError = err as ApiError;
-        setError(apiError.message || 'Failed to fetch data');
+      const result = await fetchFnRef.current(controller.signal);
+      if (isCurrent()) setData(result);
+    } catch (caught) {
+      if (isCurrent()) {
+        setError(toApiError(caught));
         setData(null);
       }
     } finally {
-      // Only update state if component is still mounted
-      if (mountedRef.current) {
-        setLoading(false);
-      }
+      if (isCurrent()) setLoading(false);
     }
-  }, [fetchFn]);
-
-  // Fetch data on mount and when dependencies change
-  useEffect(() => {
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      mountedRef.current = false;
-    };
   }, []);
 
-  return {
-    data,
-    loading,
-    error,
-    refetch: fetchData,
-  };
+  useEffect(() => {
+    void run();
+    return () => {
+      // Unmount or deps change: drop the request and its result.
+      controllerRef.current?.abort();
+    };
+  }, [run, depsVersion]);
+
+  return { data, loading, error, refetch: run };
 }

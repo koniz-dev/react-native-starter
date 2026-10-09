@@ -215,11 +215,85 @@ For larger or relational data, see
 
 ## Loading data in screens
 
-`useFetch(fetcher, deps)` (`shared/lib/useFetch.ts`) runs an async function
-and returns `{ data, loading, error, refetch }`; `error` is the `ApiError`
-message. `LoadingScreen` (`shared/ui/LoadingScreen.tsx`) is a centered
-progress indicator with an optional message. The Explore tab
-(`features/demo-todos/screens/TodosScreen.tsx`) uses both; an example is in
-[Connect Your Backend](connect-your-backend.md#3-add-endpoints-for-a-feature).
-For caching, background refetching, and mutations, use a data library such
-as TanStack Query instead of `useFetch`.
+`useFetch(fetchFn, deps)` (`shared/lib/useFetch.ts`) loads data for a screen
+and returns `{ data, loading, error, refetch }`:
+
+- `fetchFn` receives an `AbortSignal`; pass it to the request. The request
+  is aborted when `deps` change, on `refetch`, and on unmount, and only the
+  latest request updates state, so an outdated response never overwrites a
+  newer one.
+- `error` is an `ApiError` (`code`, `status`, `message`), or `null`.
+- `deps` works like a hook's dependency list; the latest `fetchFn` is always
+  used, so an inline function is fine.
+
+```tsx
+import { Text } from 'react-native-paper';
+import { api } from '@/shared/http/api';
+import { useFetch } from '@/shared/lib/useFetch';
+import { LoadingScreen } from '@/shared/ui/LoadingScreen';
+
+export function UserName({ userId }: { userId: number }) {
+  const { data, loading, error } = useFetch(
+    async signal =>
+      (await api.get<{ name: string }>(`/users/${userId}`, { signal })).data,
+    [userId]
+  );
+  if (loading && !data) return <LoadingScreen />;
+  if (error?.code === 'network') return <Text>You are offline.</Text>;
+  if (error) return <Text>{error.message}</Text>;
+  return <Text>{data?.name}</Text>;
+}
+```
+
+`LoadingScreen` (`shared/ui/LoadingScreen.tsx`) is a centered progress
+indicator with an optional message. The Explore tab
+(`features/demo-todos/screens/TodosScreen.tsx`) uses both.
+
+### When to use a data library instead
+
+Keep `useFetch` while each screen loads its own data once and a refetch
+button is enough. Adopt [TanStack Query](https://tanstack.com/query/latest)
+or [SWR](https://swr.vercel.app/) when you need any of:
+
+- a cache shared between screens (the same data shown in two places, instant
+  back navigation);
+- background refetching (on focus, on reconnect, on an interval) or
+  pagination and infinite lists;
+- mutations with cache updates or optimistic UI;
+- request deduplication and retries.
+
+To migrate gradually, keep the `useFetch` result shape and swap the
+implementation, so screens don't change. With TanStack Query (install it and
+wrap the app in a `QueryClientProvider` inside `SessionProvider`):
+
+<!-- docs-check: requires @tanstack/react-query -->
+
+```ts
+// shared/lib/useQueryFetch.ts
+import { useQuery } from '@tanstack/react-query';
+import { toApiError } from '@/shared/http/apiError';
+import type { UseFetchResult } from '@/shared/lib/useFetch';
+
+export function useQueryFetch<T>(
+  queryKey: readonly unknown[],
+  fetchFn: (signal: AbortSignal) => Promise<T>
+): UseFetchResult<T> {
+  const query = useQuery({
+    queryKey,
+    queryFn: ({ signal }) => fetchFn(signal),
+  });
+  return {
+    data: query.data ?? null,
+    loading: query.isPending,
+    error: query.error ? toApiError(query.error) : null,
+    refetch: async () => {
+      await query.refetch();
+    },
+  };
+}
+```
+
+Then `useFetch(fetchFn, [userId])` becomes
+`useQueryFetch(['user', userId], fetchFn)`. Clear the query cache on sign-out
+(`queryClient.clear()`) the way the
+[state-management recipes](recipes/state-management.md) reset their stores.

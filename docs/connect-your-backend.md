@@ -146,7 +146,8 @@ export const postsApi = {
 };
 ```
 
-and load them in a screen with `useFetch` (loading, error message, refetch):
+and load them in a screen with `useFetch` (loading, a typed `ApiError`, refetch;
+the `signal` cancels the request when the screen goes away):
 
 ```tsx
 import { Button, Text } from 'react-native-paper';
@@ -161,11 +162,12 @@ interface Post {
 
 export function PostsScreen() {
   const { data, loading, error, refetch } = useFetch(
-    async () => (await api.get<Post[]>('/posts')).data
+    async signal => (await api.get<Post[]>('/posts', { signal })).data
   );
 
   if (loading && !data) return <LoadingScreen message="Loading posts..." />;
-  if (error) return <Button onPress={refetch}>{`${error}. Retry`}</Button>;
+  if (error)
+    return <Button onPress={refetch}>{`${error.message}. Retry`}</Button>;
   return (
     <>
       {data?.map(post => (

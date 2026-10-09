@@ -20,8 +20,8 @@ export function TodosScreen() {
     loading,
     error,
     refetch,
-  } = useFetch<Todo[]>(async () => {
-    const data = await todosApi.getAll();
+  } = useFetch<Todo[]>(async signal => {
+    const data = await todosApi.getAll(signal);
     // Limit to 10 todos for demo
     return data.slice(0, 10);
   });
@@ -85,7 +85,7 @@ export function TodosScreen() {
                 variant="bodyMedium"
                 style={{ color: theme.colors.onErrorContainer }}
               >
-                {error}
+                {error.message}
               </Text>
             </Card.Content>
           </Card>
