@@ -119,9 +119,9 @@ evidence, and the following conditions are true:
   a provider.
 - In-scope documentation has been checked against the code: every snippet compiles
   against the current APIs and every described behavior matches the app.
-- Optional examples kept in this repository (for example the `state-management/*`
-  branches) are either verified against the current `main` or explicitly marked as
-  unmaintained.
+- Optional examples kept in this repository (for example the state-management
+  recipes in `docs/recipes/`) are either verified against the current `main` or
+  explicitly marked as unmaintained.
 
 The repository may move from feature development to **maintenance mode** only after
 MVP readiness is evidenced and all of the following hold:

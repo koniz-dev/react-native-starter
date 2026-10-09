@@ -56,12 +56,9 @@ Start with [docs/README.md](docs/README.md). The usual path:
 
 ## State management
 
-The starter keeps state in React context (the session) and component state;
-it does not pick a store library. The branches `state-management/redux`,
-`state-management/react-context`, `state-management/zustand`, and
-`state-management/jotai` show four alternatives, but they date from November
-2025, before Expo SDK 57 and the current folder structure, and are not
-maintained.
+The session lives in `SessionProvider`; the starter adds no store library.
+[Recipe: State Management](docs/recipes/state-management.md) shows Zustand,
+Redux Toolkit, Jotai, and React Context on top of it.
 
 ## License
 

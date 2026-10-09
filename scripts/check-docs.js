@@ -6,6 +6,9 @@
  *    .docs-check/ and `tsc` type-checks them all against the repo (imports
  *    such as '@/shared/...' resolve to the real code). Blocks declare their
  *    own placeholders, e.g. `declare function loadRefreshToken(): ...`;
+ *    A block preceded by `<!-- docs-check: requires pkg-a pkg-b -->` needs
+ *    packages the starter doesn't install (recipes); it is compiled when they
+ *    are present (CI installs them) and skipped, with a note, otherwise;
  * 2. every ```json block parses;
  * 3. every `npm run <script>` names a script in package.json;
  * 4. every relative Markdown link points to an existing file (and heading,
@@ -57,10 +60,16 @@ const ROOT_FILES = new Set([
 ]);
 
 function docFiles() {
-  const docs = fs
-    .readdirSync(path.join(ROOT, 'docs'))
-    .filter(name => name.endsWith('.md'))
-    .map(name => `docs/${name}`);
+  const walk = dir =>
+    fs
+      .readdirSync(path.join(ROOT, dir), { withFileTypes: true })
+      .flatMap(entry => {
+        const rel = `${dir}/${entry.name}`;
+        if (entry.isDirectory())
+          return rel === 'docs/evidence' ? [] : walk(rel);
+        return entry.name.endsWith('.md') ? [rel] : [];
+      });
+  const docs = walk('docs');
   const folderReadmes = ['app/README.md', 'scripts/README.md'].filter(file =>
     fs.existsSync(path.join(ROOT, file))
   );
@@ -103,6 +112,15 @@ function main() {
   );
   const problems = [];
   const snippets = [];
+  const skipped = new Map();
+  const isInstalled = pkg => {
+    try {
+      require.resolve(`${pkg}/package.json`, { paths: [ROOT] });
+      return true;
+    } catch {
+      return false;
+    }
+  };
   const anchorCache = {};
   const report = (file, line, message) =>
     problems.push(`${file}:${line}: ${message}`);
@@ -113,6 +131,7 @@ function main() {
   for (const file of docFiles()) {
     const lines = fs.readFileSync(path.join(ROOT, file), 'utf8').split('\n');
     let fence = null;
+    let requires = [];
     lines.forEach((line, index) => {
       const lineNo = index + 1;
       const fenceMatch = /^```(\w*)/.exec(line);
@@ -120,7 +139,13 @@ function main() {
         if (fence) {
           const body = fence.body.join('\n');
           const skipDemo = DEMO_REMOVED && DEMO_REF.test(body);
-          if ((fence.lang === 'ts' || fence.lang === 'tsx') && !skipDemo) {
+          const missing = fence.requires.filter(pkg => !isInstalled(pkg));
+          if (missing.length > 0) {
+            skipped.set(`${file}:${fence.line}`, missing);
+          } else if (
+            (fence.lang === 'ts' || fence.lang === 'tsx') &&
+            !skipDemo
+          ) {
             const name = `${file.replace(/[/.]/g, '_')}_L${fence.line}.${fence.lang}`;
             fs.writeFileSync(path.join(OUT, name), `${body}\nexport {};\n`);
             snippets.push({ name, file, line: fence.line });
@@ -137,8 +162,14 @@ function main() {
           }
           fence = null;
         } else {
-          fence = { lang: fenceMatch[1], line: lineNo, body: [] };
+          fence = { lang: fenceMatch[1], line: lineNo, body: [], requires };
+          requires = [];
         }
+        return;
+      }
+      const requiresMatch = /<!-- docs-check: requires (.+?) -->/.exec(line);
+      if (requiresMatch && !fence) {
+        requires = requiresMatch[1].split(/\s+/);
         return;
       }
       if (fence) fence.body.push(line);
@@ -257,6 +288,9 @@ function main() {
   log(
     `Checked ${docFiles().length} files: ${snippets.length} TypeScript snippets compiled with tsc.`
   );
+  for (const [where, missing] of skipped) {
+    log(`Skipped ${where}: needs ${missing.join(', ')} (not installed).`);
+  }
   if (problems.length > 0) {
     process.stderr.write(`${problems.join('\n')}\n`);
     process.stderr.write(`${problems.length} problem(s).\n`);

@@ -21,6 +21,11 @@ Native topics, the pages link to the official documentation.
 - [UI and Theming](ui-and-theming.md): Paper, the brand theme, dark mode,
   fonts, safe areas.
 
+## Recipes
+
+- [State Management](recipes/state-management.md): Zustand, Redux Toolkit,
+  Jotai, or React Context next to the session provider.
+
 ## Reference
 
 - [Conventions](conventions.md): project structure, navigation, where code

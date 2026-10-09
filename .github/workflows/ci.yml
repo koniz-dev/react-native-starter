@@ -39,9 +39,6 @@ jobs:
       - name: Type-check
         run: npm run type-check
 
-      - name: Check docs (snippets compile, paths and scripts exist)
-        run: npm run docs:check
-
       - name: Run Jest tests
         run: npm run test:ci
 
@@ -50,3 +47,10 @@ jobs:
 
       - name: Export web build
         run: npx expo export --platform web --output-dir dist
+
+      # Last, because it adds packages to node_modules: the state-management
+      # recipes need their libraries to compile (not saved to package.json).
+      - name: Check docs (snippets compile, paths and scripts exist)
+        run: |
+          npm install --no-save zustand@5 @reduxjs/toolkit@2 react-redux@9 jotai@3
+          npm run docs:check

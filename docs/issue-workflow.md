@@ -7,8 +7,8 @@ pull work, ship it, verify it, and close it.
 
 Repository: `koniz-dev/react-native-starter` (single repo, no `repo:*`/`area:*` family
 needed). Work ships directly to `main` in small, single-issue commits — this matches the
-repo's existing history. Feature branches and PRs are reserved for large opt-in variants
-(such as the `state-management/*` reference branches), not for routine issue work.
+repo's existing history. Feature branches and PRs are reserved for large opt-in variants, not for
+routine issue work.
 
 ## Label taxonomy
 
@@ -25,15 +25,15 @@ default labels that already existed.
 
 Epic areas map to the codebase:
 
-| Epic              | Covers                                                          |
-| ----------------- | --------------------------------------------------------------- |
-| `epic:navigation` | `app/` routes, layouts, Expo Router configuration               |
-| `epic:ui`         | `shared/ui/` (theme, shared components), Paper theming          |
-| `epic:services`   | `shared/` config, http, session, storage, lib; feature `api/`   |
-| `epic:state`      | State-management variants and the `state-management/*` branches |
-| `epic:testing`    | `__tests__/`, Jest/RNTL configuration                           |
-| `epic:docs`       | `README.md`, `docs/`, per-directory READMEs                     |
-| `epic:tooling`    | ESLint, Prettier, TypeScript config, `scripts/`, CI, `.env`     |
+| Epic              | Covers                                                                  |
+| ----------------- | ----------------------------------------------------------------------- |
+| `epic:navigation` | `app/` routes, layouts, Expo Router configuration                       |
+| `epic:ui`         | `shared/ui/` (theme, shared components), Paper theming                  |
+| `epic:services`   | `shared/` config, http, session, storage, lib; feature `api/`           |
+| `epic:state`      | State management: the session provider and the state-management recipes |
+| `epic:testing`    | `__tests__/`, Jest/RNTL configuration                                   |
+| `epic:docs`       | `README.md`, `docs/`, per-directory READMEs                             |
+| `epic:tooling`    | ESLint, Prettier, TypeScript config, `scripts/`, CI, `.env`             |
 
 The canonical source for the epic list is `scripts/bootstrap-issue-labels.sh`. If an
 epic is added, renamed, or removed, change it there first, run the script, then update
