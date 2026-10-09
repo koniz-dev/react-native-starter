@@ -128,7 +128,7 @@ For detailed installation and setup instructions, see the [Getting Started Guide
 2. **Install:** `npm ci`
 3. **Configure:** `cp .env.example .env`
 4. **Run:** `npm start`
-5. **Code:** Start editing `app/(tabs)/index.tsx`
+5. **Code:** Start editing `features/home/screens/HomeScreen.tsx`
 
 ### Authentication demo
 
@@ -137,7 +137,7 @@ JSONPlaceholder Todos API. Sign in with username `emilys` and password `emilyspa
 The Home tab then shows "Signed in as …" with **View profile** (a screen that
 requires sign-in) and **Log out**; the session survives an app restart and
 logging out clears it. For a real backend, set `EXPO_PUBLIC_AUTH_API_URL` and adapt the request/response
-mapping in `services/auth.ts` to the backend contract.
+mapping in `shared/session/authService.ts` to the backend contract.
 
 ## Navigation
 
@@ -164,6 +164,7 @@ For more information, see:
 - `npm run ios` - Run on iOS simulator/device
 - `npm run web` - Run in web browser
 - `npm run lint` - Check code quality
+- `npm run remove-demo` - Remove the demo features ([guide](docs/remove-demo.md))
 - `npm run lint:fix` - Fix linting issues automatically
 - `npm run format` - Format code with Prettier
 - `npm run type-check` - Check TypeScript types without emitting files
@@ -173,33 +174,27 @@ For more information, see:
 
 ```
 react-native-starter/
-├── app/              # Expo Router screens (file-based routing)
-│   ├── (tabs)/       # Tab navigation screens
-│   └── _layout.tsx   # Root layout with theme provider
-├── components/       # Reusable UI components
-│   ├── ErrorBoundary.tsx
-│   └── LoadingScreen.tsx
-├── hooks/            # Custom React hooks
-│   └── useFetch.ts   # Data fetching hook
-├── services/         # API & storage services
-│   ├── api.ts        # Axios client with interceptors
-│   └── storage.ts    # AsyncStorage wrapper
-├── types/            # TypeScript type definitions
-│   └── api.ts        # API response types
-├── constants/        # App constants
-│   └── Theme.ts      # React Native Paper theme
+├── app/              # Expo Router routes: layouts + one-line route files
+├── features/         # Screens and code per feature
+│   ├── home/         # Home: session card
+│   ├── auth/         # Login and Profile screens
+│   └── demo-*/       # Demos (DummyJSON auth, todos, component showcase)
+├── shared/           # Foundation: config, http, session, storage, ui, lib,
+│                     # integrations, i18n
+├── __tests__/        # Jest tests, mirroring app/, features/, shared/
+├── scripts/          # remove-demo.js, issue-label bootstrap
 ├── assets/           # Images, fonts, static files
 └── docs/             # Documentation
 ```
 
 **Key directories:**
 
-- **`app/`** - All screens go here. Files automatically become routes (Expo Router).
-- **`components/`** - Reusable UI components used across screens.
-- **`hooks/`** - Custom React hooks for shared logic (e.g., `useFetch`).
-- **`services/`** - API client and storage utilities.
-- **`constants/`** - App-wide constants like colors and theme config.
-- **`types/`** - TypeScript interfaces and types.
+- **`app/`** - Routes only. Each route file re-exports a screen from `features/`.
+- **`features/`** - One folder per feature (`screens/`, `components/`, `api/`, `hooks/`, `types.ts`).
+- **`shared/`** - The foundation every feature uses; it never imports a feature.
+- **Demos** - `features/demo-*` plus `@demo` markers; `npm run remove-demo` removes them ([guide](docs/remove-demo.md)).
+
+See [Conventions: Project Structure](docs/conventions.md#project-structure) for the full layout.
 
 ## User Interface
 
@@ -258,7 +253,7 @@ See [Assets Guide](docs/assets.md) for more information.
 
 ### Environment Variables
 
-Configuration comes from validated `EXPO_PUBLIC_*` variables (`config/env.ts`); a missing or invalid value shows a configuration error screen at startup. Copy `.env.example` to `.env` (it enables the public demo backends) and adjust:
+Configuration comes from validated `EXPO_PUBLIC_*` variables (`shared/config/env.ts`); a missing or invalid value shows a configuration error screen at startup. Copy `.env.example` to `.env` (it enables the public demo backends) and adjust:
 
 ```bash
 cp .env.example .env

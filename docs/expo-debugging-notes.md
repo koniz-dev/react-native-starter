@@ -44,10 +44,10 @@ throw Error('Error message');
 
 ## Application to Project
 
-- `components/ErrorBoundary.tsx`: an app-level boundary and route-level
+- `shared/ui/ErrorBoundary.tsx`: an app-level boundary and route-level
   boundaries (exported from the group layouts) with a themed fallback, "Try
   again", and "Go home". The stack trace is shown in development only.
-- `utils/logger.ts`: `debug` / `info` / `warn` / `error` with a configurable
+- `shared/lib/logger.ts`: `debug` / `info` / `warn` / `error` with a configurable
   minimum level. `logger.warn` uses `console.warn` (a LogBox warning in
   development) and `logger.error` uses `console.error` (a LogBox error).
 - Errors from the logger and the boundaries go to the error-reporting seam in

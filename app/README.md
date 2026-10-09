@@ -2,6 +2,11 @@
 
 This directory contains your app's navigation using Expo Router's file-based routing system.
 
+In this starter, route files stay thin: layouts and guards live here, and each
+route re-exports a screen from `features/` (for example `(tabs)/index.tsx`
+re-exports `features/home/screens/HomeScreen.tsx`). See
+[Conventions](../docs/conventions.md#project-structure).
+
 ## About Expo Router
 
 Expo Router is the recommended navigation solution for Expo projects. It's built on top of React Navigation and provides:

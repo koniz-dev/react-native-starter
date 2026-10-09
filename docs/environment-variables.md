@@ -1,7 +1,7 @@
 # Environment Variables
 
 The starter reads all configuration from `EXPO_PUBLIC_*` variables through one
-module, [`config/env.ts`](../config/env.ts). It validates them with a zod schema
+module, [`shared/config/env.ts`](../shared/config/env.ts). It validates them with a zod schema
 when the app starts and shows a **Configuration error** screen naming each
 missing or invalid variable, instead of silently falling back to a demo backend.
 
@@ -20,8 +20,8 @@ app starts on the configuration error screen.
 
 | Variable                          | Required                         | Default                                                      | Purpose                                                                                                                                                                                   |
 | --------------------------------- | -------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `EXPO_PUBLIC_API_URL`             | Yes, unless demo backends are on | JSONPlaceholder when demo backends are on                    | Base URL of your API (`services/api.ts`).                                                                                                                                                 |
-| `EXPO_PUBLIC_AUTH_API_URL`        | Yes, unless demo backends are on | DummyJSON when demo backends are on                          | Base URL of your auth backend (`services/auth.ts`). Its origin is the only one that receives the auth token by default.                                                                   |
+| `EXPO_PUBLIC_API_URL`             | Yes, unless demo backends are on | JSONPlaceholder when demo backends are on                    | Base URL of your API (`shared/http/api.ts`).                                                                                                                                              |
+| `EXPO_PUBLIC_AUTH_API_URL`        | Yes, unless demo backends are on | DummyJSON when demo backends are on                          | Base URL of your auth backend (`shared/session/authService.ts`). Its origin is the only one that receives the auth token by default.                                                      |
 | `EXPO_PUBLIC_API_TRUSTED_ORIGINS` | No                               | none                                                         | Comma-separated extra origins allowed to receive the auth token, e.g. an API on a separate first-party host. See [API and Storage](api-and-storage.md#which-hosts-receive-the-token).     |
 | `EXPO_PUBLIC_API_TIMEOUT_MS`      | No                               | `15000`                                                      | Request timeout for every HTTP client, in milliseconds (1000–120000).                                                                                                                     |
 | `EXPO_PUBLIC_LOG_LEVEL`           | No                               | `debug` (development), `info` (preview), `warn` (production) | Minimum level the logger writes to the console: `debug`, `info`, `warn`, `error`, or `silent`. Errors reach the error reporter at every level; see [Error reporting](error-reporting.md). |
@@ -38,10 +38,10 @@ Validation rules:
 ## Reading configuration in code
 
 Never read `process.env` directly; ESLint (`no-restricted-properties`) rejects it
-outside `config/env.ts`. Use the validated values:
+outside `shared/config/env.ts`. Use the validated values:
 
 ```ts
-import { getConfig } from '@/config/env';
+import { getConfig } from '@/shared/config/env';
 
 const { apiUrl, authApiUrl, appEnv } = getConfig();
 ```
@@ -56,9 +56,9 @@ To add a variable:
 1. Add it to `readRawEnv()` by its full name (`process.env.EXPO_PUBLIC_MY_VAR`).
    Expo only inlines references written out in full, so
    `process.env[name]` doesn't work.
-2. Add it to the zod schema and to `AppConfig` in `config/env.ts`.
+2. Add it to the zod schema and to `AppConfig` in `shared/config/env.ts`.
 3. Add it to `.env.example` and to the table above, and add a test in
-   `__tests__/config/env.test.ts`.
+   `__tests__/shared/config/env.test.ts`.
 
 ## Files and precedence
 
@@ -83,7 +83,7 @@ For builds made with EAS Build, set the same variables in the build profile's
 `EXPO_PUBLIC_*` values are compiled into the JavaScript bundle and can be read
 by anyone who has the app. Put only public configuration here (URLs, feature
 switches). Keep secrets such as API keys with write access on your server, and
-store user tokens through the token store (`services/tokenStore.ts`), never in
+store user tokens through the token store (`shared/session/tokenStore.ts`), never in
 environment variables.
 
 ## Testing

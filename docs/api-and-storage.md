@@ -16,9 +16,9 @@ These are simple foundations you can build upon, not a complete API layer.
 ### Setup
 
 Every HTTP client is created with `createHttpClient()` from
-[`services/httpClient.ts`](../services/httpClient.ts): the API client
-(`services/api.ts`, base URL `EXPO_PUBLIC_API_URL`) and the auth client
-(`authApi` in `services/auth.ts`, base URL `EXPO_PUBLIC_AUTH_API_URL`). The
+[`shared/http/httpClient.ts`](../shared/http/httpClient.ts): the API client
+(`shared/http/api.ts`, base URL `EXPO_PUBLIC_API_URL`) and the auth client
+(`authClients` in `shared/session/authService.ts`, base URL `EXPO_PUBLIC_AUTH_API_URL`). The
 factory gives every client the same behavior:
 
 - base URL and timeout from validated config (`EXPO_PUBLIC_API_TIMEOUT_MS`,
@@ -28,14 +28,14 @@ factory gives every client the same behavior:
 - every failure rejected as an `ApiError` (see [Error Handling](#error-handling));
 - 401 handling with an optional token refresh (see
   [Expired sessions (401)](#expired-sessions-401));
-- failures logged through `utils/logger.ts` as method, path, code, and status,
+- failures logged through `shared/lib/logger.ts` as method, path, code, and status,
   without headers or bodies.
 
 To add a client for another backend, create it with the factory:
 
 ```ts
-import { createHttpClient } from '@/services/httpClient';
-import { getConfig } from '@/config/env';
+import { createHttpClient } from '@/shared/http/httpClient';
+import { getConfig } from '@/shared/config/env';
 
 export const paymentsApi = createHttpClient({
   getBaseURL: () => getConfig().apiUrl, // or a new validated variable
@@ -51,7 +51,7 @@ Set your API URL in `.env`:
 EXPO_PUBLIC_API_URL=https://api.example.com
 ```
 
-The value is validated by `config/env.ts`. JSONPlaceholder
+The value is validated by `shared/config/env.ts`. JSONPlaceholder
 (`https://jsonplaceholder.typicode.com`) is used only when
 `EXPO_PUBLIC_USE_DEMO_BACKENDS=true`; otherwise a missing URL shows the
 configuration error screen. See [Environment Variables](environment-variables.md).
@@ -61,7 +61,7 @@ configuration error screen. See [Environment Variables](environment-variables.md
 #### Using Example Endpoints
 
 ```tsx
-import { todosApi } from '@/services/api';
+import { todosApi } from '@/features/demo-todos/api/todosApi';
 
 // The demo endpoint behind the Explore tab
 const todos = await todosApi.getAll();
@@ -72,7 +72,7 @@ const todos = await todosApi.getAll();
 Use the default export for custom API calls:
 
 ```tsx
-import api from '@/services/api';
+import api from '@/shared/http/api';
 
 // GET request
 const response = await api.get('/custom-endpoint');
@@ -87,7 +87,7 @@ const response = await api.post('/custom-endpoint', {
 
 ### Authentication
 
-The auth token goes through a `TokenStore` (`services/tokenStore.ts`); the
+The auth token goes through a `TokenStore` (`shared/session/tokenStore.ts`); the
 user profile and cached data use AsyncStorage. The store is picked by
 platform:
 
@@ -112,7 +112,7 @@ origin, and register a store that reflects the cookie session instead of
 holding a token, for example:
 
 ```ts
-import { setTokenStore, type TokenStore } from '@/services/tokenStore';
+import { setTokenStore, type TokenStore } from '@/shared/session/tokenStore';
 
 const cookieSessionStore: TokenStore = {
   persistent: true,
@@ -126,7 +126,7 @@ setTokenStore(cookieSessionStore);
 ```
 
 With a cookie session there is no bearer token to attach, so also adjust the
-`authenticated` clients in `services/httpClient.ts`.
+`authenticated` clients in `shared/http/httpClient.ts`.
 
 #### Using the token store
 
@@ -141,7 +141,7 @@ The API client adds the stored token to requests automatically:
 To use the store directly:
 
 ```tsx
-import { getTokenStore } from '@/services/tokenStore';
+import { getTokenStore } from '@/shared/session/tokenStore';
 
 const token = await getTokenStore().get(); // null when signed out
 const survivesRestart = getTokenStore().persistent; // false on web
@@ -149,7 +149,7 @@ const survivesRestart = getTokenStore().persistent; // false on web
 
 #### Which hosts receive the token
 
-The bearer token is issued by the auth backend, so `services/api.ts` attaches it
+The bearer token is issued by the auth backend, so `shared/http/api.ts` attaches it
 only when a request's resolved origin (`scheme://host[:port]`, compared
 case-insensitively, default ports ignored) is in `getTrustedTokenOrigins()`:
 
@@ -175,7 +175,7 @@ cookie jar) keeps any cookies the login response sets. The DummyJSON demo sets
 `accessToken` and `refreshToken` cookies, which would leave a second, unprotected copy
 of the token on the device that `logout()` doesn't clear.
 
-`authApi` in `services/auth.ts` is therefore created with `withCredentials: false`:
+The `authClients` in `shared/session/authService.ts` are therefore created with `withCredentials: false`:
 auth requests neither store nor send cookies (iOS sets `HTTPShouldHandleCookies = NO`,
 Android uses `CookieJar.NO_COOKIES`), and the token lives only in the token store. If
 your backend authenticates with cookie sessions instead of bearer tokens, this is the
@@ -183,7 +183,7 @@ setting to revisit.
 
 ### Error Handling
 
-Every client rejects with `ApiError` (`services/apiError.ts`), an `Error`
+Every client rejects with `ApiError` (`shared/http/apiError.ts`), an `Error`
 subclass, so `error.message` is always safe to show. The message prefers the
 server's own `message` (or `error`) field, so a failed login shows
 "Invalid credentials" rather than "Request failed with status code 400".
@@ -199,8 +199,8 @@ server's own `message` (or `error`) field, so a failed login shows
 | `unknown`      | Anything else                                             |
 
 ```tsx
-import { todosApi } from '@/services/api';
-import { ApiError, toApiError } from '@/services/apiError';
+import { todosApi } from '@/features/demo-todos/api/todosApi';
+import { ApiError, toApiError } from '@/shared/http/apiError';
 
 try {
   const todos = await todosApi.getAll();
@@ -233,27 +233,29 @@ When a request that carried the auth token gets a 401:
 A 401 from the auth client itself (wrong credentials) or on a request sent
 without a token does not touch the session.
 
-Register a refresh handler (for example in `integrations/setup.ts`) if your
-backend issues refresh tokens. It must store the new access token and return
-it, or return `null`:
+If your backend issues refresh tokens, implement `refresh` in your
+`AuthAdapter` (see [How to Add Authentication](how-to.md#how-to-add-authentication)).
+`setAuthAdapter()` registers it as the refresh handler and stores the token it
+returns; return `null` when the session can't be refreshed:
 
 ```ts
-import { setRefreshTokenHandler } from '@/services/session';
-import { getTokenStore } from '@/services/tokenStore';
-import { authApi } from '@/services/auth';
-
-setRefreshTokenHandler(async () => {
-  const { data } = await authApi.post('/auth/refresh', {
-    refreshToken: await getStoredRefreshToken(), // your storage
-  });
-  await getTokenStore().set(data.accessToken);
-  return data.accessToken;
-});
+export const myBackendAuthAdapter: AuthAdapter = {
+  // ...login, normalizeUser
+  refresh: async ({ public: http }) => {
+    const refreshToken = await loadRefreshToken(); // your storage
+    if (!refreshToken) return null;
+    const { data } = await http.post('/auth/refresh', { refreshToken });
+    return data.accessToken;
+  },
+};
 ```
+
+`setRefreshTokenHandler()` in `shared/session/session.ts` is the lower-level
+hook behind it; `setAuthAdapter()` replaces whatever handler was set before.
 
 To react differently when a session can't be recovered (for example, navigate
 to the login screen), replace the default with `setUnauthorizedHandler()`; call
-`clearStoredSession()` and `emitSessionExpired()` from `services/session.ts` if
+`clearStoredSession()` and `emitSessionExpired()` from `shared/session/session.ts` if
 you still want that behavior. Subscribe anywhere with `onSessionExpired()`.
 
 ### Adding New Endpoints
@@ -261,7 +263,7 @@ you still want that behavior. Subscribe anywhere with `onSessionExpired()`.
 Create new API modules following the pattern:
 
 ```tsx
-// services/api.ts
+// shared/http/api.ts
 
 export const postsApi = {
   getAll: async () => {
@@ -285,7 +287,7 @@ export const postsApi = {
 
 ### Overview
 
-The storage service (`services/storage.ts`) provides a simple wrapper around AsyncStorage with:
+The storage service (`shared/storage/storage.ts`) provides a simple wrapper around AsyncStorage with:
 
 - JSON serialization/deserialization
 - TypeScript generic support
@@ -296,7 +298,7 @@ The storage service (`services/storage.ts`) provides a simple wrapper around Asy
 #### Store Data
 
 ```tsx
-import { setItem, STORAGE_KEYS } from '@/services/storage';
+import { setItem, STORAGE_KEYS } from '@/shared/storage/storage';
 
 // Store simple value
 await setItem(STORAGE_KEYS.AUTH_TOKEN, 'token-123');
@@ -312,7 +314,7 @@ await setItem(STORAGE_KEYS.USER_DATA, {
 #### Retrieve Data
 
 ```tsx
-import { getItem, STORAGE_KEYS } from '@/services/storage';
+import { getItem, STORAGE_KEYS } from '@/shared/storage/storage';
 
 // Get with type safety
 const token = await getItem<string>(STORAGE_KEYS.AUTH_TOKEN);
@@ -327,13 +329,13 @@ if (user) {
 #### Remove Data
 
 ```tsx
-import { removeItem, STORAGE_KEYS } from '@/services/storage';
+import { removeItem, STORAGE_KEYS } from '@/shared/storage/storage';
 
 // Remove specific item
 await removeItem(STORAGE_KEYS.AUTH_TOKEN);
 
 // Clear all storage
-import { clear } from '@/services/storage';
+import { clear } from '@/shared/storage/storage';
 await clear();
 ```
 
@@ -342,7 +344,7 @@ await clear();
 Use predefined keys from `STORAGE_KEYS` constant:
 
 ```tsx
-import { STORAGE_KEYS } from '@/services/storage';
+import { STORAGE_KEYS } from '@/shared/storage/storage';
 
 STORAGE_KEYS.AUTH_TOKEN; // 'auth_token'
 STORAGE_KEYS.USER_DATA; // 'user_data'
@@ -361,9 +363,9 @@ Here's a complete example combining API and storage:
 
 ```tsx
 import { useState, useEffect } from 'react';
-import { todosApi } from '@/services/api';
-import { getItem, setItem } from '@/services/storage';
-import type { Todo } from '@/types/api';
+import { todosApi } from '@/features/demo-todos/api/todosApi';
+import { getItem, setItem } from '@/shared/storage/storage';
+import type { Todo } from '@/features/demo-todos/types';
 
 const TODOS_CACHE_KEY = 'todos';
 
@@ -413,9 +415,9 @@ To switch from JSONPlaceholder to your real backend:
 EXPO_PUBLIC_API_URL=https://api.yourbackend.com
 ```
 
-2. **Update API types** in `types/api.ts` to match your backend responses
+2. **Update API types** in `features/demo-todos/types.ts` to match your backend responses
 
-3. **Update endpoint functions** in `services/api.ts` to match your API structure
+3. **Update endpoint functions** in `shared/http/api.ts` to match your API structure
 
 4. **Test authentication flow** - ensure tokens are stored and sent correctly
 

@@ -1,12 +1,12 @@
 import { Tabs } from 'expo-router';
 import { useTheme } from 'react-native-paper';
-import { getTabBarColors } from '@/constants/Theme';
-import { t } from '@/i18n';
+import { getTabBarColors } from '@/shared/ui/theme';
+import { t } from '@/shared/i18n';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 // Render errors in this group's screens show a themed fallback with
-// "Try again" and "Go home" and are reported (components/ErrorBoundary.tsx).
-export { RouteErrorBoundary as ErrorBoundary } from '@/components/ErrorBoundary';
+// "Try again" and "Go home" and are reported (shared/ui/ErrorBoundary.tsx).
+export { RouteErrorBoundary as ErrorBoundary } from '@/shared/ui/ErrorBoundary';
 
 export default function TabLayout() {
   const tabBar = getTabBarColors(useTheme());
@@ -32,6 +32,7 @@ export default function TabLayout() {
           ),
         }}
       />
+      {/* @demo remove-block-start */}
       <Tabs.Screen
         name="explore"
         options={{
@@ -41,6 +42,7 @@ export default function TabLayout() {
           ),
         }}
       />
+      {/* @demo remove-block-end */}
     </Tabs>
   );
 }

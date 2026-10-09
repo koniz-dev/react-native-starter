@@ -8,8 +8,8 @@ Project standards and best practices for maintaining consistency.
 - **Hooks:** camelCase with `use` prefix - `useFetch.ts`, `useToggle.ts`
 - **Services/Utils:** camelCase - `api.ts`, `storage.ts`, `formatDate.ts`
 - **Types:** camelCase - `api.ts`, `user.ts`
-- **Constants:** PascalCase - `Theme.ts`
-- **Screens:** PascalCase (Expo Router auto-converts) - `index.tsx` → `/`, `profile.tsx` → `/profile`
+- **Screens:** PascalCase in `features/<name>/screens/` - `LoginScreen.tsx`
+- **Routes:** Expo Router file names in `app/` - `index.tsx` → `/`, `profile.tsx` → `/profile`
 
 ## Import Order
 
@@ -31,11 +31,11 @@ import { Button, Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 
-import { useFetch } from '@/hooks/useFetch';
-import { todosApi } from '@/services/api';
-import { LoadingScreen } from '@/components/LoadingScreen';
+import { useFetch } from '@/shared/lib/useFetch';
+import { LoadingScreen } from '@/shared/ui/LoadingScreen';
 
-import type { Todo } from '@/types/api';
+import { todosApi } from '../api/todosApi';
+import type { Todo } from '../types';
 ```
 
 ## Component Structure
@@ -146,49 +146,49 @@ setLoading(true);
 
 **Remove commented-out code** - Use git history instead.
 
-## Folder Organization
+## Project Structure
 
-**Keep related files together:**
-
-```
-components/
-  Button/
-    Button.tsx
-    Button.test.tsx
-    index.ts
-```
-
-**Or flat structure for simple components:**
+Routes are thin; features own their screens; `shared/` is the foundation that
+every feature builds on.
 
 ```
-components/
-  Button.tsx
-  Card.tsx
-  LoadingScreen.tsx
+app/                      Expo Router routes only: layouts and one-line route files
+  _layout.tsx             providers, splash, session guards (Stack.Protected)
+  (tabs)/index.tsx        export { HomeScreen as default } from '@/features/home/...'
+  (auth)/login.tsx        signed-out only
+  (app)/profile.tsx       signed-in only
+features/                 one folder per feature
+  home/screens/           Home: session card (+ links to the examples)
+  auth/screens/           Login and Profile
+  demo-auth/              demo: DummyJSON AuthAdapter, demo-credentials hint
+  demo-todos/             demo: api/, screens/, types.ts (Explore tab)
+  demo-showcase/          demo: component showcase route and Home's example links
+shared/                   foundation, no imports from features/
+  config/                 validated environment (env.ts), feature flags
+  http/                   createHttpClient, ApiError, the app API client
+  session/                AuthAdapter + auth service, token store, SessionProvider
+  storage/                AsyncStorage and SecureStore wrappers
+  ui/                     theme, ErrorBoundary, LoadingScreen, ConfigErrorScreen
+  lib/                    logger, useFetch
+  integrations/           seams (analytics, flags, push, OTA, error reporting) and setup.ts
+  i18n/                   t() and the English dictionary
+__tests__/                mirrors the tree: app/, features/<name>/, shared/<area>/
 ```
 
-**Group by feature when appropriate:**
+**Inside a feature**, use the folders it needs:
+`features/<name>/{screens,components,api,hooks,types.ts}`. Export screens as
+named exports and add a one-line route file in `app/` that re-exports it as
+the default.
 
-```
-features/
-  auth/
-    LoginScreen.tsx
-    authService.ts
-    types.ts
-  todos/
-    TodosScreen.tsx
-    todosApi.ts
-    types.ts
-```
+**Dependency direction:** `app/` → `features/` → `shared/`. `shared/` never
+imports a feature, with one exception: `shared/integrations/setup.ts` is the
+composition root that registers adapters (it registers the demo auth adapter
+inside `@demo` markers). Features don't import each other's internals.
 
-**Current structure (starter template):**
-
-- `app/` - Screens (Expo Router)
-- `components/` - Reusable UI components
-- `hooks/` - Custom React hooks
-- `services/` - API and storage
-- `types/` - TypeScript definitions
-- `constants/` - App constants
+**Demo code** lives in `features/demo-*`, the routes `app/(tabs)/explore.tsx`
+and `app/showcase.tsx`, and between `@demo remove-block-start` /
+`@demo remove-block-end` markers elsewhere. `npm run remove-demo` deletes it;
+see [Remove the demo](remove-demo.md).
 
 ## Component Patterns
 

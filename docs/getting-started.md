@@ -65,7 +65,7 @@ JSONPlaceholder for its todos example and DummyJSON for its authentication demo
 
 To use your own backends, set `EXPO_PUBLIC_API_URL` and `EXPO_PUBLIC_AUTH_API_URL`
 and turn the demo flag off; then adapt the request and response mapping in
-`services/auth.ts` to your backend's authentication contract. See
+`shared/session/authService.ts` to your backend's authentication contract. See
 [Environment Variables](environment-variables.md) for every variable and its rules.
 
 ## Running the App
@@ -102,33 +102,27 @@ npm run web
 
 ```
 react-native-starter/
-├── app/              # Expo Router screens (file-based routing)
-│   ├── (tabs)/       # Tab navigation screens
-│   └── _layout.tsx   # Root layout with theme provider
-├── components/       # Reusable UI components
-│   ├── ErrorBoundary.tsx
-│   └── LoadingScreen.tsx
-├── hooks/            # Custom React hooks
-│   └── useFetch.ts   # Data fetching hook
-├── services/         # API & storage services
-│   ├── api.ts        # Axios client with interceptors
-│   └── storage.ts    # AsyncStorage wrapper
-├── types/            # TypeScript type definitions
-│   └── api.ts        # API response types
-├── constants/        # App constants
-│   └── Theme.ts      # React Native Paper theme
+├── app/              # Expo Router routes: layouts + one-line route files
+├── features/         # Screens and code per feature
+│   ├── home/         # Home: session card
+│   ├── auth/         # Login and Profile screens
+│   └── demo-*/       # Demos (DummyJSON auth, todos, component showcase)
+├── shared/           # Foundation: config, http, session, storage, ui, lib,
+│                     # integrations, i18n
+├── __tests__/        # Jest tests, mirroring app/, features/, shared/
+├── scripts/          # remove-demo.js, issue-label bootstrap
 ├── assets/           # Images, fonts, static files
 └── docs/             # Documentation
 ```
 
 ### Key Directories Explained
 
-- **`app/`** - All screens go here. Files automatically become routes (Expo Router).
-- **`components/`** - Reusable UI components used across screens.
-- **`hooks/`** - Custom React hooks for shared logic (e.g., `useFetch`).
-- **`services/`** - API client and storage utilities.
-- **`constants/`** - App-wide constants like colors and theme config.
-- **`types/`** - TypeScript interfaces and types.
+- **`app/`** - Routes only. Each route file re-exports a screen from `features/`.
+- **`features/`** - One folder per feature (`screens/`, `components/`, `api/`, `hooks/`, `types.ts`).
+- **`shared/`** - The foundation every feature uses; it never imports a feature.
+- **Demos** - `features/demo-*` plus `@demo` markers; `npm run remove-demo` removes them ([guide](remove-demo.md)).
+
+See [Conventions: Project Structure](conventions.md#project-structure) for the full layout.
 
 ## Make It Yours
 
@@ -177,10 +171,10 @@ without WSL, set the variables in your shell first.
 
 Now that you're running, here's where to start coding:
 
-1. **Explore existing screens** - Check `app/(tabs)/index.tsx` to see example usage
+1. **Explore existing screens** - Screens live in `features/`; the route files in `app/` only re-export them (see [Conventions](conventions.md#project-structure))
 2. **Add a new screen** - See [How to Add a New Screen](how-to.md#how-to-add-a-new-screen)
-3. **Customize theme** - Edit `palette` in `constants/Theme.ts`
-4. **Connect to your API** - Update `EXPO_PUBLIC_API_URL` in `.env` and modify `services/api.ts`
+3. **Customize theme** - Edit `palette` in `shared/ui/theme.ts`
+4. **Connect to your API** - Update `EXPO_PUBLIC_API_URL` in `.env` and modify `shared/http/api.ts`
 5. **Read the guides** - Check out [How-To Guides](how-to.md) for common tasks
 
 ## Available Scripts

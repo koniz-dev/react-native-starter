@@ -2,15 +2,16 @@ import { PaperProvider } from 'react-native-paper';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
-import { getNavigationTheme, getTheme } from '@/constants/Theme';
+import { getNavigationTheme, getTheme } from '@/shared/ui/theme';
 import { Stack, ThemeProvider } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { ConfigErrorScreen } from '@/components/ConfigErrorScreen';
-import { configResult } from '@/config/env';
-import { configureIntegrations } from '@/integrations/setup';
-import { useScreenTracking } from '@/integrations/useScreenTracking';
-import { SessionProvider, useSession } from '@/providers/SessionProvider';
+import { ErrorBoundary } from '@/shared/ui/ErrorBoundary';
+import { ConfigErrorScreen } from '@/shared/ui/ConfigErrorScreen';
+import { configResult } from '@/shared/config/env';
+import { configureIntegrations } from '@/shared/integrations/setup';
+import { useScreenTracking } from '@/shared/integrations/useScreenTracking';
+import { SessionProvider, useSession } from '@/shared/session/SessionProvider';
+import { t } from '@/shared/i18n';
 
 // Register integration providers before the first screen renders.
 configureIntegrations();
@@ -80,7 +81,8 @@ function RootNavigator() {
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(tabs)" />
+      {/* The title is the iOS back label on screens pushed over the tabs. */}
+      <Stack.Screen name="(tabs)" options={{ title: t('tabs.home') }} />
       <Stack.Protected guard={!signedIn}>
         <Stack.Screen name="(auth)" />
       </Stack.Protected>

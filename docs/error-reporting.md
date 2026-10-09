@@ -13,10 +13,10 @@ route ErrorBoundary ┘
 
 ## Logger
 
-`utils/logger.ts` exports `logger` with four levels:
+`shared/lib/logger.ts` exports `logger` with four levels:
 
 ```ts
-import { logger } from '@/utils/logger';
+import { logger } from '@/shared/lib/logger';
 
 logger.debug('Cache hit', { key });
 logger.info('Sync finished', { count });
@@ -46,14 +46,14 @@ logger.error('Failed to save settings', error, { key });
   the adapter (or the provider's `beforeSend`).
 
 - **No `console` in app code.** ESLint `no-console` is an error everywhere
-  except `utils/logger.ts` and the default reporter.
+  except `shared/lib/logger.ts` and the default reporter.
 
 The HTTP client logs failed requests as method, path, error code, and status
 only (see [API and Storage](api-and-storage.md)).
 
 ## Error reporter seam
 
-`integrations/errorReporter.ts`:
+`shared/integrations/errorReporter.ts`:
 
 ```ts
 interface ErrorReporter {
@@ -80,7 +80,7 @@ A reporter that throws never breaks the caller; the logger catches it.
 
 ## Error boundaries
 
-`components/ErrorBoundary.tsx` has two boundaries, both reporting through
+`shared/ui/ErrorBoundary.tsx` has two boundaries, both reporting through
 the logger (and so through the seam) in every build:
 
 - **`ErrorBoundary`** wraps the app in `app/_layout.tsx`, inside
@@ -93,7 +93,7 @@ the logger (and so through the seam) in every build:
   layouts:
 
   ```ts
-  export { RouteErrorBoundary as ErrorBoundary } from '@/components/ErrorBoundary';
+  export { RouteErrorBoundary as ErrorBoundary } from '@/shared/ui/ErrorBoundary';
   ```
 
 Both fallbacks offer **Try again** (render the same screen again) and **Go
@@ -104,14 +104,14 @@ handlers and async code should be caught and passed to `logger.error`.
 ## Plugging in a provider
 
 Install the provider's SDK yourself, then register an adapter in
-`integrations/setup.ts`, which runs once before the first screen renders.
+`shared/integrations/setup.ts`, which runs once before the first screen renders.
 This example is for Sentry's React Native SDK; it is not installed or compiled
 in this repository, so check the provider's current documentation.
 
 ```ts
-// integrations/adapters/sentry.ts
+// shared/integrations/adapters/sentry.ts
 import * as Sentry from '@sentry/react-native';
-import type { ErrorReporter } from '@/integrations/errorReporter';
+import type { ErrorReporter } from '@/shared/integrations/errorReporter';
 
 export function createSentryErrorReporter(): ErrorReporter {
   return {
@@ -131,14 +131,14 @@ export function createSentryErrorReporter(): ErrorReporter {
 ```
 
 ```ts
-// integrations/setup.ts
+// shared/integrations/setup.ts
 import * as Sentry from '@sentry/react-native';
 import { setErrorReporter } from './errorReporter';
 import { createSentryErrorReporter } from './adapters/sentry';
 
 export function configureIntegrations(): void {
   // ...
-  Sentry.init({ dsn: 'https://…' }); // e.g. from an EXPO_PUBLIC_ variable read in config/env.ts
+  Sentry.init({ dsn: 'https://…' }); // e.g. from an EXPO_PUBLIC_ variable read in shared/config/env.ts
   setErrorReporter(createSentryErrorReporter());
 }
 ```
@@ -151,7 +151,7 @@ the provider's SDK and build setup, not through this seam.
 Replace the reporter with a mock and restore the default afterwards:
 
 ```ts
-import { errorReporterSeam } from '@/integrations/errorReporter';
+import { errorReporterSeam } from '@/shared/integrations/errorReporter';
 
 const reporter = {
   captureException: jest.fn(),
@@ -164,5 +164,5 @@ afterEach(() => errorReporterSeam.reset());
 
 `createLogger(() => settings)` builds a logger with fixed settings, for
 example `{ minLevel: 'warn', development: false }` to test production
-behavior. See `__tests__/utils/logger.test.ts` and
-`__tests__/components/ErrorBoundary.test.tsx`.
+behavior. See `__tests__/shared/lib/logger.test.ts` and
+`__tests__/shared/ui/ErrorBoundary.test.tsx`.

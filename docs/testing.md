@@ -30,21 +30,19 @@ Tests are organized in the `__tests__` directory, mirroring the source code stru
 
 ```
 __tests__/
-├── utils/
-│   └── logger.test.ts           # Utility function tests
-└── components/
-    ├── LoadingScreen.test.tsx   # Reusable component tests (from components/)
-    └── HomeScreen.test.tsx      # Screen tests (from app/)
+├── app/                      # Routing: session guards, initial route, theme, status bar
+├── features/
+│   ├── auth/                 # LoginScreen
+│   ├── home/                 # HomeScreen
+│   └── demo-*/               # Demo tests (removed by npm run remove-demo)
+└── shared/
+    ├── config/  http/  session/  storage/
+    ├── integrations/  lib/  ui/
 ```
 
-**Organization:**
-
-- `__tests__/utils/` - Tests for pure utility functions
-- `__tests__/components/` - Tests for all React components, including:
-  - Reusable components from `components/` directory
-  - Screen components from `app/` directory (Expo Router routes)
-
-This structure keeps tests organized while maintaining simplicity.
+**Organization:** the tree mirrors `app/`, `features/<name>/`, and
+`shared/<area>/`. Full-app tests render the real routes with
+`renderRouter('./app')`; component tests render one screen with providers.
 
 ## Writing Tests
 
@@ -53,8 +51,8 @@ This structure keeps tests organized while maintaining simplicity.
 Test pure functions and utilities without React components:
 
 ```typescript
-// __tests__/utils/logger.test.ts (excerpt)
-import { redact } from '@/utils/logger';
+// __tests__/shared/lib/logger.test.ts (excerpt)
+import { redact } from '@/shared/lib/logger';
 
 describe('redact', () => {
   test('replaces auth headers', () => {
@@ -81,7 +79,7 @@ Test React Native components with React Native Testing Library. Components using
 import React from 'react';
 import { render } from '@testing-library/react-native';
 import { PaperProvider, MD3LightTheme } from 'react-native-paper';
-import { LoadingScreen } from '@/components/LoadingScreen';
+import { LoadingScreen } from '@/shared/ui/LoadingScreen';
 
 const TestWrapper = ({ children }: { children: React.ReactNode }) => (
   <PaperProvider theme={MD3LightTheme}>{children}</PaperProvider>

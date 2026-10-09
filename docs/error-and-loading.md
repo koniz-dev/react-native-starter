@@ -28,7 +28,7 @@ Use it around a risky part of a screen so an error there doesn't replace the
 whole route:
 
 ```tsx
-import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { ErrorBoundary } from '@/shared/ui/ErrorBoundary';
 
 <ErrorBoundary>
   <RiskyWidget />
@@ -76,7 +76,7 @@ A simple, reusable loading component that displays a centered activity indicator
 ### Usage
 
 ```tsx
-import { LoadingScreen } from '@/components/LoadingScreen';
+import { LoadingScreen } from '@/shared/ui/LoadingScreen';
 
 function MyScreen() {
   if (loading) {
@@ -103,9 +103,9 @@ A generic custom hook that simplifies data fetching with automatic loading and e
 ### Basic Usage
 
 ```tsx
-import { useFetch } from '@/hooks/useFetch';
-import { todosApi } from '@/services/api';
-import { LoadingScreen } from '@/components/LoadingScreen';
+import { useFetch } from '@/shared/lib/useFetch';
+import { todosApi } from '@/features/demo-todos/api/todosApi';
+import { LoadingScreen } from '@/shared/ui/LoadingScreen';
 
 function TodoList() {
   const { data, loading, error, refetch } = useFetch(() => todosApi.getAll());
@@ -154,7 +154,7 @@ const { data, loading, error } = useFetch(
 
 ### Example: Explore Screen
 
-See `app/(tabs)/explore.tsx` for a complete example using `useFetch` with todos API.
+See `features/demo-todos/screens/TodosScreen.tsx` for a complete example using `useFetch` with todos API.
 
 ## Snackbar/Toast Patterns
 
@@ -220,7 +220,7 @@ function MyScreen() {
 
 ### Example
 
-See `app/(tabs)/index.tsx` for a complete Snackbar example.
+See `features/demo-showcase/screens/ShowcaseScreen.tsx` for a complete Snackbar example.
 
 ## Best Practices
 
@@ -264,7 +264,7 @@ route-level boundary:
 
 ```tsx
 // app/(tabs)/_layout.tsx
-export { RouteErrorBoundary as ErrorBoundary } from '@/components/ErrorBoundary';
+export { RouteErrorBoundary as ErrorBoundary } from '@/shared/ui/ErrorBoundary';
 ```
 
 ### Loading with Error Handling

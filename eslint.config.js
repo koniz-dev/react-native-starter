@@ -101,14 +101,14 @@ module.exports = [
     languageOptions: { globals: { ...sharedGlobals, ...globals.jest } },
   },
 
-  // App code logs through utils/logger.ts, which forwards errors to the
+  // App code logs through shared/lib/logger.ts, which forwards errors to the
   // error-reporting seam; only the logger and the default reporter write to
   // the console directly.
   {
     files: ['**/*.{ts,tsx,js,jsx}'],
     ignores: [
-      'utils/logger.ts',
-      'integrations/errorReporter.ts',
+      'shared/lib/logger.ts',
+      'shared/integrations/errorReporter.ts',
       '__tests__/**',
       'scripts/**',
       'jest.setup*.js',
@@ -118,12 +118,13 @@ module.exports = [
     },
   },
 
-  // Environment variables are read only by the validated config module
-  // (and by app.config.ts, which runs in Node at build time).
+  // Environment variables are read only by the validated config module,
+  // shared/config/env.ts (and by app.config.ts, which runs in Node at build
+  // time).
   {
     files: ['**/*.{ts,tsx,js,jsx}'],
     ignores: [
-      'config/env.ts',
+      'shared/config/env.ts',
       'app.config.ts',
       '__tests__/**',
       'jest.setup.env.js',
@@ -135,7 +136,7 @@ module.exports = [
           object: 'process',
           property: 'env',
           message:
-            'Read environment values through config/env.ts (getConfig / configResult).',
+            'Read environment values through shared/config/env.ts (getConfig / configResult).',
         },
       ],
     },

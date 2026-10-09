@@ -29,8 +29,8 @@ label "task"        "bfd4f2" "Chore, refactor, or maintenance work"
 
 # --- Epic family (canonical epic list) ---------------------------------------
 label "epic:navigation" "1d76db" "Expo Router: app/ routes and layouts"
-label "epic:ui"         "5319e7" "Components, theming, Colors/Theme constants"
-label "epic:services"   "0e8a16" "API client, auth, storage, hooks, types"
+label "epic:ui"         "5319e7" "shared/ui: theme, shared components, Paper theming"
+label "epic:services"   "0e8a16" "shared/: config, http, session, storage, lib; feature APIs"
 label "epic:state"      "fbca04" "State management variants and branches"
 label "epic:testing"    "c2e0c6" "Jest/RNTL tests and test configuration"
 label "epic:docs"       "0075ca" "README, docs/, per-directory guides"

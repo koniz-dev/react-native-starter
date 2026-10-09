@@ -3,17 +3,17 @@
 The starter ships typed **seams** for the services most apps add later. Each
 seam has a default that works with no account, key, or native setup, so the
 app runs as-is. To use a real provider, install it yourself and register an
-adapter in [`integrations/setup.ts`](../integrations/setup.ts), which runs once
+adapter in [`shared/integrations/setup.ts`](../shared/integrations/setup.ts), which runs once
 from `app/_layout.tsx` before the first screen renders. No other code changes.
 
-| Seam               | Module                              | Default                                                                       | Call it with                                                                 |
-| ------------------ | ----------------------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| Analytics          | `integrations/analytics.ts`         | Logs `track` / `screen` / `identify` at debug level (development builds only) | `getAnalytics().track('event', props)`                                       |
-| Feature flags      | `integrations/featureFlags.ts`      | Static values from `config/featureFlags.ts`                                   | `getFeatureFlags().isEnabled('flag')`                                        |
-| Push notifications | `integrations/pushNotifications.ts` | "Not configured": no permission, no token, no notifications                   | `getPushNotifications().requestPermission()`                                 |
-| OTA updates        | `integrations/updates.ts`           | Never finds an update                                                         | `getUpdates().checkForUpdate()`                                              |
-| i18n               | `i18n/index.ts`                     | English dictionary in `i18n/en.ts`                                            | `t('login.title')`                                                           |
-| Error reporting    | `integrations/errorReporter.ts`     | One console line per report                                                   | `logger.error('message', error)` (see [Error reporting](error-reporting.md)) |
+| Seam               | Module                                     | Default                                                                       | Call it with                                                                 |
+| ------------------ | ------------------------------------------ | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Analytics          | `shared/integrations/analytics.ts`         | Logs `track` / `screen` / `identify` at debug level (development builds only) | `getAnalytics().track('event', props)`                                       |
+| Feature flags      | `shared/integrations/featureFlags.ts`      | Static values from `shared/config/featureFlags.ts`                            | `getFeatureFlags().isEnabled('flag')`                                        |
+| Push notifications | `shared/integrations/pushNotifications.ts` | "Not configured": no permission, no token, no notifications                   | `getPushNotifications().requestPermission()`                                 |
+| OTA updates        | `shared/integrations/updates.ts`           | Never finds an update                                                         | `getUpdates().checkForUpdate()`                                              |
+| i18n               | `shared/i18n/index.ts`                     | English dictionary in `shared/i18n/en.ts`                                     | `t('login.title')`                                                           |
+| Error reporting    | `shared/integrations/errorReporter.ts`     | One console line per report                                                   | `logger.error('message', error)` (see [Error reporting](error-reporting.md)) |
 
 Every seam is created with `createSeam(default)` and exposes `set()` and
 `reset()`; tests use `reset()` in `afterEach`.
@@ -28,9 +28,9 @@ Screen views are reported automatically: `useScreenTracking()` in
 change. Call `track` for events and `identify` after sign-in.
 
 ```ts
-// integrations/adapters/posthog.ts (example; requires posthog-react-native)
+// shared/integrations/adapters/posthog.ts (example; requires posthog-react-native)
 import type PostHog from 'posthog-react-native';
-import type { Analytics } from '@/integrations/analytics';
+import type { Analytics } from '@/shared/integrations/analytics';
 
 export function createPostHogAnalytics(client: PostHog): Analytics {
   return {
@@ -41,20 +41,20 @@ export function createPostHogAnalytics(client: PostHog): Analytics {
   };
 }
 
-// integrations/setup.ts
+// shared/integrations/setup.ts
 analyticsSeam.set(createPostHogAnalytics(posthogClient));
 ```
 
 ## Feature flags
 
-Add a flag to `config/featureFlags.ts`; its name and value type are then
+Add a flag to `shared/config/featureFlags.ts`; its name and value type are then
 checked by TypeScript everywhere it is read. A remote-config provider
 replaces the static default:
 
 ```ts
-// integrations/adapters/remoteFlags.ts (example)
-import { featureFlagDefaults } from '@/config/featureFlags';
-import type { FeatureFlags } from '@/integrations/featureFlags';
+// shared/integrations/adapters/remoteFlags.ts (example)
+import { featureFlagDefaults } from '@/shared/config/featureFlags';
+import type { FeatureFlags } from '@/shared/integrations/featureFlags';
 
 export function createRemoteFeatureFlags(
   read: (name: string) => unknown // e.g. your SDK's getFeatureFlag
@@ -72,10 +72,10 @@ fallback for offline starts.
 ## Push notifications
 
 ```ts
-// integrations/adapters/expoNotifications.ts
+// shared/integrations/adapters/expoNotifications.ts
 // (example; requires expo-notifications, its config plugin, and push credentials)
 import * as Notifications from 'expo-notifications';
-import type { PushNotifications } from '@/integrations/pushNotifications';
+import type { PushNotifications } from '@/shared/integrations/pushNotifications';
 
 export const expoPush: PushNotifications = {
   requestPermission: async () => {
@@ -99,10 +99,10 @@ export const expoPush: PushNotifications = {
 ## OTA updates
 
 ```ts
-// integrations/adapters/expoUpdates.ts
+// shared/integrations/adapters/expoUpdates.ts
 // (example; requires expo-updates and an update service such as EAS Update)
 import * as ExpoUpdates from 'expo-updates';
-import type { Updates } from '@/integrations/updates';
+import type { Updates } from '@/shared/integrations/updates';
 
 export const expoUpdates: Updates = {
   checkForUpdate: async () => {
@@ -125,7 +125,7 @@ see the Expo documentation.
 
 ## i18n
 
-All strings on the shipped screens come from `i18n/en.ts` through `t()`.
+All strings on the shipped screens come from `shared/i18n/en.ts` through `t()`.
 Keys are typed, and `Translations` requires every locale to define every key.
 `{name}` placeholders are filled from the second argument:
 
@@ -140,7 +140,7 @@ To add a language with the built-in dictionary implementation:
 import type { Translations } from './en';
 export const vi: Translations = { 'tabs.home': 'Trang chủ' /* every key */ };
 
-// integrations/setup.ts (pick the locale from expo-localization, user settings, ...)
+// shared/integrations/setup.ts (pick the locale from expo-localization, user settings, ...)
 i18nSeam.set(createDictionaryI18n('vi', vi));
 ```
 

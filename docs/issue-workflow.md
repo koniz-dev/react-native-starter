@@ -28,8 +28,8 @@ Epic areas map to the codebase:
 | Epic              | Covers                                                          |
 | ----------------- | --------------------------------------------------------------- |
 | `epic:navigation` | `app/` routes, layouts, Expo Router configuration               |
-| `epic:ui`         | `components/`, `constants/` (Colors, Theme), Paper theming      |
-| `epic:services`   | `services/` (api, auth, storage), `hooks/`, `types/`            |
+| `epic:ui`         | `shared/ui/` (theme, shared components), Paper theming          |
+| `epic:services`   | `shared/` config, http, session, storage, lib; feature `api/`   |
 | `epic:state`      | State-management variants and the `state-management/*` branches |
 | `epic:testing`    | `__tests__/`, Jest/RNTL configuration                           |
 | `epic:docs`       | `README.md`, `docs/`, per-directory READMEs                     |

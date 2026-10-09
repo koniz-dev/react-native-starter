@@ -36,7 +36,7 @@ Update `app/_layout.tsx`:
 ```tsx
 import { PaperProvider } from 'react-native-paper';
 import { useColorScheme } from 'react-native';
-import { getTheme } from '@/constants/Theme';
+import { getTheme } from '@/shared/ui/theme';
 import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
@@ -75,7 +75,7 @@ export default function RootLayout() {
 
 ### Step 3: Configure Paper Theme
 
-Edit `constants/Theme.ts` to use your custom fonts:
+Edit `shared/ui/theme.ts` to use your custom fonts:
 
 ```tsx
 const fontConfig = {
@@ -180,7 +180,7 @@ export default function RootLayout() {
 }
 ```
 
-Reference in `constants/Theme.ts`:
+Reference in `shared/ui/theme.ts`:
 
 ```tsx
 const fontConfig = {

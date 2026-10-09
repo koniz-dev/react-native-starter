@@ -1,12 +1,12 @@
 # Color Themes
 
 The starter has one theme system: React Native Paper's Material Design 3
-theme, defined in [`constants/Theme.ts`](../constants/Theme.ts). The app
+theme, defined in [`shared/ui/theme.ts`](../shared/ui/theme.ts). The app
 follows the system light/dark setting.
 
 ## How it fits together
 
-- `palette` in `constants/Theme.ts` holds the brand colors for light and dark
+- `palette` in `shared/ui/theme.ts` holds the brand colors for light and dark
   mode (primary, containers, background, surface, text). `lightTheme` and
   `darkTheme` merge them over Paper's `MD3LightTheme` / `MD3DarkTheme`.
 - `app/_layout.tsx` reads `useColorScheme()`, picks the theme with
@@ -43,8 +43,8 @@ Paper components (`Text`, `Button`, `Card`, ...) already use the theme. ESLint
 
 ## Rebranding
 
-Edit `palette` in `constants/Theme.ts`. Keep each `on*` color readable on its
-pair: `__tests__/constants/theme.test.ts` checks WCAG AA contrast (4.5:1) for
+Edit `palette` in `shared/ui/theme.ts`. Keep each `on*` color readable on its
+pair: `__tests__/shared/ui/theme.test.ts` checks WCAG AA contrast (4.5:1) for
 the brand pairs and for `primary` on the background in both modes. Material's
 [theme builder](https://material-foundation.github.io/material-theme-builder/)
 can generate a full set of MD3 roles from one brand color.

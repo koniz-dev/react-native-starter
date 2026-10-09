@@ -35,6 +35,14 @@ This directory contains additional guides and documentation for common developme
 - **[Store Data](store-data.md)**  
   Store data locally using AsyncStorage, SecureStore, SQLite, and MMKV.
 
+### Project
+
+- **[Conventions](conventions.md)**  
+  Project structure (`app/`, `features/`, `shared/`), naming, and patterns.
+
+- **[Remove the Demo](remove-demo.md)**  
+  Strip the demo features and keep the foundation.
+
 ### Configuration
 
 - **[Environment Variables](environment-variables.md)**  

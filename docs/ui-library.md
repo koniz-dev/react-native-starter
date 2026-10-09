@@ -12,9 +12,9 @@ This starter template includes **React Native Paper**, a Material Design 3 compo
 ## What's Included
 
 - **PaperProvider** configured in `app/_layout.tsx`
-- **Theme system** in `constants/Theme.ts` (the app's only color system)
+- **Theme system** in `shared/ui/theme.ts` (the app's only color system)
 - **Automatic light/dark mode** support via system preference
-- **Example components** in `app/(tabs)/index.tsx`
+- **Example components** in `features/demo-showcase/screens/ShowcaseScreen.tsx` (the Component showcase, opened from Home)
 
 ## Quick Start
 
@@ -63,11 +63,11 @@ export default function MyComponent() {
 
 ## Theme Customization
 
-Edit `constants/Theme.ts` to customize your theme:
+Edit `shared/ui/theme.ts` to customize your theme:
 
 ### Colors
 
-Brand colors live in `palette` in `constants/Theme.ts` and are merged over
+Brand colors live in `palette` in `shared/ui/theme.ts` and are merged over
 Paper's MD3 baseline for each mode:
 
 ```tsx
@@ -127,12 +127,12 @@ If you prefer a different UI library:
 3. **Delete theme configuration:**
 
 ```bash
-   rm constants/Theme.ts
+   rm shared/ui/theme.ts
 ```
 
 4. **Update your components:**
    - Replace Paper component imports with your preferred library
-   - Update the example screen in `app/(tabs)/index.tsx`
+   - Remove the showcase (`npm run remove-demo`, see [Remove the demo](remove-demo.md))
 
 ## Learn More
 
