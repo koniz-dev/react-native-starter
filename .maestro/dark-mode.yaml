@@ -1,0 +1,20 @@
+# Run with the device in dark mode (scripts/e2e/run.sh switches it): the tab
+# bar and status bar follow the dark theme. Screenshots only.
+appId: ${APP_ID}
+name: Dark mode screenshots
+tags:
+  - dark
+---
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'false'
+- takeScreenshot: dark-home
+- tapOn:
+    id: tab-explore
+- extendedWaitUntil:
+    visible: API Example
+    timeout: 20000
+- takeScreenshot: dark-explore
+- tapOn:
+    id: tab-home

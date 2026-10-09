@@ -1,0 +1,28 @@
+# From Home, signed out: signs in with the demo account (DummyJSON).
+appId: ${APP_ID}
+---
+- waitForAnimationToEnd
+- tapOn:
+    id: sign-in-button
+- runFlow:
+    when:
+      notVisible: Welcome Back
+    commands:
+      - waitForAnimationToEnd
+      - tapOn:
+          id: sign-in-button
+- extendedWaitUntil:
+    visible: Welcome Back
+    timeout: 20000
+- tapOn:
+    id: login-username
+- inputText: emilys
+- tapOn:
+    id: login-password
+- inputText: emilyspass
+- hideKeyboard
+- tapOn:
+    id: login-submit
+- extendedWaitUntil:
+    visible: Signed in as Emily Johnson
+    timeout: 30000

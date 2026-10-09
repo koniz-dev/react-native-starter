@@ -1,0 +1,38 @@
+# The keyboard's return keys: "next" on the username moves to the password,
+# "go" on the password submits. If "next" didn't move focus, the password
+# would be typed into the username field and sign-in would fail.
+appId: ${APP_ID}
+name: Login keyboard return keys
+---
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'true'
+- waitForAnimationToEnd
+- tapOn:
+    id: sign-in-button
+- runFlow:
+    when:
+      notVisible: Welcome Back
+    commands:
+      - waitForAnimationToEnd
+      - tapOn:
+          id: sign-in-button
+- extendedWaitUntil:
+    visible: Welcome Back
+    timeout: 20000
+- tapOn:
+    id: login-username
+- inputText: emilys
+- pressKey: Enter
+- takeScreenshot: 04-password-focused
+- inputText: emilyspass
+- pressKey: Enter
+- extendedWaitUntil:
+    visible: Signed in as Emily Johnson
+    timeout: 30000
+- tapOn:
+    id: logout-button
+- extendedWaitUntil:
+    visible: Not signed in
+    timeout: 10000

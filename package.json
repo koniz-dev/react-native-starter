@@ -16,6 +16,8 @@
     "remove-demo": "node scripts/remove-demo.js",
     "docs:check": "node scripts/check-docs.js",
     "audit:check": "node scripts/check-audit.js",
+    "test:e2e:android": "bash scripts/e2e/run.sh android",
+    "test:e2e:ios": "bash scripts/e2e/run.sh ios",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix --max-warnings 0",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",

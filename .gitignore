@@ -46,3 +46,6 @@ coverage/
 
 # docs:check scratch output
 .docs-check/
+
+# Maestro e2e output (scripts/e2e/run.sh)
+e2e-results/

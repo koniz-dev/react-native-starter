@@ -1,0 +1,17 @@
+# The tab bar switches between Home and Explore.
+appId: ${APP_ID}
+name: Tab navigation
+---
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'false'
+- tapOn:
+    id: tab-explore
+- extendedWaitUntil:
+    visible: API Example
+    timeout: 20000
+- takeScreenshot: 02-explore-tab
+- tapOn:
+    id: tab-home
+- assertVisible: Session

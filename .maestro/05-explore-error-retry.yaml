@@ -1,0 +1,32 @@
+# Explore against the local mock API: an error state, then Retry loads the list.
+appId: ${APP_ID}
+name: Explore error state and Retry
+---
+- runScript:
+    file: scripts/set-api-mode.js
+    env:
+      MODE: error
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'false'
+- tapOn:
+    id: tab-explore
+- extendedWaitUntil:
+    visible: Service unavailable
+    timeout: 30000
+- assertVisible: Error
+- takeScreenshot: 05-explore-error
+- runScript:
+    file: scripts/set-api-mode.js
+    env:
+      MODE: ok
+- tapOn: Retry
+- extendedWaitUntil:
+    visible: Todos (10)
+    timeout: 30000
+- assertVisible: e2e todo 1
+- assertNotVisible: Service unavailable
+- takeScreenshot: 05-explore-after-retry
+- tapOn:
+    id: tab-home

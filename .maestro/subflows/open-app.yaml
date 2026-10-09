@@ -1,0 +1,41 @@
+# Opens the app in Expo Go (or a development build) at APP_URL and waits for
+# Home. CLEAR_STATE=true starts from a fresh install state (signed out).
+appId: ${APP_ID}
+---
+- runFlow:
+    when:
+      true: ${CLEAR_STATE == 'true'}
+    commands:
+      - clearState
+- launchApp
+- openLink: ${APP_URL}
+# Overlays that can cover Home after a launch: Expo Go's developer-menu
+# introduction (and the menu itself on Android), and on slow emulators a
+# system "isn't responding" dialog. Dismiss them until Home is usable.
+- repeat:
+    times: 10
+    while:
+      notVisible:
+        id: tab-home
+    commands:
+      - extendedWaitUntil:
+          visible:
+            id: tab-home
+          timeout: 15000
+          optional: true
+      - tapOn:
+          text: Wait
+          optional: true
+      - tapOn:
+          text: Continue
+          optional: true
+      - runFlow:
+          when:
+            platform: Android
+            visible: Go home
+          commands:
+            - back
+      - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: Session
+    timeout: 30000

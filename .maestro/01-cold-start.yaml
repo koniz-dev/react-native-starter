@@ -1,0 +1,15 @@
+# Cold start (fresh state) opens Home, signed out, on the Home tab.
+appId: ${APP_ID}
+name: Cold start opens Home
+---
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'true'
+- assertVisible: Welcome
+- assertVisible: Not signed in
+- assertVisible:
+    id: sign-in-button
+- assertVisible:
+    id: tab-home
+- takeScreenshot: 01-home

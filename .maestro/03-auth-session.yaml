@@ -1,0 +1,29 @@
+# Sign in, relaunch (still signed in), log out, relaunch (still signed out).
+appId: ${APP_ID}
+name: Sign-in session survives a relaunch; logout clears it
+---
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'true'
+- runFlow: subflows/sign-in.yaml
+- takeScreenshot: 03-signed-in
+- stopApp
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'false'
+- assertVisible: Signed in as Emily Johnson
+- takeScreenshot: 03-relaunch-signed-in
+- tapOn:
+    id: logout-button
+- extendedWaitUntil:
+    visible: Not signed in
+    timeout: 10000
+- stopApp
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'false'
+- assertVisible: Not signed in
+- takeScreenshot: 03-relaunch-signed-out

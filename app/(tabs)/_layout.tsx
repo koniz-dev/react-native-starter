@@ -27,6 +27,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: t('tabs.home'),
+          tabBarButtonTestID: 'tab-home',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="home" size={24} color={color} />
           ),
@@ -37,6 +38,7 @@ export default function TabLayout() {
         name="explore"
         options={{
           title: t('tabs.explore'),
+          tabBarButtonTestID: 'tab-explore',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="compass" size={24} color={color} />
           ),

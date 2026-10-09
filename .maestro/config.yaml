@@ -1,0 +1,14 @@
+# Maestro workspace config: the numbered flows run in order; the dark-mode
+# flow runs separately (scripts/e2e/run.sh switches the device to dark mode).
+flows:
+  - '*.yaml'
+executionOrder:
+  continueOnFailure: false
+  flowsOrder:
+    - Cold start opens Home
+    - Tab navigation
+    - Sign-in session survives a relaunch; logout clears it
+    - Login keyboard return keys
+    - Explore error state and Retry
+excludeTags:
+  - dark
