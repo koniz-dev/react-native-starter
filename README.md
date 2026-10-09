@@ -1,384 +1,68 @@
 # React Native Starter
 
-A clean starter template for React Native with Expo Router, TypeScript, and file-based routing.
+An Expo (SDK 57) and React Native starter that is **production-ready by
+configuration, not by installation**: the foundation (routing, session,
+HTTP, storage, theming, error reporting, i18n, test setup) is in place, every
+third-party service sits behind a typed seam with a no-op or console
+default, and pointing it at your backend and providers is configuration and
+small adapters, not a rewrite. It ships no credentialed services.
 
-## Quick Start
+## Quick start
 
 ```bash
-# Install dependencies (Node 24 from .nvmrc, or 22.13+)
-npm ci
-
-# Configure (enables the public demo backends)
-cp .env.example .env
-
-# Start development server
-npm start
+npm ci                 # Node 24 (.nvmrc) or 22.13+
+cp .env.example .env   # turns on the public demo backends
+npm start              # then press i, a, or w, or scan the QR code with Expo Go
 ```
 
-Then press `a` (Android), `i` (iOS), or `w` (web), or scan the QR code with Expo Go.
-
-**📖 For detailed setup instructions, see [Getting Started Guide](docs/getting-started.md)**
-
-## Features
-
-This starter includes everything you need to build a production-ready React Native app:
-
-- ✅ **React Native Paper** - Material Design 3 components with dark/light mode
-- ✅ **Dark/Light Mode** - Automatic system preference detection
-- ✅ **API Client** - Axios with interceptors for authentication and error handling
-- ✅ **Storage Service** - AsyncStorage wrapper with TypeScript support
-- ✅ **Custom Hooks** - `useFetch` for data fetching with loading/error states
-- ✅ **Error Boundary** - Global error handling component
-- ✅ **Loading States** - Built-in loading screen component
-- ✅ **Authentication Example** - Login, protected screen, and logout; the session persists across restarts on iOS and Android (token in the Keychain/Keystore) but not across reloads on web, where the token is kept in memory only (see [API and Storage](docs/api-and-storage.md#why-the-token-is-not-persisted-on-web))
-- ✅ **TypeScript** - Full type safety throughout
-- ✅ **ESLint + Prettier** - Code quality and formatting tools
-- ✅ **Example Screens** - See features in action
-
-## State Management Options
-
-This starter template provides multiple state management solutions to choose from. Each option is available as a separate branch with a corresponding pull request for easy review and integration:
-
-### 🔴 Redux Toolkit
-
-**Branch:** [`state-management/redux`](https://github.com/koniz-dev/react-native-starter/tree/state-management/redux)  
-**Pull Request:** [#2](https://github.com/koniz-dev/react-native-starter/pull/2)
-
-A complete Redux Toolkit implementation with typed hooks, auth slice, and todos slice. Perfect for large-scale applications requiring predictable state management.
-
-**Features:**
-
-- Redux Toolkit with typed hooks
-- Auth slice for authentication state
-- Todos slice for todo management
-- Full TypeScript support
-
-### 🔵 React Context API
-
-**Branch:** [`state-management/react-context`](https://github.com/koniz-dev/react-native-starter/tree/state-management/react-context)  
-**Pull Request:** [#3](https://github.com/koniz-dev/react-native-starter/pull/3)
-
-Built-in React Context API with `useReducer` for state management. No external dependencies required, perfect for smaller to medium-sized applications.
-
-**Features:**
-
-- AuthContext and TodosContext
-- useReducer pattern for state updates
-- Zero external dependencies
-- Native React solution
-
-### 🟢 Zustand
-
-**Branch:** [`state-management/zustand`](https://github.com/koniz-dev/react-native-starter/tree/state-management/zustand)  
-**Pull Request:** [#4](https://github.com/koniz-dev/react-native-starter/pull/4)
-
-Lightweight and simple state management library with minimal boilerplate. Great balance between simplicity and power.
-
-**Features:**
-
-- Minimal boilerplate
-- Simple API
-- Small bundle size
-- Easy to learn
-
-### 🟡 Jotai
-
-**Branch:** [`state-management/jotai`](https://github.com/koniz-dev/react-native-starter/tree/state-management/jotai)  
-**Pull Request:** [#5](https://github.com/koniz-dev/react-native-starter/pull/5)
-
-Atomic state management with fine-grained reactivity. Excellent for component-level state that needs to be shared across the app.
-
-**Features:**
-
-- Atomic state composition
-- Fine-grained reactivity
-- Great performance
-- Flexible architecture
-
-### How to Use
-
-To try out any of these state management solutions:
-
-1. **Checkout the branch:**
-
-   ```bash
-   git checkout state-management/redux  # or react-context, zustand, jotai
-   ```
-
-2. **Install dependencies:**
-
-   ```bash
-   npm install
-   ```
-
-3. **Review the Pull Request** to see what changes were made
-
-4. **Merge or cherry-pick** the changes you want into your project
-
-Each branch includes complete implementation examples and updated documentation.
-
-## Getting Started
-
-For detailed installation and setup instructions, see the [Getting Started Guide](docs/getting-started.md).
-
-**Quick overview:**
-
-1. **Prerequisites:** Node.js 24 (`.nvmrc`) or 22.13+; iOS native builds also
-   require Xcode 26.4+ for Expo SDK 57
-2. **Install:** `npm ci`
-3. **Configure:** `cp .env.example .env`
-4. **Run:** `npm start`
-5. **Code:** Start editing `features/home/screens/HomeScreen.tsx`
-
-### Authentication demo
-
-The starter uses DummyJSON for the runnable login example, separately from the
-JSONPlaceholder Todos API. Sign in with username `emilys` and password `emilyspass`.
-The Home tab then shows "Signed in as …" with **View profile** (a screen that
-requires sign-in) and **Log out**; the session survives an app restart and
-logging out clears it. For a real backend, set `EXPO_PUBLIC_AUTH_API_URL` and adapt the request/response
-mapping in `shared/session/authService.ts` to the backend contract.
-
-## Navigation
-
-This project uses **Expo Router** for navigation, which is the recommended approach for Expo projects. Expo Router provides:
-
-- **File-based routing** - Files in the `app` directory automatically become routes
-- **Built on React Navigation** - Full access to React Navigation APIs when needed
-- **Type-safe routes** - Automatic TypeScript support for routes
-- **Deep linking** - Automatic deep linking configuration
-- **Web support** - Static rendering and optimized routing for web
-
-React Native doesn't include built-in navigation, so you need a navigation library. Expo Router is built on top of React Navigation and integrates seamlessly with Expo CLI and bundling.
-
-For more information, see:
-
-- [Navigation in Expo](https://docs.expo.dev/develop/app-navigation/)
-- [Expo Router Documentation](https://docs.expo.dev/router/introduction/)
-- [App Directory Guide](app/README.md)
-
-## Available Scripts
-
-- `npm start` - Start Expo dev server
-- `npm run android` - Run on Android emulator/device
-- `npm run ios` - Run on iOS simulator/device
-- `npm run web` - Run in web browser
-- `npm run lint` - Check code quality
-- `npm run remove-demo` - Remove the demo features ([guide](docs/remove-demo.md))
-- `npm run lint:fix` - Fix linting issues automatically
-- `npm run format` - Format code with Prettier
-- `npm run type-check` - Check TypeScript types without emitting files
-- `npm test` - Run tests in watch mode
-- `npm run test:ci` - Run tests once with coverage and the coverage threshold (see [Testing](docs/testing.md))
-
-## Project Structure
-
-```
-react-native-starter/
-├── app/              # Expo Router routes: layouts + one-line route files
-├── features/         # Screens and code per feature
-│   ├── home/         # Home: session card
-│   ├── auth/         # Login and Profile screens
-│   └── demo-*/       # Demos (DummyJSON auth, todos, component showcase)
-├── shared/           # Foundation: config, http, session, storage, ui, lib,
-│                     # integrations, i18n
-├── __tests__/        # Jest tests, mirroring app/, features/, shared/
-├── scripts/          # remove-demo.js, issue-label bootstrap
-├── assets/           # Images, fonts, static files
-└── docs/             # Documentation
-```
-
-**Key directories:**
-
-- **`app/`** - Routes only. Each route file re-exports a screen from `features/`.
-- **`features/`** - One folder per feature (`screens/`, `components/`, `api/`, `hooks/`, `types.ts`).
-- **`shared/`** - The foundation every feature uses; it never imports a feature.
-- **Demos** - `features/demo-*` plus `@demo` markers; `npm run remove-demo` removes them ([guide](docs/remove-demo.md)).
-
-See [Conventions: Project Structure](docs/conventions.md#project-structure) for the full layout.
-
-## User Interface
-
-### Safe Areas
-
-This project includes `react-native-safe-area-context` (installed with Expo Router) for handling safe areas on devices with notches and system bars.
-
-**Quick example:**
-
-```tsx
-import { SafeAreaView } from 'react-native-safe-area-context';
-
-export default function Screen() {
-  return <SafeAreaView style={{ flex: 1 }}>{/* Your content */}</SafeAreaView>;
-}
-```
-
-See [Safe Areas Guide](docs/safe-areas.md) for more information.
-
-### UI Components (React Native Paper)
-
-This project includes **React Native Paper**, a Material Design 3 component library. Paper provides pre-built, accessible components that automatically adapt to light/dark mode.
-
-**Quick example:**
-
-```tsx
-import { Button, Card, Text } from 'react-native-paper';
-
-export default function Screen() {
-  return (
-    <Card>
-      <Card.Content>
-        <Text variant="titleLarge">Card Title</Text>
-        <Button mode="contained" onPress={() => console.log('Pressed')}>
-          Press me
-        </Button>
-      </Card.Content>
-    </Card>
-  );
-}
-```
-
-See [UI Library Guide](docs/ui-library.md) for more information on using React Native Paper components and customizing themes.
-
-### Assets
-
-Assets (images, fonts, etc.) are stored in the `assets/` directory. Import them directly:
-
-```tsx
-import { Image } from 'react-native';
-
-<Image source={require('./assets/icon.png')} />;
-```
-
-See [Assets Guide](docs/assets.md) for more information.
-
-### Environment Variables
-
-Configuration comes from validated `EXPO_PUBLIC_*` variables (`shared/config/env.ts`); a missing or invalid value shows a configuration error screen at startup. Copy `.env.example` to `.env` (it enables the public demo backends) and adjust:
-
-```bash
-cp .env.example .env
-```
-
-All environment variables used in JavaScript must be prefixed with `EXPO_PUBLIC_`. See [Environment Variables Guide](docs/environment-variables.md) for more information.
-
-## Development Tools
-
-### Expo CLI
-
-Expo CLI is installed automatically with the `expo` package. Common commands:
-
-| Command                      | Description                                 |
-| ---------------------------- | ------------------------------------------- |
-| `npx expo start`             | Start the development server                |
-| `npx expo prebuild`          | Generate native Android and iOS directories |
-| `npx expo run:android`       | Compile and run on Android                  |
-| `npx expo run:ios`           | Compile and run on iOS                      |
-| `npx expo install <package>` | Install a library with compatible versions  |
-| `npx expo lint`              | Lint your project files                     |
-
-See [Expo CLI documentation](https://docs.expo.dev/more/expo-cli/) for more commands.
-
-### EAS CLI
-
-EAS CLI is used for building, submitting, and managing your app. Install it globally:
-
-```bash
-npm install -g eas-cli
-```
-
-Common commands:
-
-- `eas build --profile development|preview|production` - Build a variant using the profiles in `eas.json` (requires your own Expo account)
-- `eas submit` - Submit your app to app stores
-- `eas update` - Create over-the-air (OTA) updates
-
-See [EAS CLI documentation](https://docs.expo.dev/eas/) for more information.
-
-### Expo Doctor
-
-Diagnose issues in your Expo project:
-
-```bash
-npx expo-doctor
-```
-
-This command checks for common issues in app config, package.json, dependency compatibility, and overall project health.
-
-### Expo Tools for VS Code
-
-Install the [Expo Tools VS Code extension](https://marketplace.visualstudio.com/items?itemName=expo.vscode-expo-tools) for:
-
-- Autocomplete and IntelliSense for app config files
-- Debugging with breakpoints and variable inspection
-
-### Orbit
-
-Orbit is a macOS and Windows app for:
-
-- Installing and launching builds from EAS
-- Installing and launching updates
-- Testing on physical devices and emulators
-
-Install with Homebrew (macOS):
-
-```bash
-brew install expo-orbit
-```
-
-Or download from [GitHub releases](https://github.com/expo/orbit/releases).
-
-### Snack
-
-[Snack](https://snack.expo.dev) is an in-browser development environment for:
-
-- Sharing code snippets
-- Experimenting with React Native
-- Testing prototypes without local setup
-
-### Expo Go
-
-Expo Go is a free app for testing your app on physical devices:
-
-- Download from [App Store](https://apps.apple.com/app/expo-go/id982107779) (iOS)
-- Download from [Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent) (Android)
-
-> **Note:** Expo Go is great for learning and prototyping, but not recommended for production apps. Use development builds instead.
+Details, platforms, and troubleshooting: [Getting Started](docs/getting-started.md).
+
+## What you get
+
+- **Expo Router** with a tab layout, a signed-out-only `(auth)` group, and a
+  signed-in-only `(app)` group guarded by `Stack.Protected`
+  ([Conventions](docs/conventions.md#project-structure)).
+- **Session and auth**: one `SessionProvider`, a backend-agnostic
+  `AuthAdapter`, the token in the iOS Keychain / Android Keystore (memory only
+  on web), and 401 handling ([Connect Your Backend](docs/connect-your-backend.md)).
+- **HTTP client** with timeouts, typed `ApiError`s, and the token sent only to
+  trusted origins ([API and Storage](docs/api-and-storage.md)).
+- **Validated configuration**: environment variables checked with zod at
+  startup, three build variants, EAS profiles
+  ([Environment Variables](docs/environment-variables.md),
+  [Make It Yours](docs/make-it-yours.md)).
+- **React Native Paper** (Material Design 3) with one brand theme, light and
+  dark ([UI and Theming](docs/ui-and-theming.md)).
+- **Seams** for analytics, feature flags, push, OTA updates, error reporting,
+  and i18n ([Plug In a Provider](docs/plug-in-a-provider.md),
+  [Error Reporting and Logging](docs/error-reporting.md)).
+- **Tests**: Jest and React Native Testing Library with shared mocks,
+  full-app routing tests, and a coverage threshold in CI
+  ([Testing](docs/testing.md)).
+- **A removable demo**: DummyJSON sign-in, a Todos API example, and a
+  component showcase; `npm run remove-demo` deletes them
+  ([Remove the Demo](docs/remove-demo.md)).
+
+Demo sign-in (with the demo backends on): `emilys` / `emilyspass`.
 
 ## Documentation
 
-### Essential Guides
+Start with [docs/README.md](docs/README.md). The usual path:
 
-- **[Getting Started](docs/getting-started.md)** - Complete setup guide (start here!)
-- **[How-To Guides](docs/how-to.md)** - Common development tasks
-- **[Code Conventions](docs/conventions.md)** - Project standards and best practices
+1. [Getting Started](docs/getting-started.md): install, run, scripts.
+2. [Make It Yours](docs/make-it-yours.md): everything to change for your app.
+3. [Connect Your Backend](docs/connect-your-backend.md): auth adapter, API, env.
+4. [Remove the Demo](docs/remove-demo.md).
 
-### Feature Guides
+## State management
 
-- **[API and Storage](docs/api-and-storage.md)** - Backend integration guide
-- **[Integrations](docs/integrations.md)** - Analytics, feature flags, push, OTA updates, and i18n seams
-- **[UI Library](docs/ui-library.md)** - React Native Paper components
-- **[Color Themes](docs/color-themes.md)** - Theming and dark mode
-- **[Error and Loading Handling](docs/error-and-loading.md)** - State management
-
-### Additional Guides
-
-- [Splash Screen and App Icon](docs/splash-screen-and-app-icon.md)
-- [Safe Areas](docs/safe-areas.md)
-- [System Bars](docs/system-bars.md)
-- [Fonts](docs/fonts.md)
-- [Assets](docs/assets.md)
-- [Animation](docs/animation.md)
-- [Store Data](docs/store-data.md)
-- [Environment Variables](docs/environment-variables.md)
-
-## Resources
-
-- [Expo Documentation](https://docs.expo.dev/)
-- [Expo Router Documentation](https://docs.expo.dev/router/introduction/)
-- [React Native Directory](https://reactnative.directory/) - Search for React Native libraries
-- [Expo Discord](https://chat.expo.dev/) - Community support
+The starter keeps state in React context (the session) and component state;
+it does not pick a store library. The branches `state-management/redux`,
+`state-management/react-context`, `state-management/zustand`, and
+`state-management/jotai` show four alternatives, but they date from November
+2025, before Expo SDK 57 and the current folder structure, and are not
+maintained.
 
 ## License
 
-MIT License - See [LICENSE](LICENSE) for more information.
+[MIT](LICENSE)

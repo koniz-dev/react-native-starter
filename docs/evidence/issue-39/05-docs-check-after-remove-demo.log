@@ -1,0 +1,5 @@
+# On a scratch copy (working tree incl. docs/evidence) after npm run remove-demo
+$ npm run docs:check
+Checked 16 files: 30 TypeScript snippets compiled with tsc.
+No problems.
+exit status: 0

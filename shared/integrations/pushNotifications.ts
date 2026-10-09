@@ -2,7 +2,7 @@
  * Push notification seam. The default reports that push is not configured:
  * permission is never granted, there is no token, and no notifications
  * arrive. Plug in a provider (for example expo-notifications) in
- * shared/integrations/setup.ts; see docs/integrations.md.
+ * shared/integrations/setup.ts; see docs/plug-in-a-provider.md.
  */
 import { createSeam } from './seam';
 

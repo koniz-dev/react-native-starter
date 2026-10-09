@@ -1,260 +1,75 @@
 # Getting Started
 
-Get up and running with React Native Starter in under 5 minutes.
-
 ## Prerequisites
 
-Before you begin, ensure you have:
+- Node.js 24 (the version in `.nvmrc`) or 22.13+, and npm.
+- To run on a device: [Expo Go](https://expo.dev/go) for SDK 57.
+- For simulators: Xcode (iOS Simulator, macOS only) or Android Studio (an
+  Android emulator). Building the native iOS app yourself needs Xcode 26.4+,
+  which Expo SDK 57 requires.
 
-- **Node.js** 24 (pinned in `.nvmrc`; run `nvm use`) or 22.13+, matching React
-  Native 0.86's supported range - [Download](https://nodejs.org/)
-- **npm** - comes with Node.js; the repository ships a `package-lock.json`
-- **Expo Go app** (optional) - For testing on physical devices
-  - [iOS App Store](https://apps.apple.com/app/expo-go/id982107779)
-  - [Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent)
-
-### For iOS Development (macOS only)
-
-- **Xcode 26.4 or later** - required by Expo SDK 57 for native iOS builds; verify
-  with `xcodebuild -version` before running a native build. [Download from App Store](https://apps.apple.com/app/xcode/id497799835)
-- **iOS Simulator** - Included with Xcode
-
-Expo SDK 57 supports iOS 16.4 and later. An older Xcode can still provide a
-simulator, but it cannot compile this SDK's native iOS project. With an older
-Xcode you can still run the app in Expo Go on the simulator (`npm start`, then
-press `i`); for a native iOS build (`npx expo run:ios`), upgrade Xcode first.
-
-### For Android Development
-
-- **Android Studio** - [Download](https://developer.android.com/studio)
-- **Android SDK** - Installed via Android Studio
-- **Android Emulator** - Set up via Android Studio
-- **JDK 17** - required for native Android builds (`npx expo run:android`).
-  Point `JAVA_HOME` at a JDK 17 install. The JDK 25 bundled with recent Android
-  Studio releases fails the native CMake configure step ("A restricted method in
-  java.lang.System has been called"). Expo Go doesn't need a JDK.
-
-## Installation
-
-1. **Clone or fork the repository:**
-
-```bash
-git clone https://github.com/koniz-dev/react-native-starter.git
-cd react-native-starter
-```
-
-2. **Install dependencies:**
+## Install and run
 
 ```bash
 npm ci
-```
-
-`npm ci` installs exactly what `package-lock.json` records. Use `npx expo install
-<package>` to add Expo-related packages so their versions match SDK 57.
-
-3. **Set up environment variables (required):**
-
-```bash
 cp .env.example .env
-```
-
-`.env.example` sets `EXPO_PUBLIC_USE_DEMO_BACKENDS=true`, so the starter uses
-JSONPlaceholder for its todos example and DummyJSON for its authentication demo
-(username `emilys`, password `emilyspass`). Without a `.env`, the app opens on a
-**Configuration error** screen that lists the missing variables.
-
-To use your own backends, set `EXPO_PUBLIC_API_URL` and `EXPO_PUBLIC_AUTH_API_URL`
-and turn the demo flag off; then adapt the request and response mapping in
-`shared/session/authService.ts` to your backend's authentication contract. See
-[Environment Variables](environment-variables.md) for every variable and its rules.
-
-## Running the App
-
-### Start Development Server
-
-```bash
 npm start
 ```
 
-This starts the Expo development server. You'll see a QR code and options to:
+`npm ci` installs the exact versions in `package-lock.json`; keep the lockfile
+(regenerating it can pull versions that don't match the Expo SDK).
 
-- Press `a` - Open on Android emulator/device
-- Press `i` - Open on iOS simulator (macOS only)
-- Press `w` - Open in web browser (the auth demo works on web, but a page
-  reload signs you out: the token is kept in memory only; see
-  [API and Storage](api-and-storage.md#why-the-token-is-not-persisted-on-web))
-- Scan QR code - Open in Expo Go app on your device
+`.env.example` sets `EXPO_PUBLIC_USE_DEMO_BACKENDS=true`, so the app talks to
+the public demo backends (JSONPlaceholder and DummyJSON) without further
+setup. Without a `.env`, the app opens on a configuration error screen that
+lists what is missing; see [Environment Variables](environment-variables.md).
 
-### Platform-Specific Commands
+In the terminal Metro shows, press `i` (iOS Simulator), `a` (Android
+emulator), or `w` (web), or scan the QR code with Expo Go. On Home, tap
+**Sign in** and use `emilys` / `emilyspass`.
 
-```bash
-# Android
-npm run android
+## Scripts
 
-# iOS (macOS only)
-npm run ios
+| Script                                                        | What it does                                                                                                  |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `npm start`                                                   | Metro for the development variant                                                                             |
+| `npm run ios` / `npm run android` / `npm run web`             | Metro and open that platform                                                                                  |
+| `npm run start:preview`, `npm run start:production`           | Metro for another variant (production without dev mode); see [Make It Yours](make-it-yours.md#build-variants) |
+| `npm run prebuild:development` (or `:preview`, `:production`) | Generate the native `ios/` and `android/` projects for a variant (gitignored)                                 |
+| `npm run config:print`                                        | Print the resolved app config (`APP_VARIANT=preview npm run config:print` for another variant)                |
+| `npm run lint` / `npm run lint:fix`                           | ESLint, failing on any warning                                                                                |
+| `npm run format` / `npm run format:check`                     | Prettier                                                                                                      |
+| `npm run type-check`                                          | `tsc --noEmit`                                                                                                |
+| `npm test`                                                    | Jest in watch mode                                                                                            |
+| `npm run test:ci`                                             | Jest once, with coverage and its threshold                                                                    |
+| `npm run test:coverage`                                       | Jest with an HTML coverage report in `coverage/`                                                              |
+| `npm run docs:check`                                          | Compile the docs' TypeScript snippets and check their paths and scripts                                       |
+| `npm run remove-demo`                                         | Remove the demo features ([Remove the Demo](remove-demo.md))                                                  |
 
-# Web
-npm run web
-```
+The local gate before a commit is
+`npm run lint && npm run type-check && npm run test:ci`; CI also runs
+`npm run format:check`, `npm run docs:check`, `npx expo-doctor`, and a web
+export (`.github/workflows/ci.yml`).
 
-## Project Structure
+The variant scripts use POSIX `VAR=value command` syntax (macOS, Linux, WSL).
 
-```
-react-native-starter/
-├── app/              # Expo Router routes: layouts + one-line route files
-├── features/         # Screens and code per feature
-│   ├── home/         # Home: session card
-│   ├── auth/         # Login and Profile screens
-│   └── demo-*/       # Demos (DummyJSON auth, todos, component showcase)
-├── shared/           # Foundation: config, http, session, storage, ui, lib,
-│                     # integrations, i18n
-├── __tests__/        # Jest tests, mirroring app/, features/, shared/
-├── scripts/          # remove-demo.js, issue-label bootstrap
-├── assets/           # Images, fonts, static files
-└── docs/             # Documentation
-```
+## Where things are
 
-### Key Directories Explained
+`app/` holds only routes; screens live in `features/`, and the foundation in
+`shared/`. See [Conventions](conventions.md#project-structure).
 
-- **`app/`** - Routes only. Each route file re-exports a screen from `features/`.
-- **`features/`** - One folder per feature (`screens/`, `components/`, `api/`, `hooks/`, `types.ts`).
-- **`shared/`** - The foundation every feature uses; it never imports a feature.
-- **Demos** - `features/demo-*` plus `@demo` markers; `npm run remove-demo` removes them ([guide](remove-demo.md)).
+## Next
 
-See [Conventions: Project Structure](conventions.md#project-structure) for the full layout.
-
-## Make It Yours
-
-Everything below is configuration; no source code changes are needed to ship
-your own app identity and backends.
-
-| What                                                             | Where                                                                                                                                                                          |
-| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| App name, slug, URL scheme, bundle/package ID, marketing version | `APP` block at the top of `app.config.ts`                                                                                                                                      |
-| Store build number (iOS `buildNumber`, Android `versionCode`)    | `APP_BUILD_NUMBER` environment variable at build time (default `1`)                                                                                                            |
-| App icon, Android adaptive icon, splash image, favicon           | Replace the files in `assets/` (see [Splash Screen and App Icon](splash-screen-and-app-icon.md))                                                                               |
-| Splash and adaptive-icon background colors                       | `APP.splashBackground` and `APP.adaptiveIconBackground` in `app.config.ts`                                                                                                     |
-| API and auth backends                                            | `EXPO_PUBLIC_API_URL`, `EXPO_PUBLIC_AUTH_API_URL` in `.env` / build profile; set `EXPO_PUBLIC_USE_DEMO_BACKENDS=false` (see [Environment Variables](environment-variables.md)) |
-| Extra hosts allowed to receive the auth token                    | `EXPO_PUBLIC_API_TRUSTED_ORIGINS`                                                                                                                                              |
-| Per-variant build settings and environment                       | `eas.json` build profiles                                                                                                                                                      |
-
-### Build variants
-
-`APP_VARIANT` selects one of three variants. Each has its own name, bundle ID, and
-scheme, so they install side by side:
-
-| Variant                 | Name                   | Bundle/package ID               | Scheme              | `EXPO_PUBLIC_APP_ENV` |
-| ----------------------- | ---------------------- | ------------------------------- | ------------------- | --------------------- |
-| `development` (default) | `RN Starter (Dev)`     | `com.example.rnstarter.dev`     | `rnstarter-dev`     | `development`         |
-| `preview`               | `RN Starter (Preview)` | `com.example.rnstarter.preview` | `rnstarter-preview` | `preview`             |
-| `production`            | `RN Starter`           | `com.example.rnstarter`         | `rnstarter`         | `production`          |
-
-- `npm start` runs the development variant; `npm run start:preview` and
-  `npm run start:production` run the others (production without dev mode).
-- `npm run prebuild:<variant>` generates the native `android/` and `ios/`
-  projects for a variant (both directories are gitignored), which you can build
-  locally with Android Studio / Xcode or `npx expo run:android|ios`.
-- `npm run config:print` shows the resolved configuration; prefix it with
-  `APP_VARIANT=preview` to inspect another variant.
-- `eas.json` defines matching `development`, `preview`, and `production` build
-  profiles for EAS Build. Using EAS requires your own Expo account; nothing else
-  in the starter does.
-- Preview and production builds use `https` URLs only; set the backend URLs in
-  the build profile's `env` or with `eas env:create`, because `.env` is not
-  committed.
-
-The scripts use POSIX `VAR=value command` syntax (macOS, Linux, WSL). On Windows
-without WSL, set the variables in your shell first.
-
-## Next Steps
-
-Now that you're running, here's where to start coding:
-
-1. **Explore existing screens** - Screens live in `features/`; the route files in `app/` only re-export them (see [Conventions](conventions.md#project-structure))
-2. **Add a new screen** - See [How to Add a New Screen](how-to.md#how-to-add-a-new-screen)
-3. **Customize theme** - Edit `palette` in `shared/ui/theme.ts`
-4. **Connect to your API** - Update `EXPO_PUBLIC_API_URL` in `.env` and modify `shared/http/api.ts`
-5. **Read the guides** - Check out [How-To Guides](how-to.md) for common tasks
-
-## Available Scripts
-
-- `npm start` - Start Expo dev server (development variant)
-- `npm run start:preview` / `npm run start:production` - Start another variant
-- `npm run prebuild:development|preview|production` - Generate native projects for a variant
-- `npm run config:print` - Print the resolved app configuration
-- `npm run android` - Run on Android emulator/device
-- `npm run ios` - Run on iOS simulator/device
-- `npm run web` - Run in web browser
-- `npm run lint` - Check code quality
-- `npm run lint:fix` - Fix linting issues automatically
-- `npm run format` - Format code with Prettier
-- `npm test` - Run tests
+1. [Make It Yours](make-it-yours.md): app name, IDs, icons, theme, variants.
+2. [Connect Your Backend](connect-your-backend.md).
+3. [Remove the Demo](remove-demo.md).
 
 ## Troubleshooting
 
-### Common Issues
-
-**Port already in use:**
-
-```bash
-# Kill process on port 8081 (default Expo port)
-npx kill-port 8081
-npm start
-```
-
-**Metro bundler cache issues:**
-
-```bash
-npm start -- --clear
-```
-
-**Node modules issues:**
-
-```bash
-rm -rf node_modules
-npm ci
-npx expo-doctor
-```
-
-Keep `package-lock.json`; regenerating it can pull peer versions that don't match
-the Expo SDK.
-
-**iOS build issues (macOS):**
-
-```bash
-cd ios
-pod install
-cd ..
-npm run ios
-```
-
-## What's Included
-
-This starter comes with:
-
-- ✅ **React Native Paper** - Material Design 3 components
-- ✅ **Dark/Light mode** - Automatic system preference detection
-- ✅ **API client** - Axios with interceptors for auth & errors
-- ✅ **Storage service** - AsyncStorage wrapper with TypeScript
-- ✅ **Custom hooks** - `useFetch` for data fetching
-- ✅ **Error boundary** - Global error handling
-- ✅ **Loading states** - Built-in loading screen component
-- ✅ **Authentication example** - Complete login flow with token management
-- ✅ **TypeScript** - Full type safety
-- ✅ **ESLint + Prettier** - Code quality tools
-- ✅ **Example screens** - See it in action
-
-## Learn More
-
-- [How-To Guides](how-to.md) - Common development tasks
-- [Code Conventions](conventions.md) - Project standards and best practices
-- [API and Storage](api-and-storage.md) - Backend integration guide
-- [UI Library Guide](ui-library.md) - React Native Paper components
-- [Expo Documentation](https://docs.expo.dev/) - Official Expo docs
-
-## Need Help?
-
-- Check the [How-To Guides](how-to.md) for common questions
-- Review [Code Conventions](conventions.md) for project standards
-- Visit [Expo Discord](https://chat.expo.dev/) for community support
+- **Stale bundle or odd Metro errors:** `npm start -- --clear`.
+- **Dependency problems:** `npx expo-doctor`, then `npx expo install --check`.
+  To reinstall, delete `node_modules` and run `npm ci`.
+- **"Configuration error" screen:** a required `EXPO_PUBLIC_*` value is
+  missing or invalid; the screen names it. Restart Metro after editing `.env`.
+- **Port 8081 in use:** stop the other Metro process, or `npm start -- --port 8082`.
+- More: [Expo troubleshooting](https://docs.expo.dev/troubleshooting/overview/).

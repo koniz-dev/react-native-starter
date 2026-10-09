@@ -43,7 +43,7 @@ the diff.
   [the evidence for issue 36](evidence/issue-36/)).
 - Sign-in reports **"Sign-in is not configured: register an AuthAdapter in
   shared/integrations/setup.ts."** until you register an adapter for your
-  backend; see [How to Add Authentication](how-to.md#how-to-add-authentication).
+  backend; see [Connect Your Backend](connect-your-backend.md).
 
 ## Then
 
@@ -55,20 +55,24 @@ the diff.
 
 ## Marking your own demo code
 
-If you add example code you want the script to remove later, wrap it:
+If you add example code you want the script to remove later, wrap it the
+way `features/home/screens/HomeScreen.tsx` wraps Home's example links:
 
 ```tsx
+import { View } from 'react-native';
 // @demo remove-block-start
-import { Example } from '@/features/demo-example/Example';
+import { ExampleLinks } from '@/features/demo-showcase/components/ExampleLinks';
 // @demo remove-block-end
-```
 
-```tsx
-<View>
-  {/* @demo remove-block-start */}
-  <Example />
-  {/* @demo remove-block-end */}
-</View>
+export function HomeExtras() {
+  return (
+    <View>
+      {/* @demo remove-block-start */}
+      <ExampleLinks />
+      {/* @demo remove-block-end */}
+    </View>
+  );
+}
 ```
 
 Prefer block markers over `remove-current-line` for imports: Prettier may

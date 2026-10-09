@@ -4,7 +4,7 @@
  * tab bar all read from it; there is no second color system.
  *
  * To rebrand, change `palette` below (keep each `on*` color readable on its
- * pair; the theme tests check contrast). Fonts: see docs/fonts.md.
+ * pair; the theme tests check contrast). Fonts: see docs/ui-and-theming.md#fonts.
  */
 import { MD3DarkTheme, MD3LightTheme, type MD3Theme } from 'react-native-paper';
 import { DarkTheme, DefaultTheme, type Theme } from 'expo-router';

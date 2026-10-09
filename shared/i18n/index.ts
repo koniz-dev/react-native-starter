@@ -2,7 +2,7 @@
  * Internationalization seam. The default serves the English dictionary in
  * shared/i18n/en.ts. To add languages, either register another dictionary with
  * `createDictionaryI18n` or plug in a library such as i18next in
- * shared/integrations/setup.ts; see docs/integrations.md.
+ * shared/integrations/setup.ts; see docs/plug-in-a-provider.md.
  */
 import { createSeam } from '@/shared/integrations/seam';
 import { en, type TranslationKey, type Translations } from './en';

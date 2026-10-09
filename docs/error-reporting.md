@@ -17,11 +17,22 @@ route ErrorBoundary ┘
 
 ```ts
 import { logger } from '@/shared/lib/logger';
+import { setItem } from '@/shared/storage/storage';
 
-logger.debug('Cache hit', { key });
-logger.info('Sync finished', { count });
-logger.warn('Retrying request', { attempt });
-logger.error('Failed to save settings', error, { key });
+export async function saveSettings(
+  key: string,
+  value: object,
+  attempt: number
+) {
+  logger.debug('Saving settings', { key });
+  if (attempt > 1) logger.warn('Retrying save', { attempt });
+  try {
+    await setItem(key, value);
+    logger.info('Settings saved', { key });
+  } catch (error) {
+    logger.error('Failed to save settings', error, { key }); // also reported
+  }
+}
 ```
 
 - **Minimum level.** Messages below it are not written to the console. It
@@ -105,15 +116,32 @@ handlers and async code should be caught and passed to `logger.error`.
 
 Install the provider's SDK yourself, then register an adapter in
 `shared/integrations/setup.ts`, which runs once before the first screen renders.
-This example is for Sentry's React Native SDK; it is not installed or compiled
-in this repository, so check the provider's current documentation.
+This example is for Sentry's React Native SDK, which is not installed here:
+the adapter takes the part of the SDK it uses, so it compiles in this repo
+(`npm run docs:check`). Check Sentry's current documentation for the API.
 
 ```ts
 // shared/integrations/adapters/sentry.ts
-import * as Sentry from '@sentry/react-native';
 import type { ErrorReporter } from '@/shared/integrations/errorReporter';
 
-export function createSentryErrorReporter(): ErrorReporter {
+/** The part of @sentry/react-native this adapter uses
+ * (pass `import * as Sentry from '@sentry/react-native'`). */
+export interface SentryLike {
+  captureException(
+    error: unknown,
+    context?: { extra?: Record<string, unknown> }
+  ): unknown;
+  captureMessage(
+    message: string,
+    context?: {
+      level?: 'error' | 'warning' | 'info';
+      extra?: Record<string, unknown>;
+    }
+  ): unknown;
+  setUser(user: { id: string } | null): void;
+}
+
+export function createSentryErrorReporter(Sentry: SentryLike): ErrorReporter {
   return {
     captureException: (error, context) => {
       Sentry.captureException(error, {
@@ -130,17 +158,21 @@ export function createSentryErrorReporter(): ErrorReporter {
 }
 ```
 
-```ts
-// shared/integrations/setup.ts
-import * as Sentry from '@sentry/react-native';
-import { setErrorReporter } from './errorReporter';
-import { createSentryErrorReporter } from './adapters/sentry';
+Then, in `configureIntegrations()` in `shared/integrations/setup.ts`:
 
-export function configureIntegrations(): void {
-  // ...
-  Sentry.init({ dsn: 'https://…' }); // e.g. from an EXPO_PUBLIC_ variable read in shared/config/env.ts
-  setErrorReporter(createSentryErrorReporter());
-}
+```ts
+import {
+  setErrorReporter,
+  type ErrorReporter,
+} from '@/shared/integrations/errorReporter';
+
+// import * as Sentry from '@sentry/react-native';
+// import { createSentryErrorReporter } from './adapters/sentry';
+declare const Sentry: { init(options: { dsn: string }): void };
+declare function createSentryErrorReporter(sentry: unknown): ErrorReporter;
+
+Sentry.init({ dsn: 'https://example@o0.ingest.sentry.io/0' }); // e.g. from an EXPO_PUBLIC_ variable in shared/config/env.ts
+setErrorReporter(createSentryErrorReporter(Sentry));
 ```
 
 Native crashes (outside JavaScript) and source-map upload are configured in

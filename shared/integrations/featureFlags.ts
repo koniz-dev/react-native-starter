@@ -1,7 +1,7 @@
 /**
  * Feature flag seam. The default returns the static values in
  * shared/config/featureFlags.ts. A remote-config provider replaces it in
- * shared/integrations/setup.ts; see docs/integrations.md.
+ * shared/integrations/setup.ts; see docs/plug-in-a-provider.md.
  */
 import {
   featureFlagDefaults,

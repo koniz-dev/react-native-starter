@@ -1,7 +1,7 @@
 /**
  * Demo auth adapter for DummyJSON (https://dummyjson.com/docs/auth), the
  * public backend used when EXPO_PUBLIC_USE_DEMO_BACKENDS=true. Replace it
- * with an adapter for your backend; see docs/how-to.md#how-to-add-authentication.
+ * with an adapter for your backend; see docs/connect-your-backend.md.
  */
 import type { AuthAdapter, AuthUser } from '@/shared/session/authService';
 

@@ -12,3 +12,4 @@ coverage/
 *.min.js
 *.min.css
 
+.docs-check/

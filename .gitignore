@@ -43,3 +43,6 @@ yarn-error.*
 
 # Jest coverage
 coverage/
+
+# docs:check scratch output
+.docs-check/

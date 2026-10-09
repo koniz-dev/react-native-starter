@@ -1,152 +1,9 @@
-# Code Conventions
+# Conventions
 
-Project standards and best practices for maintaining consistency.
+How the code is organized and how to add to it. Lint (`npm run lint`, every
+rule an error) and Prettier enforce the formatting details.
 
-## File Naming
-
-- **Components:** PascalCase - `Button.tsx`, `UserProfile.tsx`
-- **Hooks:** camelCase with `use` prefix - `useFetch.ts`, `useToggle.ts`
-- **Services/Utils:** camelCase - `api.ts`, `storage.ts`, `formatDate.ts`
-- **Types:** camelCase - `api.ts`, `user.ts`
-- **Screens:** PascalCase in `features/<name>/screens/` - `LoginScreen.tsx`
-- **Routes:** Expo Router file names in `app/` - `index.tsx` → `/`, `profile.tsx` → `/profile`
-
-## Import Order
-
-Organize imports in this order:
-
-1. React and React Native
-2. Third-party libraries
-3. Expo packages
-4. Local absolute imports (`@/`)
-5. Relative imports (`./`, `../`)
-6. Types (with `type` keyword)
-
-**Example:**
-
-```tsx
-import { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Button, Text } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
-
-import { useFetch } from '@/shared/lib/useFetch';
-import { LoadingScreen } from '@/shared/ui/LoadingScreen';
-
-import { todosApi } from '../api/todosApi';
-import type { Todo } from '../types';
-```
-
-## Component Structure
-
-Follow this structure for components:
-
-```tsx
-// 1. Imports
-import { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Button } from 'react-native-paper';
-
-// 2. Types/Interfaces (if needed)
-interface Props {
-  title: string;
-  onPress: () => void;
-}
-
-// 3. Component
-export function CustomButton({ title, onPress }: Props) {
-  // 4. Hooks
-  const [loading, setLoading] = useState(false);
-
-  // 5. Handlers
-  const handlePress = async () => {
-    setLoading(true);
-    await onPress();
-    setLoading(false);
-  };
-
-  // 6. Render
-  return (
-    <Button onPress={handlePress} loading={loading}>
-      {title}
-    </Button>
-  );
-}
-
-// 7. Styles (at bottom)
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
-```
-
-## TypeScript Usage
-
-**Always type function parameters and return values:**
-
-```tsx
-// Good
-function getOpenTodos(todos: Todo[]): Todo[] {
-  return todos.filter(todo => !todo.completed);
-}
-
-// Avoid
-function getOpenTodos(todos) {
-  return todos.filter(todo => !todo.completed);
-}
-```
-
-**Use interfaces for object shapes:**
-
-```tsx
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
-```
-
-**Use `type` for unions and intersections:**
-
-```tsx
-type Status = 'loading' | 'success' | 'error';
-type UserWithRole = User & { role: string };
-```
-
-**Prefer `interface` for extensible types, `type` for unions/intersections.**
-
-## Comments Guidelines
-
-**Document public APIs:**
-
-```tsx
-/**
- * Fetches user data with automatic loading and error handling.
- * @param userId - The user ID to fetch
- * @returns Object with data, loading, error, and refetch function
- */
-export function useUser(userId: number) {
-  // Implementation
-}
-```
-
-**Explain "why", not "what":**
-
-```tsx
-// Good: Explains reasoning
-// Use ref to avoid stale closure in async callback
-const mountedRef = useRef(true);
-
-// Avoid: States the obvious
-// Set loading to true
-setLoading(true);
-```
-
-**Remove commented-out code** - Use git history instead.
-
-## Project Structure
+## Project structure
 
 Routes are thin; features own their screens; `shared/` is the foundation that
 every feature builds on.
@@ -173,6 +30,7 @@ shared/                   foundation, no imports from features/
   integrations/           seams (analytics, flags, push, OTA, error reporting) and setup.ts
   i18n/                   t() and the English dictionary
 __tests__/                mirrors the tree: app/, features/<name>/, shared/<area>/
+testing/                  shared test helpers (see testing.md)
 ```
 
 **Inside a feature**, use the folders it needs:
@@ -188,133 +46,95 @@ inside `@demo` markers). Features don't import each other's internals.
 **Demo code** lives in `features/demo-*`, the routes `app/(tabs)/explore.tsx`
 and `app/showcase.tsx`, and between `@demo remove-block-start` /
 `@demo remove-block-end` markers elsewhere. `npm run remove-demo` deletes it;
-see [Remove the demo](remove-demo.md).
+see [Remove the Demo](remove-demo.md).
 
-## Component Patterns
+## Navigation
 
-**Use functional components with hooks:**
+Expo Router turns files in `app/` into routes: `app/<name>.tsx` is
+`/<name>`, a `(group)` folder adds no URL segment, and `_layout.tsx` defines
+the navigator for its folder. The root layout:
 
-```tsx
-// Good
-export function UserCard({ user }: { user: User }) {
-  return <Text>{user.name}</Text>;
-}
+- keeps the native splash screen up until the stored session is read;
+- shows `(auth)` only while signed out and `(app)` only while signed in
+  (`Stack.Protected`), so deep links into a guarded group land on Home;
+- anchors the stack on `(tabs)` (`unstable_settings.initialRouteName`), so
+  Back from a deep-linked screen returns to Home.
 
-// Avoid class components
-```
+Navigate with `router.push('/settings')`, `router.replace`, or `<Link>` from
+`expo-router`. Route groups export a route-level error boundary
+([Error Reporting](error-reporting.md#error-boundaries)). Typed routes
+(`experiments.typedRoutes`) are not enabled. See
+[Expo Router](https://docs.expo.dev/router/introduction/).
 
-**Extract complex logic to custom hooks:**
-
-```tsx
-// Good
-function UserScreen({ userId }: { userId: number }) {
-  const { data, loading } = useUser(userId);
-  // Render
-}
-
-// Avoid: Complex logic in component
-function UserScreen({ userId }: { userId: number }) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  // 50 lines of fetch logic...
-}
-```
-
-## Styling
-
-**Use StyleSheet.create for performance:**
+## Adding a screen
 
 ```tsx
+// features/settings/screens/SettingsScreen.tsx
+import { StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Text, useTheme } from 'react-native-paper';
+
+export function SettingsScreen() {
+  const theme = useTheme();
+  return (
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
+      <Text variant="headlineMedium">Settings</Text>
+    </SafeAreaView>
+  );
+}
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
+  container: { flex: 1, padding: 16 },
 });
 ```
 
-**Use theme colors from React Native Paper:**
+Then the route: one line in `app/<name>.tsx` (for `/<name>`), or in
+`app/(app)/<name>.tsx` to require sign-in, like Home's route
+`app/(tabs)/index.tsx`:
 
 ```tsx
-import { useTheme } from 'react-native-paper';
-
-const theme = useTheme();
-<View style={{ backgroundColor: theme.colors.background }} />;
+export { HomeScreen as default } from '@/features/home/screens/HomeScreen';
 ```
 
-**Avoid inline styles for complex objects** - Use StyleSheet.
+Move its strings to `shared/i18n/en.ts` and read them with `t()` (the keys
+are typed), add its tests under
+`__tests__/features/<name>/`, and its endpoints in `api/` (see
+[Connect Your Backend](connect-your-backend.md#3-add-endpoints-for-a-feature)).
 
-## Error Handling
+## Where code goes
 
-**Always handle async errors:**
+| Code                                    | Place                                                   |
+| --------------------------------------- | ------------------------------------------------------- |
+| A screen                                | `features/<name>/screens/`, plus a route in `app/`      |
+| A component used by one feature         | `features/<name>/components/`                           |
+| A component used by several features    | `shared/ui/`                                            |
+| A hook for one feature / a generic hook | `features/<name>/hooks/` / `shared/lib/`                |
+| Endpoints                               | `features/<name>/api/`, built on `shared/http/api.ts`   |
+| A third-party service                   | an adapter registered in `shared/integrations/setup.ts` |
 
-```tsx
-// Good
-try {
-  const data = await api.getData();
-} catch (error) {
-  logger.error('Failed to fetch', error); // reported, see docs/error-reporting.md
-  // Show user-friendly error
-}
+## Code style
 
-// Avoid
-const data = await api.getData(); // Unhandled promise rejection
-```
+- **Names:** components and screens in PascalCase files (`LoginScreen.tsx`),
+  hooks `useThing.ts`, other modules camelCase (`tokenStore.ts`).
+- **Exports:** named exports; only `app/` route files use default exports.
+- **Imports:** `@/` for anything outside the current feature, relative within
+  it. `import type` for types.
+- **Types:** TypeScript strict with `noUncheckedIndexedAccess`; no `any`
+  (lint error). Validate data at the edges (config with zod, API payloads in
+  adapters).
+- **Styles:** `StyleSheet.create` at the bottom of the file; colors from the
+  theme, never literals (both are lint errors).
+- **Text:** user-facing strings through `t()`.
+- **Logging:** `logger` from `@/shared/lib/logger`, never `console` (lint
+  error); see [Error Reporting](error-reporting.md).
+- **Errors:** catch async errors where you can show something, and pass the
+  rest to `logger.error`. Boundaries catch render errors.
+- **Comments:** say why, not what; keep doc comments on exported APIs.
 
-**Use error boundaries for component errors:**
+## Commits
 
-```tsx
-<ErrorBoundary>
-  <RiskyComponent />
-</ErrorBoundary>
-```
-
-## Testing
-
-**Name test files:** `ComponentName.test.tsx` or `ComponentName.spec.tsx`
-
-**Use descriptive test names:**
-
-```tsx
-describe('useFetch', () => {
-  it('should return loading state initially', () => {
-    // Test
-  });
-});
-```
-
-## Git Commit Messages
-
-**Format:** `type: description`
-
-**Types:**
-
-- `feat:` - New feature
-- `fix:` - Bug fix
-- `docs:` - Documentation
-- `style:` - Formatting
-- `refactor:` - Code restructuring
-- `test:` - Tests
-- `chore:` - Maintenance
-
-**Example:** `feat: add user profile screen`
-
-## Summary
-
-- **Files:** PascalCase for components, camelCase for utilities
-- **Imports:** React → Libraries → Local → Types
-- **Components:** Imports → Types → Component → Styles
-- **TypeScript:** Type everything, prefer interfaces for objects
-- **Comments:** Document public APIs, explain "why"
-- **Organization:** Group by feature or keep flat
-- **Patterns:** Functional components, extract logic to hooks
-- **Styling:** StyleSheet.create, use theme colors
-- **Errors:** Always handle async errors
-
-Follow these conventions for consistency and maintainability.
-
-## See Also
-
-- [Getting Started](getting-started.md) - Project setup
-- [How-To Guides](how-to.md) - Common tasks
-- [React Native Paper Docs](https://callstack.github.io/react-native-paper/) - Component library
+Small, single-purpose commits on `main`, with the issue reference
+`Refs koniz-dev/react-native-starter#N` (never "Fixes" or "Closes"). The
+process is in [Issue Workflow](issue-workflow.md).

@@ -32,8 +32,8 @@ Validation rules:
 
 - URLs must be absolute `http(s)` URLs; an empty value (`KEY=`) counts as unset.
 - Outside `development`, `http://` URLs and trusted origins are rejected.
-- `EXPO_PUBLIC_APP_ENV` and `EXPO_PUBLIC_USE_DEMO_BACKENDS` accept only the
-  values listed above.
+- `EXPO_PUBLIC_APP_ENV`, `EXPO_PUBLIC_USE_DEMO_BACKENDS`, and
+  `EXPO_PUBLIC_LOG_LEVEL` accept only the values listed above.
 
 ## Reading configuration in code
 
@@ -43,7 +43,10 @@ outside `shared/config/env.ts`. Use the validated values:
 ```ts
 import { getConfig } from '@/shared/config/env';
 
-const { apiUrl, authApiUrl, appEnv } = getConfig();
+export function describeBackends(): string {
+  const { apiUrl, authApiUrl, appEnv } = getConfig();
+  return `${appEnv}: ${apiUrl}, ${authApiUrl}`;
+}
 ```
 
 Call `getConfig()` when you need a value (inside a function or request

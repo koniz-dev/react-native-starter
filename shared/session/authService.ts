@@ -4,7 +4,7 @@
  * The auth service stores the token (token store) and the user profile
  * (AsyncStorage) and drives the session; how credentials become a token and
  * what the user payload looks like is up to an AuthAdapter. To use your
- * backend, write an adapter (see docs/how-to.md#how-to-add-authentication)
+ * backend, write an adapter (see docs/connect-your-backend.md)
  * and register it with setAuthAdapter() in shared/integrations/setup.ts.
  * Until one is registered, sign-in fails with a "not configured" error.
  */

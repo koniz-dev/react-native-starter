@@ -13,7 +13,7 @@
  *
  *   analyticsSeam.set(createPostHogAnalytics(client));
  *
- * docs/integrations.md has an example adapter for each seam, and
+ * docs/plug-in-a-provider.md has an example adapter for each seam, and
  * docs/error-reporting.md one for the error reporter. This function
  * runs once, from app/_layout.tsx, before the first screen renders.
  */
@@ -33,7 +33,7 @@ export function configureIntegrations(): void {
   // Sign-in: register the adapter for your auth backend, e.g.
   //   setAuthAdapter(myBackendAuthAdapter);
   // with setAuthAdapter from '@/shared/session/authService' (see
-  // docs/how-to.md#how-to-add-authentication). Until one is set, sign-in
+  // docs/connect-your-backend.md). Until one is set, sign-in
   // reports that it is not configured.
   // @demo remove-block-start
   setAuthAdapter(dummyJsonAuthAdapter);

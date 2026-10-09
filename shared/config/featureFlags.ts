@@ -1,7 +1,7 @@
 /**
  * Static feature flag defaults. The default FeatureFlags implementation reads
  * these values; a remote-config provider can override them at runtime (see
- * docs/integrations.md). Add a flag here to make it available, typed, to
+ * docs/plug-in-a-provider.md). Add a flag here to make it available, typed, to
  * `getFeatureFlags().isEnabled(...)` and `getValue(...)`.
  */
 export const featureFlagDefaults = {

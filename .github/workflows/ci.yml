@@ -39,6 +39,9 @@ jobs:
       - name: Type-check
         run: npm run type-check
 
+      - name: Check docs (snippets compile, paths and scripts exist)
+        run: npm run docs:check
+
       - name: Run Jest tests
         run: npm run test:ci
 

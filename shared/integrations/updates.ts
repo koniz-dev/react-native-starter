@@ -1,7 +1,7 @@
 /**
  * Over-the-air update seam. The default never finds an update, so the app
  * always runs the JavaScript bundled in the build. Plug in expo-updates (or
- * another OTA service) in shared/integrations/setup.ts; see docs/integrations.md.
+ * another OTA service) in shared/integrations/setup.ts; see docs/plug-in-a-provider.md.
  */
 import { createSeam } from './seam';
 

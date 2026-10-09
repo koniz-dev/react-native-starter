@@ -1,71 +1,38 @@
 # Documentation
 
-This directory contains additional guides and documentation for common development tasks in Expo and React Native.
+Guides for this starter. Each topic has one page; for general Expo and React
+Native topics, the pages link to the official documentation.
 
-## Available Guides
+## Start here
 
-### User Interface
+- [Getting Started](getting-started.md): install, run, scripts, troubleshooting.
+- [Make It Yours](make-it-yours.md): app identity, icons, variants, theme, and
+  everything else to change.
+- [Connect Your Backend](connect-your-backend.md): URLs, an auth adapter, and
+  endpoints.
+- [Remove the Demo](remove-demo.md): strip the demo features.
 
-- **[Splash Screen and App Icon](splash-screen-and-app-icon.md)**  
-  Learn how to add splash screens and app icons to your Expo project.
+## Guides
 
-- **[Safe Areas](safe-areas.md)**  
-  Handle safe areas for devices with notches and system bars.
+- [Plug In a Provider](plug-in-a-provider.md): analytics, feature flags, push,
+  OTA updates, i18n.
+- [Error Reporting and Logging](error-reporting.md): logger, error reporter,
+  error boundaries.
+- [UI and Theming](ui-and-theming.md): Paper, the brand theme, dark mode,
+  fonts, safe areas.
 
-- **[System Bars](system-bars.md)**  
-  Customize status bar and navigation bar for edge-to-edge layouts.
+## Reference
 
-- **[Fonts](fonts.md)**  
-  Add custom fonts to your app.
+- [Conventions](conventions.md): project structure, navigation, where code
+  goes, code style.
+- [API and Storage](api-and-storage.md): HTTP clients, errors, token handling,
+  401s, storage.
+- [Environment Variables](environment-variables.md): every `EXPO_PUBLIC_*`
+  variable and its validation.
+- [Testing](testing.md): test layout, shared setup, coverage.
+- [Issue Workflow](issue-workflow.md): how work is tracked and verified in
+  this repository.
 
-- **[Assets](assets.md)**  
-  Manage images, videos, and other static assets.
-
-- **[Color Themes](color-themes.md)**  
-  Implement light and dark color themes.
-
-- **[UI Library](ui-library.md)**  
-  Use React Native Paper components and Material Design 3.
-
-- **[Animation](animation.md)**  
-  Add animations using React Native Animated API and Reanimated.
-
-### Data Storage
-
-- **[Store Data](store-data.md)**  
-  Store data locally using AsyncStorage, SecureStore, SQLite, and MMKV.
-
-### Project
-
-- **[Testing](testing.md)**  
-  Test layout, shared mocks and render helpers, full-app routing tests, and the coverage threshold.
-
-- **[Conventions](conventions.md)**  
-  Project structure (`app/`, `features/`, `shared/`), naming, and patterns.
-
-- **[Remove the Demo](remove-demo.md)**  
-  Strip the demo features and keep the foundation.
-
-### Configuration
-
-- **[Environment Variables](environment-variables.md)**  
-  Use environment variables to configure your app for different environments.
-
-- **[Integrations](integrations.md)**  
-  Analytics, feature flags, push notifications, OTA updates, and i18n seams with no-account defaults
-
-- **[Error Reporting and Logging](error-reporting.md)**  
-  Logger levels and redaction, the error-reporter seam, error boundaries, and plugging in a provider
-
-## Quick Reference
-
-All guides include:
-
-- Installation instructions
-- Basic usage examples
-- Best practices
-- Links to official documentation
-
-## Contributing
-
-These guides are based on the official Expo documentation. If you find any issues or have suggestions, please refer to the original documentation links provided in each guide.
+`npm run docs:check` compiles every TypeScript snippet in these pages against
+the code and checks every path, link, and `npm run` script they mention; CI
+runs it.
