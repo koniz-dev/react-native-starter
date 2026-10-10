@@ -8,6 +8,20 @@
   Android emulator). Building the native iOS app yourself needs Xcode 26.4+,
   which Expo SDK 57 requires.
 
+## Supported platforms
+
+| Platform | Verified                                                | Notes                                                                                                                        |
+| -------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Android  | Expo Go, and a native debug build (`prebuild` + Gradle) | Emulator runs of the [Maestro flows](testing.md#end-to-end-flows-maestro)                                                    |
+| iOS      | Expo Go on the iOS Simulator                            | Native iOS builds need Xcode 26.4+ and have not been verified for this release                                               |
+| Web      | Static export (`npx expo export --platform web`)        | The sign-in token is kept in memory, so a reload signs out ([Connect Your Backend](connect-your-backend.md#sessions-on-web)) |
+
+Expo SDK 57 (React Native 0.86, React 19.2). Not included: a production
+backend (the demo backends are placeholders), store builds and submission,
+and real analytics, crash-reporting, push, feature-flag, or update providers
+(the starter has [seams](plug-in-a-provider.md) with no-op or console
+defaults). Landscape layouts are not designed.
+
 ## Install and run
 
 ```bash
