@@ -1,0 +1,28 @@
+3380f49 feat: Site Notes backend adapter, Notes tab, memory analytics (built from the docs)
+
+ .env.example                                       |  12 +-
+ .gitignore                                         |   3 +
+ .maestro/02-notes-signed-out.yaml                  |  22 ++
+ .maestro/config.yaml                               |   1 +
+ FRICTION.md                                        | 140 +++++++++++
+ __tests__/app/notesTab.test.tsx                    |  17 ++
+ __tests__/features/auth/siteNotesAdapter.test.ts   | 275 +++++++++++++++++++++
+ __tests__/features/notes/NotesScreen.test.tsx      | 161 ++++++++++++
+ .../shared/integrations/memoryAnalytics.test.tsx   |  64 +++++
+ app/(tabs)/_layout.tsx                             |  14 ++
+ app/(tabs)/notes.tsx                               |   1 +
+ docs/getting-started.md                            |   1 +
+ docs/testing.md                                    |  13 +-
+ features/auth/screens/LoginScreen.tsx              |   3 +-
+ features/auth/siteNotesAdapter.ts                  | 124 ++++++++++
+ features/notes/api/notesApi.ts                     |  29 +++
+ features/notes/components/NotesList.tsx            |  82 ++++++
+ features/notes/screens/NotesScreen.tsx             |  59 +++++
+ features/notes/types.ts                            |   6 +
+ package.json                                       |   1 +
+ scripts/README.md                                  |  10 +
+ scripts/mock-backend/server.js                     | 175 +++++++++++++
+ shared/i18n/en.ts                                  |  12 +-
+ shared/integrations/adapters/memoryAnalytics.ts    |  38 +++
+ shared/integrations/setup.ts                       |  14 +-
+ 25 files changed, 1258 insertions(+), 19 deletions(-)

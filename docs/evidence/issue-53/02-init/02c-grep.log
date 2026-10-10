@@ -1,0 +1,7 @@
+$ git grep -niE "demo-todos|demo-auth|demo-showcase|explore|showcase|emilys|dummyjson|jsonplaceholder|remove-demo|init-project|@demo|@init|koniz-dev|rnstarter|com\.example\." -- . ":(exclude)shared/config/env.ts" ":(exclude)__tests__"
+[exit 1]
+$ cat .env.example | grep -v "^#" | grep .
+EXPO_PUBLIC_USE_DEMO_BACKENDS=false
+EXPO_PUBLIC_API_URL=
+EXPO_PUBLIC_AUTH_API_URL=
+EXPO_PUBLIC_API_TRUSTED_ORIGINS=

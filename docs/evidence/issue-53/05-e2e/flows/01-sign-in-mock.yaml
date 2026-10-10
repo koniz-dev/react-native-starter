@@ -1,0 +1,45 @@
+# Sign in against the trial's mock backend (scripts/mock-backend), relaunch: still signed in.
+appId: ${APP_ID}
+name: Sign in against the Site Notes mock backend
+---
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'true'
+- waitForAnimationToEnd
+- tapOn:
+    id: sign-in-button
+- extendedWaitUntil:
+    visible:
+      id: login-username
+    timeout: 20000
+- tapOn:
+    id: login-username
+- waitForAnimationToEnd
+- inputText: field@example.com
+# The emulator's IME sometimes repeats the first key; retype if it did.
+- runFlow:
+    when:
+      notVisible: '^field@example\.com$'
+    commands:
+      - eraseText: 40
+      - inputText: field@example.com
+- assertVisible: '^field@example\.com$'
+- tapOn:
+    id: login-password
+- inputText: notes-123
+- hideKeyboard
+- takeScreenshot: 01-login-filled
+- tapOn:
+    id: login-submit
+- extendedWaitUntil:
+    visible: Signed in as Field Tester
+    timeout: 30000
+- takeScreenshot: 01-signed-in
+- stopApp
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'false'
+- assertVisible: Signed in as Field Tester
+- takeScreenshot: 01-relaunch-still-signed-in

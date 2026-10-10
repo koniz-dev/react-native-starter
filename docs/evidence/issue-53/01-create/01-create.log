@@ -1,0 +1,10 @@
+# 2026-10-10 23:34:38 clone of koniz-dev/rns-adopter-trial-2 at 27b9908, template main at 1bca845
+$ git ls-files | wc -l
+     142
+$ git ls-remote --heads origin
+27b9908c9d39cd90c729d41f1234a949793bf407	refs/heads/main
+$ git ls-files | grep -c docs/evidence
+0
+$ du -sh . .git
+1.9M	.
+484K	.git

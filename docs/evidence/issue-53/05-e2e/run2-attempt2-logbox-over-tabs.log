@@ -1,0 +1,126 @@
+## 01 sign in (mock reachable at localhost:4000 via adb reverse)
+Running on Medium_Phone_API_37.0
+ > Flow Sign in against the Site Notes mock backend
+Run subflows/open-app.yaml...
+  Run flow when ${CLEAR_STATE == 'true'} is true...
+    Clear state of ${APP_ID}... COMPLETED
+    Run flow when Platform is IOS...
+    Run flow when Platform is IOS... SKIPPED
+  Run flow when true is true... COMPLETED
+  Launch app "${APP_ID}"... COMPLETED
+  Open ${APP_URL}... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)...
+    Assert that (Optional) id: tab-home is visible... WARNED
+    Run flow when Platform is IOS and "Open in .*" is visible...
+    Run flow when Platform is IOS and "Open in .*" is visible... SKIPPED
+    Run flow when "Development servers" is visible...
+    Run flow when "Development servers" is visible... SKIPPED
+    Tap on (Optional) "Wait"... WARNED
+    Tap on (Optional) "Continue"... COMPLETED
+    Run flow when Platform is ANDROID and "Go home" is visible...
+      Press back... COMPLETED
+    Run flow when Platform is ANDROID and "Go home" is visible... COMPLETED
+    Run flow when Platform is IOS and "Go home" is visible...
+    Run flow when Platform is IOS and "Go home" is visible... SKIPPED
+    Wait for animation to end... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)... COMPLETED
+  Assert that "Session" is visible... COMPLETED
+Run subflows/open-app.yaml... COMPLETED
+Wait for animation to end... COMPLETED
+Tap on id: sign-in-button... COMPLETED
+Assert that id: login-username is visible... COMPLETED
+Tap on id: login-username... COMPLETED
+Wait for animation to end... COMPLETED
+Input text field@example.com... COMPLETED
+Run flow when "^field@example\.com$" is not visible...
+Run flow when "^field@example\.com$" is not visible... SKIPPED
+Assert that "^field@example\.com$" is visible... COMPLETED
+Tap on id: login-password... COMPLETED
+Input text notes-123... COMPLETED
+Hide Keyboard... COMPLETED
+Take screenshot 01-login-filled... COMPLETED
+Tap on id: login-submit... COMPLETED
+Assert that "Signed in as Field Tester" is visible... COMPLETED
+Take screenshot 01-signed-in... COMPLETED
+Stop ${APP_ID}... COMPLETED
+Run subflows/open-app.yaml...
+  Run flow when ${CLEAR_STATE == 'true'} is true...
+  Run flow when false is true... SKIPPED
+  Launch app "${APP_ID}"... COMPLETED
+  Open ${APP_URL}... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)...
+    Assert that (Optional) id: tab-home is visible... COMPLETED
+    Run flow when Platform is IOS and "Open in .*" is visible...
+    Run flow when Platform is IOS and "Open in .*" is visible... SKIPPED
+    Run flow when "Development servers" is visible...
+    Run flow when "Development servers" is visible... SKIPPED
+    Tap on (Optional) "Wait"... WARNED
+    Tap on (Optional) "Continue"... WARNED
+    Run flow when Platform is ANDROID and "Go home" is visible...
+    Run flow when Platform is ANDROID and "Go home" is visible... SKIPPED
+    Run flow when Platform is IOS and "Go home" is visible...
+    Run flow when Platform is IOS and "Go home" is visible... SKIPPED
+    Wait for animation to end... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)... COMPLETED
+  Assert that "Session" is visible... COMPLETED
+Run subflows/open-app.yaml... COMPLETED
+Assert that "Signed in as Field Tester" is visible... COMPLETED
+Take screenshot 01-relaunch-still-signed-in... COMPLETED
+[exit 0]
+
+## touch scripts/mock-backend/.fail
+## 02a notes error
+Running on Medium_Phone_API_37.0
+ > Flow Notes shows the API error
+Run subflows/open-app.yaml...
+  Run flow when ${CLEAR_STATE == 'true'} is true...
+  Run flow when false is true... SKIPPED
+  Launch app "${APP_ID}"... COMPLETED
+  Open ${APP_URL}... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)...
+    Assert that (Optional) id: tab-home is visible... COMPLETED
+    Run flow when Platform is IOS and "Open in .*" is visible...
+    Run flow when Platform is IOS and "Open in .*" is visible... SKIPPED
+    Run flow when "Development servers" is visible...
+    Run flow when "Development servers" is visible... SKIPPED
+    Tap on (Optional) "Wait"... WARNED
+    Tap on (Optional) "Continue"... WARNED
+    Run flow when Platform is ANDROID and "Go home" is visible...
+    Run flow when Platform is ANDROID and "Go home" is visible... SKIPPED
+    Run flow when Platform is IOS and "Go home" is visible...
+    Run flow when Platform is IOS and "Go home" is visible... SKIPPED
+    Wait for animation to end... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)... COMPLETED
+  Assert that "Session" is visible... COMPLETED
+Run subflows/open-app.yaml... COMPLETED
+Tap on id: tab-notes... COMPLETED
+Assert that id: notes-error is visible... COMPLETED
+Assert that "Could not load your notes" is visible... COMPLETED
+Take screenshot 02-notes-error... COMPLETED
+[exit 0]
+
+## rm scripts/mock-backend/.fail
+## 02b retry and logout
+Running on Medium_Phone_API_37.0
+ > Flow Retry loads the notes, then log out
+Tap on id: notes-retry... COMPLETED
+Assert that "North wall: crack above window" is visible... COMPLETED
+Assert that "Roof: drainage outlet blocked" is visible... COMPLETED
+Assert that id: notes-error is not visible... COMPLETED
+Take screenshot 02-notes-list... COMPLETED
+Tap on id: tab-home... COMPLETED
+Tap on id: logout-button... FAILED
+
+Element not found: Id matching regex: logout-button
+
+Element with Id matching regex: logout-button not found. Check the UI hierarchy in debug artifacts to verify if the element exists.
+
+Possible causes:
+- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
+- Element may be temporarily unavailable due to loading state.
+- This could be a real regression that needs to be addressed.
+
+==== Debug output (logs & screenshots) ====
+
+/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i53/05-e2e/run2/02b/2026-10-11_002907
+[exit 1]

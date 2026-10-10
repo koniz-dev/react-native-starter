@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="Medium_Phone_API_37.0" tests="3" failures="0" time="519.23" timestamp="2026-10-11T00:01:20">
+    <testcase id="Cold start opens Home" name="Cold start opens Home" classname="Cold start opens Home" file=".maestro/01-cold-start.yaml" time="188.284" timestamp="2026-10-11T00:01:20" status="SUCCESS"/>
+    <testcase id="Notes tab asks a signed-out user to sign in" name="Notes tab asks a signed-out user to sign in" classname="Notes tab asks a signed-out user to sign in" file=".maestro/02-notes-signed-out.yaml" time="159.402" timestamp="2026-10-11T00:04:28" status="SUCCESS"/>
+    <testcase id="Back from Login returns Home" name="Back from Login returns Home" classname="Back from Login returns Home" file=".maestro/06-login-back.yaml" time="171.509" timestamp="2026-10-11T00:07:07" status="SUCCESS">
+      <properties>
+        <property name="tags" value="android-only"/>
+      </properties>
+    </testcase>
+  </testsuite>
+</testsuites>

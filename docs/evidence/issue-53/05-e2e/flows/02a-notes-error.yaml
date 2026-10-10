@@ -1,0 +1,16 @@
+# Run with the mock's .fail file present: the Notes tab shows the 503.
+appId: ${APP_ID}
+name: Notes shows the API error
+---
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'false'
+- tapOn:
+    id: tab-notes
+- extendedWaitUntil:
+    visible:
+      id: notes-error
+    timeout: 30000
+- assertVisible: Could not load your notes
+- takeScreenshot: 02-notes-error

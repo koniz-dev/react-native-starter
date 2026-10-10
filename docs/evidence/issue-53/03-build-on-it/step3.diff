@@ -1,0 +1,1498 @@
+diff --git a/.env.example b/.env.example
+index d93b436..6e44a23 100644
+--- a/.env.example
++++ b/.env.example
+@@ -5,11 +5,13 @@ EXPO_PUBLIC_USE_DEMO_BACKENDS=false
+ 
+ # Your API and auth backends. Required when demo backends are off; must be
+ # https outside development.
+-# Set both to your servers, for example https://api.example.com and
+-# https://auth.example.com. While one is empty, the app opens on the
+-# configuration error screen, which names it.
+-EXPO_PUBLIC_API_URL=
+-EXPO_PUBLIC_AUTH_API_URL=
++# In development both point at the local mock backend (npm run mock-backend).
++# Android emulator: use http://10.0.2.2:4000, or run
++# `adb reverse tcp:4000 tcp:4000` once per boot. A phone: your computer's LAN
++# address. While one is empty, the app opens on the configuration error
++# screen, which names it.
++EXPO_PUBLIC_API_URL=http://localhost:4000
++EXPO_PUBLIC_AUTH_API_URL=http://localhost:4000
+ 
+ # Origins (comma-separated) that may receive the auth token besides the auth
+ # backend itself, e.g. your API on a separate first-party domain.
+diff --git a/.gitignore b/.gitignore
+index a615957..cc15b1a 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -49,3 +49,6 @@ coverage/
+ 
+ # Maestro e2e output (scripts/e2e/run.sh)
+ e2e-results/
++
++# Mock backend failure switch (scripts/mock-backend/server.js)
++scripts/mock-backend/.fail
+diff --git a/.maestro/02-notes-signed-out.yaml b/.maestro/02-notes-signed-out.yaml
+new file mode 100644
+index 0000000..1a3c496
+--- /dev/null
++++ b/.maestro/02-notes-signed-out.yaml
+@@ -0,0 +1,22 @@
++# The Notes tab, signed out, asks the user to sign in and opens Login. The
++# flows don't sign in (see scripts/e2e/run.sh), so the list itself is covered
++# by __tests__/features/notes/.
++appId: ${APP_ID}
++name: Notes tab asks a signed-out user to sign in
++---
++- runFlow:
++    file: subflows/open-app.yaml
++    env:
++      CLEAR_STATE: 'true'
++- waitForAnimationToEnd
++- tapOn:
++    id: tab-notes
++- extendedWaitUntil:
++    visible: Sign in to see your notes
++    timeout: 10000
++- takeScreenshot: 02-notes-signed-out
++- tapOn:
++    id: notes-sign-in
++- extendedWaitUntil:
++    visible: Welcome Back
++    timeout: 20000
+diff --git a/.maestro/config.yaml b/.maestro/config.yaml
+index a4f3a7f..c1dc659 100644
+--- a/.maestro/config.yaml
++++ b/.maestro/config.yaml
+@@ -6,6 +6,7 @@ executionOrder:
+   continueOnFailure: false
+   flowsOrder:
+     - Cold start opens Home
++    - Notes tab asks a signed-out user to sign in
+     - Back from Login returns Home
+ excludeTags:
+   - dark
+diff --git a/FRICTION.md b/FRICTION.md
+new file mode 100644
+index 0000000..ad9036b
+--- /dev/null
++++ b/FRICTION.md
+@@ -0,0 +1,140 @@
++# Friction log: building on the starter from its docs
++
++Times come from `date '+%H:%M:%S'`, taken at the step boundaries marked
++"(recorded)". I wrote the analytics adapter in the same pass as the auth
++adapter, so steps 2 and 4 share a window.
++
++## Steps
++
++| #   | Start     | End      | Doc sections followed                                                                                                                                                                                                       | What happened                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
++| --- | --------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
++| 0   | 23:40:15  | 23:40:31 | README.md, AGENTS.md, docs/README.md, all of docs/ (recorded)                                                                                                                                                               | Read everything first. The docs were dense but on point: conventions.md even has a "Notes" tab example, and connect-your-backend.md has a non-DummyJSON adapter that almost matches our backend.                                                                                                                                                                                                                                                                                                          |
++| 1   | 23:40:31  | 23:41:25 | conventions.md#where-code-goes ("Dev-only Node code (a mock backend, tooling)"), connect-your-backend.md#a-backend-on-your-computer                                                                                         | Wrote `scripts/mock-backend/server.js` plus `npm run mock-backend`. Lint treats `scripts/` as Node, as documented. Smoke-tested every endpoint (login 201/422, me 200/401, notes 200/401/503 with `.fail`, refresh 200 then 401 on reuse, DELETE 204) on a spare port with a throwaway script, then stopped the server (checked with `pgrep`). Added the `.fail` file to `.gitignore`.                                                                                                                    |
++| 2   | 23:41:25  | 23:42:18 | connect-your-backend.md#2-sign-in-write-an-authadapter, #refresh-tokens, #a-login-response-without-the-user, #your-backends-field-names, #1-point-the-app-at-your-servers; environment-variables.md#variables (recorded)    | Wrote `features/auth/siteNotesAdapter.ts`, based on the doc's example: rotating refresh tokens, revoke on logout, user from `/me`. I added `{ data }` unwrapping and zod validation. Registered it in `shared/integrations/setup.ts`. Pointed both URLs at `http://localhost:4000` in `.env.example`, with demo backends off, and created a local `.env` (git-ignored). Changed the login label to "Email" and set the email keyboard/autofill, as the doc suggests. The existing 203 tests still passed. |
++| 4   | ~23:41:40 | 23:42:18 | plug-in-a-provider.md#analytics, setup.ts header comment                                                                                                                                                                    | Wrote `shared/integrations/adapters/memoryAnalytics.ts`, which records calls in memory (capped) and logs them at debug level. Registered it with `analyticsSeam.set(...)` in `configureIntegrations()`. The screen does the tracking: `notes_loaded {count}` and `notes_retry {error}`. Screen views were already automatic (`useScreenTracking`).                                                                                                                                                        |
++| 3   | 23:42:18  | 23:44:35 | conventions.md#adding-a-screen, #a-tab-that-needs-sign-in, #code-style; connect-your-backend.md#3-add-endpoints-for-a-feature; testing.md#network, #two-kinds-of-ui-tests, #a-seam-or-adapter-in-a-full-app-test (recorded) | `features/notes/{types.ts, api/notesApi.ts, components/NotesList.tsx, screens/NotesScreen.tsx}`, route `app/(tabs)/notes.tsx`, a tab in `app/(tabs)/_layout.tsx`, and strings in `en.ts`. Tests: NotesScreen (signed-out prompt; loading → 503 error → Retry → list; empty; malformed payload), the adapter against a fake backend, the memory analytics plus its registration, and a full-app Notes tab test. Everything passed on the first run.                                                        |
++| 5   | 23:44:35  | 23:45:55 | AGENTS.md#gates, getting-started.md#scripts, .github/workflows/ci.yml (recorded)                                                                                                                                            | `lint`, `type-check`, `test:ci` (27 suites, 221 tests, coverage 97.99/91.48/96.15/98.17) passed. CI extras: `format:check` passed. `docs:check` failed once (see F6), then passed. `audit:check` and `expo-doctor` passed (21/21), and so did `expo export --platform web` (to a temp dir).                                                                                                                                                                                                               |
++| 6   | 23:45:55  | 23:46:36 | AGENTS.md#gates ("add a flow in `.maestro/` for a new user journey"), testing.md#end-to-end-flows-maestro (recorded)                                                                                                        | Added `.maestro/02-notes-signed-out.yaml` (the signed-out Notes tab, then Login) and listed it in `.maestro/config.yaml` and testing.md. **I did not run it**: there was no booted simulator, and the task allowed no long-running Metro. Documented `npm run mock-backend` in scripts/README.md and getting-started.md#scripts. Re-ran format:check and docs:check, which passed.                                                                                                                        |
++
++## Where the docs were wrong, missing, ambiguous, or out of date
++
++**F1. Success envelopes aren't covered.** connect-your-backend.md lists how
++backends usually differ ("`POST /sessions` ... returns only tokens:
++`{ "access_token", "refresh_token" }`"), and #error-messages handles an
++`{ "error": { ... } }` envelope. Nothing mentions a **success** envelope like
++our `{ "data": { ... } }`. The example's `http.post<Tokens>(...)` would
++type-check fine against our backend and then fail at runtime with "did not
++include an access token".
++
++- _What I did:_ unwrapped `data` in the adapter. A one-line note would help:
++  "if your backend wraps responses, unwrap them in the adapter".
++
++**F2. "Validate API payloads in adapters," but the example doesn't.**
++AGENTS.md / conventions.md#code-style say: "Validate data at the edges
++(config with zod, API payloads in adapters)". The documented adapter only
++casts (`raw as Partial<MyUser>`, `http.post<Tokens>`). The endpoint example
++(`postsApi`) and `useFetch` don't validate either.
++
++- _What I did:_ added zod schemas in `siteNotesAdapter.ts` and `notesApi.ts`.
++  There's no recommended pattern, so it's a guess at the intended style.
++
++**F3. Base URL with or without the path prefix?** The example uses
++`/sessions` and `/me` relative to `EXPO_PUBLIC_AUTH_API_URL`. Our backend
++lives under `/api/v1`, and the task fixed the URL at `http://localhost:4000`.
++The docs never say whether the variable may contain a path, such as
++`http://localhost:4000/api/v1`. The validation rules only say "absolute
++`http(s)` URLs", and the token goes by origin, so a path would probably work.
++
++- _What I did:_ kept the origin-only URL and wrote `/api/v1/...` in every
++  call.
++
++**F4. Two mock servers, and the docs point at the stale one.**
++testing.md#end-to-end-flows-maestro says `run.sh` "starts a local mock API
++(`scripts/e2e/mock-api.js`, on port 9999)" and "Add the endpoints your flows
++need to the mock". After `init-project --remove-demo`, that mock still serves
++only the demo's `GET /todos`, which no screen uses any more. conventions.md
++says a dev mock backend goes "in `scripts/`, ... in its own folder". The docs
++never say whether a project's own mock backend should replace the e2e mock,
++extend it, or live beside it.
++
++- _What I did:_ kept them separate. `run.sh` still points the app at the e2e
++  mock, so a signed-in e2e flow would need `E2E_AUTH_API_URL` plus the notes
++  endpoints added to `mock-api.js`, or `run.sh` changed to use the new mock.
++
++**F5. Signed-in e2e flows are only half documented.** testing.md: "sign-in
++flows need a test account on your backend"; `run.sh`: "For sign-in flows, set
++E2E_AUTH_API_URL to your backend". `EXPO_PUBLIC_API_URL` is still forced to
++the e2e mock, so a signed-in Notes flow can't reach `/api/v1/notes` without
++editing the runner.
++
++- _What I did:_ wrote only a signed-out flow. Even that one is unverified.
++
++**F6. `docs:check` rejects a path that is meant not to exist.** I first wrote
++"Create `scripts/mock-backend/.fail`" in scripts/README.md, and `docs:check`
++failed with "path does not exist: scripts/mock-backend/.fail". docs/README.md
++says it "checks every path", but not how to mention a file the reader is
++supposed to create.
++
++- _What I did:_ reworded it to "an empty file named `.fail` next to
++  `server.js`".
++
++**F7. The tab example reuses Home's strings, and its signed-out wrapper has
++no theme background.** The snippet in conventions.md#a-tab-that-needs-sign-in
++calls `t('home.session.signedOut')` (it does say "Use your own strings"), and
++its `SafeAreaView` lacks the `theme.colors.background` that #adding-a-screen
++uses. The same snippet declares `NotesList` as a stub ("loads with
++useFetch"), so you have to merge it with the PostsScreen example from another
++page yourself. That's minor, but it's the one place where copying the doc
++gives you a slightly wrong screen.
++
++- _What I did:_ added my own `notes.*` keys, kept one themed `SafeAreaView`
++  for both states, and used a plain `View` for the prompt.
++
++**F8. Tests can't see the token on `api` requests.** testing.md#requests-that-carry-the-token
++explains this well: with demo backends on in Jest, `api` and the auth backend
++sit on different origins. So the Notes screen test can't assert that
++`Authorization: Bearer` is sent to `/api/v1/notes`, even though in our real
++setup both URLs share one origin. The `getConfig()` mock recipe exists, but
++it's opt-in for each file.
++
++- _What I did:_ left the token check to the adapter tests and the manual curl
++  smoke test.
++
++**F9. Small inconsistencies.**
++
++- AGENTS.md lists the CI extras as `format:check`, `docs:check`,
++  `audit:check`, "and a web export". getting-started.md#scripts and ci.yml
++  also run `npx expo-doctor`.
++- testing.md#layout listed only `auth/ home/` under `__tests__/features/`,
++  which was expected for the starter. I updated it.
++- `expires_in` is in our contract, but the docs only describe refresh on 401.
++  Proactive refresh isn't mentioned, which is acceptable.
++
++**F10. Registering a provider is quiet in tests, but not silent.** Once the
++memory analytics is registered, every full-app test logs `[analytics] screen`
++lines. The debug default did the same, so this isn't new noise, and nothing in
++the docs is wrong. It's just something to know.
++
++**What worked well:** the "Where code goes" table answered every placement
++question. The `holdRequests()` test recipe in testing.md#network worked
++unchanged for the Notes screen. ApiError's envelope parsing meant our
++`{ "error": { "message" } }` showed up in the UI without any mapping. The
++"call `configureIntegrations()` before setting a mock" warning meant
++registering real adapters broke none of the 203 existing tests.
++
++## Verdict
++
++**Yes, mostly from the docs alone.** Each task mapped to a specific doc
++section, and the examples are close to copy-paste for a backend like ours.
++The gaps I had to fill with my own judgment were:
++
++- success envelopes (F1);
++- what "validate payloads in adapters" should look like (F2);
++- whether the base URL may contain a path (F3);
++- how a project's own mock backend relates to the e2e mock and runner (F4,
++  F5).
++
++None of them blocked me for long. The e2e side is the weakest part: a
++signed-in Maestro flow against our backend would mean editing
++`scripts/e2e/run.sh`, which the docs don't cover. The flow I added has not
++been run.
+diff --git a/__tests__/app/notesTab.test.tsx b/__tests__/app/notesTab.test.tsx
+new file mode 100644
+index 0000000..4ae8a32
+--- /dev/null
++++ b/__tests__/app/notesTab.test.tsx
+@@ -0,0 +1,17 @@
++import { fireEvent } from '@testing-library/react-native';
++import { renderRouter, screen } from 'expo-router/testing-library';
++
++describe('Notes tab', () => {
++  it('opens from the tab bar and sends a signed-out user to Login', async () => {
++    const app = renderRouter('./app', { initialUrl: '/' });
++    await screen.findByText('Not signed in');
++
++    fireEvent.press(screen.getByTestId('tab-notes'));
++    expect(await screen.findByText('Sign in to see your notes')).toBeTruthy();
++    expect(app.getPathname()).toBe('/notes');
++
++    fireEvent.press(screen.getByTestId('notes-sign-in'));
++    expect(await screen.findByText('Welcome Back')).toBeTruthy();
++    expect(app.getPathname()).toBe('/login');
++  });
++});
+diff --git a/__tests__/features/auth/siteNotesAdapter.test.ts b/__tests__/features/auth/siteNotesAdapter.test.ts
+new file mode 100644
+index 0000000..33f69fc
+--- /dev/null
++++ b/__tests__/features/auth/siteNotesAdapter.test.ts
+@@ -0,0 +1,275 @@
++/**
++ * Runs the Site Notes AuthAdapter against a fake backend with the contract
++ * scripts/mock-backend/server.js implements: `{ data }` envelopes, a
++ * tokens-only login plus GET /api/v1/me, rotating refresh tokens, and an
++ * `{ error: { code, message } }` envelope. The requests go through the real
++ * auth clients, session service, and token stores.
++ */
++import type {
++  AxiosAdapter,
++  AxiosResponse,
++  InternalAxiosRequestConfig,
++} from 'axios';
++import { AxiosError, AxiosHeaders } from 'axios';
++import { siteNotesAuthAdapter } from '@/features/auth/siteNotesAdapter';
++import {
++  authClients,
++  authService,
++  setAuthAdapter,
++} from '@/shared/session/authService';
++import { STORAGE_KEYS } from '@/shared/storage/storage';
++import { secureStore } from '@/testing';
++
++const REFRESH_KEY = 'refresh_token';
++const USER = {
++  id: 'u_1',
++  email: 'field@example.com',
++  display_name: 'Field Tester',
++};
++
++interface Request {
++  method: string;
++  url: string;
++  authorization: string | undefined;
++  body: unknown;
++}
++
++function fakeBackend() {
++  const requests: Request[] = [];
++  const state = {
++    issued: 0,
++    validAccess: new Set<string>(),
++    validRefresh: new Set<string>(),
++    me: { data: USER } as unknown,
++    tokens: null as unknown,
++  };
++  const issue = () => {
++    state.issued += 1;
++    const pair = {
++      access_token: `access-${state.issued}`,
++      refresh_token: `refresh-${state.issued}`,
++      expires_in: 900,
++    };
++    state.validAccess.add(pair.access_token);
++    state.validRefresh.add(pair.refresh_token);
++    return { data: pair };
++  };
++  const respond = (
++    config: InternalAxiosRequestConfig,
++    status: number,
++    data: unknown
++  ): AxiosResponse => {
++    const response = {
++      data,
++      status,
++      statusText: String(status),
++      headers: {},
++      config,
++    };
++    if (status < 400) return response;
++    throw new AxiosError(
++      `Request failed with status code ${status}`,
++      'ERR_BAD_REQUEST',
++      config,
++      null,
++      { ...response, headers: new AxiosHeaders() }
++    );
++  };
++  const failure = (code: string, message: string) => ({
++    error: { code, message },
++  });
++
++  const adapter: AxiosAdapter = async config => {
++    const body: unknown =
++      typeof config.data === 'string' ? JSON.parse(config.data) : config.data;
++    const authorization = config.headers.Authorization as string | undefined;
++    const method = (config.method ?? 'get').toUpperCase();
++    const url = config.url ?? '';
++    requests.push({ method, url, authorization, body });
++    const bearer = authorization?.replace(/^Bearer /, '');
++    const { email, password, refresh_token } = (body ?? {}) as Record<
++      string,
++      string
++    >;
++
++    if (method === 'POST' && url === '/api/v1/sessions') {
++      if (email !== USER.email || password !== 'notes-123') {
++        return respond(
++          config,
++          422,
++          failure('invalid_credentials', 'Wrong email or password')
++        );
++      }
++      return respond(config, 201, state.tokens ?? issue());
++    }
++    if (method === 'GET' && url === '/api/v1/me') {
++      return bearer && state.validAccess.has(bearer)
++        ? respond(config, 200, state.me)
++        : respond(config, 401, failure('unauthorized', 'Token expired'));
++    }
++    if (method === 'POST' && url === '/api/v1/sessions/refresh') {
++      if (!state.validRefresh.delete(refresh_token ?? '')) {
++        return respond(config, 401, failure('invalid_refresh', 'Unknown'));
++      }
++      return respond(config, 200, issue());
++    }
++    if (method === 'DELETE' && url === '/api/v1/sessions') {
++      state.validRefresh.delete(refresh_token ?? '');
++      return respond(config, 204, '');
++    }
++    return respond(config, 404, failure('not_found', `${method} ${url}`));
++  };
++  return { adapter, requests, state };
++}
++
++let backend: ReturnType<typeof fakeBackend>;
++const originalAdapters = {
++  public: authClients.public.defaults.adapter,
++  authenticated: authClients.authenticated.defaults.adapter,
++};
++
++beforeEach(() => {
++  backend = fakeBackend();
++  authClients.public.defaults.adapter = backend.adapter;
++  authClients.authenticated.defaults.adapter = backend.adapter;
++  setAuthAdapter(siteNotesAuthAdapter);
++});
++
++afterEach(() => {
++  authClients.public.defaults.adapter = originalAdapters.public;
++  authClients.authenticated.defaults.adapter = originalAdapters.authenticated;
++  setAuthAdapter(null);
++});
++
++const signIn = () =>
++  authService.login({ username: 'field@example.com', password: 'notes-123' });
++
++describe('siteNotesAuthAdapter', () => {
++  it('signs in, loading the user from /api/v1/me with the new token', async () => {
++    await expect(signIn()).resolves.toEqual({
++      token: 'access-1',
++      user: { id: 'u_1', email: 'field@example.com', name: 'Field Tester' },
++    });
++
++    expect(backend.requests).toEqual([
++      {
++        method: 'POST',
++        url: '/api/v1/sessions',
++        authorization: undefined,
++        body: { email: 'field@example.com', password: 'notes-123' },
++      },
++      {
++        method: 'GET',
++        url: '/api/v1/me',
++        authorization: 'Bearer access-1',
++        body: undefined,
++      },
++    ]);
++    expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('access-1');
++    expect(secureStore.get(REFRESH_KEY)).toBe('refresh-1');
++  });
++
++  it("shows the envelope's message for wrong credentials and stores nothing", async () => {
++    await expect(
++      authService.login({ username: 'field@example.com', password: 'nope' })
++    ).rejects.toMatchObject({
++      name: 'ApiError',
++      status: 422,
++      message: 'Wrong email or password',
++    });
++    expect(secureStore.size).toBe(0);
++  });
++
++  it('rejects a sign-in response without tokens', async () => {
++    backend.state.tokens = { data: { access_token: 'a' } };
++
++    await expect(signIn()).rejects.toThrow(
++      'The sign-in response did not include the tokens'
++    );
++    expect(secureStore.size).toBe(0);
++  });
++
++  it('rejects a /me response without the user', async () => {
++    backend.state.me = { data: { email: 'field@example.com' } };
++
++    await expect(signIn()).rejects.toThrow(
++      'The sign-in response did not include the user'
++    );
++    expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
++  });
++
++  it('falls back to the email when the user has no display name', async () => {
++    backend.state.me = { data: { id: 'u_1', email: 'field@example.com' } };
++
++    await expect(signIn()).resolves.toMatchObject({
++      user: { name: 'field@example.com' },
++    });
++  });
++
++  it('refreshes on a 401 with rotation, keeping only the newest refresh token', async () => {
++    await signIn();
++    backend.state.validAccess.clear(); // the access token expires
++
++    await expect(authService.fetchProfile()).resolves.toMatchObject({
++      id: 'u_1',
++      name: 'Field Tester',
++    });
++    expect(
++      backend.requests.filter(r => r.url === '/api/v1/sessions/refresh')
++    ).toEqual([
++      expect.objectContaining({ body: { refresh_token: 'refresh-1' } }),
++    ]);
++    expect(backend.requests.at(-1)).toMatchObject({
++      url: '/api/v1/me',
++      authorization: 'Bearer access-2',
++    });
++    expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('access-2');
++    expect(secureStore.get(REFRESH_KEY)).toBe('refresh-2');
++  });
++
++  it('signs out and drops the refresh token when the refresh is rejected', async () => {
++    await signIn();
++    backend.state.validAccess.clear();
++    backend.state.validRefresh.clear();
++
++    await expect(authService.fetchProfile()).rejects.toMatchObject({
++      code: 'unauthorized',
++    });
++    expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
++    expect(secureStore.has(REFRESH_KEY)).toBe(false);
++  });
++
++  it('signs out without a refresh request when there is no refresh token', async () => {
++    secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'expired');
++
++    await expect(authService.fetchProfile()).rejects.toMatchObject({
++      code: 'unauthorized',
++    });
++    expect(backend.requests.map(r => r.url)).toEqual(['/api/v1/me']);
++    expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
++  });
++
++  it('revokes the refresh token on logout', async () => {
++    await signIn();
++
++    await authService.logout();
++
++    expect(backend.requests.at(-1)).toEqual({
++      method: 'DELETE',
++      url: '/api/v1/sessions',
++      authorization: 'Bearer access-1',
++      body: { refresh_token: 'refresh-1' },
++    });
++    expect(backend.state.validRefresh.has('refresh-1')).toBe(false);
++    expect(secureStore.size).toBe(0);
++  });
++
++  it('skips the revoke request on logout without a refresh token', async () => {
++    secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'access-x');
++
++    await authService.logout();
++
++    expect(backend.requests).toHaveLength(0);
++    expect(secureStore.size).toBe(0);
++  });
++});
+diff --git a/__tests__/features/notes/NotesScreen.test.tsx b/__tests__/features/notes/NotesScreen.test.tsx
+new file mode 100644
+index 0000000..bd859e9
+--- /dev/null
++++ b/__tests__/features/notes/NotesScreen.test.tsx
+@@ -0,0 +1,161 @@
++import {
++  AxiosError,
++  AxiosHeaders,
++  type AxiosAdapter,
++  type AxiosResponse,
++  type InternalAxiosRequestConfig,
++} from 'axios';
++import { act, fireEvent, screen, waitFor } from '@testing-library/react-native';
++
++jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
++
++import { router } from 'expo-router';
++import { NotesScreen } from '@/features/notes/screens/NotesScreen';
++import { api } from '@/shared/http/api';
++import { analyticsSeam, type Analytics } from '@/shared/integrations/analytics';
++import { STORAGE_KEYS } from '@/shared/storage/storage';
++import { renderWithProviders, secureStore } from '@/testing';
++
++interface HeldRequest {
++  config: InternalAxiosRequestConfig;
++  resolve: (response: AxiosResponse) => void;
++  reject: (error: unknown) => void;
++}
++
++/** Replaces the API's adapter: each request waits until the test answers. */
++function holdRequests(): HeldRequest[] {
++  const held: HeldRequest[] = [];
++  api.defaults.adapter = (config =>
++    new Promise((resolve, reject) =>
++      held.push({ config, resolve, reject })
++    )) as AxiosAdapter;
++  return held;
++}
++
++const ok = (config: InternalAxiosRequestConfig, data: unknown) => ({
++  data,
++  status: 200,
++  statusText: 'OK',
++  headers: {},
++  config,
++});
++
++const unavailable = (config: InternalAxiosRequestConfig) =>
++  new AxiosError('Request failed', 'ERR_BAD_RESPONSE', config, null, {
++    data: {
++      error: {
++        code: 'unavailable',
++        message: 'Notes are temporarily unavailable',
++      },
++    },
++    status: 503,
++    statusText: 'Service Unavailable',
++    headers: new AxiosHeaders(),
++    config,
++  });
++
++const NOTES = {
++  items: [
++    {
++      id: 'n_1',
++      title: 'Crack above window',
++      created_at: '2026-10-01T08:15:00Z',
++    },
++    { id: 'n_2', title: 'Blocked drain', created_at: '2026-10-03T13:40:00Z' },
++  ],
++};
++
++const analytics: Analytics = {
++  track: jest.fn(),
++  screen: jest.fn(),
++  identify: jest.fn(),
++};
++
++const originalAdapter = api.defaults.adapter;
++
++beforeEach(() => {
++  jest.clearAllMocks();
++  analyticsSeam.set(analytics);
++});
++
++afterEach(() => {
++  api.defaults.adapter = originalAdapter;
++  analyticsSeam.reset();
++});
++
++const signIn = () => secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
++
++describe('<NotesScreen />', () => {
++  it('asks a signed-out user to sign in and sends no request', async () => {
++    const requests = holdRequests();
++    renderWithProviders(<NotesScreen />, { withSession: true });
++
++    fireEvent.press(await screen.findByText('Sign in'));
++
++    expect(screen.getByText('Sign in to see your notes')).toBeTruthy();
++    expect(router.push).toHaveBeenCalledWith('/login');
++    expect(requests).toHaveLength(0);
++  });
++
++  it('shows loading, then the error, and Retry loads the list', async () => {
++    signIn();
++    const requests = holdRequests();
++    renderWithProviders(<NotesScreen />, { withSession: true });
++
++    expect(await screen.findByText('Loading notes…')).toBeTruthy();
++    await waitFor(() => expect(requests).toHaveLength(1));
++    expect(requests[0]?.config.url).toBe('/api/v1/notes');
++
++    await act(async () => requests[0]?.reject(unavailable(requests[0].config)));
++    expect(await screen.findByText('Could not load your notes')).toBeTruthy();
++    expect(screen.getByText('Notes are temporarily unavailable')).toBeTruthy();
++
++    fireEvent.press(screen.getByText('Retry'));
++    expect(analytics.track).toHaveBeenCalledWith('notes_retry', {
++      error: 'server',
++    });
++
++    expect(await screen.findByText('Loading notes…')).toBeTruthy();
++    await waitFor(() => expect(requests).toHaveLength(2));
++    await act(async () => requests[1]?.resolve(ok(requests[1].config, NOTES)));
++
++    expect(await screen.findByText('Crack above window')).toBeTruthy();
++    expect(screen.getByText('Blocked drain')).toBeTruthy();
++    expect(screen.queryByText('Retry')).toBeNull();
++    expect(analytics.track).toHaveBeenLastCalledWith('notes_loaded', {
++      count: 2,
++    });
++  });
++
++  it('shows an empty state when there are no notes', async () => {
++    signIn();
++    const requests = holdRequests();
++    renderWithProviders(<NotesScreen />, { withSession: true });
++
++    await waitFor(() => expect(requests).toHaveLength(1));
++    await act(async () =>
++      requests[0]?.resolve(ok(requests[0].config, { items: [] }))
++    );
++
++    expect(await screen.findByText('No notes yet')).toBeTruthy();
++  });
++
++  it('treats a response in the wrong shape as an error', async () => {
++    signIn();
++    const requests = holdRequests();
++    renderWithProviders(<NotesScreen />, { withSession: true });
++
++    await waitFor(() => expect(requests).toHaveLength(1));
++    await act(async () =>
++      requests[0]?.resolve(ok(requests[0].config, [{ id: 1 }]))
++    );
++
++    expect(
++      await screen.findByText(
++        'The notes response was not in the expected format'
++      )
++    ).toBeTruthy();
++    expect(screen.getByText('Retry')).toBeTruthy();
++    expect(analytics.track).not.toHaveBeenCalled();
++  });
++});
+diff --git a/__tests__/shared/integrations/memoryAnalytics.test.tsx b/__tests__/shared/integrations/memoryAnalytics.test.tsx
+new file mode 100644
+index 0000000..288f158
+--- /dev/null
++++ b/__tests__/shared/integrations/memoryAnalytics.test.tsx
+@@ -0,0 +1,64 @@
++import { renderRouter, screen } from 'expo-router/testing-library';
++import {
++  createMemoryAnalytics,
++  type MemoryAnalytics,
++} from '@/shared/integrations/adapters/memoryAnalytics';
++import { getAnalytics } from '@/shared/integrations/analytics';
++import { configureIntegrations } from '@/shared/integrations/setup';
++import { logger } from '@/shared/lib/logger';
++
++describe('createMemoryAnalytics', () => {
++  it('records every call in order and logs it', () => {
++    const debug = jest.spyOn(logger, 'debug').mockImplementation(() => {});
++    const analytics = createMemoryAnalytics();
++
++    analytics.screen('/notes');
++    analytics.track('notes_loaded', { count: 3 });
++    analytics.identify('u_1');
++    analytics.identify(null);
++
++    expect(analytics.records).toEqual([
++      { type: 'screen', name: '/notes', properties: undefined },
++      { type: 'track', name: 'notes_loaded', properties: { count: 3 } },
++      { type: 'identify', userId: 'u_1', traits: undefined },
++      { type: 'identify', userId: null, traits: undefined },
++    ]);
++    expect(debug).toHaveBeenCalledWith('[analytics] track', {
++      type: 'track',
++      name: 'notes_loaded',
++      properties: { count: 3 },
++    });
++    debug.mockRestore();
++  });
++
++  it('keeps only the newest records up to the limit, and clears', () => {
++    const analytics = createMemoryAnalytics(2);
++
++    analytics.track('a');
++    analytics.track('b');
++    analytics.track('c');
++    expect(analytics.records.map(r => r.type === 'track' && r.name)).toEqual([
++      'b',
++      'c',
++    ]);
++
++    analytics.clear();
++    expect(analytics.records).toEqual([]);
++  });
++});
++
++describe('configureIntegrations', () => {
++  it('registers the memory analytics provider, which records screen views', async () => {
++    configureIntegrations();
++    const analytics = getAnalytics() as MemoryAnalytics;
++
++    renderRouter('./app', { initialUrl: '/notes' });
++    await screen.findByText('Sign in to see your notes');
++
++    expect(analytics.records).toContainEqual({
++      type: 'screen',
++      name: '/notes',
++      properties: undefined,
++    });
++  });
++});
+diff --git a/app/(tabs)/_layout.tsx b/app/(tabs)/_layout.tsx
+index 716abd7..1342c21 100644
+--- a/app/(tabs)/_layout.tsx
++++ b/app/(tabs)/_layout.tsx
+@@ -33,6 +33,20 @@ export default function TabLayout() {
+           ),
+         }}
+       />
++      <Tabs.Screen
++        name="notes"
++        options={{
++          title: t('tabs.notes'),
++          tabBarButtonTestID: 'tab-notes',
++          tabBarIcon: ({ color }) => (
++            <MaterialCommunityIcons
++              name="note-text-outline"
++              size={24}
++              color={color}
++            />
++          ),
++        }}
++      />
+     </Tabs>
+   );
+ }
+diff --git a/app/(tabs)/notes.tsx b/app/(tabs)/notes.tsx
+new file mode 100644
+index 0000000..8c560d0
+--- /dev/null
++++ b/app/(tabs)/notes.tsx
+@@ -0,0 +1 @@
++export { NotesScreen as default } from '@/features/notes/screens/NotesScreen';
+diff --git a/docs/getting-started.md b/docs/getting-started.md
+index b4f1d92..d81811c 100644
+--- a/docs/getting-started.md
++++ b/docs/getting-started.md
+@@ -65,6 +65,7 @@ emulator), or `w` (web), or scan the QR code with Expo Go.
+ | `npm run test:ci`                                             | Jest once, with coverage and its threshold                                                                    |
+ | `npm run test:coverage`                                       | Jest with an HTML coverage report in `coverage/`                                                              |
+ | `npm run test:e2e:ios` / `npm run test:e2e:android`           | Maestro end-to-end flows on a simulator or emulator ([Testing](testing.md#end-to-end-flows-maestro))          |
++| `npm run mock-backend`                                        | The local mock backend on port 4000 (`PORT`); see [`scripts/README.md`](../scripts/README.md)                 |
+ | `npm run docs:check`                                          | Compile the docs' TypeScript snippets and check their paths and scripts                                       |
+ | `npm run audit:check`                                         | `npm audit --omit=dev`, failing on a high or critical advisory not reviewed in `scripts/audit-allowlist.json` |
+ 
+diff --git a/docs/testing.md b/docs/testing.md
+index e50fb4a..f9bdb37 100644
+--- a/docs/testing.md
++++ b/docs/testing.md
+@@ -22,7 +22,7 @@ The full local gate is `npm run lint && npm run type-check && npm run test:ci`.
+ __tests__/                    mirrors the source tree
+ ├── app/                      full-app routing tests: guards, initial route, theme, status bar
+ ├── features/
+-│   └── auth/  home/          screen tests
++│   └── auth/  home/  notes/  screen and adapter tests
+ └── shared/
+     ├── config/  http/  session/  storage/
+     ├── integrations/  lib/  ui/
+@@ -319,11 +319,12 @@ without the demo; raise it as coverage grows.
+ [Maestro](https://maestro.dev) flows in `.maestro/` drive the app in Expo Go
+ on a simulator or emulator. No account is needed.
+ 
+-| Flow                 | Checks                                                                        |
+-| -------------------- | ----------------------------------------------------------------------------- |
+-| `01-cold-start.yaml` | a fresh start opens Home, signed out, with the Sign in button                 |
+-| `06-login-back.yaml` | Back from Login returns Home (Android system back; skipped on iOS, see below) |
+-| `dark-mode.yaml`     | screenshots with the device in dark mode                                      |
++| Flow                       | Checks                                                                        |
++| -------------------------- | ----------------------------------------------------------------------------- |
++| `01-cold-start.yaml`       | a fresh start opens Home, signed out, with the Sign in button                 |
++| `02-notes-signed-out.yaml` | the Notes tab, signed out, shows the sign-in prompt, which opens Login        |
++| `06-login-back.yaml`       | Back from Login returns Home (Android system back; skipped on iOS, see below) |
++| `dark-mode.yaml`           | screenshots with the device in dark mode                                      |
+ 
+ Run them with a booted device that has Expo Go:
+ 
+diff --git a/features/auth/screens/LoginScreen.tsx b/features/auth/screens/LoginScreen.tsx
+index 546760e..81f3bc8 100644
+--- a/features/auth/screens/LoginScreen.tsx
++++ b/features/auth/screens/LoginScreen.tsx
+@@ -83,7 +83,8 @@ export function LoginScreen() {
+               onChangeText={setUsername}
+               mode="outlined"
+               autoCapitalize="none"
+-              autoComplete="username"
++              keyboardType="email-address"
++              autoComplete="email"
+               returnKeyType="next"
+               submitBehavior="submit"
+               onSubmitEditing={() => passwordRef.current?.focus()}
+diff --git a/features/auth/siteNotesAdapter.ts b/features/auth/siteNotesAdapter.ts
+new file mode 100644
+index 0000000..5abe4ce
+--- /dev/null
++++ b/features/auth/siteNotesAdapter.ts
+@@ -0,0 +1,124 @@
++/**
++ * Sign-in against the Site Notes backend (scripts/mock-backend/server.js
++ * mocks it locally). Every success body is wrapped in `{ "data": ... }`:
++ *
++ * - `POST /api/v1/sessions` `{ email, password }` returns only tokens; the
++ *   user comes from `GET /api/v1/me`.
++ * - `POST /api/v1/sessions/refresh` rotates the refresh token.
++ * - `DELETE /api/v1/sessions` revokes a refresh token.
++ *
++ * Errors use the `{ "error": { code, message } }` envelope, which ApiError
++ * already reads.
++ */
++import { Platform } from 'react-native';
++import { z } from 'zod';
++import type { AuthAdapter } from '@/shared/session/authService';
++import {
++  createMemoryTokenStore,
++  createSecureTokenStore,
++} from '@/shared/session/tokenStore';
++
++const tokensSchema = z.object({
++  data: z.object({
++    access_token: z.string().min(1),
++    refresh_token: z.string().min(1),
++    expires_in: z.number(),
++  }),
++});
++
++const userSchema = z.object({
++  id: z.string().min(1),
++  email: z.string().min(1),
++  display_name: z.string().optional(),
++});
++
++const meSchema = z.object({ data: z.unknown() });
++
++/** Unwraps the token pair, throwing if the response isn't what we expect. */
++function parseTokens(body: unknown) {
++  const parsed = tokensSchema.safeParse(body);
++  if (!parsed.success) {
++    throw new Error('The sign-in response did not include the tokens');
++  }
++  return parsed.data.data;
++}
++
++/** Unwraps `{ data: user }` from GET /me; normalizeUser validates the user. */
++const unwrapUser = (body: unknown): unknown =>
++  meSchema.safeParse(body).data?.data;
++
++// Kept like the access token: Keychain / Keystore on native, memory on web
++// (secure storage isn't available there).
++export const siteNotesRefreshTokens =
++  Platform.OS === 'web'
++    ? createMemoryTokenStore()
++    : createSecureTokenStore('refresh_token');
++
++export const siteNotesAuthAdapter: AuthAdapter = {
++  // The Login form's username field holds the email.
++  login: async ({ username, password }, { public: http }) => {
++    const tokens = parseTokens(
++      (
++        await http.post<unknown>('/api/v1/sessions', {
++          email: username,
++          password,
++        })
++      ).data
++    );
++    // The token isn't stored until login returns, so pass it explicitly.
++    const { data: me } = await http.get<unknown>('/api/v1/me', {
++      headers: { Authorization: `Bearer ${tokens.access_token}` },
++    });
++    await siteNotesRefreshTokens.set(tokens.refresh_token);
++    return { token: tokens.access_token, user: unwrapUser(me) };
++  },
++
++  normalizeUser: raw => {
++    const parsed = userSchema.safeParse(raw);
++    if (!parsed.success) {
++      throw new Error('The sign-in response did not include the user');
++    }
++    const user = parsed.data;
++    return {
++      id: user.id,
++      email: user.email,
++      name: user.display_name || user.email,
++    };
++  },
++
++  fetchUser: async ({ authenticated }) =>
++    unwrapUser((await authenticated.get<unknown>('/api/v1/me')).data),
++
++  refresh: async ({ public: http }) => {
++    const refreshToken = await siteNotesRefreshTokens.get();
++    if (!refreshToken) return null;
++    try {
++      const tokens = parseTokens(
++        (
++          await http.post<unknown>('/api/v1/sessions/refresh', {
++            refresh_token: refreshToken,
++          })
++        ).data
++      );
++      // Rotation: the old refresh token no longer works.
++      await siteNotesRefreshTokens.set(tokens.refresh_token);
++      return tokens.access_token;
++    } catch (error) {
++      // The user is signed out next, so drop the rejected refresh token.
++      await siteNotesRefreshTokens.clear();
++      throw error;
++    }
++  },
++
++  // Delete the refresh token before the request, so a failed request
++  // doesn't leave it on the device.
++  logout: async ({ authenticated }) => {
++    const refreshToken = await siteNotesRefreshTokens.get();
++    await siteNotesRefreshTokens.clear();
++    if (refreshToken) {
++      await authenticated.delete('/api/v1/sessions', {
++        data: { refresh_token: refreshToken },
++      });
++    }
++  },
++};
+diff --git a/features/notes/api/notesApi.ts b/features/notes/api/notesApi.ts
+new file mode 100644
+index 0000000..6135663
+--- /dev/null
++++ b/features/notes/api/notesApi.ts
+@@ -0,0 +1,29 @@
++import { z } from 'zod';
++import { api } from '@/shared/http/api';
++import type { Note } from '../types';
++
++const notesResponseSchema = z.object({
++  items: z.array(
++    z.object({
++      id: z.string(),
++      title: z.string(),
++      created_at: z.string(),
++    })
++  ),
++});
++
++export const notesApi = {
++  /** GET /api/v1/notes; throws if the response isn't a list of notes. */
++  list: async (signal?: AbortSignal): Promise<Note[]> => {
++    const { data } = await api.get<unknown>('/api/v1/notes', { signal });
++    const parsed = notesResponseSchema.safeParse(data);
++    if (!parsed.success) {
++      throw new Error('The notes response was not in the expected format');
++    }
++    return parsed.data.items.map(item => ({
++      id: item.id,
++      title: item.title,
++      createdAt: item.created_at,
++    }));
++  },
++};
+diff --git a/features/notes/components/NotesList.tsx b/features/notes/components/NotesList.tsx
+new file mode 100644
+index 0000000..bd07362
+--- /dev/null
++++ b/features/notes/components/NotesList.tsx
+@@ -0,0 +1,82 @@
++import { FlatList, StyleSheet, View } from 'react-native';
++import { Button, Divider, List, Text, useTheme } from 'react-native-paper';
++import { t } from '@/shared/i18n';
++import { getAnalytics } from '@/shared/integrations/analytics';
++import { useFetch } from '@/shared/lib/useFetch';
++import { LoadingScreen } from '@/shared/ui/LoadingScreen';
++import { notesApi } from '../api/notesApi';
++
++/** The signed-in user's notes: loading, error with Retry, or the list. */
++export function NotesList() {
++  const theme = useTheme();
++  const { data, loading, error, refetch } = useFetch(async signal => {
++    const notes = await notesApi.list(signal);
++    getAnalytics().track('notes_loaded', { count: notes.length });
++    return notes;
++  });
++
++  const retry = () => {
++    getAnalytics().track('notes_retry', { error: error?.code ?? null });
++    void refetch();
++  };
++
++  if (loading && !data) return <LoadingScreen message={t('notes.loading')} />;
++
++  if (error) {
++    return (
++      <View style={styles.centered} testID="notes-error">
++        <Text variant="titleMedium">{t('notes.error.title')}</Text>
++        <Text
++          variant="bodyMedium"
++          style={[styles.message, { color: theme.colors.onSurfaceVariant }]}
++        >
++          {error.message}
++        </Text>
++        <Button mode="contained" onPress={retry} testID="notes-retry">
++          {t('notes.retry')}
++        </Button>
++      </View>
++    );
++  }
++
++  return (
++    <FlatList
++      data={data ?? []}
++      keyExtractor={note => note.id}
++      refreshing={loading}
++      onRefresh={refetch}
++      ItemSeparatorComponent={Divider}
++      contentContainerStyle={data?.length ? undefined : styles.centered}
++      ListEmptyComponent={
++        <Text
++          variant="bodyMedium"
++          style={{ color: theme.colors.onSurfaceVariant }}
++        >
++          {t('notes.empty')}
++        </Text>
++      }
++      renderItem={({ item }) => (
++        <List.Item
++          title={item.title}
++          description={new Date(item.createdAt).toLocaleDateString()}
++          left={props => <List.Icon {...props} icon="note-text-outline" />}
++          testID={`note-${item.id}`}
++        />
++      )}
++      testID="notes-list"
++    />
++  );
++}
++
++const styles = StyleSheet.create({
++  centered: {
++    flexGrow: 1,
++    alignItems: 'center',
++    justifyContent: 'center',
++    gap: 12,
++    padding: 24,
++  },
++  message: {
++    textAlign: 'center',
++  },
++});
+diff --git a/features/notes/screens/NotesScreen.tsx b/features/notes/screens/NotesScreen.tsx
+new file mode 100644
+index 0000000..ebb259e
+--- /dev/null
++++ b/features/notes/screens/NotesScreen.tsx
+@@ -0,0 +1,59 @@
++import { router } from 'expo-router';
++import { StyleSheet, View } from 'react-native';
++import { SafeAreaView } from 'react-native-safe-area-context';
++import { Button, Text, useTheme } from 'react-native-paper';
++import { t } from '@/shared/i18n';
++import { useSession } from '@/shared/session/SessionProvider';
++import { LoadingScreen } from '@/shared/ui/LoadingScreen';
++import { NotesList } from '../components/NotesList';
++
++/**
++ * Notes tab. Tabs aren't behind the sign-in guard, so the list (which needs
++ * the token) only mounts while signed in.
++ */
++export function NotesScreen() {
++  const theme = useTheme();
++  const { session } = useSession();
++
++  if (session.status === 'loading') return <LoadingScreen />;
++
++  return (
++    <SafeAreaView
++      style={[styles.container, { backgroundColor: theme.colors.background }]}
++    >
++      <Text variant="headlineMedium" style={styles.title}>
++        {t('notes.title')}
++      </Text>
++      {session.status === 'signedIn' ? (
++        <NotesList />
++      ) : (
++        <View style={styles.prompt}>
++          <Text>{t('notes.signedOut')}</Text>
++          <Button
++            mode="contained"
++            onPress={() => router.push('/login')}
++            testID="notes-sign-in"
++          >
++            {t('notes.signIn')}
++          </Button>
++        </View>
++      )}
++    </SafeAreaView>
++  );
++}
++
++const styles = StyleSheet.create({
++  container: {
++    flex: 1,
++  },
++  title: {
++    padding: 16,
++    fontWeight: 'bold',
++  },
++  prompt: {
++    flex: 1,
++    alignItems: 'center',
++    justifyContent: 'center',
++    gap: 16,
++  },
++});
+diff --git a/features/notes/types.ts b/features/notes/types.ts
+new file mode 100644
+index 0000000..a92a4c4
+--- /dev/null
++++ b/features/notes/types.ts
+@@ -0,0 +1,6 @@
++export interface Note {
++  id: string;
++  title: string;
++  /** ISO 8601 timestamp. */
++  createdAt: string;
++}
+diff --git a/package.json b/package.json
+index e461860..3992988 100644
+--- a/package.json
++++ b/package.json
+@@ -15,6 +15,7 @@
+     "config:print": "expo config --type public",
+     "docs:check": "node scripts/check-docs.js",
+     "audit:check": "node scripts/check-audit.js",
++    "mock-backend": "node scripts/mock-backend/server.js",
+     "test:e2e:android": "bash scripts/e2e/run.sh android",
+     "test:e2e:ios": "bash scripts/e2e/run.sh ios",
+     "lint": "eslint . --max-warnings 0",
+diff --git a/scripts/README.md b/scripts/README.md
+index 71d322a..366eddb 100644
+--- a/scripts/README.md
++++ b/scripts/README.md
+@@ -18,6 +18,16 @@ dependency path, exposure, owner, review date, and tracking link; see
+ [Dependency advisories](../docs/getting-started.md#dependency-advisories) for
+ reviewing them in your project.
+ 
++## `mock-backend/server.js`
++
++`npm run mock-backend` (port `PORT`, default 4000): a local mock of the Site
++Notes backend for development, with the account `field@example.com` /
++`notes-123`. `.env.example` points `EXPO_PUBLIC_API_URL` and
++`EXPO_PUBLIC_AUTH_API_URL` at it. To try the Notes error and Retry states,
++create an empty file named `.fail` next to `server.js`: every `/api/v1/notes`
++request then returns 503 until you delete it. The endpoints are listed at the top of the
++file.
++
+ ## No reset-project command
+ 
+ This starter intentionally does not ship a destructive `reset-project` script.
+diff --git a/scripts/mock-backend/server.js b/scripts/mock-backend/server.js
+new file mode 100644
+index 0000000..ad288ae
+--- /dev/null
++++ b/scripts/mock-backend/server.js
+@@ -0,0 +1,175 @@
++#!/usr/bin/env node
++/**
++ * Local mock of the Site Notes backend, for development only (the app never
++ * imports it). Point EXPO_PUBLIC_API_URL and EXPO_PUBLIC_AUTH_API_URL at it.
++ *
++ *   POST   /api/v1/sessions           { email, password } -> 201 tokens | 422
++ *   POST   /api/v1/sessions/refresh   { refresh_token }   -> 200 tokens | 401
++ *   DELETE /api/v1/sessions           revokes { refresh_token } -> 204
++ *   GET    /api/v1/me                 Bearer token -> 200 user | 401
++ *   GET    /api/v1/notes              Bearer token -> 200 { items } | 401
++ *
++ * Account: field@example.com / notes-123. Refresh tokens rotate: a refresh
++ * returns a new pair and the old refresh token stops working.
++ *
++ * To test the app's error and retry states, create a file named `.fail`
++ * next to this one (`touch scripts/mock-backend/.fail`): every
++ * /api/v1/notes request then returns 503 until you delete it.
++ *
++ * Usage: npm run mock-backend   (PORT=4000 by default)
++ */
++const crypto = require('crypto');
++const fs = require('fs');
++const http = require('http');
++const path = require('path');
++
++const port = Number(process.env.PORT ?? 4000);
++const FAIL_FILE = path.join(__dirname, '.fail');
++const EXPIRES_IN = 900; // seconds
++
++const USER = {
++  id: 'u_1',
++  email: 'field@example.com',
++  display_name: 'Field Tester',
++};
++const PASSWORD = 'notes-123';
++
++const NOTES = [
++  {
++    id: 'n_1',
++    title: 'North wall: crack above window',
++    created_at: '2026-10-01T08:15:00Z',
++  },
++  {
++    id: 'n_2',
++    title: 'Level 2: missing fire stopping',
++    created_at: '2026-10-03T13:40:00Z',
++  },
++  {
++    id: 'n_3',
++    title: 'Roof: drainage outlet blocked',
++    created_at: '2026-10-07T10:05:00Z',
++  },
++];
++
++/** access token -> expiry (ms since epoch) */
++const accessTokens = new Map();
++const refreshTokens = new Set();
++
++function issueTokens() {
++  const access_token = crypto.randomBytes(24).toString('hex');
++  const refresh_token = crypto.randomBytes(24).toString('hex');
++  accessTokens.set(access_token, Date.now() + EXPIRES_IN * 1000);
++  refreshTokens.add(refresh_token);
++  return { access_token, refresh_token, expires_in: EXPIRES_IN };
++}
++
++function send(res, status, body) {
++  if (body === undefined) {
++    res.writeHead(status);
++    return res.end();
++  }
++  res.writeHead(status, { 'Content-Type': 'application/json' });
++  res.end(JSON.stringify(body));
++}
++
++const failure = (code, message) => ({ error: { code, message } });
++
++function readJson(req) {
++  return new Promise(resolve => {
++    let raw = '';
++    req.on('data', chunk => (raw += chunk));
++    req.on('end', () => {
++      try {
++        resolve(raw ? JSON.parse(raw) : {});
++      } catch {
++        resolve({});
++      }
++    });
++  });
++}
++
++/** True when the request carries an access token that hasn't expired. */
++function isAuthorized(req) {
++  const token = /^Bearer (.+)$/.exec(req.headers.authorization ?? '')?.[1];
++  const expiry = token ? accessTokens.get(token) : undefined;
++  if (expiry === undefined) return false;
++  if (expiry < Date.now()) {
++    accessTokens.delete(token);
++    return false;
++  }
++  return true;
++}
++
++const unauthorized = res =>
++  send(res, 401, failure('unauthorized', 'Missing or expired access token'));
++
++async function handle(req, res) {
++  const url = new URL(req.url ?? '/', 'http://localhost').pathname;
++  const route = `${req.method} ${url}`;
++
++  if (route === 'POST /api/v1/sessions') {
++    const { email, password } = await readJson(req);
++    return email === USER.email && password === PASSWORD
++      ? send(res, 201, { data: issueTokens() })
++      : send(
++          res,
++          422,
++          failure('invalid_credentials', 'Wrong email or password')
++        );
++  }
++  if (route === 'POST /api/v1/sessions/refresh') {
++    const { refresh_token } = await readJson(req);
++    if (!refreshTokens.delete(refresh_token)) {
++      return send(
++        res,
++        401,
++        failure('invalid_refresh_token', 'Unknown refresh token')
++      );
++    }
++    return send(res, 200, { data: issueTokens() });
++  }
++  if (route === 'DELETE /api/v1/sessions') {
++    const { refresh_token } = await readJson(req);
++    refreshTokens.delete(refresh_token);
++    return send(res, 204);
++  }
++  if (route === 'GET /api/v1/me') {
++    return isAuthorized(req)
++      ? send(res, 200, { data: USER })
++      : unauthorized(res);
++  }
++  if (url === '/api/v1/notes') {
++    if (fs.existsSync(FAIL_FILE)) {
++      return send(
++        res,
++        503,
++        failure('unavailable', 'Notes are temporarily unavailable')
++      );
++    }
++    if (req.method !== 'GET') {
++      return send(res, 405, failure('method_not_allowed', route));
++    }
++    return isAuthorized(req)
++      ? send(res, 200, { items: NOTES })
++      : unauthorized(res);
++  }
++  send(res, 404, failure('not_found', route));
++}
++
++http
++  .createServer((req, res) => {
++    handle(req, res)
++      .then(() =>
++        process.stdout.write(`${req.method} ${req.url} ${res.statusCode}\n`)
++      )
++      .catch(error => {
++        console.error(error);
++        send(res, 500, failure('internal', 'Mock backend error'));
++      });
++  })
++  .listen(port, () =>
++    process.stdout.write(
++      `Site Notes mock backend on http://localhost:${port}\n`
++    )
++  );
+diff --git a/shared/i18n/en.ts b/shared/i18n/en.ts
+index 719d411..457bbd2 100644
+--- a/shared/i18n/en.ts
++++ b/shared/i18n/en.ts
+@@ -6,6 +6,16 @@
+ export const en = {
+   // Tabs
+   'tabs.home': 'Home',
++  'tabs.notes': 'Notes',
++
++  // Notes
++  'notes.title': 'Notes',
++  'notes.loading': 'Loading notes…',
++  'notes.empty': 'No notes yet',
++  'notes.error.title': 'Could not load your notes',
++  'notes.retry': 'Retry',
++  'notes.signedOut': 'Sign in to see your notes',
++  'notes.signIn': 'Sign in',
+ 
+   // Home
+   'home.title': 'Welcome',
+@@ -29,7 +39,7 @@ export const en = {
+   // Login
+   'login.title': 'Welcome Back',
+   'login.subtitle': 'Sign in to continue',
+-  'login.username': 'Username',
++  'login.username': 'Email',
+   'login.password': 'Password',
+   'login.submit': 'Sign In',
+   'login.error.emptyFields': 'Please fill in all fields',
+diff --git a/shared/integrations/adapters/memoryAnalytics.ts b/shared/integrations/adapters/memoryAnalytics.ts
+new file mode 100644
+index 0000000..767d706
+--- /dev/null
++++ b/shared/integrations/adapters/memoryAnalytics.ts
+@@ -0,0 +1,38 @@
++/**
++ * A fake analytics provider: keeps every call in memory and logs it. Stands
++ * in for a real SDK until we pick one, and lets tests and the debugger see
++ * exactly what the app reports.
++ */
++import { logger } from '@/shared/lib/logger';
++import type { Analytics, AnalyticsProperties } from '../analytics';
++
++export type AnalyticsRecord =
++  | { type: 'track'; name: string; properties?: AnalyticsProperties }
++  | { type: 'screen'; name: string; properties?: AnalyticsProperties }
++  | { type: 'identify'; userId: string | null; traits?: AnalyticsProperties };
++
++export interface MemoryAnalytics extends Analytics {
++  /** Everything recorded so far, oldest first. */
++  readonly records: readonly AnalyticsRecord[];
++  /** Forgets the recorded calls. */
++  clear(): void;
++}
++
++/** Creates an Analytics provider that records calls, keeping at most `limit`. */
++export function createMemoryAnalytics(limit = 500): MemoryAnalytics {
++  const records: AnalyticsRecord[] = [];
++  const record = (entry: AnalyticsRecord) => {
++    records.push(entry);
++    if (records.length > limit) records.shift();
++    logger.debug(`[analytics] ${entry.type}`, { ...entry });
++  };
++  return {
++    records,
++    clear: () => {
++      records.length = 0;
++    },
++    track: (name, properties) => record({ type: 'track', name, properties }),
++    screen: (name, properties) => record({ type: 'screen', name, properties }),
++    identify: (userId, traits) => record({ type: 'identify', userId, traits }),
++  };
++}
+diff --git a/shared/integrations/setup.ts b/shared/integrations/setup.ts
+index b84f392..ca2eaaa 100644
+--- a/shared/integrations/setup.ts
++++ b/shared/integrations/setup.ts
+@@ -18,17 +18,19 @@
+  * runs once, from app/_layout.tsx, before the first screen renders.
+  */
+ 
++import { siteNotesAuthAdapter } from '@/features/auth/siteNotesAdapter';
++import { setAuthAdapter } from '@/shared/session/authService';
++import { createMemoryAnalytics } from './adapters/memoryAnalytics';
++import { analyticsSeam } from './analytics';
++
+ let configured = false;
+ 
+ export function configureIntegrations(): void {
+   if (configured) return;
+   configured = true;
+ 
+-  // Register provider adapters here. Without them the defaults stay active.
++  // A fake provider until we pick a real one: records events and logs them.
++  analyticsSeam.set(createMemoryAnalytics());
+ 
+-  // Sign-in: register the adapter for your auth backend, e.g.
+-  //   setAuthAdapter(myBackendAuthAdapter);
+-  // with setAuthAdapter from '@/shared/session/authService' (see
+-  // docs/connect-your-backend.md). Until one is set, sign-in
+-  // reports that it is not configured.
++  setAuthAdapter(siteNotesAuthAdapter);
+ }

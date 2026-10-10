@@ -1,0 +1,20 @@
+
+> site-notes@1.0.0 mock-backend
+> node scripts/mock-backend/server.js
+
+Site Notes mock backend on http://localhost:4000
+GET /api/v1/me 401
+POST /api/v1/sessions 422
+POST /api/v1/sessions 201
+GET /api/v1/me 200
+GET /api/v1/notes 503
+GET /api/v1/notes 200
+POST /api/v1/sessions 201
+GET /api/v1/me 200
+GET /api/v1/notes 503
+GET /api/v1/notes 200
+POST /api/v1/sessions 201
+GET /api/v1/me 200
+GET /api/v1/notes 503
+GET /api/v1/notes 200
+DELETE /api/v1/sessions 204

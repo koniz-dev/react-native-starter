@@ -1,0 +1,119 @@
+## 01 sign in (mock reachable at localhost:4000 via adb reverse)
+Running on Medium_Phone_API_37.0
+ > Flow Sign in against the Site Notes mock backend
+Run subflows/open-app.yaml...
+  Run flow when ${CLEAR_STATE == 'true'} is true...
+    Clear state of ${APP_ID}... COMPLETED
+    Run flow when Platform is IOS...
+    Run flow when Platform is IOS... SKIPPED
+  Run flow when true is true... COMPLETED
+  Launch app "${APP_ID}"... COMPLETED
+  Open ${APP_URL}... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)...
+    Assert that (Optional) id: tab-home is visible... WARNED
+    Run flow when Platform is IOS and "Open in .*" is visible...
+    Run flow when Platform is IOS and "Open in .*" is visible... SKIPPED
+    Run flow when "Development servers" is visible...
+    Run flow when "Development servers" is visible... SKIPPED
+    Tap on (Optional) "Wait"... WARNED
+    Tap on (Optional) "Continue"... COMPLETED
+    Run flow when Platform is ANDROID and "Go home" is visible...
+      Press back... COMPLETED
+    Run flow when Platform is ANDROID and "Go home" is visible... COMPLETED
+    Run flow when Platform is IOS and "Go home" is visible...
+    Run flow when Platform is IOS and "Go home" is visible... SKIPPED
+    Wait for animation to end... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)... COMPLETED
+  Assert that "Session" is visible... COMPLETED
+Run subflows/open-app.yaml... COMPLETED
+Wait for animation to end... COMPLETED
+Tap on id: sign-in-button... COMPLETED
+Assert that id: login-username is visible... COMPLETED
+Tap on id: login-username... COMPLETED
+Wait for animation to end... COMPLETED
+Input text field@example.com... COMPLETED
+Run flow when "^field@example\.com$" is not visible...
+Run flow when "^field@example\.com$" is not visible... SKIPPED
+Assert that "^field@example\.com$" is visible... COMPLETED
+Tap on id: login-password... COMPLETED
+Input text notes-123... COMPLETED
+Hide Keyboard... COMPLETED
+Take screenshot 01-login-filled... COMPLETED
+Tap on id: login-submit... COMPLETED
+Assert that "Signed in as Field Tester" is visible... COMPLETED
+Take screenshot 01-signed-in... COMPLETED
+Stop ${APP_ID}... COMPLETED
+Run subflows/open-app.yaml...
+  Run flow when ${CLEAR_STATE == 'true'} is true...
+  Run flow when false is true... SKIPPED
+  Launch app "${APP_ID}"... COMPLETED
+  Open ${APP_URL}... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)...
+    Assert that (Optional) id: tab-home is visible... WARNED
+    Run flow when Platform is IOS and "Open in .*" is visible...
+    Run flow when Platform is IOS and "Open in .*" is visible... SKIPPED
+    Run flow when "Development servers" is visible...
+    Run flow when "Development servers" is visible... SKIPPED
+    Tap on (Optional) "Wait"... WARNED
+    Tap on (Optional) "Continue"... WARNED
+    Run flow when Platform is ANDROID and "Go home" is visible...
+    Run flow when Platform is ANDROID and "Go home" is visible... SKIPPED
+    Run flow when Platform is IOS and "Go home" is visible...
+    Run flow when Platform is IOS and "Go home" is visible... SKIPPED
+    Wait for animation to end... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)... COMPLETED
+  Assert that "Session" is visible... COMPLETED
+Run subflows/open-app.yaml... COMPLETED
+Assert that "Signed in as Field Tester" is visible... COMPLETED
+Take screenshot 01-relaunch-still-signed-in... COMPLETED
+[exit 0]
+
+## touch scripts/mock-backend/.fail
+## 02a notes error
+Running on Medium_Phone_API_37.0
+ > Flow Notes shows the API error
+Run subflows/open-app.yaml...
+  Run flow when ${CLEAR_STATE == 'true'} is true...
+  Run flow when false is true... SKIPPED
+  Launch app "${APP_ID}"... COMPLETED
+  Open ${APP_URL}... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)...
+    Assert that (Optional) id: tab-home is visible... WARNED
+    Run flow when Platform is IOS and "Open in .*" is visible...
+    Run flow when Platform is IOS and "Open in .*" is visible... SKIPPED
+    Run flow when "Development servers" is visible...
+    Run flow when "Development servers" is visible... SKIPPED
+    Tap on (Optional) "Wait"... WARNED
+    Tap on (Optional) "Continue"... WARNED
+    Run flow when Platform is ANDROID and "Go home" is visible...
+    Run flow when Platform is ANDROID and "Go home" is visible... SKIPPED
+    Run flow when Platform is IOS and "Go home" is visible...
+    Run flow when Platform is IOS and "Go home" is visible... SKIPPED
+    Wait for animation to end... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)... COMPLETED
+  Assert that "Session" is visible... COMPLETED
+Run subflows/open-app.yaml... COMPLETED
+Tap on id: tab-notes... COMPLETED
+Assert that id: notes-error is visible... COMPLETED
+Assert that "Could not load your notes" is visible... COMPLETED
+Take screenshot 02-notes-error... COMPLETED
+[exit 0]
+
+## rm scripts/mock-backend/.fail
+## 02b retry and logout
+Running on Medium_Phone_API_37.0
+ > Flow Retry loads the notes, then log out
+Tap on id: notes-retry... COMPLETED
+Assert that "North wall: crack above window" is visible... COMPLETED
+Assert that "Roof: drainage outlet blocked" is visible... COMPLETED
+Assert that id: notes-error is not visible... COMPLETED
+Take screenshot 02-notes-list... COMPLETED
+Run flow when "API .* failed.*" is visible...
+  Tap on point (92%,92%)... COMPLETED
+Run flow when "API .* failed.*" is visible... COMPLETED
+Tap on id: tab-home... COMPLETED
+Assert that id: logout-button is visible... COMPLETED
+Tap on id: logout-button... COMPLETED
+Assert that "Not signed in" is visible... COMPLETED
+Take screenshot 02-signed-out... COMPLETED
+[exit 0]

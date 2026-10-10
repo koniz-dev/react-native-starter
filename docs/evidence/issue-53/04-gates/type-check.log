@@ -1,0 +1,6 @@
+$ npm run type-check
+
+> site-notes@1.0.0 type-check
+> tsc --noEmit
+
+[exit 0]

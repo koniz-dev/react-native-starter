@@ -1,0 +1,13 @@
+$ npm run prebuild:production -- --platform android --no-install
+
+> site-notes@1.0.0 prebuild:production
+> APP_VARIANT=production expo prebuild --clean --platform android --no-install
+
+- Creating native directory (./android)
+✔ Created native directory
+- Updating package.json
+✔ Updated package.json | no changes
+- Running prebuild
+✔ Finished prebuild
+$ git status --porcelain
+[end; empty means the tree is unchanged]

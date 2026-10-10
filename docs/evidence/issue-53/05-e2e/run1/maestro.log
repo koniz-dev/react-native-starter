@@ -1,0 +1,10 @@
+
+Requested 1 shards, but it cannot be higher than the number of flows (0). Will use 1 shards instead.
+
+Waiting for flows to complete...
+[Passed] Cold start opens Home (3m 8s)
+[Passed] Notes tab asks a signed-out user to sign in (2m 39s)
+[Passed] Back from Login returns Home (2m 52s)
+
+3/3 Flows Passed in 8m 39s
+

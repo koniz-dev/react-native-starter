@@ -1,0 +1,33 @@
+# Run after removing .fail, on the error screen: Retry loads the list, then log out.
+appId: ${APP_ID}
+name: Retry loads the notes, then log out
+---
+- tapOn:
+    id: notes-retry
+- extendedWaitUntil:
+    visible: 'North wall: crack above window'
+    timeout: 30000
+- assertVisible: 'Roof: drainage outlet blocked'
+- assertNotVisible:
+    id: notes-error
+- takeScreenshot: 02-notes-list
+# In development, LogBox shows a toast for the failed request over the tab
+# bar (#54); close it with its x button before tapping a tab.
+- runFlow:
+    when:
+      visible: 'API .* failed.*'
+    commands:
+      - tapOn:
+          point: 92%,92%
+- tapOn:
+    id: tab-home
+- extendedWaitUntil:
+    visible:
+      id: logout-button
+    timeout: 20000
+- tapOn:
+    id: logout-button
+- extendedWaitUntil:
+    visible: Not signed in
+    timeout: 15000
+- takeScreenshot: 02-signed-out
