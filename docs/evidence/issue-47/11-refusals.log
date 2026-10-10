@@ -1,0 +1,37 @@
+# clone of main at bf1f4e1
+# dirty working tree
+
+> react-native-starter@1.0.0 init-project
+> node scripts/init-project.js --name Acme --bundle-id com.acme.app --owner Acme
+
+init-project: the working tree has uncommitted changes; commit or stash them, or pass --force:
+M README.md
+[exit 1]
+
+# invalid input (node scripts/init-project.js --name Acme --owner Acme --bundle-id com.acme.app <override>)
+$ ... --slug=Acme_Notes
+init-project: slug "Acme_Notes" must be lowercase letters and digits separated by single dashes (e.g. acme-notes)
+scheme "Acme_Notes" must start with a lowercase letter and use only a-z, 0-9, +, ., - (e.g. acmenotes)
+[exit 1]
+$ ... --scheme=1acme
+init-project: scheme "1acme" must start with a lowercase letter and use only a-z, 0-9, +, ., - (e.g. acmenotes)
+[exit 1]
+$ ... --bundle-id=acme
+init-project: bundle ID "acme" must be reverse-DNS: two or more dot-separated parts, each starting with a letter and using only letters, digits, and _ (e.g. com.acme.notes)
+[exit 1]
+$ ... --bundle-id=com.acme-corp.app
+init-project: bundle ID "com.acme-corp.app" must be reverse-DNS: two or more dot-separated parts, each starting with a letter and using only letters, digits, and _ (e.g. com.acme.notes)
+[exit 1]
+$ ... --name=Acme|Notes
+init-project: the app name contains a control character, backtick, backslash, or |
+[exit 1]
+
+# missing value without a terminal
+init-project: --bundle-id is required when not run in a terminal
+[exit 1]
+$ git status --short
+[empty]
+
+# second run (bundle ID already set and committed)
+init-project: this project is already initialized (bundle ID com.acme.app); pass --force to run again
+[exit 1]

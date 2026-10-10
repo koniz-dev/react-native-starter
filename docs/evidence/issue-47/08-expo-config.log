@@ -1,0 +1,6 @@
+$ APP_VARIANT=development npx expo config --type public --json (selected fields)
+{"name":"Acme Notes (Dev)","slug":"acme-notes","version":"1.0.0","scheme":"acmenotes-dev","ios":"com.acme.notes.dev","android":"com.acme.notes.dev","variant":"development"}
+$ APP_VARIANT=preview npx expo config --type public --json (selected fields)
+{"name":"Acme Notes (Preview)","slug":"acme-notes","version":"1.0.0","scheme":"acmenotes-preview","ios":"com.acme.notes.preview","android":"com.acme.notes.preview","variant":"preview"}
+$ APP_VARIANT=production npx expo config --type public --json (selected fields)
+{"name":"Acme Notes","slug":"acme-notes","version":"1.0.0","scheme":"acmenotes","ios":"com.acme.notes","android":"com.acme.notes","variant":"production"}

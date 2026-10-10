@@ -1,0 +1,64 @@
+
+> react-native-starter@1.0.0 init-project
+> node scripts/init-project.js
+
+App name (shown under the icon): Acme Notes
+Slug (Expo project and npm package name) (acme-notes): 
+URL scheme (acmenotes): 
+Bundle / package ID (reverse-DNS, e.g. com.acme.notes): com.example.notes
+  bundle ID "com.example.notes" uses the com.example placeholder; use a domain you own
+Bundle / package ID (reverse-DNS, e.g. com.acme.notes): com.acme.notes
+LICENSE holder (koniz-dev): Acme Inc.
+Remove the demo features? (y/N): y
+Initializing the project...
+  update app.config.ts: APP: name "RN Starter" -> "Acme Notes", slug react-native-starter -> acme-notes, scheme rnstarter -> acmenotes, bundleId com.example.rnstarter -> com.acme.notes, version 1.0.0 -> 1.0.0
+  update package.json: name -> acme-notes, version -> 1.0.0, remove the init-project script
+  update package-lock.json: name -> acme-notes, version -> 1.0.0
+  update LICENSE: copyright holder -> 2026 Acme Inc.
+  update README.md: title and intro, remove @init blocks
+  update docs/getting-started.md: remove @init blocks
+  update docs/make-it-yours.md: identity examples, remove @init blocks
+  update scripts/README.md: remove @init blocks
+  update docs/testing.md: identity examples
+  update .github/workflows/e2e-android.yml: identity examples
+  update AGENTS.md: remove the maintainer block
+  delete docs/maintainers/: maintainer file
+  delete scripts/maintainers/: maintainer file
+  delete scripts/maintainer-files.json: maintainer file
+  delete scripts/init-project.js: init-project itself
+  delete __tests__/scripts/initProject.test.ts: init-project itself
+  run remove-demo:
+Removing the demo...
+  delete features/demo-auth
+  delete features/demo-todos
+  delete features/demo-showcase
+  delete app/(tabs)/explore.tsx
+  delete app/showcase.tsx
+  delete __tests__/features/demo-auth
+  delete __tests__/features/demo-todos
+  delete __tests__/features/demo-showcase
+  strip app/(tabs)/_layout.tsx
+  strip features/auth/screens/LoginScreen.tsx
+  strip features/home/screens/HomeScreen.tsx
+  strip shared/i18n/en.ts
+  strip shared/integrations/setup.ts
+  strip __tests__/app/tabBarTheme.test.tsx
+  strip __tests__/features/home/HomeScreen.test.tsx
+  strip __tests__/shared/integrations/i18n.test.tsx
+⠙app/(tabs)/_layout.tsxapp/(tabs)/_layout.tsx 102ms (unchanged)
+features/auth/screens/LoginScreen.tsxfeatures/auth/screens/LoginScreen.tsx 36ms
+features/home/screens/HomeScreen.tsxfeatures/home/screens/HomeScreen.tsx 15ms
+shared/i18n/en.tsshared/i18n/en.ts 12ms (unchanged)
+shared/integrations/setup.tsshared/integrations/setup.ts 3ms (unchanged)
+__tests__/app/tabBarTheme.test.tsx__tests__/app/tabBarTheme.test.tsx 11ms (unchanged)
+__tests__/features/home/HomeScreen.test.tsx__tests__/features/home/HomeScreen.test.tsx 13ms
+__tests__/shared/integrations/i18n.test.tsx__tests__/shared/integrations/i18n.test.tsx 14ms (unchanged)
+⠙Done. Next: register your AuthAdapter in shared/integrations/setup.ts, then run npm run lint, npm run type-check, and npm run test:ci.
+Done: this is now Acme Notes. Next:
+  1. Review the advisories in scripts/audit-allowlist.json and make them yours
+     (docs/getting-started.md#dependency-advisories).
+  2. Replace the images in assets/ and the palette in shared/ui/theme.ts
+     (docs/make-it-yours.md).
+  3. Run npm run lint, npm run type-check, and npm run test:ci, then commit.
+⠙
+[exit status 0]

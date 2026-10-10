@@ -1,0 +1,61 @@
+$ git grep -iE "koniz-dev|react-native-starter|rnstarter|com\.example"
+[exit 1 — 1 means no matches]
+
+$ git status --short | wc -l
+      40
+$ ls docs scripts
+docs:
+README.md
+api-and-storage.md
+connect-your-backend.md
+conventions.md
+environment-variables.md
+error-reporting.md
+getting-started.md
+make-it-yours.md
+plug-in-a-provider.md
+recipes
+remove-demo.md
+testing.md
+ui-and-theming.md
+
+scripts:
+README.md
+audit-allowlist.json
+check-audit.js
+check-docs.js
+e2e
+remove-demo.js
+$ head -5 README.md LICENSE
+==> README.md <==
+# Acme Notes
+
+Acme Notes is an Expo (SDK 57) and React Native app. Its foundation (routing, session, HTTP, storage, theming, error reporting, i18n, test setup) came from a starter; every third-party service sits behind a typed seam with a no-op or console default.
+
+## Quick start
+
+==> LICENSE <==
+MIT License
+
+Copyright (c) 2026 Acme Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+$ grep -n "init-project\|@init\|maintainer" -r README.md docs scripts AGENTS.md package.json
+[exit 1]
+
+$ node -p "name/version/scripts in package.json and package-lock.json"
+{"pkg":["acme-notes","1.0.0",false],"lock":["acme-notes","1.0.0","acme-notes"]}
+$ ls scripts/init-project.js __tests__/scripts docs/maintainers scripts/maintainers scripts/maintainer-files.json features
+ls: __tests__/scripts: No such file or directory
+ls: docs/maintainers: No such file or directory
+ls: scripts/init-project.js: No such file or directory
+ls: scripts/maintainer-files.json: No such file or directory
+ls: scripts/maintainers: No such file or directory
+features:
+auth
+home
+$ grep -n "## Documentation" -A3 README.md
+43:## Documentation
+44-
+45-Start with [docs/README.md](docs/README.md). The usual path:
+46-

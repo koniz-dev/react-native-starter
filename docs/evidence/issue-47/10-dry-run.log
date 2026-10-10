@@ -1,0 +1,46 @@
+# clone of main at bf1f4e1; node_modules is a symlink, excluded in .git/info/exclude
+$ npm run init-project -- --name "Acme Notes" --bundle-id com.acme.notes --owner "Acme Inc." --remove-demo --dry-run
+
+> react-native-starter@1.0.0 init-project
+> node scripts/init-project.js --name Acme Notes --bundle-id com.acme.notes --owner Acme Inc. --remove-demo --dry-run
+
+Dry run: nothing is changed.
+  update app.config.ts: APP: name "RN Starter" -> "Acme Notes", slug react-native-starter -> acme-notes, scheme rnstarter -> acmenotes, bundleId com.example.rnstarter -> com.acme.notes, version 1.0.0 -> 1.0.0
+  update package.json: name -> acme-notes, version -> 1.0.0, remove the init-project script
+  update package-lock.json: name -> acme-notes, version -> 1.0.0
+  update LICENSE: copyright holder -> 2026 Acme Inc.
+  update README.md: title and intro, remove @init blocks
+  update docs/getting-started.md: remove @init blocks
+  update docs/make-it-yours.md: identity examples, remove @init blocks
+  update scripts/README.md: remove @init blocks
+  update docs/testing.md: identity examples
+  update .github/workflows/e2e-android.yml: identity examples
+  update AGENTS.md: remove the maintainer block
+  delete docs/maintainers/: maintainer file
+  delete scripts/maintainers/: maintainer file
+  delete scripts/maintainer-files.json: maintainer file
+  delete scripts/init-project.js: init-project itself
+  delete __tests__/scripts/initProject.test.ts: init-project itself
+  run remove-demo:
+Dry run: nothing is changed.
+  delete features/demo-auth
+  delete features/demo-todos
+  delete features/demo-showcase
+  delete app/(tabs)/explore.tsx
+  delete app/showcase.tsx
+  delete __tests__/features/demo-auth
+  delete __tests__/features/demo-todos
+  delete __tests__/features/demo-showcase
+  strip app/(tabs)/_layout.tsx
+  strip features/auth/screens/LoginScreen.tsx
+  strip features/home/screens/HomeScreen.tsx
+  strip shared/i18n/en.ts
+  strip shared/integrations/setup.ts
+  strip __tests__/app/tabBarTheme.test.tsx
+  strip __tests__/features/home/HomeScreen.test.tsx
+  strip __tests__/shared/integrations/i18n.test.tsx
+Dry run complete.
+Dry run complete.
+[exit 0]
+$ git status --short
+[end of git status: empty means nothing changed]
