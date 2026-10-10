@@ -71,7 +71,9 @@ local to that file.
 
 `jest.setup.env.js` sets `EXPO_PUBLIC_USE_DEMO_BACKENDS=true`, so the app's
 config is valid in tests. Tests of config validation call `parseEnv()`
-directly.
+directly. One consequence: in tests the API and the auth backend are on
+different origins, so requests through `api` never carry the token; see
+[Requests that carry the token](#requests-that-carry-the-token).
 
 ## Two kinds of UI tests
 
@@ -101,6 +103,52 @@ expect(app.getPathname()).toBe('/'); // the guard sent a signed-out user Home
 Add a route just for a test with
 `renderRouter({ appDir: './app', overrides: { '(tabs)/boom': Bomb } })` (see
 `__tests__/shared/ui/ErrorBoundary.test.tsx`).
+
+### A seam or adapter in a full-app test
+
+Rendering `./app` loads `app/_layout.tsx`, which calls
+`configureIntegrations()`. Once you register your providers and auth adapter
+there, that call replaces a mock the test set before rendering. Call
+`configureIntegrations()` yourself first (it registers only once per test
+file), then set the test's mock:
+
+```tsx
+import { act } from '@testing-library/react-native';
+import { router } from 'expo-router';
+import { renderRouter, screen } from 'expo-router/testing-library';
+import { analyticsSeam, type Analytics } from '@/shared/integrations/analytics';
+import { configureIntegrations } from '@/shared/integrations/setup';
+
+const provider: Analytics = {
+  track: jest.fn(),
+  screen: jest.fn(),
+  identify: jest.fn(),
+};
+
+beforeEach(() => {
+  configureIntegrations(); // the app's providers first
+  analyticsSeam.set(provider); // then this test's mock
+});
+afterEach(() => analyticsSeam.reset());
+
+it('reports a screen view for each route', async () => {
+  renderRouter('./app', { initialUrl: '/' });
+  await screen.findByText('Not signed in');
+  expect(provider.screen).toHaveBeenLastCalledWith('/');
+
+  act(() => router.push('/login'));
+  await screen.findByText('Welcome Back');
+  expect(provider.screen).toHaveBeenLastCalledWith('/login');
+});
+```
+
+The same goes for `setAuthAdapter()` and the error reporter. The starter's
+own full-app tests that set a seam do this
+(`__tests__/shared/integrations/screenTracking.test.tsx`,
+`__tests__/shared/integrations/i18n.test.tsx`,
+`__tests__/shared/ui/ErrorBoundary.test.tsx`), so they keep passing when you
+register real providers. A screen or component test that doesn't render
+`./app` can set a mock directly.
 
 ## Network
 
@@ -196,6 +244,56 @@ it('shows loading, then the error, and Retry loads the list', async () => {
   );
   expect(await screen.findByText('Hello')).toBeTruthy();
   expect(screen.queryByText(/Retry/)).toBeNull();
+});
+```
+
+### Requests that carry the token
+
+`jest.setup.env.js` turns the demo backends on, so in tests `api` points at
+one origin and the auth backend at another. The HTTP client sends the token
+only to the auth backend's origin (and `EXPO_PUBLIC_API_TRUSTED_ORIGINS`), so
+requests through `api` go out without it, and a 401 there is not refreshed.
+If your API and auth backend share an origin, test the token and the 401
+handling in one of two ways:
+
+- send the request through `authClients.authenticated` from
+  `shared/session/authService.ts`, which targets the auth origin; or
+- give the test file the same origin for both, by mocking `getConfig()`
+  (`jest.mock` runs before the imports):
+
+```ts
+// __tests__/shared/http/sameOrigin.test.ts
+import { api } from '@/shared/http/api';
+import { STORAGE_KEYS } from '@/shared/storage/storage';
+import { secureStore } from '@/testing';
+
+jest.mock('@/shared/config/env', () => {
+  const actual = jest.requireActual<typeof import('@/shared/config/env')>(
+    '@/shared/config/env'
+  );
+  const config = actual.getConfig();
+  return {
+    ...actual,
+    getConfig: () => ({ ...config, apiUrl: config.authApiUrl }),
+  };
+});
+
+const originalAdapter = api.defaults.adapter;
+afterEach(() => {
+  api.defaults.adapter = originalAdapter;
+});
+
+it('sends the stored token to an API on the auth origin', async () => {
+  secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
+  let authorization: unknown;
+  api.defaults.adapter = async config => {
+    authorization = config.headers.Authorization;
+    return { data: [], status: 200, statusText: 'OK', headers: {}, config };
+  };
+
+  await api.get('/notes');
+
+  expect(authorization).toBe('Bearer stored-token');
 });
 ```
 

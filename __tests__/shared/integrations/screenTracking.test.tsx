@@ -2,6 +2,7 @@ import { act } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import { renderRouter, screen } from 'expo-router/testing-library';
 import { analyticsSeam, type Analytics } from '@/shared/integrations/analytics';
+import { configureIntegrations } from '@/shared/integrations/setup';
 
 describe('screen tracking', () => {
   afterEach(() => analyticsSeam.reset());
@@ -12,6 +13,9 @@ describe('screen tracking', () => {
       screen: jest.fn(),
       identify: jest.fn(),
     };
+    // Register the app's providers first: rendering ./app runs
+    // configureIntegrations(), which would replace this test's one.
+    configureIntegrations();
     analyticsSeam.set(provider);
 
     renderRouter('./app', { initialUrl: '/' });

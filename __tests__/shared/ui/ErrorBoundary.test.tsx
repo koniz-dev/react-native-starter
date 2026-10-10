@@ -10,6 +10,7 @@ import {
   errorReporterSeam,
   type ErrorReporter,
 } from '@/shared/integrations/errorReporter';
+import { configureIntegrations } from '@/shared/integrations/setup';
 import { setColorScheme } from '@/testing';
 
 // The app's routes load the auth service, which loads both storage modules.
@@ -53,6 +54,9 @@ describe('error boundaries', () => {
       captureMessage: jest.fn(),
       setUser: jest.fn(),
     };
+    // Register the app's providers first: rendering ./app runs
+    // configureIntegrations(), which would replace this test's one.
+    configureIntegrations();
     errorReporterSeam.set(reporter);
     // React and the logger print the caught error; keep the test output clean.
     jest.spyOn(console, 'error').mockImplementation(() => {});

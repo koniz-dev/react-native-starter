@@ -17,7 +17,10 @@ changes.
 | i18n               | `I18n` (`shared/i18n/index.ts`)                                  | English, from `shared/i18n/en.ts`                  | `t('login.title')`                           |
 
 Each seam is a `createSeam(default)` with `set()` and `reset()`; tests set a
-mock and call `reset()` afterwards.
+mock and call `reset()` afterwards. A full-app test (one that renders
+`./app`) must call `configureIntegrations()` before setting its mock, or your
+registered provider replaces it; see
+[Testing](testing.md#a-seam-or-adapter-in-a-full-app-test).
 
 The adapters below compile against the seams in this repo (`npm run
 docs:check`). Each declares the part of the provider's SDK it uses, with the

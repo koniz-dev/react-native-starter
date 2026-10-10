@@ -8,6 +8,7 @@ import {
   type Translations,
 } from '@/shared/i18n';
 import { en } from '@/shared/i18n/en';
+import { configureIntegrations } from '@/shared/integrations/setup';
 
 /** A pseudo-locale that wraps every English string, to spot hard-coded text. */
 const pseudo: Translations = Object.fromEntries(
@@ -41,6 +42,9 @@ describe('i18n seam', () => {
   });
 
   it('the shipped screens read their strings through the seam', async () => {
+    // Register the app's providers first: rendering ./app runs
+    // configureIntegrations(), which would replace this test's one.
+    configureIntegrations();
     i18nSeam.set(createDictionaryI18n('x-pseudo', pseudo));
 
     const app = renderRouter('./app', { initialUrl: '/' });
