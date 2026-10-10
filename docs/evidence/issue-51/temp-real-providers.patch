@@ -1,0 +1,37 @@
+diff --git a/shared/integrations/setup.ts b/shared/integrations/setup.ts
+index 3adb8a0..a927b13 100644
+--- a/shared/integrations/setup.ts
++++ b/shared/integrations/setup.ts
+@@ -22,6 +22,14 @@ import { setAuthAdapter } from '@/shared/session/authService';
+ import { dummyJsonAuthAdapter } from '@/features/demo-auth/dummyJsonAdapter';
+ // @demo remove-block-end
+ 
++// TEMPORARY (issue 51 check): a "real" provider for every seam, as an app would register.
++import { analyticsSeam } from './analytics';
++import { errorReporterSeam } from './errorReporter';
++import { featureFlagsSeam } from './featureFlags';
++import { pushNotificationsSeam } from './pushNotifications';
++import { updatesSeam } from './updates';
++import { i18nSeam } from '@/shared/i18n';
++
+ let configured = false;
+ 
+ export function configureIntegrations(): void {
+@@ -29,6 +37,17 @@ export function configureIntegrations(): void {
+   configured = true;
+ 
+   // Register provider adapters here. Without them the defaults stay active.
++  for (const seam of [
++    analyticsSeam,
++    errorReporterSeam,
++    featureFlagsSeam,
++    pushNotificationsSeam,
++    updatesSeam,
++    i18nSeam,
++  ] as { get(): object; set(v: object): void }[]) {
++    seam.reset();
++    seam.set({ ...seam.get() }); // a new provider object, like a real adapter
++  }
+ 
+   // Sign-in: register the adapter for your auth backend, e.g.
+   //   setAuthAdapter(myBackendAuthAdapter);

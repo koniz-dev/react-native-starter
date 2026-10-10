@@ -1,0 +1,3 @@
+# With the temporary patch (temp-real-providers.patch) applied: a fresh provider object for every seam in configureIntegrations()
+$ npx jest
+Tests:       251 passed, 251 total

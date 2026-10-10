@@ -1,0 +1,17 @@
+# The two snippets from docs/testing.md, run as test files (copies in snippet-tests/)
+$ npx jest __tests__/docsSeamSnippet.test.tsx __tests__/docsSameOriginSnippet.test.ts
+PASS __tests__/docsSameOriginSnippet.test.ts
+PASS __tests__/docsSeamSnippet.test.tsx
+Tests:       2 passed, 2 total
+
+# The same-origin snippet without its jest.mock: the token is not sent (the consequence the docs describe)
+$ npx jest __tests__/docsSameOriginNoMock.test.ts
+FAIL __tests__/docsSameOriginNoMock.test.ts
+    Expected: "Bearer stored-token"
+    Received: undefined
+Tests:       1 failed, 1 total
+
+# The seam snippet with temp-real-providers.patch applied (a provider registered for every seam)
+PASS __tests__/docsSeamSnippet.test.tsx
+  ✓ reports a screen view for each route (680 ms)
+Tests:       1 passed, 1 total

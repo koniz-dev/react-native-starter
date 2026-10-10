@@ -1,0 +1,6 @@
+# Tests as on main (82c673a..94defee), with the temporary patch (temp-real-providers.patch) applied
+$ npx jest
+  ● error boundaries › in light mode › a route boundary catches a throwing screen, reports it, and renders a themed fallback
+  ● i18n seam › the shipped screens read their strings through the seam
+  ● screen tracking › reports a screen view for the initial route and each navigation
+Tests:       3 failed, 248 passed, 251 total
