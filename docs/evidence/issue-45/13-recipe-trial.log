@@ -16,3 +16,34 @@ $ cp -R /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-sta
 $ (cd ../rns-evidence && node tools/check-links.js)
 Checked 462 relative links in 45 files: 0 problems.
 # exit 0
+$ git -C ../rns-evidence add docs/evidence/issue-45
+# exit 0
+$ git -C ../rns-evidence commit -m "docs: record the evidence for issue 45" -m "Refs koniz-dev/react-native-starter#45" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+[evidence 0abf555] docs: record the evidence for issue 45
+ 14 files changed, 1341 insertions(+)
+ create mode 100644 docs/evidence/issue-45/01-clone-before.log
+ create mode 100644 docs/evidence/issue-45/02-clone-after.log
+ create mode 100644 docs/evidence/issue-45/03-url-check.log
+ create mode 100644 docs/evidence/issue-45/04-url-check-api.log
+ create mode 100644 docs/evidence/issue-45/05-lint.log
+ create mode 100644 docs/evidence/issue-45/06-type-check.log
+ create mode 100644 docs/evidence/issue-45/07-test-ci.log
+ create mode 100644 docs/evidence/issue-45/08-format-check.log
+ create mode 100644 docs/evidence/issue-45/09-docs-check.log
+ create mode 100644 docs/evidence/issue-45/10-audit-check.log
+ create mode 100644 docs/evidence/issue-45/11-github-actions-ci-38042047311.log
+ create mode 100644 docs/evidence/issue-45/12-evidence-branch-links.log
+ create mode 100644 docs/evidence/issue-45/13-recipe-trial.log
+ create mode 100644 docs/evidence/issue-45/summary.md
+# exit 0
+$ git -C ../rns-evidence push origin evidence
+To https://github.com/koniz-dev/react-native-starter.git
+   2152576..0abf555  evidence -> evidence
+# exit 0
+# Second run, reusing the worktree (the recipe's 'afterwards' path) to commit this full transcript
+$ git -C ../rns-evidence pull --ff-only
+Already up to date.
+# exit 0
+$ (cd ../rns-evidence && node tools/check-links.js)
+Checked 462 relative links in 45 files: 0 problems.
+# exit 0
