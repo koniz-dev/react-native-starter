@@ -39,11 +39,18 @@ you (icons, colors, backend, providers).
 
 ## Supported platforms
 
-| Platform | Verified                                                | Notes                                                                                                                        |
-| -------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Android  | Expo Go, and a native debug build (`prebuild` + Gradle) | Emulator runs of the [Maestro flows](testing.md#end-to-end-flows-maestro)                                                    |
-| iOS      | Expo Go on the iOS Simulator                            | Native iOS builds need Xcode 26.4+ and have not been verified for this release                                               |
-| Web      | Static export (`npx expo export --platform web`)        | The sign-in token is kept in memory, so a reload signs out ([Connect Your Backend](connect-your-backend.md#sessions-on-web)) |
+| Platform | Verified                                                                            | Notes                                                                                                                        |
+| -------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Android  | Expo Go, a native debug build, and a production release build (`prebuild` + Gradle) | Emulator runs of the [Maestro flows](testing.md#end-to-end-flows-maestro); a release build needs `https` backend URLs        |
+| iOS      | Expo Go on the iOS Simulator                                                        | Native iOS builds have not been verified for this release; build with EAS Build or locally with Xcode 26.4+ (below)          |
+| Web      | Static export (`npx expo export --platform web`)                                    | The sign-in token is kept in memory, so a reload signs out ([Connect Your Backend](connect-your-backend.md#sessions-on-web)) |
+
+**Native iOS builds** are untested by the starter. Two ways to make one: EAS
+Build (`eas build --platform ios --profile preview`, with your Expo and Apple
+accounts; the profiles are in `eas.json`), or locally with Xcode 26.4+:
+`npm run prebuild:preview`, then `npx expo run:ios` or open
+`ios/*.xcworkspace` in Xcode. See
+[Make It Yours](make-it-yours.md#build-variants).
 
 Expo SDK 57 (React Native 0.86, React 19.2). Not included: a production
 backend (the demo backends are placeholders), store builds and submission,
