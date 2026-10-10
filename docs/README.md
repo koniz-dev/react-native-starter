@@ -10,7 +10,12 @@ Native topics, the pages link to the official documentation.
   everything else to change.
 - [Connect Your Backend](connect-your-backend.md): URLs, an auth adapter, and
   endpoints.
+
+<!-- @demo remove-block-start -->
+
 - [Remove the Demo](remove-demo.md): strip the demo features.
+
+<!-- @demo remove-block-end -->
 
 ## Guides
 

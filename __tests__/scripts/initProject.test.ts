@@ -18,6 +18,8 @@ const init = require('../../scripts/init-project.js') as {
 };
 
 const ROOT = path.resolve(__dirname, '../..');
+/** False once `npm run remove-demo` has run (it deletes itself). */
+const HAS_DEMO = fs.existsSync(path.join(ROOT, 'scripts/remove-demo.js'));
 const IDENTITY = [
   '--name',
   'Acme Notes',
@@ -161,7 +163,7 @@ describe('init-project on a copy of the template', () => {
     expect(result.status).toBe(0);
     expect(result.stdout).toContain('update app.config.ts');
     expect(result.stdout).toContain('delete docs/maintainers/');
-    expect(result.stdout).toContain('delete features/demo-auth');
+    if (HAS_DEMO) expect(result.stdout).toContain('delete features/demo-auth');
     expect(gitStatus(dir)).toBe('');
   });
 
@@ -230,11 +232,11 @@ describe('init-project on a copy of the template', () => {
       'scripts/maintainers',
       'scripts/maintainer-files.json',
       'scripts/init-project.js',
-      '__tests__/scripts',
+      '__tests__/scripts/initProject.test.ts',
     ]) {
       expect(exists(dir, file)).toBe(false);
     }
-    expect(exists(dir, 'features/demo-auth')).toBe(true);
+    expect(exists(dir, 'features/demo-auth')).toBe(HAS_DEMO);
 
     const leftovers = spawnSync(
       'git',
@@ -263,6 +265,16 @@ describe('init-project on a copy of the template', () => {
     expect(run(dir, [...IDENTITY, '--remove-demo']).status).toBe(0);
     expect(exists(dir, 'features/demo-auth')).toBe(false);
     expect(read(dir, 'shared/integrations/setup.ts')).not.toMatch(/demo-auth/);
+    // remove-demo ran before the identity changes, so neither undid the other.
+    expect(read(dir, 'README.md')).toMatch(/^# Acme Notes\n/);
+    expect(read(dir, 'README.md')).not.toMatch(/emilys|remove-block/);
+    expect(read(dir, '.env.example')).toMatch(
+      /^EXPO_PUBLIC_USE_DEMO_BACKENDS=false$/m
+    );
+    expect(exists(dir, 'scripts/remove-demo.js')).toBe(false);
+    expect(
+      JSON.parse(read(dir, 'package.json')).scripts['remove-demo']
+    ).toBeUndefined();
 
     fs.writeFileSync(path.join(dir, 'scripts/init-project.js'), script);
     execFileSync('git', ['add', '-A'], { cwd: dir });

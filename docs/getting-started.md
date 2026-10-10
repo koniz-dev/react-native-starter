@@ -18,7 +18,7 @@ and whether to remove the demo. Then it:
 - sets the identity in `app.config.ts`, `package.json`, `package-lock.json`,
   `README.md`, `LICENSE`, and the docs' examples, and resets the version to
   `1.0.0`;
-- runs `npm run remove-demo` if you chose to;
+- removes the demo if you chose to;
 - deletes the files that belong to the starter's own maintainers, and then
   itself.
 
@@ -53,7 +53,7 @@ accounts; the profiles are in `eas.json`), or locally with Xcode 26.4+:
 [Make It Yours](make-it-yours.md#build-variants).
 
 Expo SDK 57 (React Native 0.86, React 19.2). Not included: a production
-backend (the demo backends are placeholders), store builds and submission,
+backend, store builds and submission,
 and real analytics, crash-reporting, push, feature-flag, or update providers
 (the starter has [seams](plug-in-a-provider.md) with no-op or console
 defaults). Landscape layouts are not designed.
@@ -69,14 +69,23 @@ npm start
 `npm ci` installs the exact versions in `package-lock.json`; keep the lockfile
 (regenerating it can pull versions that don't match the Expo SDK).
 
-`.env.example` sets `EXPO_PUBLIC_USE_DEMO_BACKENDS=true`, so the app talks to
-the public demo backends (JSONPlaceholder and DummyJSON) without further
-setup. Without a `.env`, the app opens on a configuration error screen that
-lists what is missing; see [Environment Variables](environment-variables.md).
+Set your backend URLs in `.env` (`EXPO_PUBLIC_API_URL`,
+`EXPO_PUBLIC_AUTH_API_URL`); see
+[Connect Your Backend](connect-your-backend.md). While they are missing, the
+app opens on a configuration error screen that lists them; see
+[Environment Variables](environment-variables.md).
+
+<!-- @demo remove-block-start -->
+
+Until then, the demo runs without any setup: `.env.example` sets
+`EXPO_PUBLIC_USE_DEMO_BACKENDS=true`, so the app talks to the public demo
+backends (JSONPlaceholder and DummyJSON). On Home, tap **Sign in** and use
+`emilys` / `emilyspass`.
+
+<!-- @demo remove-block-end -->
 
 In the terminal Metro shows, press `i` (iOS Simulator), `a` (Android
-emulator), or `w` (web), or scan the QR code with Expo Go. On Home, tap
-**Sign in** and use `emilys` / `emilyspass`.
+emulator), or `w` (web), or scan the QR code with Expo Go.
 
 ## Scripts
 
@@ -96,7 +105,13 @@ emulator), or `w` (web), or scan the QR code with Expo Go. On Home, tap
 | `npm run test:e2e:ios` / `npm run test:e2e:android`           | Maestro end-to-end flows on a simulator or emulator ([Testing](testing.md#end-to-end-flows-maestro))          |
 | `npm run docs:check`                                          | Compile the docs' TypeScript snippets and check their paths and scripts                                       |
 | `npm run audit:check`                                         | `npm audit --omit=dev`, failing on a high or critical advisory not reviewed in `scripts/audit-allowlist.json` |
-| `npm run remove-demo`                                         | Remove the demo features ([Remove the Demo](remove-demo.md))                                                  |
+
+<!-- @demo remove-block-start -->
+
+`npm run remove-demo` removes the demo features, and then itself
+([Remove the Demo](remove-demo.md)).
+
+<!-- @demo remove-block-end -->
 
 The local gate before a commit is
 `npm run lint && npm run type-check && npm run test:ci`; CI also runs
@@ -132,7 +147,12 @@ New advisories fail the check until you fix or review them the same way.
 
 1. [Make It Yours](make-it-yours.md): app name, IDs, icons, theme, variants.
 2. [Connect Your Backend](connect-your-backend.md).
+
+<!-- @demo remove-block-start -->
+
 3. [Remove the Demo](remove-demo.md).
+
+<!-- @demo remove-block-end -->
 
 ## Troubleshooting
 

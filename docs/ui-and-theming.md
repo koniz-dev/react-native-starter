@@ -51,9 +51,15 @@ const styles = StyleSheet.create({
 });
 ```
 
+<!-- @demo remove-block-start -->
+
 The Component showcase (`features/demo-showcase/screens/ShowcaseScreen.tsx`,
 opened from Home) shows text variants, buttons, cards, surfaces, and the
-snackbar under the app theme. Paper's component docs:
+snackbar under the app theme.
+
+<!-- @demo remove-block-end -->
+
+Paper's component docs:
 [callstack.github.io/react-native-paper](https://callstack.github.io/react-native-paper/docs/components/ActivityIndicator).
 
 ## Rebranding
@@ -123,7 +129,7 @@ See [Expo: fonts](https://docs.expo.dev/develop/user-interface/fonts/).
 
 Screens wrap their content in `SafeAreaView` from
 `react-native-safe-area-context`. A screen under a navigation header excludes
-the top edge (`edges={['bottom', 'left', 'right']}`), as the showcase does.
+the top edge (`edges={['bottom', 'left', 'right']}`).
 See [Expo: safe areas](https://docs.expo.dev/develop/user-interface/safe-areas/).
 
 ## Checking dark mode

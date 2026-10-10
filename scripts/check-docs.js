@@ -18,11 +18,9 @@
  * 5. every `docs/<page>.md#anchor` mentioned in source files (comments in
  *    app/, features/, shared/, scripts/, testing/, app.config.ts) exists.
  *
- * After `npm run remove-demo`, paths and snippets that refer to the demo
- * (features/demo-*, the Explore and showcase routes) are skipped, so the
- * check keeps passing on a demo-free app. Likewise, once the maintainer
- * files (scripts/maintainer-files.json) are deleted, references to them are
- * skipped.
+ * Once the maintainer files (scripts/maintainer-files.json) are deleted,
+ * references to them are skipped. The demo gets no such pass: removing it
+ * removes its docs too, so a doc that still names it is reported.
  *
  * Usage: npm run docs:check [-- --keep]   (--keep leaves .docs-check/)
  */
@@ -99,15 +97,10 @@ function anchorsOf(file) {
   return anchors;
 }
 
-const DEMO_REMOVED = !fs.existsSync(path.join(ROOT, 'features/demo-auth'));
-const DEMO_REF =
-  /features\/demo-|app\/\(tabs\)\/explore\.tsx|app\/showcase\.tsx/;
 const MAINTAINER_REMOVED = !fs.existsSync(path.join(ROOT, 'docs/maintainers'));
 const MAINTAINER_REF =
   /docs\/maintainers\/|scripts\/maintainers\/|scripts\/maintainer-files\.json/;
-const skipRemoved = value =>
-  (DEMO_REMOVED && DEMO_REF.test(value)) ||
-  (MAINTAINER_REMOVED && MAINTAINER_REF.test(value));
+const skipRemoved = value => MAINTAINER_REMOVED && MAINTAINER_REF.test(value);
 
 function isPlaceholder(value) {
   return /[<>*{}|…]|\.\.\./.test(value);
@@ -145,14 +138,10 @@ function main() {
       if (fenceMatch) {
         if (fence) {
           const body = fence.body.join('\n');
-          const skipDemo = DEMO_REMOVED && DEMO_REF.test(body);
           const missing = fence.requires.filter(pkg => !isInstalled(pkg));
           if (missing.length > 0) {
             skipped.set(`${file}:${fence.line}`, missing);
-          } else if (
-            (fence.lang === 'ts' || fence.lang === 'tsx') &&
-            !skipDemo
-          ) {
+          } else if (fence.lang === 'ts' || fence.lang === 'tsx') {
             const name = `${file.replace(/[/.]/g, '_')}_L${fence.line}.${fence.lang}`;
             fs.writeFileSync(path.join(OUT, name), `${body}\nexport {};\n`);
             snippets.push({ name, file, line: fence.line });

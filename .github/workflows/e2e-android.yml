@@ -44,7 +44,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Configure the app (demo backends)
+      - name: Configure the app (.env.example)
         run: cp .env.example .env
 
       - name: Install the Maestro CLI (release zip, checksum verified)

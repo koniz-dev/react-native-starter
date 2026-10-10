@@ -27,8 +27,14 @@ what it changes (the first row) and what is left for you.
 | Sign-in against your backend                                  | an `AuthAdapter` ([Connect Your Backend](connect-your-backend.md))                       |
 | Analytics, flags, push, OTA, crash reporting                  | adapters in `shared/integrations/setup.ts` ([Plug In a Provider](plug-in-a-provider.md)) |
 | UI strings                                                    | `shared/i18n/en.ts` (and more locales via the i18n seam)                                 |
-| Demo screens and the DummyJSON adapter                        | `npm run remove-demo` ([Remove the Demo](remove-demo.md))                                |
 | Per-variant build settings and env for EAS Build              | `eas.json` build profiles                                                                |
+
+<!-- @demo remove-block-start -->
+
+The demo screens and the DummyJSON adapter: `npm run remove-demo`
+([Remove the Demo](remove-demo.md)).
+
+<!-- @demo remove-block-end -->
 
 ## Build variants
 

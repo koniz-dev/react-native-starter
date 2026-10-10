@@ -10,6 +10,7 @@ tags:
     env:
       CLEAR_STATE: 'false'
 - takeScreenshot: dark-home
+# @demo remove-block-start
 - tapOn:
     id: tab-explore
 - extendedWaitUntil:
@@ -18,3 +19,4 @@ tags:
 - takeScreenshot: dark-explore
 - tapOn:
     id: tab-home
+# @demo remove-block-end

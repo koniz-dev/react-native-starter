@@ -7,7 +7,8 @@
  *    scheme, bundle ID, version 1.0.0), package.json and package-lock.json
  *    (name = slug, version 1.0.0), the README title and intro, the LICENSE
  *    holder, and the identity examples in the docs and the e2e workflow;
- * 2. runs `npm run remove-demo` when asked (--remove-demo);
+ * 2. runs `npm run remove-demo` when asked (--remove-demo), before planning
+ *    the other changes, since it edits some of the same files;
  * 3. deletes the starter's maintainer files (scripts/maintainer-files.json)
  *    and every `@init remove-block` in the docs;
  * 4. deletes itself, its test, and its npm script, then formats the changed
@@ -31,6 +32,8 @@ const ROOT = path.resolve(__dirname, '..');
 const PLACEHOLDER_BUNDLE_PREFIX = 'com.example.';
 const VERSION = '1.0.0';
 const MANIFEST = 'scripts/maintainer-files.json';
+/** Deleted by remove-demo itself, so its absence means the demo is gone. */
+const REMOVE_DEMO = 'scripts/remove-demo.js';
 const SELF_FILES = [
   'scripts/init-project.js',
   '__tests__/scripts/initProject.test.ts',
@@ -197,8 +200,9 @@ async function collectInput(args) {
       gitUserName() || undefined
     );
 
-    let removeDemo = args.flags.has('--remove-demo');
-    if (!removeDemo && !args.flags.has('--keep-demo') && rl) {
+    const demoPresent = fs.existsSync(path.join(ROOT, REMOVE_DEMO));
+    let removeDemo = demoPresent && args.flags.has('--remove-demo');
+    if (demoPresent && !removeDemo && !args.flags.has('--keep-demo') && rl) {
       const answer = (
         await rl.question('Remove the demo features? (y/N): ')
       ).trim();
@@ -451,10 +455,7 @@ function gitStatus() {
 function runRemoveDemo(dryRun) {
   const result = spawnSync(
     process.execPath,
-    [
-      path.join(ROOT, 'scripts/remove-demo.js'),
-      ...(dryRun ? ['--dry-run'] : []),
-    ],
+    [path.join(ROOT, REMOVE_DEMO), ...(dryRun ? ['--dry-run'] : [])],
     {
       cwd: ROOT,
       stdio: 'inherit',
@@ -502,21 +503,23 @@ async function main() {
   }
 
   const input = await collectInput(args);
-  const changes = planChanges(input);
+  const demoPresent = exists(REMOVE_DEMO);
 
   log(dryRun ? 'Dry run: nothing is changed.' : 'Initializing the project...');
+  if (input.removeDemo) {
+    log('  run remove-demo:');
+    runRemoveDemo(dryRun);
+  } else if (demoPresent) {
+    log('  keep the demo (run npm run remove-demo later to remove it)');
+  }
+
+  // Planned after remove-demo, which edits some of the same files.
+  const changes = planChanges(input);
   for (const change of changes) {
     log(
       `  ${change.action === 'delete' ? 'delete' : 'update'} ${change.file}: ${change.summary}`
     );
   }
-  log(
-    input.removeDemo
-      ? '  run remove-demo:'
-      : '  keep the demo (run npm run remove-demo later to remove it)'
-  );
-
-  if (input.removeDemo) runRemoveDemo(dryRun);
   if (dryRun) {
     log('Dry run complete.');
     return;

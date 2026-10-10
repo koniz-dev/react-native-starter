@@ -31,10 +31,15 @@ testing/        shared test helpers (render with providers, mocks)
   imports a feature; the one exception is `shared/integrations/setup.ts`, the
   composition root that registers adapters. Features don't import each
   other's internals.
+
+<!-- @demo remove-block-start -->
+
 - Demo code lives in `features/demo-*`, the Explore and showcase routes, and
-  between `@demo remove-block-start` / `@demo remove-block-end` markers.
-  Don't build on it; `npm run remove-demo` deletes it
+  between `@demo` markers (`remove-block-start` / `remove-block-end`). Don't
+  build on it; `npm run remove-demo` deletes it
   ([Remove the Demo](docs/remove-demo.md)).
+
+<!-- @demo remove-block-end -->
 
 Details: [Conventions](docs/conventions.md#project-structure).
 
@@ -137,7 +142,13 @@ Keep commits small and single-purpose.
 - [Make It Yours](docs/make-it-yours.md): app identity, icons, variants.
 - [Connect Your Backend](docs/connect-your-backend.md): URLs, auth adapter,
   endpoints.
+
+<!-- @demo remove-block-start -->
+
 - [Remove the Demo](docs/remove-demo.md).
+
+<!-- @demo remove-block-end -->
+
 - [Conventions](docs/conventions.md): structure, navigation, code style.
 - [API and Storage](docs/api-and-storage.md),
   [Environment Variables](docs/environment-variables.md),

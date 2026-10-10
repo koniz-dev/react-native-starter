@@ -3,13 +3,12 @@
 # emulator or iOS simulator (npm run test:e2e:android / test:e2e:ios).
 #
 # It starts the e2e mock API (scripts/e2e/mock-api.js) and Metro with
-# EXPO_PUBLIC_API_URL pointing at it (auth keeps the DummyJSON demo backend),
-# runs the flows, then the dark-mode flow with the device in dark mode, and
-# stops everything. Output: e2e-results/<platform>/ (gitignored).
+# EXPO_PUBLIC_API_URL pointing at it, runs the flows, then the dark-mode flow
+# with the device in dark mode, and stops everything. Output:
+# e2e-results/<platform>/ (gitignored).
 #
-# Needs: the Maestro CLI (`maestro` on PATH, or MAESTRO=/path/to/maestro),
-# a booted device with Expo Go, and network access for the demo sign-in.
-# No accounts. See docs/testing.md#end-to-end-flows-maestro.
+# Needs: the Maestro CLI (`maestro` on PATH, or MAESTRO=/path/to/maestro) and
+# a booted device with Expo Go. See docs/testing.md#end-to-end-flows-maestro.
 set -euo pipefail
 
 PLATFORM="${1:?usage: run.sh android|ios}"
@@ -61,10 +60,19 @@ set_dark_mode() {
 node "$ROOT/scripts/e2e/mock-api.js" "$MOCK_PORT" >"$OUT/mock-api.log" 2>&1 &
 PIDS+=($!)
 
+# @demo remove-block-start
+# Sign-in uses the DummyJSON demo backend, which needs network access.
+AUTH_ENV=(EXPO_PUBLIC_USE_DEMO_BACKENDS=true)
+# @demo remove-block-end
+# @demo uncomment-block-start
+# # The flows don't sign in, so the mock stands in for the auth backend. For
+# # sign-in flows, set E2E_AUTH_API_URL to your backend and use a test account.
+# AUTH_ENV=(EXPO_PUBLIC_USE_DEMO_BACKENDS=false
+#   "EXPO_PUBLIC_AUTH_API_URL=${E2E_AUTH_API_URL:-http://localhost:$MOCK_PORT}")
+# @demo uncomment-block-end
 (
   cd "$ROOT"
-  EXPO_PUBLIC_USE_DEMO_BACKENDS=true \
-    EXPO_PUBLIC_API_URL="http://localhost:$MOCK_PORT" \
+  env "${AUTH_ENV[@]}" EXPO_PUBLIC_API_URL="http://localhost:$MOCK_PORT" \
     npx expo start --port "$METRO_PORT" --clear >"$OUT/metro.log" 2>&1
 ) &
 PIDS+=($!)

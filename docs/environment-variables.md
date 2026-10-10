@@ -12,16 +12,24 @@ cp .env.example .env
 npm start
 ```
 
-`.env.example` turns on the public demo backends, so the app runs without any
-accounts. Without a `.env` (or with `EXPO_PUBLIC_USE_DEMO_BACKENDS` unset), the
-app starts on the configuration error screen.
+Then set your backend URLs in `.env`. While a required URL is missing, the app
+starts on the configuration error screen.
+
+<!-- @demo remove-block-start -->
+
+With the demo, `.env.example` turns on the public demo backends
+(JSONPlaceholder for the API, DummyJSON for sign-in), so the app runs without
+any accounts. Without a `.env` (or with `EXPO_PUBLIC_USE_DEMO_BACKENDS` unset),
+the app starts on the configuration error screen.
+
+<!-- @demo remove-block-end -->
 
 ## Variables
 
 | Variable                          | Required                         | Default                                                      | Purpose                                                                                                                                                                                   |
 | --------------------------------- | -------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `EXPO_PUBLIC_API_URL`             | Yes, unless demo backends are on | JSONPlaceholder when demo backends are on                    | Base URL of your API (`shared/http/api.ts`).                                                                                                                                              |
-| `EXPO_PUBLIC_AUTH_API_URL`        | Yes, unless demo backends are on | DummyJSON when demo backends are on                          | Base URL of your auth backend (`shared/session/authService.ts`). Its origin is the only one that receives the auth token by default.                                                      |
+| `EXPO_PUBLIC_API_URL`             | Yes, unless demo backends are on | a public demo API when demo backends are on                  | Base URL of your API (`shared/http/api.ts`).                                                                                                                                              |
+| `EXPO_PUBLIC_AUTH_API_URL`        | Yes, unless demo backends are on | a public demo auth backend when demo backends are on         | Base URL of your auth backend (`shared/session/authService.ts`). Its origin is the only one that receives the auth token by default.                                                      |
 | `EXPO_PUBLIC_API_TRUSTED_ORIGINS` | No                               | none                                                         | Comma-separated extra origins allowed to receive the auth token, e.g. an API on a separate first-party host. See [API and Storage](api-and-storage.md#which-hosts-receive-the-token).     |
 | `EXPO_PUBLIC_API_TIMEOUT_MS`      | No                               | `15000`                                                      | Request timeout for every HTTP client, in milliseconds (1000–120000).                                                                                                                     |
 | `EXPO_PUBLIC_LOG_LEVEL`           | No                               | `debug` (development), `info` (preview), `warn` (production) | Minimum level the logger writes to the console: `debug`, `info`, `warn`, `error`, or `silent`. Errors reach the error reporter at every level; see [Error reporting](error-reporting.md). |

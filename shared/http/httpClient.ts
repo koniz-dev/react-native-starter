@@ -67,8 +67,6 @@ export function getOrigin(url: string): string | null {
  * trusted; add other first-party hosts, such as an API on a separate domain,
  * to EXPO_PUBLIC_API_TRUSTED_ORIGINS (comma-separated). Requests to any other
  * origin, including absolute URLs, are sent without the Authorization header.
- * In the demo, the JSONPlaceholder API is a different third party from
- * DummyJSON and therefore never receives the token.
  */
 export function getTrustedTokenOrigins(): ReadonlySet<string> {
   const { authApiUrl, apiTrustedOrigins } = getConfig();

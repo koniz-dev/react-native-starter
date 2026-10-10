@@ -14,11 +14,15 @@ optionally removes the demo, deletes the maintainer files listed in
 
 <!-- @init remove-block-end -->
 
+<!-- @demo remove-block-start -->
+
 ## `remove-demo.js`
 
-Removes the demo features and `@demo`-marked code, leaving the foundation
-(`npm run remove-demo`, `-- --dry-run` to preview). See
-[`docs/remove-demo.md`](../docs/remove-demo.md).
+Removes the demo features and `@demo`-marked code and docs, leaving the
+foundation, and then itself (`npm run remove-demo`, `-- --dry-run` to
+preview). See [`docs/remove-demo.md`](../docs/remove-demo.md).
+
+<!-- @demo remove-block-end -->
 
 ## `check-docs.js`
 

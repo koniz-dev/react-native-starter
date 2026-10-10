@@ -22,8 +22,7 @@ The full local gate is `npm run lint && npm run type-check && npm run test:ci`.
 __tests__/                    mirrors the source tree
 ├── app/                      full-app routing tests: guards, initial route, theme, status bar
 ├── features/
-│   ├── auth/  home/          screen tests
-│   └── demo-*/               demo tests (deleted by npm run remove-demo)
+│   └── auth/  home/          screen tests
 └── shared/
     ├── config/  http/  session/  storage/
     ├── integrations/  lib/  ui/
@@ -34,6 +33,14 @@ testing/                      shared helpers (import from '@/testing')
 jest.setup.env.js             env for every test file (demo backends on)
 jest.setup.ts                 shared mocks, reset before each test
 ```
+
+<!-- @demo remove-block-start -->
+
+The demo's tests are in `__tests__/features/demo-*/`, and the tests of the
+starter's own scripts in `__tests__/scripts/`; `npm run remove-demo` deletes
+the demo tests and its own.
+
+<!-- @demo remove-block-end -->
 
 ## Shared setup
 
@@ -113,8 +120,84 @@ api.defaults.adapter = async config => ({
 });
 ```
 
-`__tests__/features/demo-todos/TodosScreen.test.tsx` holds each request open
-to check the loading, error, Retry, and list states in order.
+To check a screen's states in order, hold each request open and answer it
+from the test. For the `PostsScreen` in
+[Connect Your Backend](connect-your-backend.md#3-add-endpoints-for-a-feature):
+
+```tsx
+// __tests__/features/posts/PostsScreen.test.tsx
+import type { ReactElement } from 'react';
+import {
+  AxiosError,
+  AxiosHeaders,
+  type AxiosAdapter,
+  type AxiosResponse,
+  type InternalAxiosRequestConfig,
+} from 'axios';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react-native';
+import { api } from '@/shared/http/api';
+import { renderWithProviders } from '@/testing';
+
+declare function PostsScreen(): ReactElement; // from features/posts/screens/
+
+interface HeldRequest {
+  config: InternalAxiosRequestConfig;
+  resolve: (response: AxiosResponse) => void;
+  reject: (error: unknown) => void;
+}
+
+/** Replaces the API's adapter: each request waits until the test answers. */
+function holdRequests(): HeldRequest[] {
+  const held: HeldRequest[] = [];
+  api.defaults.adapter = (config =>
+    new Promise((resolve, reject) =>
+      held.push({ config, resolve, reject })
+    )) as AxiosAdapter;
+  return held;
+}
+
+const ok = (config: InternalAxiosRequestConfig, data: unknown) => ({
+  data,
+  status: 200,
+  statusText: 'OK',
+  headers: {},
+  config,
+});
+
+const unavailable = (config: InternalAxiosRequestConfig) =>
+  new AxiosError('Request failed', 'ERR_BAD_RESPONSE', config, null, {
+    data: { message: 'Service unavailable' },
+    status: 503,
+    statusText: 'Service Unavailable',
+    headers: new AxiosHeaders(),
+    config,
+  });
+
+const originalAdapter = api.defaults.adapter;
+afterEach(() => {
+  api.defaults.adapter = originalAdapter;
+});
+
+it('shows loading, then the error, and Retry loads the list', async () => {
+  const requests = holdRequests();
+  renderWithProviders(<PostsScreen />);
+
+  expect(screen.getByText('Loading posts...')).toBeTruthy();
+  await waitFor(() => expect(requests).toHaveLength(1));
+  expect(requests[0]?.config.url).toBe('/posts');
+
+  await act(async () => requests[0]?.reject(unavailable(requests[0].config)));
+  fireEvent.press(await screen.findByText('Service unavailable. Retry'));
+
+  expect(await screen.findByText('Loading posts...')).toBeTruthy();
+  await waitFor(() => expect(requests).toHaveLength(2));
+  await act(async () =>
+    requests[1]?.resolve(ok(requests[1].config, [{ id: 1, title: 'Hello' }]))
+  );
+  expect(await screen.findByText('Hello')).toBeTruthy();
+  expect(screen.queryByText(/Retry/)).toBeNull();
+});
+```
 
 ## Coverage
 
@@ -122,8 +205,8 @@ to check the loading, error, Retry, and list states in order.
 so untested files count as uncovered. `npm run test:ci` fails below the
 global threshold in `package.json` (`coverageThreshold`): 95% statements, 88%
 branches, 92% functions, 95% lines. The threshold was set on 2026-10-09 just
-under the measured coverage (97.3 / 90.4 / 94.4 / 97.5) and still passes after
-`npm run remove-demo`; raise it as coverage grows.
+under the measured coverage (97.3 / 90.4 / 94.4 / 97.5), and it still passes
+without the demo; raise it as coverage grows.
 
 ## Writing good tests
 
@@ -141,15 +224,27 @@ under the measured coverage (97.3 / 90.4 / 94.4 / 97.5) and still passes after
 [Maestro](https://maestro.dev) flows in `.maestro/` drive the app in Expo Go
 on a simulator or emulator. No account is needed.
 
-| Flow                          | Checks                                                                        |
-| ----------------------------- | ----------------------------------------------------------------------------- |
-| `01-cold-start.yaml`          | a fresh start opens Home, signed out                                          |
-| `06-login-back.yaml`          | Back from Login returns Home (Android system back; skipped on iOS, see below) |
-| `02-tabs.yaml`                | the tab bar switches between Home and Explore                                 |
-| `03-auth-session.yaml`        | sign in, relaunch (still signed in), log out, relaunch (still signed out)     |
-| `04-login-keyboard.yaml`      | the username's return key moves to the password; the password's submits       |
-| `05-explore-error-retry.yaml` | Explore shows the API error, then Retry loads the list (local mock API)       |
-| `dark-mode.yaml`              | screenshots of Home and Explore with the device in dark mode                  |
+| Flow                 | Checks                                                                        |
+| -------------------- | ----------------------------------------------------------------------------- |
+| `01-cold-start.yaml` | a fresh start opens Home, signed out, with the Sign in button                 |
+| `06-login-back.yaml` | Back from Login returns Home (Android system back; skipped on iOS, see below) |
+| `dark-mode.yaml`     | screenshots with the device in dark mode                                      |
+
+<!-- @demo remove-block-start -->
+
+The demo adds flows that need it; `npm run remove-demo` deletes them with it:
+
+| Flow                          | Checks                                                                    |
+| ----------------------------- | ------------------------------------------------------------------------- |
+| `02-tabs.yaml`                | the tab bar switches between Home and Explore                             |
+| `03-auth-session.yaml`        | sign in, relaunch (still signed in), log out, relaunch (still signed out) |
+| `04-login-keyboard.yaml`      | the username's return key moves to the password; the password's submits   |
+| `05-explore-error-retry.yaml` | Explore shows the API error, then Retry loads the list (local mock API)   |
+
+They sign in with the DummyJSON demo account (`subflows/sign-in.yaml`), so
+they need network access, and `dark-mode.yaml` also screenshots Explore.
+
+<!-- @demo remove-block-end -->
 
 Run them with a booted device that has Expo Go:
 
@@ -159,10 +254,11 @@ npm run test:e2e:android   # emulator or device on adb
 ```
 
 `scripts/e2e/run.sh` starts a local mock API (`scripts/e2e/mock-api.js`, on
-port 9999) and Metro with `EXPO_PUBLIC_API_URL` pointing at it, so the Explore
-flow can switch the API between success and failure (the auth flows still use
-the DummyJSON demo backend, which needs network access). On Android it sets
-up `adb reverse` for both ports. It runs the numbered flows, then switches the
+port 9999) and Metro with `EXPO_PUBLIC_API_URL` pointing at it, so a flow can
+switch the API between success and failure (`.maestro/scripts/set-api-mode.js`).
+Add the endpoints your flows need to the mock; sign-in flows need a test
+account on your backend. On Android it sets up
+`adb reverse` for both ports. It runs the numbered flows, then switches the
 device to dark mode for `dark-mode.yaml` and back. Results, screenshots, and a
 JUnit report go to `e2e-results/<platform>/` (gitignored).
 

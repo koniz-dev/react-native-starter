@@ -15,11 +15,8 @@ app/                      Expo Router routes only: layouts and one-line route fi
   (auth)/login.tsx        signed-out only
   (app)/profile.tsx       signed-in only
 features/                 one folder per feature
-  home/screens/           Home: session card (+ links to the examples)
+  home/screens/           Home: the session card
   auth/screens/           Login and Profile
-  demo-auth/              demo: DummyJSON AuthAdapter, demo-credentials hint
-  demo-todos/             demo: api/, screens/, types.ts (Explore tab)
-  demo-showcase/          demo: component showcase route and Home's example links
 shared/                   foundation, no imports from features/
   config/                 validated environment (env.ts), feature flags
   http/                   createHttpClient, ApiError, the app API client
@@ -40,13 +37,20 @@ the default.
 
 **Dependency direction:** `app/` → `features/` → `shared/`. `shared/` never
 imports a feature, with one exception: `shared/integrations/setup.ts` is the
-composition root that registers adapters (it registers the demo auth adapter
-inside `@demo` markers). Features don't import each other's internals.
+composition root that registers adapters. Features don't import each other's
+internals.
 
-**Demo code** lives in `features/demo-*`, the routes `app/(tabs)/explore.tsx`
-and `app/showcase.tsx`, and between `@demo remove-block-start` /
-`@demo remove-block-end` markers elsewhere. `npm run remove-demo` deletes it;
-see [Remove the Demo](remove-demo.md).
+<!-- @demo remove-block-start -->
+
+**Demo code** lives in `features/demo-auth/` (the DummyJSON `AuthAdapter`
+and the demo-credentials hint), `features/demo-todos/` (the Explore tab),
+`features/demo-showcase/` (the component showcase and Home's example links),
+the routes `app/(tabs)/explore.tsx` and `app/showcase.tsx`, and between
+`@demo` block markers elsewhere (such as the demo adapter's registration in
+`shared/integrations/setup.ts`).
+`npm run remove-demo` deletes it; see [Remove the Demo](remove-demo.md).
+
+<!-- @demo remove-block-end -->
 
 ## Navigation
 

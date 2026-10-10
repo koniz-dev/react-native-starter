@@ -11,7 +11,7 @@ small adapters, not a rewrite. It ships no credentialed services.
 
 ```bash
 npm ci                 # Node 24 (.nvmrc) or 22.13+
-cp .env.example .env   # turns on the public demo backends
+cp .env.example .env   # then see Getting Started for the backend URLs
 npm start              # then press i, a, or w, or scan the QR code with Expo Go
 ```
 
@@ -47,11 +47,16 @@ Details, platforms, and troubleshooting: [Getting Started](docs/getting-started.
 - **Tests**: Jest and React Native Testing Library with shared mocks,
   full-app routing tests, and a coverage threshold in CI
   ([Testing](docs/testing.md)).
+
+<!-- @demo remove-block-start -->
+
 - **A removable demo**: DummyJSON sign-in, a Todos API example, and a
   component showcase; `npm run remove-demo` deletes them
   ([Remove the Demo](docs/remove-demo.md)).
 
 Demo sign-in (with the demo backends on): `emilys` / `emilyspass`.
+
+<!-- @demo remove-block-end -->
 
 ## Documentation
 
@@ -60,7 +65,12 @@ Start with [docs/README.md](docs/README.md). The usual path:
 1. [Getting Started](docs/getting-started.md): install, run, scripts.
 2. [Make It Yours](docs/make-it-yours.md): everything to change for your app.
 3. [Connect Your Backend](docs/connect-your-backend.md): auth adapter, API, env.
+
+<!-- @demo remove-block-start -->
+
 4. [Remove the Demo](docs/remove-demo.md).
+
+<!-- @demo remove-block-end -->
 
 ## State management
 

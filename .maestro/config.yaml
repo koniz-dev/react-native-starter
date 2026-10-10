@@ -7,9 +7,11 @@ executionOrder:
   flowsOrder:
     - Cold start opens Home
     - Back from Login returns Home
+    # @demo remove-block-start
     - Tab navigation
     - Sign-in session survives a relaunch; logout clears it
     - Login keyboard return keys
     - Explore error state and Retry
+    # @demo remove-block-end
 excludeTags:
   - dark

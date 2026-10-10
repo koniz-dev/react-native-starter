@@ -87,7 +87,7 @@ export const myBackendAuthAdapter: AuthAdapter = {
 ```
 
 Register it in `shared/integrations/setup.ts`, inside
-`configureIntegrations()`, in place of the demo adapter:
+`configureIntegrations()`:
 
 ```ts
 import { setAuthAdapter, type AuthAdapter } from '@/shared/session/authService';
@@ -96,6 +96,13 @@ declare const myBackendAuthAdapter: AuthAdapter; // from the file above
 
 setAuthAdapter(myBackendAuthAdapter);
 ```
+
+<!-- @demo remove-block-start -->
+
+Until you remove the demo, `setup.ts` registers the DummyJSON adapter
+there; replace that registration with yours.
+
+<!-- @demo remove-block-end -->
 
 The service rejects a missing token, stores the token and the normalized
 user, and registers `refresh` (if any) as the HTTP client's refresh handler,
@@ -127,8 +134,7 @@ shows that group while signed in. See
 
 ## 3. Add endpoints for a feature
 
-Build endpoints on the shared API client in the feature's `api/` folder (as
-`features/demo-todos/api/todosApi.ts` does):
+Build endpoints on the shared API client in the feature's `api/` folder:
 
 ```ts
 // features/posts/api/postsApi.ts
@@ -147,9 +153,11 @@ export const postsApi = {
 ```
 
 and load them in a screen with `useFetch` (loading, a typed `ApiError`, refetch;
-the `signal` cancels the request when the screen goes away):
+the `signal` cancels the request when the screen goes away). This screen shows
+the loading state, then the error with a Retry button, or the list:
 
 ```tsx
+// features/posts/screens/PostsScreen.tsx
 import { Button, Text } from 'react-native-paper';
 import { api } from '@/shared/http/api';
 import { useFetch } from '@/shared/lib/useFetch';
@@ -182,7 +190,8 @@ The client sends the stored token only to the auth backend's origin and the
 origins in `EXPO_PUBLIC_API_TRUSTED_ORIGINS`, rejects with a typed
 `ApiError` (`network`, `timeout`, `unauthorized`, `client`, `server`, ...),
 and logs failures without headers or bodies. Details:
-[API and Storage](api-and-storage.md).
+[API and Storage](api-and-storage.md). To test the screen's states in order,
+hold each request open as in [Testing](testing.md#network).
 
 ## Sessions on web
 
@@ -192,7 +201,12 @@ see [API and Storage](api-and-storage.md#why-the-token-is-not-persisted-on-web).
 
 ## Then
 
+<!-- @demo remove-block-start -->
+
 - [Remove the Demo](remove-demo.md) to drop the DummyJSON adapter and the
   example screens.
+
+<!-- @demo remove-block-end -->
+
 - Test your adapter like `__tests__/shared/session/authService.test.ts` does
   with its fake adapter ([Testing](testing.md)).

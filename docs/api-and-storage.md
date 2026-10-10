@@ -83,16 +83,22 @@ default ports ignored) is trusted:
   example your API on a separate first-party domain.
 
 Requests to any other origin, including absolute URLs passed to `api`, go out
-without the `Authorization` header. In the demo, JSONPlaceholder
-(`EXPO_PUBLIC_API_URL`) is a different third party from DummyJSON, so it never
-receives the DummyJSON token. `getTrustedTokenOrigins()` returns the set.
+without the `Authorization` header. `getTrustedTokenOrigins()` returns the
+set.
+
+<!-- @demo remove-block-start -->
+
+In the demo, JSONPlaceholder (`EXPO_PUBLIC_API_URL`) is a different third
+party from DummyJSON, so it never receives the DummyJSON token.
+
+<!-- @demo remove-block-end -->
 
 ## Cookies from the auth server
 
 React Native's `XMLHttpRequest` defaults `withCredentials` to `true`, so the
-native cookie store would keep any cookies a login response sets (DummyJSON
-sets `accessToken` and `refreshToken` cookies), leaving a second copy of the
-token that logout doesn't clear. The auth clients are therefore created with
+native cookie store would keep any cookies a login response sets (some
+backends set the tokens as cookies as well as in the body), leaving a second
+copy of the token that logout doesn't clear. The auth clients are therefore created with
 `withCredentials: false`: they neither store nor send cookies. If your
 backend authenticates with cookie sessions instead of bearer tokens, this is
 the setting to revisit.
@@ -246,8 +252,10 @@ export function UserName({ userId }: { userId: number }) {
 ```
 
 `LoadingScreen` (`shared/ui/LoadingScreen.tsx`) is a centered progress
-indicator with an optional message. The Explore tab
-(`features/demo-todos/screens/TodosScreen.tsx`) uses both.
+indicator with an optional message. A whole list screen, with loading, an
+error with Retry, and the list, is in
+[Connect Your Backend](connect-your-backend.md#3-add-endpoints-for-a-feature),
+and its test in [Testing](testing.md#network).
 
 ### When to use a data library instead
 

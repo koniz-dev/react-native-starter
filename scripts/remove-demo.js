@@ -2,13 +2,20 @@
 /**
  * Removes the starter's demo code (see docs/remove-demo.md):
  *
- * 1. deletes the demo folders and routes listed in DEMO_PATHS;
- * 2. strips marked code from the remaining source files:
- *    - a line containing `@demo remove-current-line`;
- *    - every line from one containing `@demo remove-block-start` through
- *      the next line containing `@demo remove-block-end`;
+ * 1. deletes the demo folders, routes, and Maestro flows listed in
+ *    DEMO_PATHS, and then this script, its doc, its test, and its npm script;
+ * 2. edits the remaining source, docs, and config files (MARKED_DIRS and
+ *    MARKED_FILES):
+ *    - deletes a line containing `@demo remove-current-line`;
+ *    - deletes every line from one containing `@demo remove-block-start`
+ *      through the next line containing `@demo remove-block-end`;
+ *    - between `@demo uncomment-block-start` and `@demo uncomment-block-end`
+ *      lines, uncomments each line (drops its leading `# `) and deletes the
+ *      two marker lines: for text that only applies once the demo is gone
+ *      (.env.example, the e2e runner);
  * 3. formats the changed files with Prettier (stripping leaves blank lines);
- * 4. fails if any `@demo` marker or import of a removed path is left.
+ * 4. fails if any `@demo` marker, import of a removed path, or mention of a
+ *    deleted file is left.
  *
  * Usage: npm run remove-demo [-- --dry-run]
  */
@@ -28,55 +35,94 @@ const DEMO_PATHS = [
   '__tests__/features/demo-auth',
   '__tests__/features/demo-todos',
   '__tests__/features/demo-showcase',
+  // Flows that need the demo: the Explore tab, or the DummyJSON sign-in.
+  '.maestro/02-tabs.yaml',
+  '.maestro/03-auth-session.yaml',
+  '.maestro/04-login-keyboard.yaml',
+  '.maestro/05-explore-error-retry.yaml',
+  '.maestro/subflows/sign-in.yaml',
+  // This command: with the demo gone, it has nothing left to remove.
+  'docs/remove-demo.md',
+  '__tests__/scripts/removeDemo.test.ts',
+  'scripts/remove-demo.js',
 ];
 
-const SOURCE_DIRS = ['app', 'features', 'shared', '__tests__'];
-const SOURCE_EXT = /\.(ts|tsx|js|jsx)$/;
+const MARKED_DIRS = [
+  'app',
+  'features',
+  'shared',
+  '__tests__',
+  'docs',
+  '.maestro',
+  'scripts',
+];
+const MARKED_FILES = ['README.md', 'AGENTS.md', '.env.example'];
+const MARKED_EXT = /\.(ts|tsx|js|jsx|md|ya?ml|sh)$/;
+const PRETTIER_EXT = /\.(ts|tsx|js|jsx|json|md)$/;
+/** Text that names files, so it must not name a deleted one. */
+const DOC_EXT = /(\.(md|ya?ml|sh)|^\.env\.example)$/;
 
-function sourceFiles(dir) {
+function markedFiles(dir) {
   const full = path.join(ROOT, dir);
   if (!fs.existsSync(full)) return [];
   return fs.readdirSync(full, { withFileTypes: true }).flatMap(entry => {
     const rel = path.join(dir, entry.name);
-    if (entry.isDirectory()) return sourceFiles(rel);
-    return SOURCE_EXT.test(entry.name) ? [rel] : [];
+    if (entry.isDirectory()) return markedFiles(rel);
+    return MARKED_EXT.test(entry.name) ? [rel] : [];
   });
 }
 
 /** Returns the file's text without its marked demo lines. */
 function stripMarkers(text, file) {
   const out = [];
-  let inBlock = false;
+  let block = null;
   for (const line of text.split('\n')) {
-    if (line.includes('@demo remove-block-start')) {
-      if (inBlock) throw new Error(`${file}: nested @demo block`);
-      inBlock = true;
-    } else if (line.includes('@demo remove-block-end')) {
-      if (!inBlock) throw new Error(`${file}: @demo block end without start`);
-      inBlock = false;
-    } else if (!inBlock && !line.includes('@demo remove-current-line')) {
+    const start = /@demo (remove|uncomment)-block-start/.exec(line);
+    const end = /@demo (remove|uncomment)-block-end/.exec(line);
+    if (start) {
+      if (block) throw new Error(`${file}: nested @demo block`);
+      block = start[1];
+    } else if (end) {
+      if (block !== end[1])
+        throw new Error(`${file}: @demo ${end[1]}-block end without start`);
+      block = null;
+    } else if (block === 'uncomment') {
+      out.push(line.replace(/^(\s*)# ?/, '$1'));
+    } else if (!block && !line.includes('@demo remove-current-line')) {
       out.push(line);
     }
   }
-  if (inBlock) throw new Error(`${file}: unterminated @demo block`);
-  return out.join('\n');
+  if (block) throw new Error(`${file}: unterminated @demo block`);
+  return out.join('\n').replace(/\n{3,}/g, '\n\n');
 }
 
 function main() {
   const log = message => process.stdout.write(`${message}\n`);
   log(DRY_RUN ? 'Dry run: nothing is changed.' : 'Removing the demo...');
 
+  const isDeleted = rel =>
+    DEMO_PATHS.some(demo => rel === demo || rel.startsWith(`${demo}/`));
   for (const rel of DEMO_PATHS) {
     const full = path.join(ROOT, rel);
     if (!fs.existsSync(full)) continue;
     log(`  delete ${rel}`);
     if (!DRY_RUN) fs.rmSync(full, { recursive: true });
   }
+  const testsDir = path.join(ROOT, '__tests__/scripts');
+  if (
+    !DRY_RUN &&
+    fs.existsSync(testsDir) &&
+    fs.readdirSync(testsDir).length === 0
+  )
+    fs.rmdirSync(testsDir);
 
   const problems = [];
   const changed = [];
-  for (const rel of SOURCE_DIRS.flatMap(sourceFiles)) {
-    if (DRY_RUN && DEMO_PATHS.some(demo => rel.startsWith(demo))) continue;
+  const files = [
+    ...MARKED_DIRS.flatMap(markedFiles),
+    ...MARKED_FILES.filter(file => fs.existsSync(path.join(ROOT, file))),
+  ].filter(rel => !isDeleted(rel));
+  for (const rel of files) {
     const full = path.join(ROOT, rel);
     const text = fs.readFileSync(full, 'utf8');
     const stripped = stripMarkers(text, rel);
@@ -91,12 +137,28 @@ function main() {
     if (/from ['"]@\/features\/demo-/.test(stripped)) {
       problems.push(`${rel}: still imports a demo feature`);
     }
+    if (DOC_EXT.test(rel)) {
+      for (const demo of DEMO_PATHS) {
+        if (stripped.includes(path.basename(demo)))
+          problems.push(`${rel}: still mentions ${demo}`);
+      }
+    }
   }
 
-  if (!DRY_RUN && changed.length > 0) {
-    const prettier = spawnSync('npx', ['prettier', '--write', ...changed], {
+  const pkgFile = path.join(ROOT, 'package.json');
+  const pkg = JSON.parse(fs.readFileSync(pkgFile, 'utf8'));
+  if (pkg.scripts?.['remove-demo']) {
+    log('  update package.json: remove the remove-demo script');
+    delete pkg.scripts['remove-demo'];
+    if (!DRY_RUN)
+      fs.writeFileSync(pkgFile, `${JSON.stringify(pkg, null, 2)}\n`);
+  }
+
+  const formattable = changed.filter(rel => PRETTIER_EXT.test(rel));
+  if (!DRY_RUN && formattable.length > 0) {
+    const prettier = spawnSync('npx', ['prettier', '--write', ...formattable], {
       cwd: ROOT,
-      stdio: 'inherit',
+      stdio: ['ignore', 'ignore', 'inherit'],
     });
     if (prettier.status !== 0) problems.push('prettier failed');
   }
@@ -108,7 +170,7 @@ function main() {
   log(
     DRY_RUN
       ? 'Dry run complete.'
-      : 'Done. Next: register your AuthAdapter in shared/integrations/setup.ts, then run npm run lint, npm run type-check, and npm run test:ci.'
+      : 'Done. Next: register your AuthAdapter in shared/integrations/setup.ts, set your backend URLs in .env, then run npm run lint, npm run type-check, and npm run test:ci.'
   );
 }
 
