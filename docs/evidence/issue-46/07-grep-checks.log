@@ -1,0 +1,35 @@
+# main at 07db8e3
+$ grep -n -i "koniz\|#[0-9]\|MVP\|status:\|issue" AGENTS.md CLAUDE.md
+AGENTS.md:76:  [Connect Your Backend](docs/connect-your-backend.md#3-add-endpoints-for-a-feature)
+AGENTS.md:80:  ([Connect Your Backend](docs/connect-your-backend.md#2-sign-in-write-an-authadapter)).
+(the two hits are heading anchors such as #3-add-endpoints-for-a-feature)
+
+$ grep -rn -i "koniz\|evidence\|Refs \|issue-workflow\|status:(todo|in-progress|needs-uat|blocked)\|maintainer" README.md docs/*.md docs/recipes scripts/README.md
+(no matches)
+
+$ grep -n -i "koniz\|issues/" scripts/audit-allowlist.json
+(no matches)
+
+$ cat scripts/maintainer-files.json
+{
+  "$comment": "Files that belong to the process for maintaining the starter itself (koniz-dev/react-native-starter), not to a project made from it. A project deletes them: every path in files, and every block between the markers in blocks. Keep this list current when adding a maintainer-only file; see docs/maintainers/README.md.",
+  "files": [
+    "docs/maintainers/",
+    "scripts/maintainers/",
+    "scripts/maintainer-files.json"
+  ],
+  "blocks": [
+    {
+      "file": "AGENTS.md",
+      "start": "<!-- @maintainer remove-block-start -->",
+      "end": "<!-- @maintainer remove-block-end -->"
+    }
+  ]
+}
+
+$ git ls-files docs/maintainers scripts/maintainers
+docs/maintainers/README.md
+docs/maintainers/dependency-review.md
+docs/maintainers/issue-workflow.md
+docs/maintainers/release-gate.md
+scripts/maintainers/bootstrap-issue-labels.sh

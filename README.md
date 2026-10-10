@@ -15,7 +15,9 @@ with "Use this template" (which copies the default branch) don't inherit it.
 
 ## Adding evidence
 
-The maintainer process on `main` describes when evidence is needed. To add
+The maintainer process on `main`
+([`docs/maintainers/`](https://github.com/koniz-dev/react-native-starter/tree/main/docs/maintainers))
+describes when evidence is needed. To add
 it, from a clone of the repository:
 
 ```bash

@@ -1,0 +1,77 @@
+TOOL Bash {"command": "git ls-files | grep -v '^docs/\\|^assets/' | head -200 && grep -rniE \"settings|colorScheme|dark\" --include=*.ts --include=*.tsx app features shared | head -60"}
+TOOL Bash {"command": "for f in shared/ui/theme.ts app/_layout.tsx \"app/(tabs)/_layout.tsx\" \"app/(app)/_layout.tsx\" \"app/(app)/profile.tsx\" features/auth/screens/ProfileScreen.tsx sha"}
+TOOL Bash {"command": "tail -n +1 shared/ui/theme.ts app/_layout.tsx \"app/(tabs)/_layout.tsx\" \"app/(app)/_layout.tsx\" \"app/(app)/profile.tsx\" features/auth/screens/ProfileScreen.tsx s"}
+TOOL Bash {"command": "cat docs/recipes/state-management.md; grep -n -i -B2 -A10 \"dark\\|color scheme\\|colorScheme\" docs/ui-and-theming.md | head -120; cat jest.setup.ts; cat features/"}
+TOOL Bash {"command": "cat .maestro/02-tabs.yaml .maestro/subflows/open-app.yaml; cat __tests__/features/home/HomeScreen.test.tsx | head -50; grep -rn \"dark\\|maestro\\|tags\" scripts/e2"}
+TOOL Bash {"command": "grep -n \"zod\" shared/config/env.ts | head -3; sed -n 1,80p docs/testing.md | grep -n -i \"e2e\\|maestro\\|flow\" ; grep -n \"0[0-9]-\\|dark-mode\" docs/testing.md"}
+ASSISTANT: Now the provider:
+TOOL Write {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/shared/ui/ThemePreferenc"}
+TOOL Edit {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/shared/storage/storage.t"}
+ASSISTANT: Now the root layout:
+TOOL Edit {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/app/_layout.tsx"}
+TOOL Edit {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/app/_layout.tsx"}
+ASSISTANT: Screen, route, tab, and strings:
+TOOL Write {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/features/settings/screen"}
+TOOL Write {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/app/(tabs)/settings.tsx"}
+TOOL Edit {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/app/(tabs)/_layout.tsx"}
+TOOL Edit {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/shared/i18n/en.ts"}
+TOOL Edit {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/shared/i18n/en.ts"}
+ASSISTANT: Now tests — full-app, so they check the theme actually changes app-wide:
+TOOL Write {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/__tests__/features/setti"}
+TOOL Edit {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/__tests__/app/tabBarThem"}
+TOOL Bash {"command": "npm run lint 2>&1 | tail -20 && npm run type-check 2>&1 | tail -20 && npm run test:ci 2>&1 | tail -40"}
+ASSISTANT: All 211 tests pass. I'll fix the formatting, add a test for tapping the row, then do the docs and the Maestro flow.
+TOOL Edit {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/__tests__/features/setti"}
+TOOL Bash {"command": "npx eslint --fix __tests__/features/settings shared/ui/ThemePreference.tsx && sed -n 1,30p docs/ui-and-theming.md && sed -n 135,175p docs/testing.md && grep -n "}
+ASSISTANT: Docs updates:
+TOOL Bash {"command": "sed -n 60,100p docs/ui-and-theming.md; sed -n 5,30p docs/conventions.md; sed -n 60,95p docs/conventions.md"}
+TOOL Bash {"command": "python3 - <<'EOF'\nimport re\np='docs/ui-and-theming.md'\ns=open(p).read()\ns=s.replace(\"\"\"`shared/ui/theme.ts`, and the app follows the system light/dark setting.\""}
+ASSISTANT: I'll make the doc edits with the Edit tool.
+TOOL Read {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/docs/ui-and-theming.md"}
+TOOL Read {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/docs/conventions.md"}
+TOOL Read {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/docs/testing.md"}
+TOOL Edit {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/docs/ui-and-theming.md"}
+TOOL Edit {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/docs/ui-and-theming.md"}
+TOOL Edit {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/docs/ui-and-theming.md"}
+TOOL Edit {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/docs/conventions.md"}
+TOOL Edit {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/docs/conventions.md"}
+TOOL Edit {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/docs/testing.md"}
+ASSISTANT: Now the Maestro flow. It clears state at the end so a saved `light` choice can't override the device in `dark-mode.yaml`:
+TOOL Write {"file_path": "/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i46/my-app/.maestro/07-settings-dar"}
+TOOL Bash {"command": "npm run lint 2>&1 | tail -8 && npm run type-check 2>&1 | tail -5 && npm run test:ci 2>&1 | grep -E \"Tests:|Suites:|\u2715|FAIL\" ; npm run format:check 2>&1 | tail -5"}
+ASSISTANT: I added a Settings tab with a Dark mode switch. Lint, type-check, the test suite (212/212), `format:check` and `docs:check` all pass. I haven't run the new Maestro flow because there's no simulator here, and I haven't committed anything.
+
+**How it works**
+- Until the user flips the switch, the app follows the phone's light/dark setting. Once they do, their choice is saved and restored the next time the app opens.
+- The choice lives in a new `ThemePreferenceProvider` (`shared/ui/ThemePreference.tsx`), and the root layout now gets its scheme from there instead of straight from the phone. A saved value it doesn't recognise is ignored. If saving fails, the error is logged and the choice still applies until the app closes.
+- The provider shows nothing until the saved choice has been read, so a user who picked dark doesn't see a flash of light theme. The splash screen stays up during that read.
+- **Screen:** `features/settings/screens/SettingsScreen.tsx`, with the route `app/(tabs)/settings.tsx` and a cog icon in the tab bar. You can tap either the switch or the whole row. The strings are in `shared/i18n/en.ts`.
+
+**Tests and docs**
+- `__tests__/features/settings/SettingsScreen.test.tsx` runs the whole app and checks:
+  - it follows the phone until the user chooses
+  - turning the switch on or off changes the theme for the whole app and saves the choice
+  - the saved choice is restored on launch
+  - an unrecognised saved value is ignored
+  - a failed save keeps the choice for the cu
+RESULT: success turns 34 cost 1.0643063999999998
+I added a Settings tab with a Dark mode switch. Lint, type-check, the test suite (212/212), `format:check` and `docs:check` all pass. I haven't run the new Maestro flow because there's no simulator here, and I haven't committed anything.
+
+**How it works**
+- Until the user flips the switch, the app follows the phone's light/dark setting. Once they do, their choice is saved and restored the next time the app opens.
+- The choice lives in a new `ThemePreferenceProvider` (`shared/ui/ThemePreference.tsx`), and the root layout now gets its scheme from there instead of straight from the phone. A saved value it doesn't recognise is ignored. If saving fails, the error is logged and the choice still applies until the app closes.
+- The provider shows nothing until the saved choice has been read, so a user who picked dark doesn't see a flash of light theme. The splash screen stays up during that read.
+- **Screen:** `features/settings/screens/SettingsScreen.tsx`, with the route `app/(tabs)/settings.tsx` and a cog icon in the tab bar. You can tap either the switch or the whole row. The strings are in `shared/i18n/en.ts`.
+
+**Tests and docs**
+- `__tests__/features/settings/SettingsScreen.test.tsx` runs the whole app and checks:
+  - it follows the phone until the user chooses
+  - turning the switch on or off changes the theme for the whole app and saves the choice
+  - the saved choice is restored on launch
+  - an unrecognised saved value is ignored
+  - a failed save keeps the choice for the current run
+- `tabBarTheme.test.tsx` also checks the new tab's colour.
+- `.maestro/07-settings-dark-mode.yaml` turns dark mode on, relaunches to check it stuck, then turns it off. It clears app data at the end so the saved choice can't override the phone in the existing `dark-mode.yaml` screenshot flow.
+- I updated `docs/ui-and-theming.md` to describe the provider and replaced its old "how to add this yourself" snippet. `docs/conventions.md` and `docs/testing.md` list the new folder and flow.
+
+**Decision for you:** it's a single switch, so once someone flips it there's no way back to "follow the phone" from the UI. The code supports it (`setPreference('system')`), so I can add a "Match device" option to the screen if you want one.

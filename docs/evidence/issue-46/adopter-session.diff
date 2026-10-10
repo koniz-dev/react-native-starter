@@ -1,0 +1,502 @@
+diff --git a/.maestro/07-settings-dark-mode.yaml b/.maestro/07-settings-dark-mode.yaml
+new file mode 100644
+index 0000000..65c3491
+--- /dev/null
++++ b/.maestro/07-settings-dark-mode.yaml
+@@ -0,0 +1,36 @@
++# The Settings switch turns dark mode on, the choice survives a relaunch, and
++# the switch turns it off again.
++appId: ${APP_ID}
++name: Settings dark mode
++---
++- runFlow:
++    file: subflows/open-app.yaml
++    env:
++      CLEAR_STATE: 'true'
++- tapOn:
++    id: tab-settings
++- assertVisible:
++    id: settings-dark-mode
++    checked: false
++- tapOn:
++    id: settings-dark-mode
++- assertVisible:
++    id: settings-dark-mode
++    checked: true
++- takeScreenshot: 07-settings-dark
++- runFlow:
++    file: subflows/open-app.yaml
++    env:
++      CLEAR_STATE: 'false'
++- tapOn:
++    id: tab-settings
++- assertVisible:
++    id: settings-dark-mode
++    checked: true
++- tapOn:
++    id: settings-dark-mode
++- assertVisible:
++    id: settings-dark-mode
++    checked: false
++# A saved choice would override the device's dark mode in dark-mode.yaml.
++- clearState
+diff --git a/__tests__/app/tabBarTheme.test.tsx b/__tests__/app/tabBarTheme.test.tsx
+index 706f0a7..03188ad 100644
+--- a/__tests__/app/tabBarTheme.test.tsx
++++ b/__tests__/app/tabBarTheme.test.tsx
+@@ -54,5 +54,6 @@ describe.each(['light', 'dark'] as const)('tab bar in %s mode', scheme => {
+     // @demo remove-block-start
+     expect(labelColor('Explore')).toBe(expected.inactive);
+     // @demo remove-block-end
++    expect(labelColor('Settings')).toBe(expected.inactive);
+   });
+ });
+diff --git a/__tests__/features/settings/SettingsScreen.test.tsx b/__tests__/features/settings/SettingsScreen.test.tsx
+new file mode 100644
+index 0000000..88101e1
+--- /dev/null
++++ b/__tests__/features/settings/SettingsScreen.test.tsx
+@@ -0,0 +1,93 @@
++import { StatusBar } from 'expo-status-bar';
++import { fireEvent, renderRouter, screen } from 'expo-router/testing-library';
++import AsyncStorage from '@react-native-async-storage/async-storage';
++import * as loggerModule from '@/shared/lib/logger';
++import { getItem, setItem, STORAGE_KEYS } from '@/shared/storage/storage';
++import { setColorScheme } from '@/testing';
++
++// The status bar style is the app-wide signal of the active theme: 'light'
++// icons on the dark theme, 'dark' icons on the light theme.
++function statusBarStyle() {
++  return screen.UNSAFE_getByType(StatusBar).props.style;
++}
++
++async function openSettings() {
++  renderRouter('./app', { initialUrl: '/settings' });
++  return screen.findByTestId('settings-dark-mode');
++}
++
++describe('Settings dark mode', () => {
++  afterEach(() => jest.restoreAllMocks());
++
++  test('follows the system scheme until the user chooses', async () => {
++    setColorScheme('dark');
++    const toggle = await openSettings();
++
++    expect(toggle.props.value).toBe(true);
++    expect(statusBarStyle()).toBe('light');
++  });
++
++  test('turning it on switches the app to dark and saves the choice', async () => {
++    const toggle = await openSettings();
++    expect(toggle.props.value).toBe(false);
++
++    fireEvent(toggle, 'valueChange', true);
++
++    expect(screen.getByTestId('settings-dark-mode').props.value).toBe(true);
++    expect(statusBarStyle()).toBe('light');
++    await expect(getItem(STORAGE_KEYS.THEME_PREFERENCE)).resolves.toBe('dark');
++  });
++
++  test('tapping the row toggles it too', async () => {
++    await openSettings();
++
++    fireEvent.press(screen.getByText('Dark mode'));
++
++    expect(screen.getByTestId('settings-dark-mode').props.value).toBe(true);
++    expect(statusBarStyle()).toBe('light');
++  });
++
++  test('turning it off overrides a dark system scheme', async () => {
++    setColorScheme('dark');
++    const toggle = await openSettings();
++
++    fireEvent(toggle, 'valueChange', false);
++
++    expect(statusBarStyle()).toBe('dark');
++    await expect(getItem(STORAGE_KEYS.THEME_PREFERENCE)).resolves.toBe('light');
++  });
++
++  test('restores the saved choice on launch', async () => {
++    await setItem(STORAGE_KEYS.THEME_PREFERENCE, 'dark');
++    const toggle = await openSettings();
++
++    expect(toggle.props.value).toBe(true);
++    expect(statusBarStyle()).toBe('light');
++  });
++
++  test('ignores an unrecognized saved value and follows the system', async () => {
++    await setItem(STORAGE_KEYS.THEME_PREFERENCE, 'purple');
++    const toggle = await openSettings();
++
++    expect(toggle.props.value).toBe(false);
++    expect(statusBarStyle()).toBe('dark');
++  });
++
++  test('keeps the choice for this run when it cannot be saved', async () => {
++    const failure = new Error('disk full');
++    jest.mocked(AsyncStorage.setItem).mockRejectedValueOnce(failure);
++    const logError = jest
++      .spyOn(loggerModule.logger, 'error')
++      .mockImplementation(() => {});
++    const toggle = await openSettings();
++
++    fireEvent(toggle, 'valueChange', true);
++
++    expect(statusBarStyle()).toBe('light');
++    await screen.findByTestId('settings-dark-mode');
++    expect(logError).toHaveBeenCalledWith(
++      'Failed to save the theme preference',
++      failure
++    );
++  });
++});
+diff --git a/app/(tabs)/_layout.tsx b/app/(tabs)/_layout.tsx
+index 47136da..b134005 100644
+--- a/app/(tabs)/_layout.tsx
++++ b/app/(tabs)/_layout.tsx
+@@ -45,6 +45,16 @@ export default function TabLayout() {
+         }}
+       />
+       {/* @demo remove-block-end */}
++      <Tabs.Screen
++        name="settings"
++        options={{
++          title: t('tabs.settings'),
++          tabBarButtonTestID: 'tab-settings',
++          tabBarIcon: ({ color }) => (
++            <MaterialCommunityIcons name="cog" size={24} color={color} />
++          ),
++        }}
++      />
+     </Tabs>
+   );
+ }
+diff --git a/app/(tabs)/settings.tsx b/app/(tabs)/settings.tsx
+new file mode 100644
+index 0000000..0ae2303
+--- /dev/null
++++ b/app/(tabs)/settings.tsx
+@@ -0,0 +1 @@
++export { SettingsScreen as default } from '@/features/settings/screens/SettingsScreen';
+diff --git a/app/_layout.tsx b/app/_layout.tsx
+index 5d727b7..c0bbeb9 100644
+--- a/app/_layout.tsx
++++ b/app/_layout.tsx
+@@ -1,8 +1,11 @@
+ import { PaperProvider } from 'react-native-paper';
+ import { useEffect } from 'react';
+-import { useColorScheme } from 'react-native';
+ import * as SplashScreen from 'expo-splash-screen';
+ import { getNavigationTheme, getTheme } from '@/shared/ui/theme';
++import {
++  ThemePreferenceProvider,
++  useThemePreference,
++} from '@/shared/ui/ThemePreference';
+ import { Stack, ThemeProvider } from 'expo-router';
+ import { StatusBar } from 'expo-status-bar';
+ import { ErrorBoundary } from '@/shared/ui/ErrorBoundary';
+@@ -28,8 +31,6 @@ export const unstable_settings = {
+ };
+ 
+ export default function RootLayout() {
+-  const colorScheme = useColorScheme();
+-  const theme = getTheme(colorScheme === 'dark' ? 'dark' : 'light');
+   useScreenTracking();
+ 
+   useEffect(() => {
+@@ -39,6 +40,17 @@ export default function RootLayout() {
+     }
+   }, []);
+ 
++  return (
++    <ThemePreferenceProvider>
++      <ThemedRoot />
++    </ThemePreferenceProvider>
++  );
++}
++
++/** The app under the theme the user chose (or the system's). */
++function ThemedRoot() {
++  const theme = getTheme(useThemePreference().colorScheme);
++
+   return (
+     <PaperProvider theme={theme}>
+       {/* Inside the theme provider, so the fallback follows light/dark. */}
+diff --git a/docs/conventions.md b/docs/conventions.md
+index cb89561..10c3624 100644
+--- a/docs/conventions.md
++++ b/docs/conventions.md
+@@ -17,6 +17,7 @@ app/                      Expo Router routes only: layouts and one-line route fi
+ features/                 one folder per feature
+   home/screens/           Home: session card (+ links to the examples)
+   auth/screens/           Login and Profile
++  settings/screens/       Settings tab: the dark-mode switch
+   demo-auth/              demo: DummyJSON AuthAdapter, demo-credentials hint
+   demo-todos/             demo: api/, screens/, types.ts (Explore tab)
+   demo-showcase/          demo: component showcase route and Home's example links
+@@ -25,7 +26,7 @@ shared/                   foundation, no imports from features/
+   http/                   createHttpClient, ApiError, the app API client
+   session/                AuthAdapter + auth service, token store, SessionProvider
+   storage/                AsyncStorage and SecureStore wrappers
+-  ui/                     theme, ErrorBoundary, LoadingScreen, ConfigErrorScreen
++  ui/                     theme and theme preference, ErrorBoundary, LoadingScreen, ConfigErrorScreen
+   lib/                    logger, useFetch
+   integrations/           seams (analytics, flags, push, OTA, error reporting) and setup.ts
+   i18n/                   t() and the English dictionary
+diff --git a/docs/testing.md b/docs/testing.md
+index f8bbd6e..d8c66ce 100644
+--- a/docs/testing.md
++++ b/docs/testing.md
+@@ -149,6 +149,7 @@ on a simulator or emulator. No account is needed.
+ | `03-auth-session.yaml`        | sign in, relaunch (still signed in), log out, relaunch (still signed out)     |
+ | `04-login-keyboard.yaml`      | the username's return key moves to the password; the password's submits       |
+ | `05-explore-error-retry.yaml` | Explore shows the API error, then Retry loads the list (local mock API)       |
++| `07-settings-dark-mode.yaml`  | the Settings switch turns dark mode on, survives a relaunch, and turns it off |
+ | `dark-mode.yaml`              | screenshots of Home and Explore with the device in dark mode                  |
+ 
+ Run them with a booted device that has Expo Go:
+diff --git a/docs/ui-and-theming.md b/docs/ui-and-theming.md
+index 6dbb53a..d9f5ce1 100644
+--- a/docs/ui-and-theming.md
++++ b/docs/ui-and-theming.md
+@@ -2,15 +2,21 @@
+ 
+ The UI is built with [React Native Paper](https://callstack.github.io/react-native-paper/)
+ (Material Design 3). There is one theme system: Paper's theme, defined in
+-`shared/ui/theme.ts`, and the app follows the system light/dark setting.
++`shared/ui/theme.ts`. The app follows the system light/dark setting until the
++user picks one with the Dark mode switch on the Settings tab.
+ 
+ ## How it fits together
+ 
+ - `palette` in `shared/ui/theme.ts` holds the brand colors for light and dark
+   mode (primary and containers, inverse primary, background, surface, text);
+   `lightTheme` and `darkTheme` merge it over Paper's MD3 themes.
+-- `app/_layout.tsx` reads `useColorScheme()`, picks the theme with
+-  `getTheme(scheme)`, and passes it to `PaperProvider`.
++- `ThemePreferenceProvider` (`shared/ui/ThemePreference.tsx`) holds the
++  user's choice (`'system'`, `'light'`, or `'dark'`; `'system'` until they
++  pick), persists it with `shared/storage/storage.ts`, and resolves it against
++  `useColorScheme()`. It renders nothing until the saved choice is read, so
++  the app doesn't flash the system theme first.
++- `app/_layout.tsx` reads the resolved scheme with `useThemePreference()`,
++  picks the theme with `getTheme(scheme)`, and passes it to `PaperProvider`.
+ - React Navigation draws screen backgrounds, headers, and the tab bar itself,
+   so `getNavigationTheme(theme)` derives its theme from the Paper theme, and
+   `getTabBarColors(theme)` gives the tab bar `surface` / `outlineVariant` and
+@@ -66,24 +72,16 @@ elevation tints; the
+ [Material theme builder](https://material-foundation.github.io/material-theme-builder/)
+ can generate a full set of MD3 roles from one brand color.
+ 
+-To let users choose light or dark instead of following the system, keep
+-their choice in state (and storage) and pass it to `getTheme`:
++To change the choice from code, call `setPreference` from
++`useThemePreference()`; `'system'` goes back to following the device:
+ 
+ ```tsx
+-import { useState } from 'react';
+-import { useColorScheme } from 'react-native';
+-import { getTheme } from '@/shared/ui/theme';
+-
+-export function useAppTheme() {
+-  const systemScheme = useColorScheme();
+-  const [preference, setPreference] = useState<'system' | 'light' | 'dark'>(
+-    'system'
+-  );
+-  const scheme = preference === 'system' ? systemScheme : preference;
+-  return {
+-    theme: getTheme(scheme === 'dark' ? 'dark' : 'light'),
+-    setPreference,
+-  };
++import { Button } from 'react-native-paper';
++import { useThemePreference } from '@/shared/ui/ThemePreference';
++
++export function FollowSystemButton() {
++  const { setPreference } = useThemePreference();
++  return <Button onPress={() => setPreference('system')}>Use system</Button>;
+ }
+ ```
+ 
+diff --git a/features/settings/screens/SettingsScreen.tsx b/features/settings/screens/SettingsScreen.tsx
+new file mode 100644
+index 0000000..2c94550
+--- /dev/null
++++ b/features/settings/screens/SettingsScreen.tsx
+@@ -0,0 +1,49 @@
++import { ScrollView, StyleSheet } from 'react-native';
++import { SafeAreaView } from 'react-native-safe-area-context';
++import { List, Switch, Text, useTheme } from 'react-native-paper';
++import { useThemePreference } from '@/shared/ui/ThemePreference';
++import { t } from '@/shared/i18n';
++
++/** Settings: app preferences, such as light or dark mode. */
++export function SettingsScreen() {
++  const theme = useTheme();
++  const { colorScheme, setPreference } = useThemePreference();
++  const darkMode = colorScheme === 'dark';
++
++  return (
++    <SafeAreaView
++      style={[styles.container, { backgroundColor: theme.colors.background }]}
++    >
++      <ScrollView contentContainerStyle={styles.content}>
++        <Text variant="headlineMedium" style={styles.title}>
++          {t('settings.title')}
++        </Text>
++        <List.Item
++          title={t('settings.darkMode')}
++          left={props => <List.Icon {...props} icon="weather-night" />}
++          right={() => (
++            <Switch
++              value={darkMode}
++              onValueChange={on => setPreference(on ? 'dark' : 'light')}
++              accessibilityLabel={t('settings.darkMode')}
++              testID="settings-dark-mode"
++            />
++          )}
++          onPress={() => setPreference(darkMode ? 'light' : 'dark')}
++        />
++      </ScrollView>
++    </SafeAreaView>
++  );
++}
++
++const styles = StyleSheet.create({
++  container: {
++    flex: 1,
++  },
++  content: {
++    padding: 16,
++  },
++  title: {
++    marginBottom: 8,
++  },
++});
+diff --git a/shared/i18n/en.ts b/shared/i18n/en.ts
+index 9cc18e9..799ddff 100644
+--- a/shared/i18n/en.ts
++++ b/shared/i18n/en.ts
+@@ -9,6 +9,7 @@ export const en = {
+   // @demo remove-block-start
+   'tabs.explore': 'Explore',
+   // @demo remove-block-end
++  'tabs.settings': 'Settings',
+ 
+   // Home
+   'home.title': 'Welcome',
+@@ -38,6 +39,10 @@ export const en = {
+   'profile.email': 'Email',
+   'profile.refreshFailed': 'Could not refresh your profile: {message}',
+ 
++  // Settings
++  'settings.title': 'Settings',
++  'settings.darkMode': 'Dark mode',
++
+   // Login
+   'login.title': 'Welcome Back',
+   'login.subtitle': 'Sign in to continue',
+diff --git a/shared/storage/storage.ts b/shared/storage/storage.ts
+index 6ad5e59..28f1db0 100644
+--- a/shared/storage/storage.ts
++++ b/shared/storage/storage.ts
+@@ -9,6 +9,7 @@ import { logger } from '@/shared/lib/logger';
+ export const STORAGE_KEYS = {
+   AUTH_TOKEN: 'auth_token',
+   USER_DATA: 'user_data',
++  THEME_PREFERENCE: 'theme_preference',
+ } as const;
+ 
+ /**
+diff --git a/shared/ui/ThemePreference.tsx b/shared/ui/ThemePreference.tsx
+new file mode 100644
+index 0000000..144bb18
+--- /dev/null
++++ b/shared/ui/ThemePreference.tsx
+@@ -0,0 +1,87 @@
++/**
++ * The user's light/dark choice. Until they pick one the app follows the
++ * system setting; their choice is persisted and restored on launch.
++ */
++import {
++  createContext,
++  useCallback,
++  useContext,
++  useEffect,
++  useMemo,
++  useState,
++  type ReactNode,
++} from 'react';
++import { useColorScheme } from 'react-native';
++import { z } from 'zod';
++import { logger } from '@/shared/lib/logger';
++import { getItem, setItem, STORAGE_KEYS } from '@/shared/storage/storage';
++
++const themePreferenceSchema = z.enum(['system', 'light', 'dark']);
++
++export type ThemePreference = z.infer<typeof themePreferenceSchema>;
++
++export interface ThemePreferenceValue {
++  preference: ThemePreference;
++  /** The scheme in effect: the preference, or the system's when 'system'. */
++  colorScheme: 'light' | 'dark';
++  setPreference(preference: ThemePreference): void;
++}
++
++const ThemePreferenceContext = createContext<ThemePreferenceValue | null>(null);
++
++export function ThemePreferenceProvider({ children }: { children: ReactNode }) {
++  const systemScheme = useColorScheme();
++  const [preference, setPreferenceState] = useState<ThemePreference | null>(
++    null
++  );
++
++  useEffect(() => {
++    let active = true;
++    getItem<unknown>(STORAGE_KEYS.THEME_PREFERENCE).then(stored => {
++      const parsed = themePreferenceSchema.safeParse(stored);
++      if (active) setPreferenceState(parsed.success ? parsed.data : 'system');
++    });
++    return () => {
++      active = false;
++    };
++  }, []);
++
++  const setPreference = useCallback((next: ThemePreference) => {
++    setPreferenceState(next);
++    // The choice still applies for this run if it can't be saved.
++    setItem(STORAGE_KEYS.THEME_PREFERENCE, next).catch(error =>
++      logger.error('Failed to save the theme preference', error)
++    );
++  }, []);
++
++  const value = useMemo<ThemePreferenceValue | null>(() => {
++    if (preference === null) return null;
++    const colorScheme =
++      preference === 'system'
++        ? systemScheme === 'dark'
++          ? 'dark'
++          : 'light'
++        : preference;
++    return { preference, colorScheme, setPreference };
++  }, [preference, systemScheme, setPreference]);
++
++  // Render nothing until the stored choice is read, so the app doesn't flash
++  // the system theme first; the native splash screen is still up meanwhile.
++  if (value === null) return null;
++
++  return (
++    <ThemePreferenceContext.Provider value={value}>
++      {children}
++    </ThemePreferenceContext.Provider>
++  );
++}
++
++export function useThemePreference(): ThemePreferenceValue {
++  const value = useContext(ThemePreferenceContext);
++  if (!value) {
++    throw new Error(
++      'useThemePreference must be used inside <ThemePreferenceProvider>'
++    );
++  }
++  return value;
++}
