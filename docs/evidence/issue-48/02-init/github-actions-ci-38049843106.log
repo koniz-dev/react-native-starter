@@ -1,0 +1,696 @@
+Verify	UNKNOWN STEP	﻿2026-10-10T11:51:05.1737027Z Current runner version: '2.337.0'
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1765267Z ##[group]Runner Image Provisioner
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1766169Z Hosted Compute Agent
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1766691Z Version: 20261002.596
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1767253Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1767921Z Build Date: 2026-10-02T22:28:27Z
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1768538Z Worker ID: {d54b8da1-1773-4543-bb6a-2ae1a9cf0333}
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1769187Z Region: centralus
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1769679Z Cloud: Azure
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1770149Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1771656Z ##[group]Operating System
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1772494Z Ubuntu
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1773074Z 24.04.5
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1773591Z LTS
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1774065Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1774679Z ##[group]Runner Image
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1775328Z Image: ubuntu-24.04
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1775868Z Version: 20261004.327.1
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1777038Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1778709Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1779586Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1780628Z ##[group]GITHUB_TOKEN Permissions
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1783333Z Contents: read
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1783863Z Metadata: read
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1784418Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1786839Z Secret source: Actions
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1787779Z Cache mode: write
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.1788746Z Prepare workflow directory
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.2387016Z Prepare all required actions
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.2440580Z Getting action download info
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.4438563Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+Verify	UNKNOWN STEP	2026-10-10T11:51:05.7671421Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.2842880Z Complete job name: Verify
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.4096682Z ##[group]Run actions/checkout@v4
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.4097678Z with:
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.4098174Z   repository: koniz-dev/rns-adopter-trial
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.4101366Z   token: ***
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.4101793Z   ssh-strict: true
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.4102509Z   ssh-user: git
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.4102939Z   persist-credentials: true
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.4103436Z   clean: true
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.4103836Z   sparse-checkout-cone-mode: true
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.4104326Z   fetch-depth: 1
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.4104716Z   fetch-tags: false
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.4105121Z   show-progress: true
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.4105612Z   lfs: false
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.4106016Z   submodules: false
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.4106447Z   set-safe-directory: true
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.4106900Z   allow-unsafe-pr-checkout: false
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.4107558Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.5086239Z Syncing repository: koniz-dev/rns-adopter-trial
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.5089054Z ##[group]Getting Git version info
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.5090369Z Working directory is '/home/runner/work/rns-adopter-trial/rns-adopter-trial'
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.5093473Z [command]/usr/bin/git version
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.5176824Z git version 2.55.0
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.5224249Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.5234558Z Temporarily overriding HOME='/home/runner/work/_temp/d236db5f-52f0-4bc4-951f-bb31ffac8c88' before making global git config changes
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.5238002Z Adding repository directory to the temporary git global config as a safe directory
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.5239730Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/rns-adopter-trial/rns-adopter-trial
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.6314980Z Deleting the contents of '/home/runner/work/rns-adopter-trial/rns-adopter-trial'
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.6324292Z ##[group]Initializing the repository
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.6325863Z [command]/usr/bin/git init /home/runner/work/rns-adopter-trial/rns-adopter-trial
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7110919Z hint: Using 'master' as the name for the initial branch. This default branch name
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7112661Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7124206Z hint: to use in all of your new repositories, which will suppress this warning,
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7125703Z hint: call:
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7127017Z hint:
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7127832Z hint: 	git config --global init.defaultBranch <name>
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7128565Z hint:
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7129445Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7130521Z hint: 'development'. The just-created branch can be renamed via this command:
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7131416Z hint:
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7132390Z hint: 	git branch -m <name>
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7133336Z hint:
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7134332Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7136596Z Initialized empty Git repository in /home/runner/work/rns-adopter-trial/rns-adopter-trial/.git/
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7139340Z [command]/usr/bin/git remote add origin https://github.com/koniz-dev/rns-adopter-trial
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7756975Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7758192Z ##[group]Disabling automatic garbage collection
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7759094Z [command]/usr/bin/git config --local gc.auto 0
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7761305Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7762462Z ##[group]Setting up auth
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7773383Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.7802408Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.8061527Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.8085863Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.8232786Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.8256765Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.8394380Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.8425572Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.8426977Z ##[group]Fetching the repository
+Verify	UNKNOWN STEP	2026-10-10T11:51:06.8433679Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +ac8e65f30e2a5705d7cd298b1ec1ee5fe4206755:refs/remotes/origin/main
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3348030Z From https://github.com/koniz-dev/rns-adopter-trial
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3350703Z  * [new ref]         ac8e65f30e2a5705d7cd298b1ec1ee5fe4206755 -> origin/main
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3356336Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3358297Z ##[group]Determining the checkout info
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3360666Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3362227Z [command]/usr/bin/git sparse-checkout disable
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3407072Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3434588Z ##[group]Checking out the ref
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3436863Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3529277Z Switched to a new branch 'main'
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3534134Z branch 'main' set up to track 'origin/main'.
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3543572Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3603393Z [command]/usr/bin/git log -1 --format=%H
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3623888Z ac8e65f30e2a5705d7cd298b1ec1ee5fe4206755
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3932469Z ##[group]Run actions/setup-node@v4
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3933443Z with:
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3934156Z   node-version-file: .nvmrc
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3935029Z   cache: npm
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3935747Z   always-auth: false
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3936528Z   check-latest: false
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3943288Z   token: ***
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.3944152Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.5036455Z Resolved .nvmrc as 24
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.5075410Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/x64
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.5078138Z (node:1968) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.5081519Z ##[group]Environment details
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.5098895Z (Use `node --trace-deprecation ...` to show where the warning was created)
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.8707100Z node: v24.21.0
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.8708838Z npm: 11.19.0
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.8710261Z yarn: 1.22.22
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.8713022Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.8751390Z [command]/opt/hostedtoolcache/node/24.21.0/x64/bin/npm config get cache
+Verify	UNKNOWN STEP	2026-10-10T11:51:07.9756396Z /home/runner/.npm
+Verify	UNKNOWN STEP	2026-10-10T11:51:08.1166119Z npm cache is not found
+Verify	UNKNOWN STEP	2026-10-10T11:51:08.1289216Z ##[group]Run npm ci
+Verify	UNKNOWN STEP	2026-10-10T11:51:08.1290147Z ^[[36;1mnpm ci^[[0m
+Verify	UNKNOWN STEP	2026-10-10T11:51:08.1460844Z shell: /usr/bin/bash -e {0}
+Verify	UNKNOWN STEP	2026-10-10T11:51:08.1461696Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:51:11.5407239Z npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+Verify	UNKNOWN STEP	2026-10-10T11:51:12.4690376Z npm warn deprecated uuid@7.0.3: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+Verify	UNKNOWN STEP	2026-10-10T11:51:12.5698730Z npm warn deprecated domexception@4.0.0: Use your platform's native DOMException instead
+Verify	UNKNOWN STEP	2026-10-10T11:51:12.7226984Z npm warn deprecated abab@2.0.6: Use your platform's native atob() and btoa() methods instead
+Verify	UNKNOWN STEP	2026-10-10T11:51:14.2763913Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Verify	UNKNOWN STEP	2026-10-10T11:51:14.4514755Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Verify	UNKNOWN STEP	2026-10-10T11:51:14.4863034Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Verify	UNKNOWN STEP	2026-10-10T11:51:14.7333589Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.3783316Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.3804254Z added 1067 packages, and audited 1068 packages in 20s
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.3822577Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.3836372Z 180 packages are looking for funding
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.3847479Z   run `npm fund` for details
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.5060472Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.5062324Z 65 vulnerabilities (16 moderate, 49 high)
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.5088538Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.5089608Z To address all issues (including breaking changes), run:
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.5131149Z   npm audit fix --force
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.5131655Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.5139210Z Run `npm audit` for details.
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.5445004Z ##[group]Run npm run lint
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.5445471Z ^[[36;1mnpm run lint^[[0m
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.5481255Z shell: /usr/bin/bash -e {0}
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.5481585Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.6585683Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.6586368Z > field-notes@1.0.0 lint
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.6587084Z > eslint . --max-warnings 0
+Verify	UNKNOWN STEP	2026-10-10T11:51:28.6587451Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:34.7599546Z ##[group]Run npm run format:check
+Verify	UNKNOWN STEP	2026-10-10T11:51:34.7600014Z ^[[36;1mnpm run format:check^[[0m
+Verify	UNKNOWN STEP	2026-10-10T11:51:34.7635676Z shell: /usr/bin/bash -e {0}
+Verify	UNKNOWN STEP	2026-10-10T11:51:34.7635974Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:51:34.8387574Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:34.8388811Z > field-notes@1.0.0 format:check
+Verify	UNKNOWN STEP	2026-10-10T11:51:34.8390031Z > prettier --check "**/*.{ts,tsx,js,jsx,json,md}"
+Verify	UNKNOWN STEP	2026-10-10T11:51:34.8393040Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:34.9044930Z Checking formatting...
+Verify	UNKNOWN STEP	2026-10-10T11:51:36.2545947Z All matched files use Prettier code style!
+Verify	UNKNOWN STEP	2026-10-10T11:51:36.2813487Z ##[group]Run npm run type-check
+Verify	UNKNOWN STEP	2026-10-10T11:51:36.2813965Z ^[[36;1mnpm run type-check^[[0m
+Verify	UNKNOWN STEP	2026-10-10T11:51:36.2857091Z shell: /usr/bin/bash -e {0}
+Verify	UNKNOWN STEP	2026-10-10T11:51:36.2857513Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:51:36.3605797Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:36.3607376Z > field-notes@1.0.0 type-check
+Verify	UNKNOWN STEP	2026-10-10T11:51:36.3608050Z > tsc --noEmit
+Verify	UNKNOWN STEP	2026-10-10T11:51:36.3608325Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:39.4901759Z ##[group]Run npm run test:ci
+Verify	UNKNOWN STEP	2026-10-10T11:51:39.4902382Z ^[[36;1mnpm run test:ci^[[0m
+Verify	UNKNOWN STEP	2026-10-10T11:51:39.4944443Z shell: /usr/bin/bash -e {0}
+Verify	UNKNOWN STEP	2026-10-10T11:51:39.4944745Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:51:39.5997270Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:39.5998544Z > field-notes@1.0.0 test:ci
+Verify	UNKNOWN STEP	2026-10-10T11:51:39.5999299Z > jest --coverage
+Verify	UNKNOWN STEP	2026-10-10T11:51:39.5999520Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:51.6994266Z PASS __tests__/shared/http/httpClient.test.ts (11.411 s)
+Verify	UNKNOWN STEP	2026-10-10T11:51:51.8406527Z PASS __tests__/shared/lib/logger.test.ts
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0404751Z PASS __tests__/shared/ui/ErrorBoundary.test.tsx
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0580798Z   ● Console
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0581398Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0581815Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0582775Z       [analytics] screen /boom
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0599284Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0600493Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0601173Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0602816Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0604512Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0604847Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0605215Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0605589Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0605812Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0606179Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0606532Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0606764Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0607110Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0607314Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0607804Z       [analytics] screen /boom
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0608086Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0608351Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0608725Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0608904Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0609392Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0609682Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0609935Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0610297Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0610486Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0610919Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0611183Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0611471Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0611797Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0612408Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0612830Z       [analytics] screen /boom
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0613217Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0613481Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0613790Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0614010Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0614522Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0614862Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0615096Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0615458Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0615696Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0616134Z       [analytics] screen /boom
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0616472Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0616696Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0617022Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0617465Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0634610Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0638449Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0639273Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0639718Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0639943Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0640941Z       [analytics] screen /boom
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0641351Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0641686Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.0642370Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.1795174Z PASS __tests__/shared/session/authService.test.ts
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.2919960Z PASS __tests__/shared/config/env.test.ts
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.5673928Z PASS __tests__/shared/lib/useFetch.test.tsx
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.6973520Z PASS __tests__/shared/http/api.test.ts
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7012444Z   ● Console
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7041071Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7064167Z     console.warn
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7064808Z       API request failed: server (503)
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7071003Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7073972Z     ^[[0m ^[[90m 129 |^[[39m     ^[[36mconst^[[39m args ^[[33m=^[[39m [message^[[33m,^[[39m ^[[33m...^[[39mdetails^[[33m.^[[39mfilter(item ^[[33m=>^[[39m item ^[[33m!==^[[39m undefined)]^[[33m;^[[39m
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7076039Z      ^[[90m 130 |^[[39m     ^[[36mif^[[39m (level ^[[33m===^[[39m ^[[32m'error'^[[39m) console^[[33m.^[[39merror(^[[33m...^[[39margs)^[[33m;^[[39m
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7077320Z     ^[[31m^[[1m>^[[22m^[[39m^[[90m 131 |^[[39m     ^[[36melse^[[39m ^[[36mif^[[39m (level ^[[33m===^[[39m ^[[32m'warn'^[[39m) console^[[33m.^[[39mwarn(^[[33m...^[[39margs)^[[33m;^[[39m
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7078286Z      ^[[90m     |^[[39m                                        ^[[31m^[[1m^^[[22m^[[39m
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7079219Z      ^[[90m 132 |^[[39m     ^[[36melse^[[39m ^[[36mif^[[39m (level ^[[33m===^[[39m ^[[32m'info'^[[39m) console^[[33m.^[[39minfo(^[[33m...^[[39margs)^[[33m;^[[39m
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7080135Z      ^[[90m 133 |^[[39m     ^[[36melse^[[39m console^[[33m.^[[39mdebug(^[[33m...^[[39margs)^[[33m;^[[39m
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7080811Z      ^[[90m 134 |^[[39m   }^[[33m;^[[39m^[[0m
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7081146Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7081449Z       at warn (shared/lib/logger.ts:131:40)
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7082239Z       at Object.write [as warn] (shared/lib/logger.ts:142:33)
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7082897Z       at warn (shared/http/httpClient.ts:139:12)
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7083649Z       at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7084436Z       at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7085263Z       at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7086069Z       at node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7086916Z       at apply (shared/http/httpClient.ts:145:4)
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7087708Z       at Axios.request (node_modules/axios/dist/browser/axios.cjs:5245:14)
+Verify	UNKNOWN STEP	2026-10-10T11:51:54.7088224Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5098097Z PASS __tests__/shared/session/tokenStore.test.tsx
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5159343Z   ● Console
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5160072Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5160344Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5160799Z       [analytics] screen /login
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5161211Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5161479Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5161811Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5162200Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5162599Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5162927Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5163152Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5163472Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5163666Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5164098Z       [analytics] screen /login
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5164335Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5164604Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5164912Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5165138Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5165553Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5165787Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5166040Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5166386Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5166565Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5166907Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5167175Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5167484Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:55.5167771Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.7901770Z PASS __tests__/app/sessionRoutes.test.tsx
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8078011Z   ● Console
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8078191Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8078351Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8078753Z       [analytics] screen /profile
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8078995Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8079182Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8079419Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8079573Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8079869Z       [analytics] screen /profile
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8080072Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8080247Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8080519Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8080625Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8080935Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8081126Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8081323Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8081526Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8081663Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8100508Z       [analytics] screen /login
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8101513Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8102129Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8102457Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8102590Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8102957Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8103161Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8103347Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8103572Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8103696Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8104059Z       [analytics] screen /login
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8104245Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8104426Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8104655Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8104814Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8105132Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8105300Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8105460Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8105706Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8105845Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8106144Z       [analytics] screen /profile
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8106342Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8106514Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8106764Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8106868Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8107185Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8107339Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8107528Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8107724Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8107860Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8108191Z       [analytics] screen /profile
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8108435Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8108589Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8108821Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8109014Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8109308Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8109466Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8109622Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8109895Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8110005Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8110358Z       [analytics] screen /profile
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8110557Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8110775Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8110993Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8111130Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8111410Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8111651Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8111804Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8113127Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8113287Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8113629Z       [analytics] screen /profile
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8113815Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8114002Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8114248Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8114343Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8114685Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8114892Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8115065Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8115238Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8115395Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8115661Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8115855Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8115989Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8116256Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8116421Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8116747Z       [analytics] screen /profile
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8116916Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8117137Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8117370Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8117474Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8117737Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8117982Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8118166Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8118366Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8118501Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8118829Z       [analytics] screen /profile
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8119047Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8119193Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:56.8119426Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2643341Z PASS __tests__/features/auth/LoginScreen.test.tsx
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2694506Z   ● Console
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2694984Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2695394Z     console.error
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2696042Z       An update to SessionProvider inside a test was not wrapped in act(...).
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2696794Z       
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2697761Z       When testing, code that causes React state updates should be wrapped into act(...):
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2698608Z       
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2700256Z       act(() => {
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2700639Z         /* fire events that update state */
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2701015Z       });
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2701350Z       /* assert on the output */
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2702460Z       
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2703168Z       This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2703671Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2704153Z     ^[[0m ^[[90m 86 |^[[39m     readStoredSession()^[[33m.^[[39mthen(restored ^[[33m=>^[[39m {
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2705165Z      ^[[90m 87 |^[[39m       ^[[36mif^[[39m (^[[33m!^[[39mchangedRef^[[33m.^[[39mcurrent ^[[33m&&^[[39m isMountedRef^[[33m.^[[39mcurrent) {
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2705911Z     ^[[31m^[[1m>^[[22m^[[39m^[[90m 88 |^[[39m         setSession(restored)^[[33m;^[[39m
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2706491Z      ^[[90m    |^[[39m         ^[[31m^[[1m^^[[22m^[[39m
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2706897Z      ^[[90m 89 |^[[39m       }
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2707309Z      ^[[90m 90 |^[[39m     })^[[33m;^[[39m
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2707892Z      ^[[90m 91 |^[[39m     ^[[90m// The HTTP client has already cleared the stored session.^[[39m^[[0m
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2708236Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2708556Z       at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14402:19
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2709379Z       at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2315:13)
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2710237Z       at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14401:9)
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2711117Z       at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12086:9)
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2712206Z       at dispatchSetStateInternal (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6208:13)
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2713129Z       at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6165:7)
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2713874Z       at setSession (shared/session/SessionProvider.tsx:88:9)
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2714186Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2714311Z     console.error
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2714757Z       An update to SessionProvider inside a test was not wrapped in act(...).
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2715331Z       
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2715766Z       When testing, code that causes React state updates should be wrapped into act(...):
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2716314Z       
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2716571Z       act(() => {
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2716919Z         /* fire events that update state */
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2717291Z       });
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2717599Z       /* assert on the output */
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2718022Z       
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2718695Z       This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2719217Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2719713Z     ^[[0m ^[[90m 86 |^[[39m     readStoredSession()^[[33m.^[[39mthen(restored ^[[33m=>^[[39m {
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2720534Z      ^[[90m 87 |^[[39m       ^[[36mif^[[39m (^[[33m!^[[39mchangedRef^[[33m.^[[39mcurrent ^[[33m&&^[[39m isMountedRef^[[33m.^[[39mcurrent) {
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2721275Z     ^[[31m^[[1m>^[[22m^[[39m^[[90m 88 |^[[39m         setSession(restored)^[[33m;^[[39m
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2721846Z      ^[[90m    |^[[39m         ^[[31m^[[1m^^[[22m^[[39m
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2740398Z      ^[[90m 89 |^[[39m       }
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2740911Z      ^[[90m 90 |^[[39m     })^[[33m;^[[39m
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2741571Z      ^[[90m 91 |^[[39m     ^[[90m// The HTTP client has already cleared the stored session.^[[39m^[[0m
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2742179Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2742532Z       at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14402:19
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2743393Z       at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2315:13)
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2744695Z       at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14401:9)
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2745701Z       at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12086:9)
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2746577Z       at dispatchSetStateInternal (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6208:13)
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2747427Z       at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6165:7)
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2748122Z       at setSession (shared/session/SessionProvider.tsx:88:9)
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.2748436Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.3855691Z PASS __tests__/shared/integrations/seams.test.ts
+Verify	UNKNOWN STEP	2026-10-10T11:51:57.9444817Z PASS __tests__/features/home/HomeScreen.test.tsx
+Verify	UNKNOWN STEP	2026-10-10T11:51:58.0269292Z PASS __tests__/app/appConfig.test.ts
+Verify	UNKNOWN STEP	2026-10-10T11:51:58.1036365Z PASS __tests__/shared/storage/storage.test.ts
+Verify	UNKNOWN STEP	2026-10-10T11:51:58.3382807Z PASS __tests__/shared/ui/theme.test.ts
+Verify	UNKNOWN STEP	2026-10-10T11:51:58.7153435Z PASS __tests__/app/tabBarTheme.test.tsx
+Verify	UNKNOWN STEP	2026-10-10T11:51:58.7173706Z   ● Console
+Verify	UNKNOWN STEP	2026-10-10T11:51:58.7174026Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:58.7174473Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:58.7174967Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:58.7175234Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:58.7175511Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:58.7175900Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:58.7176104Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:58.7176548Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:58.7176787Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:58.7177108Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:58.7177476Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.1833500Z PASS __tests__/shared/integrations/i18n.test.tsx
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.1852415Z   ● Console
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.1852847Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.1853172Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.1853699Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.1854015Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.1854319Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.1854676Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.1854883Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.1855361Z       [analytics] screen /login
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.1855678Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.1855938Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.1856258Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6248776Z PASS __tests__/app/initialRoute.test.tsx
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6285983Z   ● Console
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6288279Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6288903Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6289398Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6289696Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6290054Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6290403Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6290642Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6291065Z       [analytics] screen /login
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6291362Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6291621Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6292327Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6292601Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6293006Z       [analytics] screen /login
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6293331Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6293597Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6293943Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6294146Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6294602Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6294854Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6295106Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.6295429Z 
+Verify	UNKNOWN STEP	2026-10-10T11:51:59.9443941Z PASS __tests__/shared/ui/LoadingScreen.test.tsx
+Verify	UNKNOWN STEP	2026-10-10T11:52:00.3176969Z PASS __tests__/app/statusBar.test.tsx
+Verify	UNKNOWN STEP	2026-10-10T11:52:00.3197812Z   ● Console
+Verify	UNKNOWN STEP	2026-10-10T11:52:00.3199864Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:00.3200428Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:52:00.3200957Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:52:00.3201289Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:00.3201570Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:52:00.3202168Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:00.3202430Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:52:00.3202796Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:52:00.3203068Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:00.3203527Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:52:00.3204352Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:00.9783780Z PASS __tests__/app/configError.test.tsx
+Verify	UNKNOWN STEP	2026-10-10T11:52:00.9801690Z   ● Console
+Verify	UNKNOWN STEP	2026-10-10T11:52:00.9862457Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:00.9923215Z     console.debug
+Verify	UNKNOWN STEP	2026-10-10T11:52:00.9963464Z       [analytics] screen /
+Verify	UNKNOWN STEP	2026-10-10T11:52:00.9982398Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.0043223Z       at debug (shared/lib/logger.ts:133:18)
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.0082546Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4360791Z PASS __tests__/shared/integrations/screenTracking.test.tsx
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4476789Z ------------------------|---------|----------|---------|---------|-------------------
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4478211Z File                    | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4480444Z ------------------------|---------|----------|---------|---------|-------------------
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4481319Z All files               |   97.47 |    90.93 |   95.08 |   97.68 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4485618Z  app                    |     100 |      100 |   57.14 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4486471Z   _layout.tsx           |     100 |      100 |   57.14 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4487538Z  app/(app)              |    87.5 |       75 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4493194Z   _layout.tsx           |    87.5 |       75 |     100 |     100 | 24                
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4531619Z   profile.tsx           |       0 |        0 |       0 |       0 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4544166Z  app/(auth)             |     100 |      100 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4552391Z   _layout.tsx           |     100 |      100 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4553580Z   login.tsx             |       0 |        0 |       0 |       0 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4555337Z  app/(tabs)             |     100 |      100 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4556470Z   _layout.tsx           |     100 |      100 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4557206Z   index.tsx             |       0 |        0 |       0 |       0 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4558233Z  features/auth/screens  |   95.55 |    79.16 |   83.33 |   95.45 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4558942Z   LoginScreen.tsx       |    92.3 |       80 |      60 |    92.3 | 125-129           
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4560762Z   ProfileScreen.tsx     |     100 |    78.57 |     100 |     100 | 38,67-72          
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4561577Z  features/home/screens  |     100 |     87.5 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4562712Z   HomeScreen.tsx        |     100 |     87.5 |     100 |     100 | 35                
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4563460Z  shared/config          |     100 |    97.95 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4565022Z   env.ts                |     100 |    97.95 |     100 |     100 | 128               
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4565794Z   featureFlags.ts       |     100 |      100 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4566669Z  shared/http            |   98.71 |    94.66 |     100 |   98.61 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4567346Z   api.ts                |     100 |      100 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4568218Z   apiError.ts           |   96.96 |    94.59 |     100 |   96.42 | 58                
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4570649Z   httpClient.ts         |     100 |    94.73 |     100 |     100 | 89                
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4571379Z  shared/i18n            |     100 |    83.33 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4572404Z   en.ts                 |     100 |      100 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4573076Z   index.ts              |     100 |    83.33 |     100 |     100 | 38                
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4574008Z  shared/integrations    |   95.83 |       75 |   96.55 |   95.23 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4574680Z   analytics.ts          |     100 |     87.5 |     100 |     100 | 25                
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4579076Z   errorReporter.ts      |   81.81 |       40 |   83.33 |   77.77 | 41,57             
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4579907Z   featureFlags.ts       |     100 |      100 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4580785Z   pushNotifications.ts  |     100 |      100 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4581527Z   seam.ts               |     100 |      100 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4582658Z   setup.ts              |     100 |      100 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4583384Z   updates.ts            |     100 |      100 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4584281Z   useScreenTracking.ts  |     100 |      100 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4585661Z  shared/lib             |   98.01 |    95.38 |   95.23 |   98.86 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4586473Z   logger.ts             |   96.87 |    96.15 |   91.66 |   98.18 | 84                
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4587177Z   useFetch.ts           |     100 |     92.3 |     100 |     100 | 83                
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4588110Z  shared/session         |   97.45 |    88.63 |   95.83 |   97.36 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4588788Z   SessionProvider.tsx   |   97.91 |    81.81 |     100 |   97.82 | 146               
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4613134Z   authService.ts        |   93.93 |    91.66 |   83.33 |   93.75 | 68,81             
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4613767Z   session.ts            |     100 |      100 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4627119Z   tokenStore.ts         |     100 |      100 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4627920Z  shared/storage         |      92 |       80 |     100 |      92 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4629205Z   secureStorage.ts      |      80 |       75 |     100 |      80 | 18,26             
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4629912Z   storage.ts            |     100 |      100 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4631697Z  shared/ui              |    97.5 |    83.33 |     100 |   97.36 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4632975Z   ConfigErrorScreen.tsx |     100 |      100 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4633840Z   ErrorBoundary.tsx     |   96.15 |       75 |     100 |   95.83 | 26                
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4634716Z   LoadingScreen.tsx     |     100 |      100 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4635443Z   theme.ts              |     100 |      100 |     100 |     100 |                   
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4636391Z ------------------------|---------|----------|---------|---------|-------------------
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4769737Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4776569Z Test Suites: 22 passed, 22 total
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4778153Z Tests:       191 passed, 191 total
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4778792Z Snapshots:   0 total
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4779298Z Time:        21.451 s
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.4779882Z Ran all test suites.
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.6199040Z ##[group]Run npx expo-doctor
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.6199441Z ^[[36;1mnpx expo-doctor^[[0m
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.6237714Z shell: /usr/bin/bash -e {0}
+Verify	UNKNOWN STEP	2026-10-10T11:52:01.6238092Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:52:02.2974008Z npm warn exec The following package was not found and will be installed: expo-doctor@1.20.4
+Verify	UNKNOWN STEP	2026-10-10T11:52:02.9643842Z Running 21 checks on your project...
+Verify	UNKNOWN STEP	2026-10-10T11:52:07.5696121Z 21/21 checks passed. No issues detected!
+Verify	UNKNOWN STEP	2026-10-10T11:52:07.5976241Z ##[group]Run npm run audit:check
+Verify	UNKNOWN STEP	2026-10-10T11:52:07.5976677Z ^[[36;1mnpm run audit:check^[[0m
+Verify	UNKNOWN STEP	2026-10-10T11:52:07.6015722Z shell: /usr/bin/bash -e {0}
+Verify	UNKNOWN STEP	2026-10-10T11:52:07.6016091Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:52:07.6753123Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:07.6755278Z > field-notes@1.0.0 audit:check
+Verify	UNKNOWN STEP	2026-10-10T11:52:07.6756332Z > node scripts/check-audit.js
+Verify	UNKNOWN STEP	2026-10-10T11:52:07.6756653Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:11.0045072Z high     braces GHSA-vfj7-8cjw-p6xm: allowlisted until 2027-01-09 (https://github.com/advisories/GHSA-vfj7-8cjw-p6xm)
+Verify	UNKNOWN STEP	2026-10-10T11:52:11.0046988Z high     node-forge GHSA-86w9-cpqp-85rv: allowlisted until 2027-01-09 (https://github.com/advisories/GHSA-86w9-cpqp-85rv)
+Verify	UNKNOWN STEP	2026-10-10T11:52:11.0047861Z moderate decode-uri-component GHSA-vcc3-ghjq-m6fr: reported (not gated)
+Verify	UNKNOWN STEP	2026-10-10T11:52:11.0048662Z moderate sprintf-js GHSA-hp3w-g68c-fv3c: reported (not gated)
+Verify	UNKNOWN STEP	2026-10-10T11:52:11.0049399Z moderate uuid GHSA-w5hq-g745-h8pq: reported (not gated)
+Verify	UNKNOWN STEP	2026-10-10T11:52:11.0050341Z npm audit --omit=dev: 5 advisories (records: 0 critical, 45 high, 16 moderate, 0 low).
+Verify	UNKNOWN STEP	2026-10-10T11:52:11.0051107Z No unreviewed high or critical advisories.
+Verify	UNKNOWN STEP	2026-10-10T11:52:11.0149365Z ##[group]Run npx expo export --platform web --output-dir dist
+Verify	UNKNOWN STEP	2026-10-10T11:52:11.0149778Z ^[[36;1mnpx expo export --platform web --output-dir dist^[[0m
+Verify	UNKNOWN STEP	2026-10-10T11:52:11.0185280Z shell: /usr/bin/bash -e {0}
+Verify	UNKNOWN STEP	2026-10-10T11:52:11.0185707Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:52:11.8553073Z Starting Metro Bundler
+Verify	UNKNOWN STEP	2026-10-10T11:52:11.8553619Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:32.7034226Z Web Bundled 20650ms index.ts (1172 modules)
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0107725Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0113750Z › Assets (19):
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0161541Z node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.6e435534bd35da5fef04168860a9b8fa.ttf (1.3MB)
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0162972Z node_modules/expo-router/assets/arrow_down.017bc6ba3fc25503e5eb5e53826d48a8.png (9.5KB)
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0170950Z node_modules/expo-router/assets/error.d1ea1496f9057eb392d5bbf3732a61b7.png (469B)
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0172626Z node_modules/expo-router/assets/file.19eeb73b9593a38f8e9f418337fc7d10.png (138B)
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0173697Z node_modules/expo-router/assets/forward.d8b800c443b8972542883e0b9de2bdc6.png (188B)
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0174623Z node_modules/expo-router/assets/pkg.ab19f4cbc543357183a20571f68380a3.png (364B)
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0175691Z node_modules/expo-router/assets/react-navigation/elements/back-icon-mask.0a328cd9c1afd0afe8e3b1ec5165b1b4.png (653B)
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0176830Z node_modules/expo-router/assets/react-navigation/elements/back-icon.35ba0eaec5a4f5ed12ca16fabeae451d.png (207B)
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0177932Z node_modules/expo-router/assets/react-navigation/elements/clear-icon.c94f6478e7ae0cdd9f15de1fcb9e5e55.png (4 variations | 425B)
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0179057Z node_modules/expo-router/assets/react-navigation/elements/close-icon.808e1b1b9b53114ec2838071a7e6daa7.png (4 variations | 235B)
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0180240Z node_modules/expo-router/assets/react-navigation/elements/search-icon.286d67d3f74808a60a78d3ebf1a5fb57.png (928B)
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0181157Z node_modules/expo-router/assets/sitemap.412dd9275b6b48ad28f5e3d81bb1f626.png (465B)
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0182267Z node_modules/expo-router/assets/unmatched.20e71bdf79e3a97bf55fd9e164041578.png (4.8KB)
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0182675Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0183165Z › web bundles (1):
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0199565Z _expo/static/js/web/index-50f7635699d6dd197db8eaad4d6d6513.js (2.3MB)
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0200098Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0200495Z › Files (3):
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0200897Z favicon.ico (15KB)
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0201263Z index.html (1.2KB)
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0201615Z metadata.json (49B)
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0269013Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0272234Z Exported: dist
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0870227Z ##[group]Run npm install --no-save zustand@5 @reduxjs/toolkit@2 react-redux@9 jotai@3 @tanstack/react-query@5
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0871089Z ^[[36;1mnpm install --no-save zustand@5 @reduxjs/toolkit@2 react-redux@9 jotai@3 @tanstack/react-query@5^[[0m
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0871619Z ^[[36;1mnpm run docs:check^[[0m
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0916594Z shell: /usr/bin/bash -e {0}
+Verify	UNKNOWN STEP	2026-10-10T11:52:33.0917044Z ##[endgroup]
+Verify	UNKNOWN STEP	2026-10-10T11:52:36.9248843Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:36.9249791Z added 14 packages, and audited 1082 packages in 4s
+Verify	UNKNOWN STEP	2026-10-10T11:52:36.9250360Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:36.9250721Z 183 packages are looking for funding
+Verify	UNKNOWN STEP	2026-10-10T11:52:36.9251445Z   run `npm fund` for details
+Verify	UNKNOWN STEP	2026-10-10T11:52:37.0534475Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:37.0536112Z 65 vulnerabilities (16 moderate, 49 high)
+Verify	UNKNOWN STEP	2026-10-10T11:52:37.0536710Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:37.0537261Z To address all issues (including breaking changes), run:
+Verify	UNKNOWN STEP	2026-10-10T11:52:37.0537856Z   npm audit fix --force
+Verify	UNKNOWN STEP	2026-10-10T11:52:37.0538137Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:37.0538528Z Run `npm audit` for details.
+Verify	UNKNOWN STEP	2026-10-10T11:52:37.1414423Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:37.1415549Z > field-notes@1.0.0 docs:check
+Verify	UNKNOWN STEP	2026-10-10T11:52:37.1416534Z > node scripts/check-docs.js
+Verify	UNKNOWN STEP	2026-10-10T11:52:37.1416880Z 
+Verify	UNKNOWN STEP	2026-10-10T11:52:39.1964250Z Checked 18 files: 36 TypeScript snippets compiled with tsc.
+Verify	UNKNOWN STEP	2026-10-10T11:52:39.1965365Z No problems.
+Verify	UNKNOWN STEP	2026-10-10T11:52:39.2115654Z Post job cleanup.
+Verify	UNKNOWN STEP	2026-10-10T11:52:39.3041027Z (node:2451) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Verify	UNKNOWN STEP	2026-10-10T11:52:39.3042423Z (Use `node --trace-deprecation ...` to show where the warning was created)
+Verify	UNKNOWN STEP	2026-10-10T11:52:39.3314487Z [command]/usr/bin/tar --posix -cf cache.tzst --exclude cache.tzst -P -C /home/runner/work/rns-adopter-trial/rns-adopter-trial --files-from manifest.txt --use-compress-program zstdmt
+Verify	UNKNOWN STEP	2026-10-10T11:52:40.0665298Z (node:2451) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+Verify	UNKNOWN STEP	2026-10-10T11:52:41.0594071Z Sent 23551727 of 157769455 (14.9%), 22.4 MBs/sec
+Verify	UNKNOWN STEP	2026-10-10T11:52:41.4306162Z Sent 157769455 of 157769455 (100.0%), 109.5 MBs/sec
+Verify	UNKNOWN STEP	2026-10-10T11:52:41.5953960Z Cache saved with the key: node-cache-Linux-x64-npm-b787d2c21528dc20663503a7a6776d799436c6baf15fc05352f9d8d8ca72ba08
+Verify	UNKNOWN STEP	2026-10-10T11:52:41.6073057Z Post job cleanup.
+Verify	UNKNOWN STEP	2026-10-10T11:52:41.6769530Z [command]/usr/bin/git version
+Verify	UNKNOWN STEP	2026-10-10T11:52:41.6866543Z git version 2.55.0
+Verify	UNKNOWN STEP	2026-10-10T11:52:41.6871057Z Temporarily overriding HOME='/home/runner/work/_temp/d4dbff7f-3c78-4eb3-84b6-45ec7f688266' before making global git config changes
+Verify	UNKNOWN STEP	2026-10-10T11:52:41.6877503Z Adding repository directory to the temporary git global config as a safe directory
+Verify	UNKNOWN STEP	2026-10-10T11:52:41.6878644Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/rns-adopter-trial/rns-adopter-trial
+Verify	UNKNOWN STEP	2026-10-10T11:52:41.6903691Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Verify	UNKNOWN STEP	2026-10-10T11:52:41.6978052Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Verify	UNKNOWN STEP	2026-10-10T11:52:41.7245757Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Verify	UNKNOWN STEP	2026-10-10T11:52:41.7246520Z http.https://github.com/.extraheader
+Verify	UNKNOWN STEP	2026-10-10T11:52:41.7247613Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+Verify	UNKNOWN STEP	2026-10-10T11:52:41.7304402Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Verify	UNKNOWN STEP	2026-10-10T11:52:41.7526929Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Verify	UNKNOWN STEP	2026-10-10T11:52:41.7582551Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Verify	UNKNOWN STEP	2026-10-10T11:52:41.7931390Z Cleaning up orphan processes
+Verify	UNKNOWN STEP	2026-10-10T11:52:41.8137969Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

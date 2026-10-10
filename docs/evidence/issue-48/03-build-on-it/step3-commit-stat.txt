@@ -1,0 +1,33 @@
+commit 7779251575515dd8b731217874f168bc53402a17
+Author: koniz-dev <kietna.work@gmail.com>
+Date:   Sat Oct 10 19:05:45 2026 +0700
+
+    Add the Field Notes backend adapter, Notes tab, and memory analytics (adopter trial step 3)
+
+ .env.example                                       |  21 +-
+ .gitignore                                         |   3 +
+ FRICTION.md                                        | 194 +++++++++++++++++
+ __tests__/app/notesTab.test.tsx                    |  17 ++
+ .../features/auth/fieldNotesAuthAdapter.test.ts    | 229 +++++++++++++++++++++
+ __tests__/features/notes/NotesScreen.test.tsx      | 188 +++++++++++++++++
+ __tests__/shared/http/httpClient.test.ts           |   7 +
+ .../shared/integrations/memoryAnalytics.test.ts    |  67 ++++++
+ .../shared/integrations/screenTracking.test.tsx    |   4 +
+ __tests__/shared/session/authService.test.ts       |  27 +++
+ app/(tabs)/_layout.tsx                             |  14 ++
+ app/(tabs)/notes.tsx                               |   1 +
+ eslint.config.js                                   |   3 +-
+ features/auth/fieldNotesAuthAdapter.ts             | 109 ++++++++++
+ features/auth/screens/LoginScreen.tsx              |   3 +-
+ features/notes/api/notesApi.ts                     |  29 +++
+ features/notes/components/NotesList.tsx            |  82 ++++++++
+ features/notes/screens/NotesScreen.tsx             |  66 ++++++
+ features/notes/types.ts                            |   6 +
+ mock-backend/server.js                             | 180 ++++++++++++++++
+ package.json                                       |   1 +
+ shared/http/apiError.ts                            |   8 +-
+ shared/i18n/en.ts                                  |  11 +-
+ shared/integrations/adapters/memoryAnalytics.ts    |  46 +++++
+ shared/integrations/setup.ts                       |  15 +-
+ shared/session/authService.ts                      |  21 +-
+ 26 files changed, 1333 insertions(+), 19 deletions(-)

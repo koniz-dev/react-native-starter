@@ -1,0 +1,17 @@
+# 2026-10-10 18:49:49 clone of koniz-dev/rns-adopter-trial at af4e2b0
+$ git ls-files | wc -l
+     140
+$ git ls-remote --heads origin
+af4e2b09f8fdb4b09bc8ce3688df24d8a4439bd0	refs/heads/main
+$ git ls-files | grep -c docs/evidence
+0
+$ du -sh . .git
+1.8M	.
+464K	.git
+$ git ls-files docs/maintainers scripts/maintainers scripts/maintainer-files.json
+docs/maintainers/README.md
+docs/maintainers/dependency-review.md
+docs/maintainers/issue-workflow.md
+docs/maintainers/release-gate.md
+scripts/maintainer-files.json
+scripts/maintainers/bootstrap-issue-labels.sh

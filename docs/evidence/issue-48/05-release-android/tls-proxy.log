@@ -1,0 +1,10 @@
+https proxy on 4443
+control on 4001
+2026-10-10T12:39:06.749Z POST /api/v1/sessions
+2026-10-10T12:53:03.746Z POST /api/v1/sessions
+2026-10-10T12:53:03.806Z GET /api/v1/me
+2026-10-10T12:53:57.508Z control /fail/on
+2026-10-10T12:54:37.653Z GET /api/v1/notes
+2026-10-10T12:54:43.650Z control /fail/off
+2026-10-10T12:54:48.170Z GET /api/v1/notes
+2026-10-10T12:54:55.070Z DELETE /api/v1/sessions

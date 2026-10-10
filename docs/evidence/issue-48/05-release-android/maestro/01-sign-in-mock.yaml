@@ -1,0 +1,35 @@
+appId: com.fieldtrial.notes
+name: Sign in against the Field Notes mock backend (release build)
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Not signed in"
+    timeout: 30000
+- takeScreenshot: 01-home-signed-out
+- tapOn:
+    id: sign-in-button
+- extendedWaitUntil:
+    visible:
+      id: login-username
+    timeout: 15000
+- tapOn:
+    id: login-username
+- inputText: field@example.com
+- tapOn:
+    id: login-password
+- inputText: notes-123
+- hideKeyboard
+- takeScreenshot: 01-login-filled
+- tapOn:
+    id: login-submit
+- extendedWaitUntil:
+    visible: "Signed in as Field Tester"
+    timeout: 20000
+- takeScreenshot: 01-home-signed-in
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible: "Signed in as Field Tester"
+    timeout: 30000
+- takeScreenshot: 01-relaunch-still-signed-in

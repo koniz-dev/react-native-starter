@@ -1,0 +1,23 @@
+$ aapt2 dump badging app-release.apk (package, label)
+package: name='com.fieldtrial.notes' versionCode='1' versionName='1.0.0' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'
+application-label:'Field Notes'
+
+$ grep -a -o URLs in assets/index.android.bundle (Hermes)
+   1 dummyjson
+   1 https://localhost:4443
+   1 jsonplaceholder
+(dummyjson/jsonplaceholder: the DEMO_BACKENDS constants in shared/config/env.ts, unused with EXPO_PUBLIC_USE_DEMO_BACKENDS=false)
+
+$ adb shell dumpsys package com.fieldtrial.notes (version)
+    versionCode=1 minSdk=24 targetSdk=36
+    versionName=1.0.0
+
+$ adb shell getprop ro.build.version.release / ro.product.model
+13
+sdk_gphone64_x86_64
+
+# Test CA (CN=Field Notes Trial CA) installed as /system/etc/security/cacerts/88853558.0 on AVD Trial_Root_API_33 (google_apis, rooted, -writable-system). Private keys are not committed.
+subject=CN=localhost
+issuer=CN=Field Notes Trial CA
+X509v3 Subject Alternative Name: 
+    DNS:localhost, IP Address:127.0.0.1

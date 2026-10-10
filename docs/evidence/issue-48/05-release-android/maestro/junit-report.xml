@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="emulator-5554" tests="2" failures="0" time="261.635" timestamp="2026-10-10T19:50:35">
+    <testcase id="Sign in against the Field Notes mock backend (release build)" name="Sign in against the Field Notes mock backend (release build)" classname="Sign in against the Field Notes mock backend (release build)" file="01-sign-in-mock.yaml" time="200.141" timestamp="2026-10-10T19:50:35" status="SUCCESS"/>
+    <testcase id="Notes shows the API error, then Retry loads the list (release build)" name="Notes shows the API error, then Retry loads the list (release build)" classname="Notes shows the API error, then Retry loads the list (release build)" file="02-notes-error-retry.yaml" time="61.462" timestamp="2026-10-10T19:53:55" status="SUCCESS"/>
+  </testsuite>
+</testsuites>

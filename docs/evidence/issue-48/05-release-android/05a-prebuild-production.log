@@ -1,0 +1,13 @@
+
+> field-notes@1.0.0 prebuild:production
+> APP_VARIANT=production expo prebuild --clean --platform android --no-install
+
+env: load .env
+env: export EXPO_PUBLIC_API_TRUSTED_ORIGINS EXPO_PUBLIC_API_URL EXPO_PUBLIC_AUTH_API_URL EXPO_PUBLIC_USE_DEMO_BACKENDS
+- Creating native directory (./android)
+✔ Created native directory
+- Updating package.json
+✔ Updated package.json
+- Running prebuild
+✔ Finished prebuild
+npm run prebuild:production -- --platform android --no-install  7.55s user 1.67s system 85% cpu 10.760 total

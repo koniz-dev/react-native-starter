@@ -1,0 +1,36 @@
+appId: com.fieldtrial.notes
+name: Notes shows the API error, then Retry loads the list (release build)
+---
+- runScript:
+    file: scripts/fail.js
+    env:
+      MODE: "on"
+- launchApp
+- extendedWaitUntil:
+    visible: "Signed in as Field Tester"
+    timeout: 30000
+- tapOn: "Notes"
+- extendedWaitUntil:
+    visible:
+      id: notes-error
+    timeout: 20000
+- assertVisible: "Could not load your notes.*"
+- takeScreenshot: 02-notes-error
+- runScript:
+    file: scripts/fail.js
+    env:
+      MODE: "off"
+- tapOn:
+    id: notes-retry
+- extendedWaitUntil:
+    visible: "Trailhead parking is full by 8am"
+    timeout: 20000
+- assertVisible: "Bridge on loop B is washed out"
+- takeScreenshot: 02-notes-list
+- tapOn: "Home"
+- tapOn:
+    id: logout-button
+- extendedWaitUntil:
+    visible: "Not signed in"
+    timeout: 15000
+- takeScreenshot: 02-signed-out
