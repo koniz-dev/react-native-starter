@@ -135,6 +135,6 @@ are typed), add its tests under
 
 ## Commits
 
-Small, single-purpose commits on `main`, with the issue reference
-`Refs koniz-dev/react-native-starter#N` (never "Fixes" or "Closes"). The
-process is in [Issue Workflow](issue-workflow.md).
+Small, single-purpose commits, each passing the local gate
+(`npm run lint && npm run type-check && npm run test:ci`). The starter has
+no commit-message convention; use your team's.

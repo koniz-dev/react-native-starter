@@ -69,6 +69,24 @@ The local gate before a commit is
 
 The variant scripts use POSIX `VAR=value command` syntax (macOS, Linux, WSL).
 
+## Dependency advisories
+
+`npm run audit:check` fails on a high or critical advisory in the app's
+runtime dependencies unless `scripts/audit-allowlist.json` has a review of it
+whose `reviewBy` date has not passed. The file ships with the starter's
+review of advisories in its own dependency tree (build tools only, not in the
+app bundles), so CI starts green. Make the review yours:
+
+1. For each entry, read the advisory (`tracking`) and check that `path` and
+   `exposure` still hold for your dependencies (`npm ls <package>`).
+2. Upgrade when a fix is released, and delete the entry; `audit:check` notes
+   entries npm no longer reports.
+3. Otherwise set `owner` to your team, `reviewed` to today, `reviewBy` to
+   your next review (at most a few months out), and `tracking` to your own
+   issue if you track it.
+
+New advisories fail the check until you fix or review them the same way.
+
 ## Where things are
 
 `app/` holds only routes; screens live in `features/`, and the foundation in

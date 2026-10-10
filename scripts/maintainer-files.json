@@ -1,0 +1,15 @@
+{
+  "$comment": "Files that belong to the process for maintaining the starter itself (koniz-dev/react-native-starter), not to a project made from it. A project deletes them: every path in files, and every block between the markers in blocks. Keep this list current when adding a maintainer-only file; see docs/maintainers/README.md.",
+  "files": [
+    "docs/maintainers/",
+    "scripts/maintainers/",
+    "scripts/maintainer-files.json"
+  ],
+  "blocks": [
+    {
+      "file": "AGENTS.md",
+      "start": "<!-- @maintainer remove-block-start -->",
+      "end": "<!-- @maintainer remove-block-end -->"
+    }
+  ]
+}

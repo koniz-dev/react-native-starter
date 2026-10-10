@@ -1,5 +1,5 @@
 {
-  "$comment": "High/critical npm audit advisories (npm audit --omit=dev) reviewed and accepted until reviewBy. Checked by scripts/check-audit.js (npm run audit:check). Review: https://github.com/koniz-dev/react-native-starter/blob/evidence/docs/evidence/issue-41/audit-review.md.",
+  "$comment": "High/critical npm audit advisories (npm audit --omit=dev) reviewed and accepted until reviewBy. Checked by scripts/check-audit.js (npm run audit:check). The entries come with the starter: its review of advisories in the starter's own dependency tree. Re-review them for your project and set owner to yourself; see docs/getting-started.md#dependency-advisories.",
   "advisories": [
     {
       "id": "GHSA-86w9-cpqp-85rv",
@@ -8,10 +8,10 @@
       "path": "expo > @expo/cli > node-forge (also via @expo/code-signing-certificates)",
       "exposure": "Build tool only: Expo CLI uses node-forge for code-signing certificates on the developer's or CI machine. Not in the iOS, Android, or web bundles.",
       "fix": "None released: node-forge 1.4.0 is the latest and is in the affected range.",
-      "owner": "koniz-dev",
+      "owner": "starter template (re-review in your project)",
       "reviewed": "2026-10-09",
       "reviewBy": "2027-01-09",
-      "tracking": "https://github.com/koniz-dev/react-native-starter/issues/43"
+      "tracking": "https://github.com/advisories/GHSA-86w9-cpqp-85rv"
     },
     {
       "id": "GHSA-vfj7-8cjw-p6xm",
@@ -20,10 +20,10 @@
       "path": "jest / metro / jest-haste-map > micromatch > braces",
       "exposure": "Build tool only: glob matching in Metro and Jest over the project's own config patterns. Not in the iOS, Android, or web bundles.",
       "fix": "None released: braces 3.0.3 is the latest and is in the affected range.",
-      "owner": "koniz-dev",
+      "owner": "starter template (re-review in your project)",
       "reviewed": "2026-10-09",
       "reviewBy": "2027-01-09",
-      "tracking": "https://github.com/koniz-dev/react-native-starter/issues/43"
+      "tracking": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm"
     }
   ]
 }

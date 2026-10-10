@@ -1,5 +1,8 @@
 # Issue-Driven Workflow
 
+> For maintainers of the starter itself; delete in your project. See
+> [Maintainers](README.md).
+
 GitHub issues are the single source of truth for all work in this repository. This
 document defines the label taxonomy, the issue lifecycle, the invariants that keep the
 system consistent without supervision, and the loop an autonomous session follows to
@@ -35,7 +38,7 @@ Epic areas map to the codebase:
 | `epic:docs`       | `README.md`, `docs/`, per-directory READMEs                             |
 | `epic:tooling`    | ESLint, Prettier, TypeScript config, `scripts/`, CI, `.env`             |
 
-The canonical source for the epic list is `scripts/bootstrap-issue-labels.sh`. If an
+The canonical source for the epic list is [`scripts/maintainers/bootstrap-issue-labels.sh`](../../scripts/maintainers/bootstrap-issue-labels.sh). If an
 epic is added, renamed, or removed, change it there first, run the script, then update
 the table above. Humans, agents, and any issue-filing integration read the script, so
 they cannot drift apart.
@@ -124,7 +127,7 @@ One issue at a time, so each change stays small and revertible.
    `Fixes`/`Closes`/`Resolves`) and push.
 
 5. **Verify and close.** Execute every acceptance criterion against the running app or
-   toolchain (see `CLAUDE.md` > Acceptance verification for how, in this repo). Save
+   toolchain (see [Acceptance verification](README.md#acceptance-verification)). Save
    evidence to `docs/evidence/issue-<N>/` on the `evidence` branch, commit and push it
    (`Refs ...#N`; see [Commit evidence](#commit-evidence-to-the-evidence-branch)), and
    inspect each
@@ -274,6 +277,6 @@ gh issue list --label "status:needs-uat"
 
 ## Label bootstrap
 
-`scripts/bootstrap-issue-labels.sh` creates or updates every label above. It is
+[`scripts/maintainers/bootstrap-issue-labels.sh`](../../scripts/maintainers/bootstrap-issue-labels.sh) creates or updates every label above. It is
 idempotent (`gh label create --force`) and targets another repo via
-`REPO=owner/name ./scripts/bootstrap-issue-labels.sh`.
+`REPO=owner/name ./scripts/maintainers/bootstrap-issue-labels.sh`.

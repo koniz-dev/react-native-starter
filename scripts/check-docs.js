@@ -20,7 +20,9 @@
  *
  * After `npm run remove-demo`, paths and snippets that refer to the demo
  * (features/demo-*, the Explore and showcase routes) are skipped, so the
- * check keeps passing on a demo-free app.
+ * check keeps passing on a demo-free app. Likewise, once the maintainer
+ * files (scripts/maintainer-files.json) are deleted, references to them are
+ * skipped.
  *
  * Usage: npm run docs:check [-- --keep]   (--keep leaves .docs-check/)
  */
@@ -72,7 +74,7 @@ function docFiles() {
   const folderReadmes = ['app/README.md', 'scripts/README.md'].filter(file =>
     fs.existsSync(path.join(ROOT, file))
   );
-  return ['README.md', ...docs, ...folderReadmes];
+  return ['README.md', 'AGENTS.md', 'CLAUDE.md', ...docs, ...folderReadmes];
 }
 
 /** GitHub-style heading anchors for a Markdown file. */
@@ -100,6 +102,12 @@ function anchorsOf(file) {
 const DEMO_REMOVED = !fs.existsSync(path.join(ROOT, 'features/demo-auth'));
 const DEMO_REF =
   /features\/demo-|app\/\(tabs\)\/explore\.tsx|app\/showcase\.tsx/;
+const MAINTAINER_REMOVED = !fs.existsSync(path.join(ROOT, 'docs/maintainers'));
+const MAINTAINER_REF =
+  /docs\/maintainers\/|scripts\/maintainers\/|scripts\/maintainer-files\.json/;
+const skipRemoved = value =>
+  (DEMO_REMOVED && DEMO_REF.test(value)) ||
+  (MAINTAINER_REMOVED && MAINTAINER_REF.test(value));
 
 function isPlaceholder(value) {
   return /[<>*{}|…]|\.\.\./.test(value);
@@ -194,7 +202,7 @@ function main() {
         const [rel, anchor] = target.split('#');
         const resolved = path.normalize(path.join(path.dirname(file), rel));
         if (!fs.existsSync(path.join(ROOT, resolved))) {
-          if (DEMO_REMOVED && DEMO_REF.test(resolved)) continue;
+          if (skipRemoved(resolved)) continue;
           report(file, lineNo, `broken link ${target}`);
         } else if (anchor && resolved.endsWith('.md')) {
           anchorCache[resolved] ??= anchorsOf(resolved);
@@ -211,7 +219,7 @@ function main() {
           ROOT_FILES.has(value);
         if (!isRepoPath || isPlaceholder(m[1])) continue;
         if (!fs.existsSync(path.join(ROOT, value))) {
-          if (DEMO_REMOVED && DEMO_REF.test(value)) continue;
+          if (skipRemoved(value)) continue;
           report(file, lineNo, `path does not exist: ${value}`);
         }
       }

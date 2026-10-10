@@ -34,9 +34,8 @@ Native topics, the pages link to the official documentation.
   401s, storage.
 - [Environment Variables](environment-variables.md): every `EXPO_PUBLIC_*`
   variable and its validation.
-- [Testing](testing.md): test layout, shared setup, coverage.
-- [Issue Workflow](issue-workflow.md): how work is tracked and verified in
-  this repository.
+- [Testing](testing.md): test layout, shared setup, coverage, end-to-end
+  flows.
 
 `npm run docs:check` compiles every TypeScript snippet in these pages against
 the code and checks every path, link, and `npm run` script they mention; CI

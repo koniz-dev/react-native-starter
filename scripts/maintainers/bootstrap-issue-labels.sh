@@ -2,10 +2,10 @@
 # Bootstrap the issue-workflow labels for this repository.
 # Idempotent: `gh label create --force` updates color/description if the label exists.
 # Usage:
-#   ./scripts/bootstrap-issue-labels.sh
-#   REPO=owner/name ./scripts/bootstrap-issue-labels.sh
+#   ./scripts/maintainers/bootstrap-issue-labels.sh
+#   REPO=owner/name ./scripts/maintainers/bootstrap-issue-labels.sh
 #
-# This file is the canonical source for the epic list (see docs/issue-workflow.md).
+# This file is the canonical source for the epic list (see docs/maintainers/issue-workflow.md).
 # Native issue types are an organization-level repo setting, not labels; this repo is
 # user-owned, so the type family below (bug / enhancement / task) stands in for them.
 

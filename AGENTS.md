@@ -1,156 +1,148 @@
 # Agent Instructions
 
-## Issue workflow
+This is an Expo (SDK 57) and React Native app built from a starter: Expo
+Router, TypeScript strict, React Native Paper (Material Design 3), Jest and
+React Native Testing Library, and Maestro end-to-end flows. Follow these
+instructions when you change the code; the linked docs have the details.
 
-GitHub issues are the single source of truth for work in this repository. Read
-[docs/issue-workflow.md](docs/issue-workflow.md) before selecting or changing an
-issue; it is the authoritative lifecycle and command reference.
+<!-- @maintainer remove-block-start -->
 
-- Work ships directly to `main` in small, reversible, single-issue commits.
-- Choose the highest-priority open `status:todo` issue. If none exists, triage one
-  Backlog issue only after it has a type, epic, priority, and an exact
-  `## Acceptance criteria` heading in its body.
-- Claim by self-assigning and changing `status:todo` to `status:in-progress`, then
-  re-read the issue. If another agent won the claim, unassign yourself and select the
-  next issue.
-- An open triaged issue must have exactly one `status:*` label. Move between states;
-  never leave an open issue without a state label.
-- Use `Refs koniz-dev/react-native-starter#N` in every related commit. Never use
-  `Fixes`, `Closes`, or `Resolves`, because closing occurs only after verification.
-- If blocked, add a comment stating exactly what is needed, move it to
-  `status:blocked`, and unassign. Use `status:needs-uat` only for acceptance steps an
-  agent genuinely cannot drive; give the human exact verification steps.
-- Labels are authoritative. A GitHub Project or board, if present, is a read-only
-  mirror and must not drive issue state.
+> **Maintaining the starter itself?** Only if `docs/maintainers/` exists and
+> `git remote get-url origin` is the upstream repository named in
+> `docs/maintainers/README.md`, also follow that file. Otherwise ignore
+> `docs/maintainers/` and `scripts/maintainers/`: they are the starter's own
+> process, not this project's (`scripts/maintainer-files.json` lists the
+> files, which can be deleted).
 
-## Verification and closure
+<!-- @maintainer remove-block-end -->
 
-Run `npm run lint`, `npm run type-check`, and `npm run test:ci` for every change.
-Jest + React Native Testing Library is this repo's closest automated acceptance
-harness; there is no committed browser or native-device e2e harness. Use a web export
-and browser automation only when available, and send native interactions, device
-rendering, visual-polish judgement, secrets-dependent flows, and store/EAS work to
-human UAT.
+## Project structure
 
-Before a PASS, run every acceptance criterion and save retrievable evidence under
-`docs/evidence/issue-<N>/` on the `evidence` branch (not `main`; recipe in
-[docs/issue-workflow.md](docs/issue-workflow.md#commit-evidence-to-the-evidence-branch)).
-Commit and push the evidence, open and inspect every log or screenshot yourself, post
-a PASS summary linking it, and only then close the issue.
-Never repeat a subagent's PASS without inspecting the artifacts yourself.
+```
+app/            Expo Router routes only: layouts and one-line route files
+features/<name>/  one folder per feature: screens/, components/, api/, hooks/, types.ts
+shared/         the foundation: config, http, session, storage, ui, lib, integrations, i18n
+__tests__/      tests, mirroring the tree (app/, features/<name>/, shared/<area>/)
+testing/        shared test helpers (render with providers, mocks)
+.maestro/       end-to-end flows
+```
 
-## Product positioning
+- Dependency direction: `app/` → `features/` → `shared/`. `shared/` never
+  imports a feature; the one exception is `shared/integrations/setup.ts`, the
+  composition root that registers adapters. Features don't import each
+  other's internals.
+- Demo code lives in `features/demo-*`, the Explore and showcase routes, and
+  between `@demo remove-block-start` / `@demo remove-block-end` markers.
+  Don't build on it; `npm run remove-demo` deletes it
+  ([Remove the Demo](docs/remove-demo.md)).
 
-The starter is **production-ready by configuration, not by installation**:
+Details: [Conventions](docs/conventions.md#project-structure).
 
-- **Configure, don't rewrite.** An adopter reaches a releasable app by supplying
-  configuration only: API/auth base URLs, app name, bundle/package IDs, icons,
-  environment values, and their own service keys. Core concerns (error handling,
-  auth/session, secure storage, environment separation, build profiles, CI) already
-  work and need no code changes to ship.
-- **Opinionated structure, vendor-neutral integrations.** Folder layout, conventions,
-  and data flow are decided. Every external integration (crash/error reporting,
-  analytics, push, remote config/feature flags, OTA updates, a real backend) sits
-  behind a small, typed seam (interface or adapter) with a working default (no-op or
-  console) and a documented example of plugging in a common provider.
-- **The starter itself installs and configures none of those services.** It ships no
-  third-party SDKs that need accounts, keys, or credentials, and it runs fully with
-  only `.env.example` values. Adding a provider must not require restructuring code.
-- **Not loose either.** Things every production app needs are implemented and
-  working, not TODOs: validated environment config with clear startup errors, an API
-  client with timeout, error normalization and 401/session-expiry handling, an error
-  boundary and logger wired to the reporting seam, per-environment build profiles,
-  and green CI.
-- **Demo code is separable.** Showcase screens and demo backends (DummyJSON,
-  JSONPlaceholder) live apart from the foundation and can be removed without breaking
-  it; the removal path is documented.
+## Conventions
 
-**Verification scope follows from this.** Acceptance criteria and UAT verify the
-seams and their default implementations (for example: the reporting seam receives
-the error and the default logs it; the 401 path clears the session), never a real
-third-party service, store submission, or anything that needs credentials. A
-criterion that requires credentials the repository does not have is out of scope,
-not `status:needs-uat`.
+- **Exports:** named exports; only route files in `app/` use default exports.
+- **Names:** PascalCase files for components and screens
+  (`SettingsScreen.tsx`), `useThing.ts` for hooks, camelCase for other
+  modules.
+- **Imports:** `@/` for anything outside the current feature, relative within
+  it; `import type` for types.
+- **Types:** strict, `noUncheckedIndexedAccess`, no `any`. Validate data at
+  the edges (config with zod, API payloads in adapters).
+- **Styles:** `StyleSheet.create` at the bottom of the file; colors from the
+  Paper theme (`useTheme()`), never literals.
+- **Text:** every user-facing string goes in `shared/i18n/en.ts` and is read
+  with `t()`; the keys are typed.
+- **Logging:** `logger` from `@/shared/lib/logger`, never `console`.
+- **Errors:** catch async errors where you can show something; pass the rest
+  to `logger.error`. Route groups have error boundaries.
+- **Comments:** say why, not what; keep doc comments on exported APIs.
 
-## MVP and maintenance readiness
+Lint enforces most of these as errors. Details:
+[Conventions](docs/conventions.md#code-style),
+[UI and Theming](docs/ui-and-theming.md).
 
-This repository's product is a **React Native starter**, not a finished consumer
-application. Its MVP is a trustworthy, documented starting point from which a team
-can build an app. Closing a collection of implementation issues is not, by itself,
-evidence that the starter has reached MVP or may enter maintenance.
+## Adding things
 
-An agent may describe the starter as **MVP-ready** only when a dedicated open
-release-readiness issue has explicit acceptance criteria, all criteria have PASS
-evidence, and the following conditions are true:
+- **A feature or screen:** create `features/<name>/screens/<Name>Screen.tsx`
+  (a named export), then a one-line route file that re-exports it as the
+  default: `app/<name>.tsx` for `/<name>`, `app/(app)/<name>.tsx` to require
+  sign-in, or a file in `app/(tabs)/` for a tab. Add its strings to
+  `shared/i18n/en.ts` and its tests under `__tests__/features/<name>/`.
+  See [Adding a screen](docs/conventions.md#adding-a-screen) and
+  [Navigation](docs/conventions.md#navigation).
+- **An endpoint:** typed functions in `features/<name>/api/`, built on the
+  app client in `shared/http/api.ts`; load data in screens with `useFetch`
+  from `shared/lib/useFetch.ts`. See
+  [Connect Your Backend](docs/connect-your-backend.md#3-add-endpoints-for-a-feature)
+  and [API and Storage](docs/api-and-storage.md).
+- **Sign-in against your backend:** an `AuthAdapter` registered in
+  `shared/integrations/setup.ts`
+  ([Connect Your Backend](docs/connect-your-backend.md#2-sign-in-write-an-authadapter)).
+- **A third-party service** (analytics, feature flags, push, OTA updates,
+  error reporting, i18n): write an adapter for the existing seam in
+  `shared/integrations/` and register it in `shared/integrations/setup.ts`.
+  Don't call the SDK from features. See
+  [Plug In a Provider](docs/plug-in-a-provider.md) and
+  [Error Reporting](docs/error-reporting.md#plugging-in-a-provider).
+- **App state** beyond the session: see
+  [State Management](docs/recipes/state-management.md); persist preferences
+  with the wrappers in `shared/storage/`.
 
-- The release issue defines the supported Expo SDK, Node version, and platform scope
-  (iOS, Android, and/or web), as well as explicit non-goals. It must not imply a
-  production backend, store submission, analytics, push notifications, or a chosen
-  state-management library unless those are deliberately in scope.
-- A clean checkout can follow the committed instructions using `npm ci`, create the
-  documented environment configuration, and start the app. Every command, import,
-  route, sample credential, and endpoint referenced by the in-scope documentation
-  either works or is expressly marked as an optional example to be implemented by
-  the adopter.
-- The shipped baseline flows work end to end within their stated scope: initial
-  navigation, light/dark theming, API loading/error/retry behavior, and the chosen
-  authentication example (including logout and session persistence, if auth remains
-  part of the starter). Tokens on native platforms use protected storage; a web
-  limitation or fallback is documented.
-- Automated gates pass from the clean dependency tree: lint, formatting, type check,
-  and tests. Tests cover the baseline services and failure paths, not merely static
-  rendering. Dependency audit results contain no unreviewed critical or high finding;
-  an unavoidable finding needs a documented dependency path, risk decision, and a
-  tracked remediation issue.
-- Native and visual claims have human UAT evidence for every platform advertised as
-  supported. At minimum this covers install/launch, tab navigation, login/logout or
-  the documented auth alternative, keyboard interaction, safe areas/system bars,
-  light/dark mode, an offline/API-failure state, and no crash on relaunch. Web-export
-  evidence is useful but is never proof of iOS or Android behavior.
-- The release issue links committed logs and screenshots under
-  `docs/evidence/issue-<N>/` on the `evidence` branch, records the tested device/simulator and OS versions,
-  and distinguishes automated PASS from human UAT PASS. Any unmet human-only
-  criterion keeps the release issue in `status:needs-uat`, not closed.
-- The codebase meets the positioning above: no dead code or parallel systems (one
-  theming system, no unused components/hooks/utilities), demo code isolated from the
-  foundation, no hard-coded environment values outside validated config, no
-  hand-written type shims for packages that ship types, and lint passes with zero
-  warnings.
-- Every integration seam listed in the positioning exists with a default
-  implementation, a unit test for the default, and a docs page showing how to plug in
-  a provider.
-- In-scope documentation has been checked against the code: every snippet compiles
-  against the current APIs and every described behavior matches the app.
-- Optional examples kept in this repository (for example the state-management
-  recipes in `docs/recipes/`) are either verified against the current `main` or
-  explicitly marked as unmaintained.
+## Configuration and environment
 
-The repository may move from feature development to **maintenance mode** only after
-MVP readiness is evidenced and all of the following hold:
+- `shared/config/env.ts` is the only module that reads `process.env`. A new
+  variable is `EXPO_PUBLIC_*`, read by its full name in `readRawEnv()`,
+  validated with zod, added to `.env.example`, and documented in
+  [Environment Variables](docs/environment-variables.md). Code reads values
+  through `getConfig()`.
+- Never hard-code URLs, keys, or environment-specific values elsewhere, and
+  never commit `.env`. `EXPO_PUBLIC_*` values ship in the app bundle, so they
+  must not be secrets.
+- App name, IDs, icons, and build variants live in `app.config.ts` and
+  `eas.json` ([Make It Yours](docs/make-it-yours.md)).
 
-- At least one tagged or otherwise immutable baseline revision has passed the release
-  gate; its supported platforms, SDK/Node versions, and known limitations are
-  recorded in the release issue or release notes.
-- There are no open P0 or P1 defects/security issues, and no unresolved issue that
-  invalidates a published setup, platform-support, or security claim. P2/P3 backlog
-  items have been consciously deferred rather than treated as invisible scope.
-- CI is green on the baseline revision, release dependencies are reproducible via the
-  lockfile, and the dependency/security review has a repeatable cadence and owner.
-- The team has a documented support policy: how to report a defect, how security
-  updates are triaged, what compatibility updates are accepted, and when an Expo or
-  React Native upgrade is required.
+## Gates
 
-In maintenance mode, accept only security fixes, reproducible regressions,
-compatibility/toolchain updates, documentation corrections, and narrowly scoped
-reliability improvements. A new user-facing capability, a new supported platform, a
-new required backend integration, or a change to the starter's promised baseline
-reopens feature development and requires a new release-readiness issue. Agents must
-state which release-gate criteria remain unverified; green unit tests alone never
-justify declaring MVP or maintenance readiness.
+Before you call a change done, run:
 
-## Taxonomy source
+```bash
+npm run lint && npm run type-check && npm run test:ci
+```
 
-`scripts/bootstrap-issue-labels.sh` is the canonical source of the `epic:*` list.
-Change it first when the taxonomy changes, rerun it, and then synchronize
-`docs/issue-workflow.md`. GitHub native issue types are a repository setting, not
-labels; use the documented type labels where native types are unavailable.
+CI also runs `npm run format:check`, `npm run docs:check` (compiles the
+docs' snippets and checks their paths), `npm run audit:check`, and a web
+export. Run `npm run docs:check` when you change docs. For flows on a device,
+`npm run test:e2e:ios` or `npm run test:e2e:android` runs the Maestro flows;
+add a flow in `.maestro/` for a new user journey. Test new behavior, not only
+rendering: see [Testing](docs/testing.md).
+
+Keep commits small and single-purpose.
+
+## Design principles
+
+- **Production-ready by configuration.** Core concerns (validated config,
+  HTTP client with timeouts and 401 handling, secure token storage, error
+  boundary and logger, build variants, CI) already work; extend them rather
+  than adding parallel systems.
+- **Vendor-neutral seams.** Every external service sits behind a small typed
+  seam with a no-op or console default, so adding a provider never means
+  restructuring code.
+- **No dead code.** One theming system, one HTTP client, no unused
+  components or utilities.
+
+## Docs map
+
+- [Getting Started](docs/getting-started.md): install, run, scripts,
+  troubleshooting.
+- [Make It Yours](docs/make-it-yours.md): app identity, icons, variants.
+- [Connect Your Backend](docs/connect-your-backend.md): URLs, auth adapter,
+  endpoints.
+- [Remove the Demo](docs/remove-demo.md).
+- [Conventions](docs/conventions.md): structure, navigation, code style.
+- [API and Storage](docs/api-and-storage.md),
+  [Environment Variables](docs/environment-variables.md),
+  [UI and Theming](docs/ui-and-theming.md),
+  [Error Reporting](docs/error-reporting.md),
+  [Plug In a Provider](docs/plug-in-a-provider.md),
+  [Testing](docs/testing.md),
+  [State Management](docs/recipes/state-management.md).

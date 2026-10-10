@@ -167,9 +167,9 @@ device to dark mode for `dark-mode.yaml` and back. Results, screenshots, and a
 JUnit report go to `e2e-results/<platform>/` (gitignored).
 
 On iOS, Back from Login is the left-edge swipe, which Maestro's `swipe` does
-not trigger, so `run.sh` skips the `android-only` flow there. The edge swipe
-is checked with a small XCUITest runner instead
-([`xcuitest-EdgeSwipe.swift`](https://github.com/koniz-dev/react-native-starter/tree/evidence/docs/evidence/issue-19/uat) on the `evidence` branch).
+not trigger, so `run.sh` skips the `android-only` flow there. Check the edge
+swipe by hand on the Simulator, or with an XCUITest UI test, which can drive
+it.
 
 Setup:
 

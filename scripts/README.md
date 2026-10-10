@@ -1,19 +1,6 @@
 # Scripts
 
-This directory contains repository-maintenance scripts that are committed and
-safe to run from the project root.
-
-## `bootstrap-issue-labels.sh`
-
-Creates or synchronizes the GitHub issue-label taxonomy used by this starter.
-It does not modify source code.
-
-```bash
-REPO=koniz-dev/react-native-starter ./scripts/bootstrap-issue-labels.sh
-```
-
-The canonical epic-label list is maintained in this script. See
-[`docs/issue-workflow.md`](../docs/issue-workflow.md) for the issue lifecycle.
+Project scripts, run from the project root (most through `npm run`).
 
 ## `remove-demo.js`
 
@@ -33,7 +20,9 @@ path they mention. See [`docs/README.md`](../docs/README.md).
 `npm run audit:check` (also in CI): runs `npm audit --omit=dev` and fails on
 any high or critical advisory that is not reviewed in `audit-allowlist.json`,
 or whose review date (`reviewBy`) has passed. Each allowlist entry records the
-dependency path, exposure, owner, review date, and tracking issue.
+dependency path, exposure, owner, review date, and tracking link; see
+[Dependency advisories](../docs/getting-started.md#dependency-advisories) for
+reviewing them in your project.
 
 ## No reset-project command
 
