@@ -1,9 +1,0 @@
-# iPhone 16 Pro simulator, iOS 18.6, Expo Go 57.0.9, commit with this change (uncommitted working tree at the time)
-# Local API server on http://localhost:9999 logs only whether an Authorization header was present (never its value).
-# Demo auth backend unchanged (EXPO_PUBLIC_AUTH_API_URL = https://dummyjson.com); signed in as Emily Johnson via the login screen.
-
-## Run 1: EXPO_PUBLIC_API_URL=http://localhost:9999, EXPO_PUBLIC_API_TRUSTED_ORIGINS unset (default allow-list = auth origin only)
-GET /todos authorization=absent
-
-## Run 2 (positive control): same, plus EXPO_PUBLIC_API_TRUSTED_ORIGINS=http://localhost:9999
-GET /todos authorization=present (Bearer ...)

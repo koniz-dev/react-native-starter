@@ -81,9 +81,12 @@ What this tooling **cannot** verify — route these criteria to `status:needs-ua
 
 Evidence discipline:
 
-- Persist artifacts as committed files under `docs/evidence/issue-<N>/` (logs,
-  screenshots, test output). A link to a CI run or a claim in a comment is not
-  evidence; the file must be retrievable from the repo.
+- Persist artifacts as committed files under `docs/evidence/issue-<N>/` on the
+  **`evidence` branch** (an orphan branch with evidence only), never on `main`:
+  "Use this template" copies `main`, and adopters must not inherit this repo's
+  evidence. Recipe: [docs/issue-workflow.md](docs/issue-workflow.md#commit-evidence-to-the-evidence-branch).
+  A link to a CI run or a claim in a comment is not evidence; the file must be
+  retrievable from the repo (on the `evidence` branch).
 - Before writing PASS, actually open each artifact — read the log, view the
   screenshot — and confirm it shows the asserted behavior. A screenshot of the wrong
   screen or a log with a swallowed error is a FAIL you have not noticed yet.

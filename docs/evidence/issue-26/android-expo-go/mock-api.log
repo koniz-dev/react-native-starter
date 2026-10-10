@@ -1,7 +1,0 @@
-mock API on :9999
-GET /todos mode=ok
-mode=error
-GET /todos mode=error
-mode=ok
-GET /todos mode=ok
-GET /todos mode=ok

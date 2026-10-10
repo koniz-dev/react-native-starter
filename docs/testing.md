@@ -2,7 +2,7 @@
 
 Jest with the `jest-expo` preset and React Native Testing Library. Tests run
 in Node with native modules mocked; they are the starter's main verification
-harness, alongside manual runs on simulators (see the evidence folders).
+harness, alongside the Maestro flows and manual runs on simulators.
 
 ## Commands
 
@@ -134,7 +134,7 @@ under the measured coverage (97.3 / 90.4 / 94.4 / 97.5) and still passes after
 - Name tests after the behavior: "logging out clears the session and returns
   to the signed-out state".
 - When a fix guards against a regression, check that the test fails without
-  the fix (the evidence folders record these mutation checks).
+  the fix.
 
 ## End-to-end flows (Maestro)
 
@@ -169,7 +169,7 @@ JUnit report go to `e2e-results/<platform>/` (gitignored).
 On iOS, Back from Login is the left-edge swipe, which Maestro's `swipe` does
 not trigger, so `run.sh` skips the `android-only` flow there. The edge swipe
 is checked with a small XCUITest runner instead
-(`docs/evidence/issue-19/uat/xcuitest-EdgeSwipe.swift`).
+([`xcuitest-EdgeSwipe.swift`](https://github.com/koniz-dev/react-native-starter/tree/evidence/docs/evidence/issue-19/uat) on the `evidence` branch).
 
 Setup:
 

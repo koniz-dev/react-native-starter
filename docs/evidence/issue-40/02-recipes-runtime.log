@@ -1,8 +1,0 @@
-# Scratch copy: Jest runs the extracted recipes (.docs-check/) against the real SessionProvider
-# Test file: __tests__/recipes/stateManagement.test.tsx (copied below as 02-recipes-runtime.test.tsx)
-    ✓ Zustand: toggles and resets on sign-out (32 ms)
-    ✓ Redux Toolkit: toggles and resets on sign-out (8 ms)
-    ✓ Jotai: toggles and resets on sign-out (6 ms)
-    ✓ React Context: toggles and resets on sign-out (6 ms)
-Test Suites: 1 passed, 1 total
-Tests:       4 passed, 4 total

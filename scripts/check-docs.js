@@ -65,8 +65,7 @@ function docFiles() {
       .readdirSync(path.join(ROOT, dir), { withFileTypes: true })
       .flatMap(entry => {
         const rel = `${dir}/${entry.name}`;
-        if (entry.isDirectory())
-          return rel === 'docs/evidence' ? [] : walk(rel);
+        if (entry.isDirectory()) return walk(rel);
         return entry.name.endsWith('.md') ? [rel] : [];
       });
   const docs = walk('docs');

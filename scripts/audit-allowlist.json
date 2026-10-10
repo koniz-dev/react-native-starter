@@ -1,5 +1,5 @@
 {
-  "$comment": "High/critical npm audit advisories (npm audit --omit=dev) reviewed and accepted until reviewBy. Checked by scripts/check-audit.js (npm run audit:check). Review: docs/evidence/issue-41/audit-review.md.",
+  "$comment": "High/critical npm audit advisories (npm audit --omit=dev) reviewed and accepted until reviewBy. Checked by scripts/check-audit.js (npm run audit:check). Review: https://github.com/koniz-dev/react-native-starter/tree/evidence/docs/evidence/issue-41/audit-review.md.",
   "advisories": [
     {
       "id": "GHSA-86w9-cpqp-85rv",

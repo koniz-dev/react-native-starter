@@ -1,6 +1,0 @@
-
-<repo>/utils/__lintprobe.ts
-  1:21  error  'process.env' is restricted from being used. Read environment values through config/env.ts (getConfig / configResult)  no-restricted-properties
-
-✖ 1 problem (1 error, 0 warnings)
-

@@ -81,7 +81,8 @@ criteria` heading: concrete, observable steps that someone (or a browser agent) 
 4. **Definition of Done = closed AND evidence-backed.** A session closes an issue only
    after running its acceptance criteria against the running app (or its build/test
    toolchain, where the criteria are toolchain-level) and attaching retrievable
-   evidence: committed logs or screenshots under `docs/evidence/issue-<N>/` plus a PASS
+   evidence: committed logs or screenshots under `docs/evidence/issue-<N>/` on the
+   `evidence` branch plus a PASS
    summary comment on the issue. "Tests are green" or "it deployed" is not done.
 
 5. **`status:needs-uat` means a human must verify this.** It is reserved for criteria an
@@ -124,7 +125,9 @@ One issue at a time, so each change stays small and revertible.
 
 5. **Verify and close.** Execute every acceptance criterion against the running app or
    toolchain (see `CLAUDE.md` > Acceptance verification for how, in this repo). Save
-   evidence to `docs/evidence/issue-<N>/`, commit it (`Refs ...#N`), and inspect each
+   evidence to `docs/evidence/issue-<N>/` on the `evidence` branch, commit and push it
+   (`Refs ...#N`; see [Commit evidence](#commit-evidence-to-the-evidence-branch)), and
+   inspect each
    artifact yourself before calling it a PASS. Then:
    - **All criteria pass:** comment a PASS summary linking the evidence files and the
      commits, then close the issue.
@@ -187,14 +190,40 @@ Refs koniz-dev/react-native-starter#<N>"
 git push origin main
 ```
 
+### Commit evidence to the evidence branch
+
+Evidence lives on the orphan branch `evidence`, at `docs/evidence/issue-<N>/`, so
+that `main` (what "Use this template" copies) carries none of it. Keep a worktree
+of the branch next to the main checkout (Git 2.39+):
+
+```bash
+git fetch origin evidence
+git worktree add ../rns-evidence evidence   # once; afterwards: git -C ../rns-evidence pull --ff-only
+mkdir -p ../rns-evidence/docs/evidence/issue-<N>
+# copy logs and screenshots in; write summary.md
+(cd ../rns-evidence && node tools/check-links.js)
+git -C ../rns-evidence add docs/evidence/issue-<N>
+git -C ../rns-evidence commit -m "docs: record the evidence for issue <N>" \
+  -m "Refs koniz-dev/react-native-starter#<N>"
+git -C ../rns-evidence push origin evidence
+```
+
+In `summary.md`, link files in the same folder relatively; link code or docs on
+`main` with a GitHub URL pinned to the verified commit
+(`https://github.com/koniz-dev/react-native-starter/blob/<sha>/<path>`), because
+`main`'s files are not on the branch. Link the evidence from the issue as
+`https://github.com/koniz-dev/react-native-starter/tree/evidence/docs/evidence/issue-<N>`.
+
 ### Close with evidence (in-progress -> closed)
 
 ```bash
 gh issue comment <N> --body "$(cat <<'EOF'
 PASS - all acceptance criteria verified.
 
-1. <criterion> - PASS. Evidence: docs/evidence/issue-<N>/<file>
-2. <criterion> - PASS. Evidence: docs/evidence/issue-<N>/<file>
+Evidence: https://github.com/koniz-dev/react-native-starter/tree/evidence/docs/evidence/issue-<N>
+
+1. <criterion> - PASS. Evidence: <file>
+2. <criterion> - PASS. Evidence: <file>
 
 Commits: <sha1>, <sha2>
 EOF
@@ -208,7 +237,7 @@ do not strip `status:in-progress` separately.
 ### Hand off to a human (in-progress -> needs-uat)
 
 ```bash
-gh issue comment <N> --body "Automated criteria 1-2 PASS (evidence: docs/evidence/issue-<N>/). Criterion 3 is human-only: <exact steps for the human>."
+gh issue comment <N> --body "Automated criteria 1-2 PASS (evidence: https://github.com/koniz-dev/react-native-starter/tree/evidence/docs/evidence/issue-<N>). Criterion 3 is human-only: <exact steps for the human>."
 gh issue edit <N> --remove-label "status:in-progress" --add-label "status:needs-uat" \
   --remove-assignee "@me"
 ```

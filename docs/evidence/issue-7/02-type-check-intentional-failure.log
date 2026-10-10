@@ -1,5 +1,0 @@
-
-> react-native-starter@1.0.0 type-check
-> tsc --noEmit
-
-utils/sum.ts(8,9): error TS2322: Type 'string' is not assignable to type 'number'.

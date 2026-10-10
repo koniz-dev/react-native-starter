@@ -1,9 +1,0 @@
-POST /auth/login username=emilys   # (curl self-check before the device runs)
-GET /auth/me mode=ok authorization=Bearer <token>   # (curl self-check before the device runs)
-POST /auth/login username=emilys
-GET /auth/me mode=ok authorization=Bearer <token>
-GET /auth/me mode=ok authorization=Bearer <token>
-GET /auth/me mode=401 authorization=Bearer <token>
-POST /auth/login username=emilys
-GET /auth/me mode=ok authorization=Bearer <token>
-GET /auth/me mode=401 authorization=Bearer <token>

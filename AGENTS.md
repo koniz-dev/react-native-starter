@@ -33,8 +33,10 @@ rendering, visual-polish judgement, secrets-dependent flows, and store/EAS work 
 human UAT.
 
 Before a PASS, run every acceptance criterion and save retrievable evidence under
-`docs/evidence/issue-<N>/`. Commit the evidence, open and inspect every log or
-screenshot yourself, post a PASS summary linking it, and only then close the issue.
+`docs/evidence/issue-<N>/` on the `evidence` branch (not `main`; recipe in
+[docs/issue-workflow.md](docs/issue-workflow.md#commit-evidence-to-the-evidence-branch)).
+Commit and push the evidence, open and inspect every log or screenshot yourself, post
+a PASS summary linking it, and only then close the issue.
 Never repeat a subagent's PASS without inspecting the artifacts yourself.
 
 ## Product positioning
@@ -106,7 +108,7 @@ evidence, and the following conditions are true:
   light/dark mode, an offline/API-failure state, and no crash on relaunch. Web-export
   evidence is useful but is never proof of iOS or Android behavior.
 - The release issue links committed logs and screenshots under
-  `docs/evidence/issue-<N>/`, records the tested device/simulator and OS versions,
+  `docs/evidence/issue-<N>/` on the `evidence` branch, records the tested device/simulator and OS versions,
   and distinguishes automated PASS from human UAT PASS. Any unmet human-only
   criterion keeps the release issue in `status:needs-uat`, not closed.
 - The codebase meets the positioning above: no dead code or parallel systems (one

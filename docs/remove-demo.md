@@ -40,7 +40,7 @@ the diff.
   screens.
 - `npm run lint`, `npm run type-check`, and `npm run test:ci` pass, and the
   app starts in Expo Go (verified in
-  [the evidence for issue 36](evidence/issue-36/)).
+  [the evidence for issue 36](https://github.com/koniz-dev/react-native-starter/tree/evidence/docs/evidence/issue-36)).
 - Sign-in reports **"Sign-in is not configured: register an AuthAdapter in
   shared/integrations/setup.ts."** until you register an adapter for your
   backend; see [Connect Your Backend](connect-your-backend.md).

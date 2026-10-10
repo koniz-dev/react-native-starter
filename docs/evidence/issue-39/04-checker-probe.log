@@ -1,8 +1,0 @@
-# Probe: four planted mistakes in docs/connect-your-backend.md (a typo in a snippet, a broken link, a wrong path, a missing script); the file is restored afterwards
-Checked 16 files: 31 TypeScript snippets compiled with tsc.
-docs/connect-your-backend.md:187: npm run deploy: no such script
-docs/connect-your-backend.md:187: broken link missing-page.md
-docs/connect-your-backend.md:187: path does not exist: shared/http/nope.ts
-docs/connect-your-backend.md:56: error TS2551: Property 'access_tokn' does not exist on type '{ access_token: string; refresh_token: string; user: MyUser; }'. Did you mean 'access_token'?
-4 problem(s).
-exit status: 1

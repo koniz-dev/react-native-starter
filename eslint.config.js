@@ -54,8 +54,6 @@ module.exports = [
       'coverage/**',
       'android/**',
       'ios/**',
-      // Verification artifacts (scripts kept as evidence), not app code.
-      'docs/evidence/**',
       // Maestro flow scripts run in Maestro's JavaScript engine (http, env globals).
       '.maestro/**',
       'e2e-results/**',

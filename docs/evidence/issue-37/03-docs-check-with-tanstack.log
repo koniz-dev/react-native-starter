@@ -1,5 +1,0 @@
-# Scratch copy with the CI's --no-save packages (incl. @tanstack/react-query@5)
-└── @tanstack/react-query@5.104.1 extraneous
-Checked 17 files: 37 TypeScript snippets compiled with tsc.
-No problems.
-exit status: 0

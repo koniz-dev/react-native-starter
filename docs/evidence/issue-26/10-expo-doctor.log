@@ -1,7 +1,0 @@
-$ npx -y expo-doctor
-# 2026-10-10T06:57:15Z  cwd=/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/rel/clone
-env: load .env
-env: export EXPO_PUBLIC_API_TRUSTED_ORIGINS EXPO_PUBLIC_API_URL EXPO_PUBLIC_AUTH_API_URL EXPO_PUBLIC_USE_DEMO_BACKENDS
-Running 21 checks on your project...
-21/21 checks passed. No issues detected!
-# exit code: 0
