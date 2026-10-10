@@ -1,0 +1,6 @@
+$ npm run type-check
+
+> react-native-starter@1.0.0 type-check
+> tsc --noEmit
+
+[exit 0]

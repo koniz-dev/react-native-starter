@@ -1,0 +1,28 @@
+# Issue 44 UAT: sign in, relaunch (still signed in), then delete the app's
+# data but keep the Keychain (what an iOS reinstall does), relaunch: signed out.
+appId: ${APP_ID}
+name: A previous install's Keychain token does not sign in a fresh install
+---
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'true'
+- runFlow: subflows/sign-in.yaml
+- takeScreenshot: 01-signed-in
+- stopApp
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'false'
+- assertVisible: Signed in as Emily Johnson
+- takeScreenshot: 02-relaunch-still-signed-in
+- stopApp
+# Delete the app data, keeping the Keychain (no clearKeychain).
+- clearState
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'false'
+- assertVisible: Not signed in
+- assertNotVisible: Signed in as .*
+- takeScreenshot: 03-after-data-deleted-signed-out

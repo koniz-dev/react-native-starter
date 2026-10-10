@@ -1,0 +1,95 @@
+Running on iPhone 16 Plus - iOS 18.6 - E0ACAF33-2846-4E2E-B304-D2322BC2F008
+ > Flow A previous install's Keychain token does not sign in a fresh install
+Run subflows/open-app.yaml...
+  Run flow when ${CLEAR_STATE == 'true'} is true...
+    Clear state of ${APP_ID}... COMPLETED
+    Run flow when Platform is IOS...
+      Clear keychain... COMPLETED
+    Run flow when Platform is IOS... COMPLETED
+  Run flow when true is true... COMPLETED
+  Launch app "${APP_ID}"... COMPLETED
+  Open ${APP_URL}... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)...
+    Assert that (Optional) id: tab-home is visible... WARNED
+    Run flow when Platform is IOS and "Open in .*" is visible...
+    Run flow when Platform is IOS and "Open in .*" is visible... SKIPPED
+    Run flow when "Development servers" is visible...
+    Run flow when "Development servers" is visible... SKIPPED
+    Tap on (Optional) "Wait"... WARNED
+    Tap on (Optional) "Continue"... WARNED
+    Run flow when Platform is ANDROID and "Go home" is visible...
+    Run flow when Platform is ANDROID and "Go home" is visible... SKIPPED
+    Run flow when Platform is IOS and "Go home" is visible...
+    Run flow when Platform is IOS and "Go home" is visible... SKIPPED
+    Wait for animation to end... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)... COMPLETED
+  Assert that "Session" is visible... COMPLETED
+Run subflows/open-app.yaml... COMPLETED
+Run subflows/sign-in.yaml...
+  Wait for animation to end... COMPLETED
+  Tap on id: sign-in-button... COMPLETED
+  Assert that (Optional) "Welcome Back" is visible... COMPLETED
+  Run flow when "Welcome Back" is not visible...
+  Run flow when "Welcome Back" is not visible... SKIPPED
+  Assert that "Welcome Back" is visible... COMPLETED
+  Tap on id: login-username... COMPLETED
+  Input text emilys... COMPLETED
+  Tap on id: login-password... COMPLETED
+  Input text emilyspass... COMPLETED
+  Hide Keyboard... COMPLETED
+  Tap on id: login-submit... COMPLETED
+  Assert that "(Signed in as Emily Johnson|Save Password\?)" is visible... COMPLETED
+  Tap on (Optional) "Not Now"... COMPLETED
+  Assert that "Signed in as Emily Johnson" is visible... COMPLETED
+Run subflows/sign-in.yaml... COMPLETED
+Take screenshot 01-signed-in... COMPLETED
+Stop ${APP_ID}... COMPLETED
+Run subflows/open-app.yaml...
+  Run flow when ${CLEAR_STATE == 'true'} is true...
+  Run flow when false is true... SKIPPED
+  Launch app "${APP_ID}"... COMPLETED
+  Open ${APP_URL}... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)...
+    Assert that (Optional) id: tab-home is visible... COMPLETED
+    Run flow when Platform is IOS and "Open in .*" is visible...
+    Run flow when Platform is IOS and "Open in .*" is visible... SKIPPED
+    Run flow when "Development servers" is visible...
+    Run flow when "Development servers" is visible... SKIPPED
+    Tap on (Optional) "Wait"... WARNED
+    Tap on (Optional) "Continue"... WARNED
+    Run flow when Platform is ANDROID and "Go home" is visible...
+    Run flow when Platform is ANDROID and "Go home" is visible... SKIPPED
+    Run flow when Platform is IOS and "Go home" is visible...
+    Run flow when Platform is IOS and "Go home" is visible... SKIPPED
+    Wait for animation to end... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)... COMPLETED
+  Assert that "Session" is visible... COMPLETED
+Run subflows/open-app.yaml... COMPLETED
+Assert that "Signed in as Emily Johnson" is visible... COMPLETED
+Take screenshot 02-relaunch-still-signed-in... COMPLETED
+Stop ${APP_ID}... COMPLETED
+Clear state of ${APP_ID}... COMPLETED
+Run subflows/open-app.yaml...
+  Run flow when ${CLEAR_STATE == 'true'} is true...
+  Run flow when false is true... SKIPPED
+  Launch app "${APP_ID}"... COMPLETED
+  Open ${APP_URL}... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)...
+    Assert that (Optional) id: tab-home is visible... COMPLETED
+    Run flow when Platform is IOS and "Open in .*" is visible...
+    Run flow when Platform is IOS and "Open in .*" is visible... SKIPPED
+    Run flow when "Development servers" is visible...
+    Run flow when "Development servers" is visible... SKIPPED
+    Tap on (Optional) "Wait"... WARNED
+    Tap on (Optional) "Continue"... WARNED
+    Run flow when Platform is ANDROID and "Go home" is visible...
+    Run flow when Platform is ANDROID and "Go home" is visible... SKIPPED
+    Run flow when Platform is IOS and "Go home" is visible...
+    Run flow when Platform is IOS and "Go home" is visible... SKIPPED
+    Wait for animation to end... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)... COMPLETED
+  Assert that "Session" is visible... COMPLETED
+Run subflows/open-app.yaml... COMPLETED
+Assert that "Not signed in" is visible... COMPLETED
+Assert that "Signed in as .*" is not visible... COMPLETED
+Take screenshot 03-after-data-deleted-signed-out... COMPLETED

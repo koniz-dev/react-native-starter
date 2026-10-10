@@ -1,0 +1,8 @@
+# shared/session/SessionProvider.tsx as on main (no clearSessionFromPreviousInstall call); the new tests kept
+$ npx jest __tests__/app/sessionRoutes.test.tsx
+                                            [0mSigned in as your account[0m
+    Unable to find an element with text: Not signed in
+  ● first launch after an install › clears a token left by a previous install and starts signed out
+  ● first launch after an install › keeps an existing session from before the marker existed
+  ● first launch after an install › restores the session on later launches (the marker is set)
+Tests:       3 failed, 9 passed, 12 total
