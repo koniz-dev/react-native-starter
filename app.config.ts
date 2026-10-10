@@ -15,7 +15,7 @@ import type { ConfigContext, ExpoConfig } from 'expo/config';
 // ---------------------------------------------------------------------------
 // Replace these placeholders with your app's identity.
 // ---------------------------------------------------------------------------
-const APP = {
+export const APP = {
   /** Display name shown under the app icon. */
   name: 'RN Starter',
   /** Expo project slug (lowercase, dashes). */

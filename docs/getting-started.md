@@ -1,5 +1,34 @@
 # Getting Started
 
+<!-- @init remove-block-start -->
+
+## Make it your project first
+
+Right after creating your repository from the template, run:
+
+```bash
+npm ci
+npm run init-project
+```
+
+It asks for your app name, slug, URL scheme, bundle / package ID, and LICENSE
+holder (or takes them as flags: `npm run init-project -- --help` lists them),
+and whether to remove the demo. Then it:
+
+- sets the identity in `app.config.ts`, `package.json`, `package-lock.json`,
+  `README.md`, `LICENSE`, and the docs' examples, and resets the version to
+  `1.0.0`;
+- runs `npm run remove-demo` if you chose to;
+- deletes the files that belong to the starter's own maintainers, and then
+  itself.
+
+`npm run init-project -- --dry-run` lists every change first. It refuses to
+run on uncommitted changes or a second time unless you pass `--force`.
+[Make It Yours](make-it-yours.md) lists what it changes and what is left for
+you (icons, colors, backend, providers).
+
+<!-- @init remove-block-end -->
+
 ## Prerequisites
 
 - Node.js 24 (the version in `.nvmrc`) or 22.13+, and npm.

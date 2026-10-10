@@ -15,6 +15,14 @@ cp .env.example .env   # turns on the public demo backends
 npm start              # then press i, a, or w, or scan the QR code with Expo Go
 ```
 
+<!-- @init remove-block-start -->
+
+Made a repository from this template? Run `npm run init-project` first: it
+sets your app's name and IDs and removes what belongs to the starter
+([Getting Started](docs/getting-started.md#make-it-your-project-first)).
+
+<!-- @init remove-block-end -->
+
 Details, platforms, and troubleshooting: [Getting Started](docs/getting-started.md).
 
 ## What you get

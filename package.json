@@ -13,6 +13,7 @@
     "prebuild:preview": "APP_VARIANT=preview expo prebuild --clean",
     "prebuild:production": "APP_VARIANT=production expo prebuild --clean",
     "config:print": "expo config --type public",
+    "init-project": "node scripts/init-project.js",
     "remove-demo": "node scripts/remove-demo.js",
     "docs:check": "node scripts/check-docs.js",
     "audit:check": "node scripts/check-audit.js",

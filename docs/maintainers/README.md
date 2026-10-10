@@ -42,6 +42,10 @@ and "can we accept this?" question against that gate:
 - What ships on `main` is for adopters. Maintainer-only material lives in this
   folder (or `scripts/maintainers/`) and is listed in
   `scripts/maintainer-files.json`; add any new maintainer-only file there.
+- `npm run init-project` (`scripts/init-project.js`) must leave no starter
+  identity behind: a new file that names the app, slug, scheme, or bundle ID
+  needs a rule there, and its test fails on any leftover
+  (`koniz-dev|react-native-starter|rnstarter|com.example`).
 - Before citing another issue's state (e.g. "tracked in #N"), re-check it
   with `gh`; comments go stale.
 

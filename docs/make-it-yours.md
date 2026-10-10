@@ -3,6 +3,16 @@
 Everything to change to turn the starter into your app. Most of it is
 configuration; the code changes are an auth adapter and your own features.
 
+<!-- @init remove-block-start -->
+
+**Start with `npm run init-project`** ([Getting Started](getting-started.md#make-it-your-project-first)):
+it sets the app name, slug, scheme, bundle ID, version, `package.json` name,
+README title, and LICENSE holder, optionally removes the demo, and deletes
+the starter's maintainer files. The checklist below is the reference for
+what it changes (the first row) and what is left for you.
+
+<!-- @init remove-block-end -->
+
 ## Checklist
 
 | What                                                          | Where                                                                                    |

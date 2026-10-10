@@ -1,5 +1,5 @@
 import type { ExpoConfig } from 'expo/config';
-import appConfig from '../../app.config';
+import appConfig, { APP } from '../../app.config';
 
 function resolve(env: Record<string, string | undefined>): ExpoConfig {
   const previous = { ...process.env };
@@ -21,26 +21,14 @@ function resolve(env: Record<string, string | undefined>): ExpoConfig {
 
 describe('app.config.ts variants', () => {
   it.each([
-    [
-      undefined,
-      'RN Starter (Dev)',
-      'com.example.rnstarter.dev',
-      'rnstarter-dev',
-    ],
-    [
-      'development',
-      'RN Starter (Dev)',
-      'com.example.rnstarter.dev',
-      'rnstarter-dev',
-    ],
-    [
-      'preview',
-      'RN Starter (Preview)',
-      'com.example.rnstarter.preview',
-      'rnstarter-preview',
-    ],
-    ['production', 'RN Starter', 'com.example.rnstarter', 'rnstarter'],
-  ])('APP_VARIANT=%s', (variant, name, bundleId, scheme) => {
+    [undefined, ' (Dev)', '.dev', '-dev'],
+    ['development', ' (Dev)', '.dev', '-dev'],
+    ['preview', ' (Preview)', '.preview', '-preview'],
+    ['production', '', '', ''],
+  ])('APP_VARIANT=%s', (variant, nameSuffix, idSuffix, schemeSuffix) => {
+    const name = `${APP.name}${nameSuffix}`;
+    const bundleId = `${APP.bundleId}${idSuffix}`;
+    const scheme = `${APP.scheme}${schemeSuffix}`;
     const config = resolve({
       APP_VARIANT: variant,
       APP_BUILD_NUMBER: undefined,
