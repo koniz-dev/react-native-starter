@@ -1,0 +1,7 @@
+$ git clone --depth 1 https://github.com/koniz-dev/react-native-starter.git before
+HEAD e4d7a940d8070fd22cc76327f0c75b949e6128ba (docs: record the owner's UAT for the v1.0.0-mvp release)
+tracked files: 692
+tracked files under docs/evidence: 558
+working tree (all tracked files): 24316 KB
+.git (depth 1): 18160 KB
+total on disk: 42476 KB

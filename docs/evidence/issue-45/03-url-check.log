@@ -1,0 +1,14 @@
+# URLs on main that point at the evidence branch, and the pinned URLs rewritten on it
+200 https://github.com/koniz-dev/react-native-starter/tree/evidence/docs/evidence/issue-19/uat
+200 https://github.com/koniz-dev/react-native-starter/tree/evidence/docs/evidence/issue-36
+404 https://github.com/koniz-dev/react-native-starter/tree/evidence/docs/evidence/issue-41/audit-review.md.
+200 https://github.com/koniz-dev/react-native-starter/blob/f3f4bd7bb2e8080c3c2b8fad0eef3cc8c9c8ac69/docs/api-and-storage.md
+200 https://github.com/koniz-dev/react-native-starter/blob/f3f4bd7bb2e8080c3c2b8fad0eef3cc8c9c8ac69/docs/connect-your-backend.md
+200 https://github.com/koniz-dev/react-native-starter/blob/f3f4bd7bb2e8080c3c2b8fad0eef3cc8c9c8ac69/docs/error-reporting.md
+200 https://github.com/koniz-dev/react-native-starter/blob/f3f4bd7bb2e8080c3c2b8fad0eef3cc8c9c8ac69/docs/plug-in-a-provider.md
+200 https://github.com/koniz-dev/react-native-starter/blob/f3f4bd7bb2e8080c3c2b8fad0eef3cc8c9c8ac69/docs/recipes/state-management.md
+503 https://github.com/koniz-dev/react-native-starter/blob/f3f4bd7bb2e8080c3c2b8fad0eef3cc8c9c8ac69/docs/testing.md
+200 https://github.com/koniz-dev/react-native-starter/blob/f3f4bd7bb2e8080c3c2b8fad0eef3cc8c9c8ac69/docs/ui-and-theming.md
+# recheck
+503 -> https://github.com/koniz-dev/react-native-starter/blob/evidence/docs/evidence/issue-41/audit-review.md (https://github.com/koniz-dev/react-native-starter/tree/evidence/docs/evidence/issue-41/audit-review.md)
+503 -> https://github.com/koniz-dev/react-native-starter/blob/f3f4bd7bb2e8080c3c2b8fad0eef3cc8c9c8ac69/docs/testing.md (https://github.com/koniz-dev/react-native-starter/blob/f3f4bd7bb2e8080c3c2b8fad0eef3cc8c9c8ac69/docs/testing.md)

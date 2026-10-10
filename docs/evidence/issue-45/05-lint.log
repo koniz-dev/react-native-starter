@@ -1,0 +1,6 @@
+$ npm run lint (main @ ad2a8a8)
+
+> react-native-starter@1.0.0 lint
+> eslint . --max-warnings 0
+
+# exit code: 0

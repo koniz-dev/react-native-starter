@@ -1,0 +1,18 @@
+# Recipe from docs/issue-workflow.md#commit-evidence-to-the-evidence-branch, run from /Users/nguyenanhkiet/Playground/react-native-starter (main @ ad2a8a8), git version 2.39.5 (Apple Git-154)
+$ git fetch origin evidence
+From https://github.com/koniz-dev/react-native-starter
+ * branch            evidence   -> FETCH_HEAD
+ * [new branch]      evidence   -> origin/evidence
+# exit 0
+$ git worktree add ../rns-evidence evidence
+Preparing worktree (new branch 'evidence')
+branch 'evidence' set up to track 'origin/evidence'.
+HEAD is now at 2152576 docs: move the verification evidence to the evidence branch
+# exit 0
+$ mkdir -p ../rns-evidence/docs/evidence/issue-45
+# exit 0
+$ cp -R /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i45/ev/. ../rns-evidence/docs/evidence/issue-45/
+# exit 0
+$ (cd ../rns-evidence && node tools/check-links.js)
+Checked 462 relative links in 45 files: 0 problems.
+# exit 0

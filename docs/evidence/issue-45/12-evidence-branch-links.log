@@ -1,0 +1,3 @@
+$ node tools/check-links.js   (on the evidence branch after the move, before this issue's evidence)
+Checked 448 relative links in 44 files: 0 problems.
+# exit code: 0

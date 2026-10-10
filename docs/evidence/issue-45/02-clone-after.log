@@ -1,0 +1,7 @@
+$ git clone --depth 1 https://github.com/koniz-dev/react-native-starter.git after
+HEAD be8da8509a9f728dbef5c8ba6219fb568bbb3fb2 (docs: keep verification evidence on the evidence branch, off main)
+tracked files: 134
+tracked files under docs/evidence: 0
+working tree (all tracked files): 1308 KB
+.git (depth 1): 452 KB
+total on disk: 1760 KB
