@@ -41,12 +41,20 @@ export class ApiError extends Error {
   }
 }
 
-/** The `message` (or `error`) field of a JSON error body, if any. */
+/**
+ * The message in a JSON error body, if any: a string `message` or `error`
+ * field, or the `message` of an envelope such as
+ * `{ "error": { "code": "invalid_credentials", "message": "..." } }`.
+ */
 function serverMessage(data: unknown): string | undefined {
   if (data && typeof data === 'object') {
     const body = data as { message?: unknown; error?: unknown };
     if (typeof body.message === 'string' && body.message) return body.message;
     if (typeof body.error === 'string' && body.error) return body.error;
+    if (body.error && typeof body.error === 'object') {
+      const nested = (body.error as { message?: unknown }).message;
+      if (typeof nested === 'string' && nested) return nested;
+    }
   }
   return undefined;
 }

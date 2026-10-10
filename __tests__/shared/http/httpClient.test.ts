@@ -332,6 +332,28 @@ describe('toApiError', () => {
     );
   });
 
+  it('reads the message of an error envelope', () => {
+    const envelope = {
+      error: {
+        code: 'invalid_credentials',
+        message: 'Wrong email or password',
+      },
+    };
+    expect(toApiError(httpError(config, 422, envelope))).toMatchObject({
+      code: 'client',
+      status: 422,
+      message: 'Wrong email or password',
+      data: envelope,
+    });
+    // An envelope without a usable message falls back to axios's.
+    expect(
+      toApiError(httpError(config, 422, { error: { code: 'x' } })).message
+    ).toBe('Request failed with status code 422');
+    expect(
+      toApiError(httpError(config, 422, { error: { message: 42 } })).message
+    ).toBe('Request failed with status code 422');
+  });
+
   it('wraps non-axios errors as unknown and returns ApiErrors unchanged', () => {
     const existing = new ApiError('x', { code: 'timeout' });
     expect(toApiError(existing)).toBe(existing);

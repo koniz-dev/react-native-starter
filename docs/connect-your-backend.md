@@ -30,13 +30,28 @@ drives the route guards. What your backend's sign-in looks like is up to an
 `public` sends no token (a 401 there is a wrong password); `authenticated`
 sends the stored token (a 401 there signs the user out).
 
+This example is for a backend that differs from the starter's defaults in the
+usual ways:
+
+- `POST /sessions` takes `{ email, password }` and returns only tokens:
+  `{ "access_token", "refresh_token" }`; the user comes from `GET /me`;
+- `POST /sessions/refresh` rotates the refresh token: it returns a new pair,
+  and the old refresh token stops working;
+- `DELETE /sessions` revokes a refresh token.
+
 ```ts
 // features/auth/myBackendAdapter.ts
+import { Platform } from 'react-native';
 import type { AuthAdapter } from '@/shared/session/authService';
+import {
+  createMemoryTokenStore,
+  createSecureTokenStore,
+} from '@/shared/session/tokenStore';
 
-// Placeholders for your own code:
-declare function loadRefreshToken(): Promise<string | null>;
-declare function saveRefreshToken(token: string): Promise<void>;
+interface Tokens {
+  access_token: string;
+  refresh_token: string;
+}
 
 interface MyUser {
   uuid: string;
@@ -44,16 +59,28 @@ interface MyUser {
   full_name?: string;
 }
 
+// The refresh token is stored like the access token: in the Keychain /
+// Keystore on native, in memory on web (secure storage isn't available there).
+export const refreshTokens =
+  Platform.OS === 'web'
+    ? createMemoryTokenStore()
+    : createSecureTokenStore('refresh_token');
+
 export const myBackendAuthAdapter: AuthAdapter = {
   // Required: credentials -> access token + your backend's user payload.
-  login: async (credentials, { public: http }) => {
-    const { data } = await http.post<{
-      access_token: string;
-      refresh_token: string;
-      user: MyUser;
-    }>('/sessions', credentials);
-    await saveRefreshToken(data.refresh_token);
-    return { token: data.access_token, user: data.user };
+  // The Login form's username field holds the email here.
+  login: async ({ username, password }, { public: http }) => {
+    const { data: tokens } = await http.post<Tokens>('/sessions', {
+      email: username,
+      password,
+    });
+    // No user in the response: load it with the new token. Pass the token
+    // yourself; it isn't stored until login returns.
+    const { data: user } = await http.get<MyUser>('/me', {
+      headers: { Authorization: `Bearer ${tokens.access_token}` },
+    });
+    await refreshTokens.set(tokens.refresh_token);
+    return { token: tokens.access_token, user };
   },
 
   // Required: your payload -> { id, email, name }; throw if it's incomplete.
@@ -75,13 +102,32 @@ export const myBackendAuthAdapter: AuthAdapter = {
 
   // Optional: a new access token on a 401, or null to sign the user out.
   refresh: async ({ public: http }) => {
-    const refreshToken = await loadRefreshToken();
+    const refreshToken = await refreshTokens.get();
     if (!refreshToken) return null;
-    const { data } = await http.post<{ access_token: string }>(
-      '/sessions/refresh',
-      { refreshToken }
-    );
-    return data.access_token;
+    try {
+      const { data } = await http.post<Tokens>('/sessions/refresh', {
+        refresh_token: refreshToken,
+      });
+      // Rotation: keep the new refresh token; the old one no longer works.
+      await refreshTokens.set(data.refresh_token);
+      return data.access_token;
+    } catch (error) {
+      // The user is signed out next, so drop the rejected refresh token.
+      await refreshTokens.clear();
+      throw error;
+    }
+  },
+
+  // Optional: end the session on the backend. Runs on sign-out while the
+  // access token is still stored; if it throws, the user is signed out anyway.
+  logout: async ({ authenticated }) => {
+    const refreshToken = await refreshTokens.get();
+    await refreshTokens.clear();
+    if (refreshToken) {
+      await authenticated.delete('/sessions', {
+        data: { refresh_token: refreshToken },
+      });
+    }
   },
 };
 ```
@@ -106,9 +152,51 @@ there; replace that registration with yours.
 
 The service rejects a missing token, stores the token and the normalized
 user, and registers `refresh` (if any) as the HTTP client's refresh handler,
-which is tried once per 401 before signing out. Nothing in `shared/` changes.
+which is tried once per 401 before signing out. On sign-out it calls `logout`
+(if any), then clears the stored session. Nothing in `shared/` changes.
 Until an adapter is registered, sign-in fails with "Sign-in is not
 configured".
+
+### Your backend's field names
+
+The Login screen sends `LoginCredentials`, `{ username, password }`, whatever
+your backend calls them; map them in `login`, as the example does with
+`email: username`. To label the field "Email", change `'login.username'` in
+`shared/i18n/en.ts`; for the email keyboard and autofill, also set
+`keyboardType="email-address"` and `autoComplete="email"` on the
+`login-username` field in `features/auth/screens/LoginScreen.tsx`.
+
+### A login response without the user
+
+`login` must return the user payload. If the login response doesn't include
+it, request it with the new access token in an explicit `Authorization`
+header, as the example does. Don't use the `authenticated` client for this:
+it sends the stored token, and there is none until `login` returns.
+
+### Refresh tokens
+
+- **Storage.** Keep the refresh token in a store from
+  `shared/session/tokenStore.ts`: `createSecureTokenStore(key)` (Keychain /
+  Keystore) on native and `createMemoryTokenStore()` on web, where
+  `shared/storage/secureStorage.ts` throws. Use a key other than the access
+  token's.
+- **Rotation.** If your backend issues a new refresh token on every refresh,
+  store it in `refresh`, as the example does. The HTTP client shares one
+  refresh between concurrent 401s, so a rotated token is used only once.
+- **Revocation.** Revoke and delete it in `logout`. Delete it before the
+  request, so a failed request doesn't leave it on the device.
+
+### Error messages
+
+A failed request rejects with an `ApiError` whose message comes from the
+response body when it has one: a string `message` or `error` field, or the
+`message` of an envelope like `{ "error": { "code": "...", "message": "..." } }`.
+The Login screen shows that message, for example on a wrong password. For
+another shape, map it in your adapter: catch the error and throw one with the
+message you want.
+
+`__tests__/shared/session/realBackendAdapter.test.ts` runs this example,
+taken from this page, against a fake backend with these shapes.
 
 Screens read the session with `useSession()`:
 
@@ -208,5 +296,6 @@ see [API and Storage](api-and-storage.md#why-the-token-is-not-persisted-on-web).
 
 <!-- @demo remove-block-end -->
 
-- Test your adapter like `__tests__/shared/session/authService.test.ts` does
-  with its fake adapter ([Testing](testing.md)).
+- Test your adapter against a fake backend like
+  `__tests__/shared/session/realBackendAdapter.test.ts` does
+  ([Testing](testing.md)).

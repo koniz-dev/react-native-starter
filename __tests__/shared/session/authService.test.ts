@@ -8,6 +8,7 @@ import {
   setAuthAdapter,
   type AuthAdapter,
 } from '@/shared/session/authService';
+import { logger } from '@/shared/lib/logger';
 import { refreshAccessToken } from '@/shared/session/session';
 import * as storage from '@/shared/storage/storage';
 
@@ -115,6 +116,45 @@ describe('authService with an adapter', () => {
     await authService.logout();
 
     expect(SecureStore.getItemAsync).toHaveBeenCalledWith('auth_token');
+    expect(SecureStore.deleteItemAsync).toHaveBeenCalledWith('auth_token');
+    expect(storage.removeItem).toHaveBeenCalledWith('user_data');
+  });
+
+  it("calls the adapter's logout while the token is still stored, then clears the session", async () => {
+    jest.mocked(SecureStore.getItemAsync).mockResolvedValue('fake-token');
+    let tokenDuringLogout: string | null = 'unset';
+    const logout = jest.fn(async () => {
+      tokenDuringLogout = await SecureStore.getItemAsync('auth_token');
+      expect(SecureStore.deleteItemAsync).not.toHaveBeenCalled();
+    });
+    setAuthAdapter(fakeAdapter({ logout }));
+
+    await authService.logout();
+
+    expect(logout).toHaveBeenCalledWith(authClients);
+    expect(tokenDuringLogout).toBe('fake-token');
+    expect(SecureStore.deleteItemAsync).toHaveBeenCalledWith('auth_token');
+    expect(storage.removeItem).toHaveBeenCalledWith('user_data');
+  });
+
+  it('logs a failed adapter logout and signs out anyway', async () => {
+    const warn = jest.spyOn(logger, 'warn').mockImplementation(() => {});
+    setAuthAdapter(
+      fakeAdapter({
+        logout: async () => {
+          throw new Error('Network Error');
+        },
+      })
+    );
+
+    await expect(authService.logout()).resolves.toBeUndefined();
+
+    expect(warn).toHaveBeenCalledWith(
+      'Signing out on the auth backend failed',
+      {
+        error: 'Network Error',
+      }
+    );
     expect(SecureStore.deleteItemAsync).toHaveBeenCalledWith('auth_token');
     expect(storage.removeItem).toHaveBeenCalledWith('user_data');
   });

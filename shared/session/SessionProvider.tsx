@@ -36,7 +36,7 @@ export interface SessionContextValue {
   session: Session;
   /** Signs in; rejects with the API error (e.g. wrong credentials). */
   signIn(credentials: LoginCredentials): Promise<void>;
-  /** Clears the stored session. */
+  /** Signs out: the adapter's logout (if any), then clears the stored session. */
   signOut(): Promise<void>;
   /**
    * Reloads the user from the auth backend. Rejects with the API error; a 401

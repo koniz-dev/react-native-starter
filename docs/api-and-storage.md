@@ -214,7 +214,11 @@ export async function example() {
 
 `STORAGE_KEYS` holds the keys the foundation uses (`AUTH_TOKEN`,
 `USER_DATA`); keep your own keys in your feature. For secrets use
-`shared/storage/secureStorage.ts` (Expo SecureStore; unavailable on web).
+`shared/storage/secureStorage.ts` (Expo SecureStore; unavailable on web). For
+a token that must also work on web, such as a refresh token, use a store from
+`shared/session/tokenStore.ts` instead (secure storage on native, memory on
+web); see
+[Connect Your Backend](connect-your-backend.md#refresh-tokens).
 For larger or relational data, see
 [Expo: store data](https://docs.expo.dev/develop/user-interface/store-data/)
 (SQLite, MMKV).

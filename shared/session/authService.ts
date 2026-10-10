@@ -10,7 +10,9 @@
  */
 import type { AxiosInstance } from 'axios';
 import { getConfig } from '@/shared/config/env';
+import { toApiError } from '@/shared/http/apiError';
 import { createHttpClient } from '@/shared/http/httpClient';
+import { logger } from '@/shared/lib/logger';
 import { getItem, setItem, STORAGE_KEYS } from '@/shared/storage/storage';
 import { clearStoredSession, setRefreshTokenHandler } from './session';
 import { getTokenStore } from './tokenStore';
@@ -55,6 +57,13 @@ export interface AuthAdapter {
    * null when the session can't be refreshed. Called once on a 401.
    */
   refresh?(clients: AuthClients): Promise<string | null>;
+  /**
+   * Ends the session on the backend and drops what the adapter keeps, e.g.
+   * revokes and deletes a refresh token. Called on sign-out while the access
+   * token is still stored; if it fails, the failure is logged and the user is
+   * signed out anyway.
+   */
+  logout?(clients: AuthClients): Promise<void>;
 }
 
 /** Default until an adapter is registered: sign-in reports it isn't set up. */
@@ -127,8 +136,19 @@ export const authService = {
     return { token: result.token, user };
   },
 
-  /** Removes the token and the stored profile. */
+  /**
+   * Signs out: lets the adapter end the session on the backend, then removes
+   * the token and the stored profile, even if the adapter failed.
+   */
   logout: async (): Promise<void> => {
+    try {
+      await adapter.logout?.(clients);
+    } catch (error) {
+      // Often just offline; not worth an error report.
+      logger.warn('Signing out on the auth backend failed', {
+        error: toApiError(error).message,
+      });
+    }
     await clearStoredSession();
   },
 
