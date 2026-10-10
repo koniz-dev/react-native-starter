@@ -1,0 +1,3 @@
+$ git clone https://github.com/koniz-dev/react-native-starter.git clone
+HEAD f3f4bd7bb2e8080c3c2b8fad0eef3cc8c9c8ac69 test: retry the sign-in tap only when Login has not opened
+node v24.21.0, npm 11.19.0, Darwin x86_64, macOS 15.8.1

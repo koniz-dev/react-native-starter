@@ -1,0 +1,15 @@
+Anonymous analytics enabled. To opt out, set MAESTRO_CLI_NO_ANALYTICS environment variable to any value before running Maestro.
+
+
+Requested 1 shards, but it cannot be higher than the number of flows (0). Will use 1 shards instead.
+
+Waiting for flows to complete...
+[Passed] Cold start opens Home (1m 7s)
+[Passed] Back from Login returns Home (46s)
+[Passed] Tab navigation (24s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 40s)
+[Passed] Login keyboard return keys (1m)
+[Passed] Explore error state and Retry (27s)
+
+6/6 Flows Passed in 5m 25s
+

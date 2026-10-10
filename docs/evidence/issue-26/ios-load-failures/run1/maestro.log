@@ -1,0 +1,13 @@
+
+Waiting for flows to complete...
+[Failed] Cold start opens Home (50s)
+
+Flow Cold start opens Home failed and continueOnFailure is set to false, aborting running sequential Flows
+
+[Passed] Tab navigation (2m 9s)
+[Passed] Sign-in session survives a relaunch; logout clears it (4m 18s)
+[Passed] Explore error state and Retry (54s)
+[Passed] Login keyboard return keys (1m 43s)
+
+1/5 Flow Failed
+
