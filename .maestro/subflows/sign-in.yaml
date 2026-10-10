@@ -4,13 +4,18 @@ appId: ${APP_ID}
 - waitForAnimationToEnd
 - tapOn:
     id: sign-in-button
+# A tap right after launch can be lost; tap again if Login hasn't opened.
+- extendedWaitUntil:
+    visible: Welcome Back
+    timeout: 5000
+    optional: true
 - runFlow:
     when:
       notVisible: Welcome Back
     commands:
-      - waitForAnimationToEnd
       - tapOn:
           id: sign-in-button
+          optional: true
 - extendedWaitUntil:
     visible: Welcome Back
     timeout: 20000
