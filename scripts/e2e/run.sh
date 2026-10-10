@@ -96,8 +96,12 @@ fi
 set_dark_mode no
 COMMON=(-e "APP_ID=$APP_ID" -e "APP_URL=$APP_URL" -e "MOCK_API_URL=http://localhost:$MOCK_PORT")
 
+# Flows tagged android-only use the system back, which iOS doesn't have.
+EXCLUDE=dark
+[ "$PLATFORM" = ios ] && EXCLUDE=dark,android-only
+
 status=0
-"$MAESTRO" test "${COMMON[@]}" --format junit --output "$OUT/report.xml" \
+"$MAESTRO" test "${COMMON[@]}" --exclude-tags "$EXCLUDE" --format junit --output "$OUT/report.xml" \
   --test-output-dir "$OUT/maestro" "$ROOT/.maestro" | tee "$OUT/maestro.log" || status=$?
 
 set_dark_mode yes

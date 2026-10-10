@@ -1,18 +1,27 @@
 name: E2E (Android, manual)
 
-# Runs the Maestro flows in .maestro/ on an Android emulator with Expo Go.
+# Runs the Maestro flows in .maestro/ on an Android emulator, in Expo Go or
+# in a native debug build of the development variant.
 # Manual only: an emulator run takes far longer than the verify job.
 on:
   workflow_dispatch:
+    inputs:
+      app:
+        description: 'App to test: expo-go, or native-debug (prebuild + Gradle assembleDebug)'
+        type: choice
+        options:
+          - expo-go
+          - native-debug
+        default: expo-go
 
 permissions:
   contents: read
 
 jobs:
   e2e-android:
-    name: Maestro on Android emulator
+    name: Maestro on Android emulator (${{ inputs.app }})
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
     env:
       MAESTRO_VERSION: '2.11.0'
       MAESTRO_SHA256: '5384593cb4e7a106489e75a821d157dd43f4e438df6bc308b72e82c685e1283a'
@@ -46,11 +55,23 @@ jobs:
           echo "$HOME/maestro/bin" >> "$GITHUB_PATH"
 
       - name: Download Expo Go for the project's SDK
+        if: inputs.app == 'expo-go'
         run: |
           url=$(curl -fsSL https://api.expo.dev/v2/versions/latest \
             | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const j=JSON.parse(s);const d=j.data??j;process.stdout.write(d.sdkVersions['57.0.0'].androidClientUrl)})")
           echo "Expo Go: $url"
-          curl -fsSL -o expo-go.apk "$url"
+          curl -fsSL -o app.apk "$url"
+
+      # A debug build without a dev client: it loads the bundle from Metro on
+      # localhost:8081 (adb reverse) and opens with its own URL scheme.
+      - name: Build the native debug app (development variant)
+        if: inputs.app == 'native-debug'
+        run: |
+          npm run prebuild:development -- --platform android
+          (cd android && ./gradlew assembleDebug -PreactNativeArchitectures=x86_64)
+          cp android/app/build/outputs/apk/debug/app-debug.apk app.apk
+          echo "E2E_APP_ID=com.example.rnstarter.dev" >> "$GITHUB_ENV"
+          echo "E2E_APP_URL=rnstarter-dev://" >> "$GITHUB_ENV"
 
       - name: Enable KVM
         run: |
@@ -66,13 +87,13 @@ jobs:
           target: google_apis
           disable-animations: true
           script: |
-            adb install -r expo-go.apk
+            adb install -r app.apk
             npm run test:e2e:android
 
       - name: Upload Maestro results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: e2e-android-results
+          name: e2e-android-${{ inputs.app }}-results
           path: e2e-results/android
           if-no-files-found: ignore

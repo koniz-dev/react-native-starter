@@ -7,11 +7,18 @@ appId: ${APP_ID}
       true: ${CLEAR_STATE == 'true'}
     commands:
       - clearState
+      # iOS keeps Keychain items (the token) when app data is cleared.
+      - runFlow:
+          when:
+            platform: iOS
+          commands:
+            - clearKeychain
 - launchApp
 - openLink: ${APP_URL}
 # Until Home is usable: reopen the link if Expo Go is still on its own home
 # screen (the link can arrive before Expo Go is ready), and dismiss overlays:
-# Expo Go's developer-menu introduction (and the menu itself on Android), and
+# iOS's "Open in “Expo Go”?" prompt (shown for a link on a fresh simulator),
+# Expo Go's developer-menu introduction and the menu itself, and
 # on slow emulators a system "isn't responding" dialog.
 - repeat:
     times: 10
@@ -24,6 +31,13 @@ appId: ${APP_ID}
             id: tab-home
           timeout: 15000
           optional: true
+      - runFlow:
+          when:
+            platform: iOS
+            visible: Open in .*
+          commands:
+            - tapOn:
+                text: Open
       - runFlow:
           when:
             visible: Development servers
@@ -41,6 +55,21 @@ appId: ${APP_ID}
             visible: Go home
           commands:
             - back
+      - runFlow:
+          when:
+            platform: iOS
+            visible: Go home
+          commands:
+            - tapOn:
+                point: 50%, 8%
+            - runFlow:
+                when:
+                  visible: Go home
+                commands:
+                  - swipe:
+                      start: 50%, 45%
+                      end: 50%, 98%
+                      duration: 300
       - waitForAnimationToEnd
 - extendedWaitUntil:
     visible: Session

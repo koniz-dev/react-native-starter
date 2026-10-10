@@ -28,9 +28,16 @@ name: Login keyboard return keys
 - takeScreenshot: 04-password-focused
 - inputText: emilyspass
 - pressKey: Enter
+# iOS may offer to save the password in a sheet over the app.
+- extendedWaitUntil:
+    visible: (Signed in as Emily Johnson|Save Password\?)
+    timeout: 30000
+- tapOn:
+    text: Not Now
+    optional: true
 - extendedWaitUntil:
     visible: Signed in as Emily Johnson
-    timeout: 30000
+    timeout: 10000
 - tapOn:
     id: logout-button
 - extendedWaitUntil:

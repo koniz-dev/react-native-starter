@@ -23,6 +23,13 @@ appId: ${APP_ID}
 - hideKeyboard
 - tapOn:
     id: login-submit
+# iOS may offer to save the password in a sheet over the app.
+- extendedWaitUntil:
+    visible: (Signed in as Emily Johnson|Save Password\?)
+    timeout: 30000
+- tapOn:
+    text: Not Now
+    optional: true
 - extendedWaitUntil:
     visible: Signed in as Emily Johnson
-    timeout: 30000
+    timeout: 10000

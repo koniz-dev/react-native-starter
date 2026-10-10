@@ -141,14 +141,15 @@ under the measured coverage (97.3 / 90.4 / 94.4 / 97.5) and still passes after
 [Maestro](https://maestro.dev) flows in `.maestro/` drive the app in Expo Go
 on a simulator or emulator. No account is needed.
 
-| Flow                          | Checks                                                                    |
-| ----------------------------- | ------------------------------------------------------------------------- |
-| `01-cold-start.yaml`          | a fresh start opens Home, signed out                                      |
-| `02-tabs.yaml`                | the tab bar switches between Home and Explore                             |
-| `03-auth-session.yaml`        | sign in, relaunch (still signed in), log out, relaunch (still signed out) |
-| `04-login-keyboard.yaml`      | the username's return key moves to the password; the password's submits   |
-| `05-explore-error-retry.yaml` | Explore shows the API error, then Retry loads the list (local mock API)   |
-| `dark-mode.yaml`              | screenshots of Home and Explore with the device in dark mode              |
+| Flow                          | Checks                                                                        |
+| ----------------------------- | ----------------------------------------------------------------------------- |
+| `01-cold-start.yaml`          | a fresh start opens Home, signed out                                          |
+| `06-login-back.yaml`          | Back from Login returns Home (Android system back; skipped on iOS, see below) |
+| `02-tabs.yaml`                | the tab bar switches between Home and Explore                                 |
+| `03-auth-session.yaml`        | sign in, relaunch (still signed in), log out, relaunch (still signed out)     |
+| `04-login-keyboard.yaml`      | the username's return key moves to the password; the password's submits       |
+| `05-explore-error-retry.yaml` | Explore shows the API error, then Retry loads the list (local mock API)       |
+| `dark-mode.yaml`              | screenshots of Home and Explore with the device in dark mode                  |
 
 Run them with a booted device that has Expo Go:
 
@@ -165,6 +166,11 @@ up `adb reverse` for both ports. It runs the numbered flows, then switches the
 device to dark mode for `dark-mode.yaml` and back. Results, screenshots, and a
 JUnit report go to `e2e-results/<platform>/` (gitignored).
 
+On iOS, Back from Login is the left-edge swipe, which Maestro's `swipe` does
+not trigger, so `run.sh` skips the `android-only` flow there. The edge swipe
+is checked with a small XCUITest runner instead
+(`docs/evidence/issue-19/uat/xcuitest-EdgeSwipe.swift`).
+
 Setup:
 
 - **Maestro CLI**: download `maestro.zip` from the
@@ -174,6 +180,11 @@ Setup:
   17+ (`JAVA_HOME`).
 - **Expo Go** for SDK 57 on the device (`npx expo start` offers to install it
   on a simulator or emulator).
+- **iOS Simulator keyboard**: the login flows type with the software
+  keyboard, so turn off Simulator's **I/O > Keyboard > Connect Hardware
+  Keyboard** (or run
+  `defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool false`
+  and restart the Simulator).
 - To run against a development build instead, set `E2E_APP_ID` (its bundle /
   package ID) and `E2E_APP_URL` (its dev-client URL).
 - Slow emulators: the runner allows Maestro 180 s to start its driver
@@ -184,8 +195,11 @@ Setup:
 
 The Android flows can also run in GitHub Actions: the manual
 **E2E (Android, manual)** workflow (`.github/workflows/e2e-android.yml`)
-boots an emulator, installs Expo Go and the Maestro release, and uploads
-`e2e-results/android`. It is not part of the per-push checks because an
+boots an emulator, installs the Maestro release and the app, and uploads
+`e2e-results/android`. Its `app` input picks Expo Go (the default) or
+`native-debug`: a debug build of the development variant
+(`npm run prebuild:development`, then Gradle `assembleDebug`), which loads
+its bundle from Metro and opens with `rnstarter-dev://`. It is not part of the per-push checks because an
 emulator run takes much longer.
 
 ## Timeouts

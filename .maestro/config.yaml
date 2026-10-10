@@ -6,6 +6,7 @@ executionOrder:
   continueOnFailure: false
   flowsOrder:
     - Cold start opens Home
+    - Back from Login returns Home
     - Tab navigation
     - Sign-in session survives a relaunch; logout clears it
     - Login keyboard return keys
