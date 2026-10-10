@@ -1,0 +1,14 @@
+# After the fix: "android": "expo start -a", "ios": "expo start -i"
+$ npm run prebuild:development -- --platform android --no-install
+
+> react-native-starter@1.0.0 prebuild:development
+> APP_VARIANT=development expo prebuild --clean --platform android --no-install
+
+- Creating native directory (./android)
+✔ Created native directory
+- Updating package.json
+✔ Updated package.json | no changes
+- Running prebuild
+✔ Finished prebuild
+$ git status --porcelain (android/ is gitignored)
+[end; empty means unchanged]

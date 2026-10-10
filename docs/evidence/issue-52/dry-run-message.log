@@ -1,0 +1,4 @@
+$ node scripts/init-project.js --name "Acme Notes" --bundle-id com.acme.notes --owner Acme --remove-demo --dry-run | grep -c "Dry run complete."
+1
+$ node scripts/remove-demo.js --dry-run | tail -1
+Dry run complete.

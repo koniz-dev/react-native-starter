@@ -1,0 +1,5 @@
+# Snippets from docs/conventions.md (NotesScreen, with NotesList stubbed) and docs/plug-in-a-provider.md (useAnalyticsIdentity), run in the full app
+$ npx jest __tests__/docsSnippets52.test.tsx
+PASS __tests__/docsSnippets52.test.tsx
+  ✓ a sign-in-only tab: prompt, sign in, back on the tab with the list; identify follows the session (462 ms)
+Tests:       1 passed, 1 total

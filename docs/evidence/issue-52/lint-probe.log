@@ -1,0 +1,14 @@
+# scripts/mock-backend/server.js: a probe that reads process.env and logs (lint-probe.js in this folder)
+# Before the eslint.config.js change
+$ npx eslint scripts/mock-backend/server.js
+
+/Users/nguyenanhkiet/Playground/react-native-starter/scripts/mock-backend/server.js
+  4:21  error  'process.env' is restricted from being used. Read environment values through shared/config/env.ts (getConfig / configResult)  no-restricted-properties
+
+✖ 1 problem (1 error, 0 warnings)
+
+[exit 1]
+
+# After adding scripts/** to the process.env rule ignores
+$ npx eslint scripts/mock-backend/server.js
+[exit 0]
