@@ -31,7 +31,31 @@ exact API.
 
 Screen views are reported automatically: `useScreenTracking()` in
 `app/_layout.tsx` calls `getAnalytics().screen(pathname)` on every route
-change. Call `track` for events and `identify` after sign-in.
+change. Call `track` for events, and `identify` when the signed-in user
+changes. The session is the place to watch: a hook that calls `identify` with
+the user's id on sign-in (and on a restored session), and `identify(null)` on
+sign-out. The session provider does the same for the error reporter.
+
+```ts
+// features/auth/hooks/useAnalyticsIdentity.ts
+import { useEffect } from 'react';
+import { getAnalytics } from '@/shared/integrations/analytics';
+import { useSession } from '@/shared/session/SessionProvider';
+
+/** Identifies the signed-in user to analytics; clears it on sign-out. */
+export function useAnalyticsIdentity(): void {
+  const { session } = useSession();
+  const userId = session.user ? String(session.user.id) : null;
+  useEffect(() => {
+    if (session.status === 'loading') return;
+    getAnalytics().identify(userId);
+  }, [session.status, userId]);
+}
+```
+
+Call it once, in a component inside `SessionProvider`, such as
+`RootNavigator` in `app/_layout.tsx`. Send traits such as the email only if
+your privacy policy and the user's consent allow it.
 
 ```ts
 // shared/integrations/adapters/posthog.ts

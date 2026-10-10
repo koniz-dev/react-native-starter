@@ -17,6 +17,7 @@ app/                      Expo Router routes only: layouts and one-line route fi
 features/                 one folder per feature
   home/screens/           Home: the session card
   auth/screens/           Login and Profile
+  auth/<backend>Adapter.ts  your AuthAdapter (docs/connect-your-backend.md)
 shared/                   foundation, no imports from features/
   config/                 validated environment (env.ts), feature flags
   http/                   createHttpClient, ApiError, the app API client
@@ -102,6 +103,50 @@ Then the route: one line in `app/<name>.tsx` (for `/<name>`), or in
 export { HomeScreen as default } from '@/features/home/screens/HomeScreen';
 ```
 
+### A tab that needs sign-in
+
+Tabs live in `app/(tabs)/`, not in `app/(app)/`, so the sign-in guard doesn't
+cover them. Signed out, a tab that loads data would send its request without
+a token, get a 401, and show a raw error. The 401 doesn't touch the session:
+there was no token to reject. Instead, check the session in the screen, and
+mount the part that loads data only when the user is signed in:
+
+```tsx
+// features/notes/screens/NotesScreen.tsx
+import { router } from 'expo-router';
+import { StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Button, Text } from 'react-native-paper';
+import { t } from '@/shared/i18n';
+import { useSession } from '@/shared/session/SessionProvider';
+import { LoadingScreen } from '@/shared/ui/LoadingScreen';
+
+declare function NotesList(): React.JSX.Element; // loads with useFetch
+
+export function NotesScreen() {
+  const { session } = useSession();
+  if (session.status === 'loading') return <LoadingScreen />;
+  if (session.status === 'signedOut') {
+    return (
+      <SafeAreaView style={styles.prompt}>
+        <Text>{t('home.session.signedOut')}</Text>
+        <Button mode="contained" onPress={() => router.push('/login')}>
+          {t('home.session.signIn')}
+        </Button>
+      </SafeAreaView>
+    );
+  }
+  return <NotesList />;
+}
+
+const styles = StyleSheet.create({
+  prompt: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16 },
+});
+```
+
+Use your own strings for the prompt. After sign-in, the Login screen returns
+to the tab, which now renders the list.
+
 Move its strings to `shared/i18n/en.ts` and read them with `t()` (the keys
 are typed), add its tests under
 `__tests__/features/<name>/`, and its endpoints in `api/` (see
@@ -109,14 +154,20 @@ are typed), add its tests under
 
 ## Where code goes
 
-| Code                                    | Place                                                   |
-| --------------------------------------- | ------------------------------------------------------- |
-| A screen                                | `features/<name>/screens/`, plus a route in `app/`      |
-| A component used by one feature         | `features/<name>/components/`                           |
-| A component used by several features    | `shared/ui/`                                            |
-| A hook for one feature / a generic hook | `features/<name>/hooks/` / `shared/lib/`                |
-| Endpoints                               | `features/<name>/api/`, built on `shared/http/api.ts`   |
-| A third-party service                   | an adapter registered in `shared/integrations/setup.ts` |
+| Code                                         | Place                                                                             |
+| -------------------------------------------- | --------------------------------------------------------------------------------- |
+| A screen                                     | `features/<name>/screens/`, plus a route in `app/`                                |
+| A component used by one feature              | `features/<name>/components/`                                                     |
+| A component used by several features         | `shared/ui/`                                                                      |
+| A hook for one feature / a generic hook      | `features/<name>/hooks/` / `shared/lib/`                                          |
+| Endpoints                                    | `features/<name>/api/`, built on `shared/http/api.ts`                             |
+| A third-party service                        | an adapter registered in `shared/integrations/setup.ts`                           |
+| Sign-in against your backend                 | `features/auth/<backend>Adapter.ts`, registered in `shared/integrations/setup.ts` |
+| Dev-only Node code (a mock backend, tooling) | `scripts/`, for example a mock backend in its own folder                          |
+
+`scripts/` is Node code that the app never imports, so Metro doesn't bundle
+it. Lint treats it as Node: it may use `console` and `process.env`, which
+are lint errors in app code. Run it with `node`, or through an npm script.
 
 ## Code style
 

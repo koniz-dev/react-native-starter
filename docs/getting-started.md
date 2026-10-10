@@ -119,6 +119,11 @@ The local gate before a commit is
 `npx expo-doctor`, and a web export (`.github/workflows/ci.yml`).
 
 The variant scripts use POSIX `VAR=value command` syntax (macOS, Linux, WSL).
+`npm run android` and `npm run ios` use `expo start -a` and `expo start -i`
+because `expo prebuild` rewrites the long forms (`--android`, `--ios`) to
+`expo run:*`. With the short forms, a prebuild leaves `package.json`
+unchanged. To build and run the generated native project, use
+`npx expo run:android` or `npx expo run:ios`.
 
 ## Dependency advisories
 
@@ -161,5 +166,7 @@ New advisories fail the check until you fix or review them the same way.
   To reinstall, delete `node_modules` and run `npm ci`.
 - **"Configuration error" screen:** a required `EXPO_PUBLIC_*` value is
   missing or invalid; the screen names it. Restart Metro after editing `.env`.
+  In a web export or a preview or production build, `http` URLs count as
+  invalid ([Environment Variables](environment-variables.md#variables)).
 - **Port 8081 in use:** stop the other Metro process, or `npm start -- --port 8082`.
 - More: [Expo troubleshooting](https://docs.expo.dev/troubleshooting/overview/).

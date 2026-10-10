@@ -455,7 +455,12 @@ function gitStatus() {
 function runRemoveDemo(dryRun) {
   const result = spawnSync(
     process.execPath,
-    [path.join(ROOT, REMOVE_DEMO), ...(dryRun ? ['--dry-run'] : [])],
+    // Its own closing message would repeat or precede this script's.
+    [
+      path.join(ROOT, REMOVE_DEMO),
+      '--no-summary',
+      ...(dryRun ? ['--dry-run'] : []),
+    ],
     {
       cwd: ROOT,
       stdio: 'inherit',
@@ -547,12 +552,21 @@ async function main() {
   });
   if (prettier.status !== 0) throw new Error('prettier failed');
 
-  log(`Done: this is now ${input.name}. Next:
-  1. Review the advisories in scripts/audit-allowlist.json and make them yours
-     (docs/getting-started.md#dependency-advisories).
-  2. Replace the images in assets/ and the palette in shared/ui/theme.ts
-     (docs/make-it-yours.md).
-  3. Run npm run lint, npm run type-check, and npm run test:ci, then commit.`);
+  const steps = [
+    ...(input.removeDemo
+      ? [
+          'Register your AuthAdapter in shared/integrations/setup.ts and set your\n     backend URLs in .env (docs/connect-your-backend.md).',
+        ]
+      : []),
+    'Review the advisories in scripts/audit-allowlist.json and make them yours\n     (docs/getting-started.md#dependency-advisories).',
+    'Replace the images in assets/ and the palette in shared/ui/theme.ts\n     (docs/make-it-yours.md).',
+    'Run npm run lint, npm run type-check, and npm run test:ci, then commit.',
+  ];
+  log(
+    `Done: this is now ${input.name}. Next:\n${steps
+      .map((step, i) => `  ${i + 1}. ${step}`)
+      .join('\n')}`
+  );
 }
 
 if (require.main === module) {

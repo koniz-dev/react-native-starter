@@ -164,6 +164,7 @@ describe('init-project on a copy of the template', () => {
     expect(result.stdout).toContain('update app.config.ts');
     expect(result.stdout).toContain('delete docs/maintainers/');
     if (HAS_DEMO) expect(result.stdout).toContain('delete features/demo-auth');
+    expect(result.stdout.match(/Dry run complete\./g)).toHaveLength(1);
     expect(gitStatus(dir)).toBe('');
   });
 
@@ -262,7 +263,11 @@ describe('init-project on a copy of the template', () => {
     const dir = copy();
     // Keep the script around after the run to try it a second time.
     const script = read(dir, 'scripts/init-project.js');
-    expect(run(dir, [...IDENTITY, '--remove-demo']).status).toBe(0);
+    const result = run(dir, [...IDENTITY, '--remove-demo']);
+    expect(result.status).toBe(0);
+    // One closing message, with the sign-in step the demo no longer covers.
+    expect(result.stdout.match(/Done/g)).toHaveLength(1);
+    expect(result.stdout).toContain('1. Register your AuthAdapter');
     expect(exists(dir, 'features/demo-auth')).toBe(false);
     expect(read(dir, 'shared/integrations/setup.ts')).not.toMatch(/demo-auth/);
     // remove-demo ran before the identity changes, so neither undid the other.

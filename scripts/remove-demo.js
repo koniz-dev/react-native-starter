@@ -18,6 +18,7 @@
  *    deleted file is left.
  *
  * Usage: npm run remove-demo [-- --dry-run]
+ * (--no-summary skips the closing message, for a caller that prints its own.)
  */
 const { spawnSync } = require('child_process');
 const fs = require('fs');
@@ -25,6 +26,7 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const DRY_RUN = process.argv.includes('--dry-run');
+const SUMMARY = !process.argv.includes('--no-summary');
 
 const DEMO_PATHS = [
   'features/demo-auth',
@@ -167,6 +169,7 @@ function main() {
     process.stderr.write(`${problems.join('\n')}\n`);
     process.exit(1);
   }
+  if (!SUMMARY) return;
   log(
     DRY_RUN
       ? 'Dry run complete.'

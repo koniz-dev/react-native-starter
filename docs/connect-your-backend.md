@@ -21,6 +21,39 @@ EXPO_PUBLIC_API_TRUSTED_ORIGINS=https://files.example.com
 The values are validated at startup; outside development they must be
 `https`. All variables: [Environment Variables](environment-variables.md).
 
+### A backend on your computer
+
+In development, `http` URLs are allowed, but `localhost` means the device
+itself:
+
+- **iOS Simulator and web:** `http://localhost:<port>` reaches your computer.
+- **Android emulator:** use `http://10.0.2.2:<port>` (the emulator's alias for
+  your computer), or run `adb reverse tcp:<port> tcp:<port>` once per boot and
+  keep `http://localhost:<port>`.
+- **A phone on the same Wi-Fi:** use your computer's LAN address, such as
+  `http://192.168.1.20:<port>`, and have the server listen on all interfaces
+  (`0.0.0.0`), not only `localhost`.
+
+Restart Metro after changing `.env`.
+
+**Preview and production builds** reject `http` URLs, and Android release
+builds also block cleartext traffic. To try such a build against a backend
+that isn't deployed yet:
+
+- **Use an HTTPS tunnel** to your local server (a tunneling service gives it
+  a public `https` URL with a trusted certificate). This is the simplest
+  option, and it works on real devices.
+- **Or put a local TLS proxy in front of it, with your own CA**, and make the
+  device trust that CA.
+  - **iOS Simulator:** `xcrun simctl keychain booted add-root-cert ca.pem`.
+  - **Android:** since Android 7, apps don't trust user-installed CAs, so the
+    CA has to be in the system store. That needs an emulator image you can
+    root: a `google_apis` image (not `google_apis_playstore`), started with
+    `-writable-system`, then `adb root`, `adb remount`, and the CA copied to
+    `/system/etc/security/cacerts/`.
+
+A deployed staging backend with a real certificate avoids all of this.
+
 ## 2. Sign-in: write an AuthAdapter
 
 `shared/session/authService.ts` handles the session: it stores the token

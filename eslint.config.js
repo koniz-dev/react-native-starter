@@ -125,8 +125,8 @@ module.exports = [
   },
 
   // Environment variables are read only by the validated config module,
-  // shared/config/env.ts (and by app.config.ts, which runs in Node at build
-  // time).
+  // shared/config/env.ts (and by Node code that never ships in the app:
+  // app.config.ts at build time, and dev-only tools in scripts/).
   {
     files: ['**/*.{ts,tsx,js,jsx}'],
     ignores: [
@@ -134,6 +134,7 @@ module.exports = [
       'app.config.ts',
       '__tests__/**',
       'jest.setup.env.js',
+      'scripts/**',
     ],
     rules: {
       'no-restricted-properties': [

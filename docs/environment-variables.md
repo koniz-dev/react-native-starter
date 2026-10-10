@@ -40,6 +40,12 @@ Validation rules:
 
 - URLs must be absolute `http(s)` URLs; an empty value (`KEY=`) counts as unset.
 - Outside `development`, `http://` URLs and trusted origins are rejected.
+  This includes `npx expo export`: an export is not a development build, so
+  `EXPO_PUBLIC_APP_ENV` defaults to `production`. With `http://localhost`
+  URLs in `.env`, the export command succeeds, but the exported site opens on
+  the configuration error screen. Use `https` URLs for an export. To try an
+  export against a local `http` backend, run it with
+  `EXPO_PUBLIC_APP_ENV=development`, and don't deploy that build.
 - `EXPO_PUBLIC_APP_ENV`, `EXPO_PUBLIC_USE_DEMO_BACKENDS`, and
   `EXPO_PUBLIC_LOG_LEVEL` accept only the values listed above.
 
