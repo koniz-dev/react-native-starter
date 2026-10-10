@@ -1,0 +1,29 @@
+  console.warn
+    API GET /posts failed: server (503)
+
+      129 |     const args = [message, ...details.filter(item => item !== undefined)];
+      130 |     if (level === 'error') console.error(...args);
+    > 131 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      132 |     else if (level === 'info') console.info(...args);
+      133 |     else console.debug(...args);
+      134 |   };
+
+      at warn (shared/lib/logger.ts:131:40)
+      at Object.write [as warn] (shared/lib/logger.ts:142:33)
+      at warn (shared/http/httpClient.ts:137:12)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12
+      at apply (shared/http/httpClient.ts:143:4)
+      at Axios.request (node_modules/axios/dist/browser/axios.cjs:5245:14)
+
+PASS __tests__/features/posts/PostsScreen.test.tsx
+  ✓ shows loading, then the error, and Retry loads the list (220 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        4.264 s
+Ran all test suites matching /__tests__\/features\/posts/i.

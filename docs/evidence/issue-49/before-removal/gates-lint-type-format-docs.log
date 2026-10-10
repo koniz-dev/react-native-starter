@@ -1,0 +1,24 @@
+
+> react-native-starter@1.0.0 lint
+> eslint . --max-warnings 0
+
+
+> react-native-starter@1.0.0 type-check
+> tsc --noEmit
+
+
+> react-native-starter@1.0.0 format:check
+> prettier --check "**/*.{ts,tsx,js,jsx,json,md}"
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> react-native-starter@1.0.0 docs:check
+> node scripts/check-docs.js
+
+Checked 22 files: 34 TypeScript snippets compiled with tsc.
+Skipped docs/api-and-storage.md:279: needs @tanstack/react-query (not installed).
+Skipped docs/recipes/state-management.md:42: needs zustand (not installed).
+Skipped docs/recipes/state-management.md:95: needs @reduxjs/toolkit, react-redux (not installed).
+Skipped docs/recipes/state-management.md:170: needs jotai (not installed).
+No problems.

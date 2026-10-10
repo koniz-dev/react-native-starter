@@ -1,0 +1,9 @@
+
+Requested 1 shards, but it cannot be higher than the number of flows (0). Will use 1 shards instead.
+
+Waiting for flows to complete...
+[Passed] Cold start opens Home (1m)
+[Passed] Back from Login returns Home (1m 1s)
+
+2/2 Flows Passed in 2m 1s
+

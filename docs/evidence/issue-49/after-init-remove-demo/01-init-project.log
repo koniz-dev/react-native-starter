@@ -1,0 +1,74 @@
+$ npm run init-project -- --name "Acme Notes" --bundle-id com.acme.notes --owner "Acme Inc." --remove-demo
+
+> react-native-starter@1.0.0 init-project
+> node scripts/init-project.js --name Acme Notes --bundle-id com.acme.notes --owner Acme Inc. --remove-demo
+
+Initializing the project...
+  run remove-demo:
+Removing the demo...
+  delete features/demo-auth
+  delete features/demo-todos
+  delete features/demo-showcase
+  delete app/(tabs)/explore.tsx
+  delete app/showcase.tsx
+  delete __tests__/features/demo-auth
+  delete __tests__/features/demo-todos
+  delete __tests__/features/demo-showcase
+  delete .maestro/02-tabs.yaml
+  delete .maestro/03-auth-session.yaml
+  delete .maestro/04-login-keyboard.yaml
+  delete .maestro/05-explore-error-retry.yaml
+  delete .maestro/subflows/sign-in.yaml
+  delete docs/remove-demo.md
+  delete __tests__/scripts/removeDemo.test.ts
+  delete scripts/remove-demo.js
+  strip app/(tabs)/_layout.tsx
+  strip app/README.md
+  strip features/auth/screens/LoginScreen.tsx
+  strip features/home/screens/HomeScreen.tsx
+  strip shared/i18n/en.ts
+  strip shared/integrations/setup.ts
+  strip __tests__/app/tabBarTheme.test.tsx
+  strip __tests__/features/home/HomeScreen.test.tsx
+  strip __tests__/shared/integrations/i18n.test.tsx
+  strip docs/README.md
+  strip docs/api-and-storage.md
+  strip docs/connect-your-backend.md
+  strip docs/conventions.md
+  strip docs/environment-variables.md
+  strip docs/getting-started.md
+  strip docs/make-it-yours.md
+  strip docs/testing.md
+  strip docs/ui-and-theming.md
+  strip .maestro/config.yaml
+  strip .maestro/dark-mode.yaml
+  strip scripts/README.md
+  strip scripts/e2e/run.sh
+  strip README.md
+  strip AGENTS.md
+  strip .env.example
+  update package.json: remove the remove-demo script
+Done. Next: register your AuthAdapter in shared/integrations/setup.ts, set your backend URLs in .env, then run npm run lint, npm run type-check, and npm run test:ci.
+  update app.config.ts: APP: name "RN Starter" -> "Acme Notes", slug react-native-starter -> acme-notes, scheme rnstarter -> acmenotes, bundleId com.example.rnstarter -> com.acme.notes, version 1.0.0 -> 1.0.0
+  update package.json: name -> acme-notes, version -> 1.0.0, remove the init-project script
+  update package-lock.json: name -> acme-notes, version -> 1.0.0
+  update LICENSE: copyright holder -> 2026 Acme Inc.
+  update README.md: title and intro, remove @init blocks
+  update docs/getting-started.md: remove @init blocks
+  update docs/make-it-yours.md: identity examples, remove @init blocks
+  update scripts/README.md: remove @init blocks
+  update docs/testing.md: identity examples
+  update .github/workflows/e2e-android.yml: identity examples
+  update AGENTS.md: remove the maintainer block
+  delete docs/maintainers/: maintainer file
+  delete scripts/maintainers/: maintainer file
+  delete scripts/maintainer-files.json: maintainer file
+  delete scripts/init-project.js: init-project itself
+  delete __tests__/scripts/initProject.test.ts: init-project itself
+Done: this is now Acme Notes. Next:
+  1. Review the advisories in scripts/audit-allowlist.json and make them yours
+     (docs/getting-started.md#dependency-advisories).
+  2. Replace the images in assets/ and the palette in shared/ui/theme.ts
+     (docs/make-it-yours.md).
+  3. Run npm run lint, npm run type-check, and npm run test:ci, then commit.
+[exit 0]

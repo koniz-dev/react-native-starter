@@ -1,0 +1,938 @@
+diff --git a/.env.example b/.env.example
+index 7c9ebf5..d93b436 100644
+--- a/.env.example
++++ b/.env.example
+@@ -1,31 +1,18 @@
+ # Copy to .env and adjust. See docs/environment-variables.md.
+ 
+-# @demo remove-block-start
+-# Use the public demo backends (JSONPlaceholder + DummyJSON, demo login
+-# emilys / emilyspass) for any URL left empty. Set to false (or remove) in real
+-# builds so a missing URL shows the configuration error screen.
+-EXPO_PUBLIC_USE_DEMO_BACKENDS=true
+-# @demo remove-block-end
+-# @demo uncomment-block-start
+-# # Leave false: the app needs your own backends (docs/connect-your-backend.md).
+-# EXPO_PUBLIC_USE_DEMO_BACKENDS=false
+-# @demo uncomment-block-end
++# Leave false: the app needs your own backends (docs/connect-your-backend.md).
++EXPO_PUBLIC_USE_DEMO_BACKENDS=false
+ 
+ # Your API and auth backends. Required when demo backends are off; must be
+ # https outside development.
+-# @demo uncomment-block-start
+-# # Set both to your servers, for example https://api.example.com and
+-# # https://auth.example.com. While one is empty, the app opens on the
+-# # configuration error screen, which names it.
+-# @demo uncomment-block-end
++# Set both to your servers, for example https://api.example.com and
++# https://auth.example.com. While one is empty, the app opens on the
++# configuration error screen, which names it.
+ EXPO_PUBLIC_API_URL=
+ EXPO_PUBLIC_AUTH_API_URL=
+ 
+ # Origins (comma-separated) that may receive the auth token besides the auth
+ # backend itself, e.g. your API on a separate first-party domain.
+-# @demo remove-block-start
+-# Leave empty for the demo: JSONPlaceholder is an unrelated third party.
+-# @demo remove-block-end
+ EXPO_PUBLIC_API_TRUSTED_ORIGINS=
+ 
+ # Request timeout in milliseconds (1000-120000). Defaults to 15000.
+diff --git a/.maestro/02-tabs.yaml b/.maestro/02-tabs.yaml
+deleted file mode 100644
+index 6b6e699..0000000
+--- a/.maestro/02-tabs.yaml
++++ /dev/null
+@@ -1,17 +0,0 @@
+-# The tab bar switches between Home and Explore.
+-appId: ${APP_ID}
+-name: Tab navigation
+----
+-- runFlow:
+-    file: subflows/open-app.yaml
+-    env:
+-      CLEAR_STATE: 'false'
+-- tapOn:
+-    id: tab-explore
+-- extendedWaitUntil:
+-    visible: API Example
+-    timeout: 20000
+-- takeScreenshot: 02-explore-tab
+-- tapOn:
+-    id: tab-home
+-- assertVisible: Session
+diff --git a/.maestro/03-auth-session.yaml b/.maestro/03-auth-session.yaml
+deleted file mode 100644
+index 8eba1da..0000000
+--- a/.maestro/03-auth-session.yaml
++++ /dev/null
+@@ -1,29 +0,0 @@
+-# Sign in, relaunch (still signed in), log out, relaunch (still signed out).
+-appId: ${APP_ID}
+-name: Sign-in session survives a relaunch; logout clears it
+----
+-- runFlow:
+-    file: subflows/open-app.yaml
+-    env:
+-      CLEAR_STATE: 'true'
+-- runFlow: subflows/sign-in.yaml
+-- takeScreenshot: 03-signed-in
+-- stopApp
+-- runFlow:
+-    file: subflows/open-app.yaml
+-    env:
+-      CLEAR_STATE: 'false'
+-- assertVisible: Signed in as Emily Johnson
+-- takeScreenshot: 03-relaunch-signed-in
+-- tapOn:
+-    id: logout-button
+-- extendedWaitUntil:
+-    visible: Not signed in
+-    timeout: 10000
+-- stopApp
+-- runFlow:
+-    file: subflows/open-app.yaml
+-    env:
+-      CLEAR_STATE: 'false'
+-- assertVisible: Not signed in
+-- takeScreenshot: 03-relaunch-signed-out
+diff --git a/.maestro/04-login-keyboard.yaml b/.maestro/04-login-keyboard.yaml
+deleted file mode 100644
+index f3805d9..0000000
+--- a/.maestro/04-login-keyboard.yaml
++++ /dev/null
+@@ -1,50 +0,0 @@
+-# The keyboard's return keys: "next" on the username moves to the password,
+-# "go" on the password submits. If "next" didn't move focus, the password
+-# would be typed into the username field and sign-in would fail.
+-appId: ${APP_ID}
+-name: Login keyboard return keys
+----
+-- runFlow:
+-    file: subflows/open-app.yaml
+-    env:
+-      CLEAR_STATE: 'true'
+-- waitForAnimationToEnd
+-- tapOn:
+-    id: sign-in-button
+-# A tap right after launch can be lost; tap again if Login hasn't opened.
+-- extendedWaitUntil:
+-    visible: Welcome Back
+-    timeout: 5000
+-    optional: true
+-- runFlow:
+-    when:
+-      notVisible: Welcome Back
+-    commands:
+-      - tapOn:
+-          id: sign-in-button
+-          optional: true
+-- extendedWaitUntil:
+-    visible: Welcome Back
+-    timeout: 20000
+-- tapOn:
+-    id: login-username
+-- inputText: emilys
+-- pressKey: Enter
+-- takeScreenshot: 04-password-focused
+-- inputText: emilyspass
+-- pressKey: Enter
+-# iOS may offer to save the password in a sheet over the app.
+-- extendedWaitUntil:
+-    visible: (Signed in as Emily Johnson|Save Password\?)
+-    timeout: 30000
+-- tapOn:
+-    text: Not Now
+-    optional: true
+-- extendedWaitUntil:
+-    visible: Signed in as Emily Johnson
+-    timeout: 10000
+-- tapOn:
+-    id: logout-button
+-- extendedWaitUntil:
+-    visible: Not signed in
+-    timeout: 10000
+diff --git a/.maestro/05-explore-error-retry.yaml b/.maestro/05-explore-error-retry.yaml
+deleted file mode 100644
+index 561ed65..0000000
+--- a/.maestro/05-explore-error-retry.yaml
++++ /dev/null
+@@ -1,32 +0,0 @@
+-# Explore against the local mock API: an error state, then Retry loads the list.
+-appId: ${APP_ID}
+-name: Explore error state and Retry
+----
+-- runScript:
+-    file: scripts/set-api-mode.js
+-    env:
+-      MODE: error
+-- runFlow:
+-    file: subflows/open-app.yaml
+-    env:
+-      CLEAR_STATE: 'false'
+-- tapOn:
+-    id: tab-explore
+-- extendedWaitUntil:
+-    visible: Service unavailable
+-    timeout: 30000
+-- assertVisible: Error
+-- takeScreenshot: 05-explore-error
+-- runScript:
+-    file: scripts/set-api-mode.js
+-    env:
+-      MODE: ok
+-- tapOn: Retry
+-- extendedWaitUntil:
+-    visible: Todos (10)
+-    timeout: 30000
+-- assertVisible: e2e todo 1
+-- assertNotVisible: Service unavailable
+-- takeScreenshot: 05-explore-after-retry
+-- tapOn:
+-    id: tab-home
+diff --git a/.maestro/config.yaml b/.maestro/config.yaml
+index 083b643..a4f3a7f 100644
+--- a/.maestro/config.yaml
++++ b/.maestro/config.yaml
+@@ -7,11 +7,5 @@ executionOrder:
+   flowsOrder:
+     - Cold start opens Home
+     - Back from Login returns Home
+-    # @demo remove-block-start
+-    - Tab navigation
+-    - Sign-in session survives a relaunch; logout clears it
+-    - Login keyboard return keys
+-    - Explore error state and Retry
+-    # @demo remove-block-end
+ excludeTags:
+   - dark
+diff --git a/.maestro/dark-mode.yaml b/.maestro/dark-mode.yaml
+index ac1c0ea..b25ff6e 100644
+--- a/.maestro/dark-mode.yaml
++++ b/.maestro/dark-mode.yaml
+@@ -10,13 +10,3 @@ tags:
+     env:
+       CLEAR_STATE: 'false'
+ - takeScreenshot: dark-home
+-# @demo remove-block-start
+-- tapOn:
+-    id: tab-explore
+-- extendedWaitUntil:
+-    visible: API Example
+-    timeout: 20000
+-- takeScreenshot: dark-explore
+-- tapOn:
+-    id: tab-home
+-# @demo remove-block-end
+diff --git a/.maestro/subflows/sign-in.yaml b/.maestro/subflows/sign-in.yaml
+deleted file mode 100644
+index 24ff0a5..0000000
+--- a/.maestro/subflows/sign-in.yaml
++++ /dev/null
+@@ -1,40 +0,0 @@
+-# From Home, signed out: signs in with the demo account (DummyJSON).
+-appId: ${APP_ID}
+----
+-- waitForAnimationToEnd
+-- tapOn:
+-    id: sign-in-button
+-# A tap right after launch can be lost; tap again if Login hasn't opened.
+-- extendedWaitUntil:
+-    visible: Welcome Back
+-    timeout: 5000
+-    optional: true
+-- runFlow:
+-    when:
+-      notVisible: Welcome Back
+-    commands:
+-      - tapOn:
+-          id: sign-in-button
+-          optional: true
+-- extendedWaitUntil:
+-    visible: Welcome Back
+-    timeout: 20000
+-- tapOn:
+-    id: login-username
+-- inputText: emilys
+-- tapOn:
+-    id: login-password
+-- inputText: emilyspass
+-- hideKeyboard
+-- tapOn:
+-    id: login-submit
+-# iOS may offer to save the password in a sheet over the app.
+-- extendedWaitUntil:
+-    visible: (Signed in as Emily Johnson|Save Password\?)
+-    timeout: 30000
+-- tapOn:
+-    text: Not Now
+-    optional: true
+-- extendedWaitUntil:
+-    visible: Signed in as Emily Johnson
+-    timeout: 10000
+diff --git a/AGENTS.md b/AGENTS.md
+index 4709d9b..cd8f147 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -32,15 +32,6 @@ testing/        shared test helpers (render with providers, mocks)
+   composition root that registers adapters. Features don't import each
+   other's internals.
+ 
+-<!-- @demo remove-block-start -->
+-
+-- Demo code lives in `features/demo-*`, the Explore and showcase routes, and
+-  between `@demo` markers (`remove-block-start` / `remove-block-end`). Don't
+-  build on it; `npm run remove-demo` deletes it
+-  ([Remove the Demo](docs/remove-demo.md)).
+-
+-<!-- @demo remove-block-end -->
+-
+ Details: [Conventions](docs/conventions.md#project-structure).
+ 
+ ## Conventions
+@@ -143,12 +134,6 @@ Keep commits small and single-purpose.
+ - [Connect Your Backend](docs/connect-your-backend.md): URLs, auth adapter,
+   endpoints.
+ 
+-<!-- @demo remove-block-start -->
+-
+-- [Remove the Demo](docs/remove-demo.md).
+-
+-<!-- @demo remove-block-end -->
+-
+ - [Conventions](docs/conventions.md): structure, navigation, code style.
+ - [API and Storage](docs/api-and-storage.md),
+   [Environment Variables](docs/environment-variables.md),
+diff --git a/README.md b/README.md
+index 057608b..3f112f9 100644
+--- a/README.md
++++ b/README.md
+@@ -48,16 +48,6 @@ Details, platforms, and troubleshooting: [Getting Started](docs/getting-started.
+   full-app routing tests, and a coverage threshold in CI
+   ([Testing](docs/testing.md)).
+ 
+-<!-- @demo remove-block-start -->
+-
+-- **A removable demo**: DummyJSON sign-in, a Todos API example, and a
+-  component showcase; `npm run remove-demo` deletes them
+-  ([Remove the Demo](docs/remove-demo.md)).
+-
+-Demo sign-in (with the demo backends on): `emilys` / `emilyspass`.
+-
+-<!-- @demo remove-block-end -->
+-
+ ## Documentation
+ 
+ Start with [docs/README.md](docs/README.md). The usual path:
+@@ -66,12 +56,6 @@ Start with [docs/README.md](docs/README.md). The usual path:
+ 2. [Make It Yours](docs/make-it-yours.md): everything to change for your app.
+ 3. [Connect Your Backend](docs/connect-your-backend.md): auth adapter, API, env.
+ 
+-<!-- @demo remove-block-start -->
+-
+-4. [Remove the Demo](docs/remove-demo.md).
+-
+-<!-- @demo remove-block-end -->
+-
+ ## State management
+ 
+ The session lives in `SessionProvider`; the starter adds no store library.
+diff --git a/app/README.md b/app/README.md
+index 757f82b..7421e2d 100644
+--- a/app/README.md
++++ b/app/README.md
+@@ -9,11 +9,4 @@ one-line route files that re-export screens from `features/`.
+ - `(auth)/login.tsx`: shown only while signed out.
+ - `(app)/profile.tsx`: shown only while signed in.
+ 
+-<!-- @demo remove-block-start -->
+-
+-Demo routes, deleted by `npm run remove-demo`: `(tabs)/explore.tsx` (the
+-Todos example) and `showcase.tsx` (the component showcase).
+-
+-<!-- @demo remove-block-end -->
+-
+ See [Conventions](../docs/conventions.md#navigation).
+diff --git a/docs/README.md b/docs/README.md
+index 4a583b7..d0c1a4c 100644
+--- a/docs/README.md
++++ b/docs/README.md
+@@ -11,12 +11,6 @@ Native topics, the pages link to the official documentation.
+ - [Connect Your Backend](connect-your-backend.md): URLs, an auth adapter, and
+   endpoints.
+ 
+-<!-- @demo remove-block-start -->
+-
+-- [Remove the Demo](remove-demo.md): strip the demo features.
+-
+-<!-- @demo remove-block-end -->
+-
+ ## Guides
+ 
+ - [Plug In a Provider](plug-in-a-provider.md): analytics, feature flags, push,
+diff --git a/docs/api-and-storage.md b/docs/api-and-storage.md
+index f0747ad..9b46d30 100644
+--- a/docs/api-and-storage.md
++++ b/docs/api-and-storage.md
+@@ -86,13 +86,6 @@ Requests to any other origin, including absolute URLs passed to `api`, go out
+ without the `Authorization` header. `getTrustedTokenOrigins()` returns the
+ set.
+ 
+-<!-- @demo remove-block-start -->
+-
+-In the demo, JSONPlaceholder (`EXPO_PUBLIC_API_URL`) is a different third
+-party from DummyJSON, so it never receives the DummyJSON token.
+-
+-<!-- @demo remove-block-end -->
+-
+ ## Cookies from the auth server
+ 
+ React Native's `XMLHttpRequest` defaults `withCredentials` to `true`, so the
+diff --git a/docs/connect-your-backend.md b/docs/connect-your-backend.md
+index 15de0cc..55ad09f 100644
+--- a/docs/connect-your-backend.md
++++ b/docs/connect-your-backend.md
+@@ -97,13 +97,6 @@ declare const myBackendAuthAdapter: AuthAdapter; // from the file above
+ setAuthAdapter(myBackendAuthAdapter);
+ ```
+ 
+-<!-- @demo remove-block-start -->
+-
+-Until you remove the demo, `setup.ts` registers the DummyJSON adapter
+-there; replace that registration with yours.
+-
+-<!-- @demo remove-block-end -->
+-
+ The service rejects a missing token, stores the token and the normalized
+ user, and registers `refresh` (if any) as the HTTP client's refresh handler,
+ which is tried once per 401 before signing out. Nothing in `shared/` changes.
+@@ -201,12 +194,5 @@ see [API and Storage](api-and-storage.md#why-the-token-is-not-persisted-on-web).
+ 
+ ## Then
+ 
+-<!-- @demo remove-block-start -->
+-
+-- [Remove the Demo](remove-demo.md) to drop the DummyJSON adapter and the
+-  example screens.
+-
+-<!-- @demo remove-block-end -->
+-
+ - Test your adapter like `__tests__/shared/session/authService.test.ts` does
+   with its fake adapter ([Testing](testing.md)).
+diff --git a/docs/conventions.md b/docs/conventions.md
+index bc6f7d5..192241d 100644
+--- a/docs/conventions.md
++++ b/docs/conventions.md
+@@ -40,18 +40,6 @@ imports a feature, with one exception: `shared/integrations/setup.ts` is the
+ composition root that registers adapters. Features don't import each other's
+ internals.
+ 
+-<!-- @demo remove-block-start -->
+-
+-**Demo code** lives in `features/demo-auth/` (the DummyJSON `AuthAdapter`
+-and the demo-credentials hint), `features/demo-todos/` (the Explore tab),
+-`features/demo-showcase/` (the component showcase and Home's example links),
+-the routes `app/(tabs)/explore.tsx` and `app/showcase.tsx`, and between
+-`@demo` block markers elsewhere (such as the demo adapter's registration in
+-`shared/integrations/setup.ts`).
+-`npm run remove-demo` deletes it; see [Remove the Demo](remove-demo.md).
+-
+-<!-- @demo remove-block-end -->
+-
+ ## Navigation
+ 
+ Expo Router turns files in `app/` into routes: `app/<name>.tsx` is
+diff --git a/docs/environment-variables.md b/docs/environment-variables.md
+index d173c1c..644fe33 100644
+--- a/docs/environment-variables.md
++++ b/docs/environment-variables.md
+@@ -15,15 +15,6 @@ npm start
+ Then set your backend URLs in `.env`. While a required URL is missing, the app
+ starts on the configuration error screen.
+ 
+-<!-- @demo remove-block-start -->
+-
+-With the demo, `.env.example` turns on the public demo backends
+-(JSONPlaceholder for the API, DummyJSON for sign-in), so the app runs without
+-any accounts. Without a `.env` (or with `EXPO_PUBLIC_USE_DEMO_BACKENDS` unset),
+-the app starts on the configuration error screen.
+-
+-<!-- @demo remove-block-end -->
+-
+ ## Variables
+ 
+ | Variable                          | Required                         | Default                                                      | Purpose                                                                                                                                                                                   |
+diff --git a/docs/getting-started.md b/docs/getting-started.md
+index 1dad1ab..8d94069 100644
+--- a/docs/getting-started.md
++++ b/docs/getting-started.md
+@@ -75,15 +75,6 @@ Set your backend URLs in `.env` (`EXPO_PUBLIC_API_URL`,
+ app opens on a configuration error screen that lists them; see
+ [Environment Variables](environment-variables.md).
+ 
+-<!-- @demo remove-block-start -->
+-
+-Until then, the demo runs without any setup: `.env.example` sets
+-`EXPO_PUBLIC_USE_DEMO_BACKENDS=true`, so the app talks to the public demo
+-backends (JSONPlaceholder and DummyJSON). On Home, tap **Sign in** and use
+-`emilys` / `emilyspass`.
+-
+-<!-- @demo remove-block-end -->
+-
+ In the terminal Metro shows, press `i` (iOS Simulator), `a` (Android
+ emulator), or `w` (web), or scan the QR code with Expo Go.
+ 
+@@ -106,13 +97,6 @@ emulator), or `w` (web), or scan the QR code with Expo Go.
+ | `npm run docs:check`                                          | Compile the docs' TypeScript snippets and check their paths and scripts                                       |
+ | `npm run audit:check`                                         | `npm audit --omit=dev`, failing on a high or critical advisory not reviewed in `scripts/audit-allowlist.json` |
+ 
+-<!-- @demo remove-block-start -->
+-
+-`npm run remove-demo` removes the demo features, and then itself
+-([Remove the Demo](remove-demo.md)).
+-
+-<!-- @demo remove-block-end -->
+-
+ The local gate before a commit is
+ `npm run lint && npm run type-check && npm run test:ci`; CI also runs
+ `npm run format:check`, `npm run docs:check`, `npm run audit:check`,
+@@ -148,12 +132,6 @@ New advisories fail the check until you fix or review them the same way.
+ 1. [Make It Yours](make-it-yours.md): app name, IDs, icons, theme, variants.
+ 2. [Connect Your Backend](connect-your-backend.md).
+ 
+-<!-- @demo remove-block-start -->
+-
+-3. [Remove the Demo](remove-demo.md).
+-
+-<!-- @demo remove-block-end -->
+-
+ ## Troubleshooting
+ 
+ - **Stale bundle or odd Metro errors:** `npm start -- --clear`.
+diff --git a/docs/make-it-yours.md b/docs/make-it-yours.md
+index 12506d3..ecbf5e6 100644
+--- a/docs/make-it-yours.md
++++ b/docs/make-it-yours.md
+@@ -29,13 +29,6 @@ what it changes (the first row) and what is left for you.
+ | UI strings                                                    | `shared/i18n/en.ts` (and more locales via the i18n seam)                                 |
+ | Per-variant build settings and env for EAS Build              | `eas.json` build profiles                                                                |
+ 
+-<!-- @demo remove-block-start -->
+-
+-The demo screens and the DummyJSON adapter: `npm run remove-demo`
+-([Remove the Demo](remove-demo.md)).
+-
+-<!-- @demo remove-block-end -->
+-
+ ## Build variants
+ 
+ `APP_VARIANT` selects one of three variants in `app.config.ts`. Each gets its
+diff --git a/docs/remove-demo.md b/docs/remove-demo.md
+deleted file mode 100644
+index d1cb989..0000000
+--- a/docs/remove-demo.md
++++ /dev/null
+@@ -1,112 +0,0 @@
+-# Remove the Demo
+-
+-The starter ships three demos so you can see the foundation working:
+-
+-| Demo            | What it is                                                           | Where                                                  |
+-| --------------- | -------------------------------------------------------------------- | ------------------------------------------------------ |
+-| `demo-auth`     | DummyJSON sign-in adapter and the demo-credentials hint on Login     | `features/demo-auth/`                                  |
+-| `demo-todos`    | The Explore tab: todos from JSONPlaceholder with loading/error/retry | `features/demo-todos/`, route `app/(tabs)/explore.tsx` |
+-| `demo-showcase` | The Component showcase and Home's "Examples" links                   | `features/demo-showcase/`, route `app/showcase.tsx`    |
+-
+-Everything else (routes, session, the auth flow, HTTP, storage, theme, error
+-reporting, integrations, i18n) is the foundation and stays.
+-
+-## Run it
+-
+-```bash
+-npm run remove-demo -- --dry-run   # list what would change
+-npm run remove-demo
+-```
+-
+-`scripts/remove-demo.js`:
+-
+-1. deletes the folders and routes above, the demo tests in
+-   `__tests__/features/demo-*`, and the Maestro flows that need the demo
+-   (below);
+-2. removes what is marked as demo in the remaining code, docs, and config:
+-   - in `app/`, `features/`, `shared/`, and `__tests__/`: the Explore tab
+-     entry, the Login hint, Home's example links, the demo strings in
+-     `shared/i18n/en.ts`, the demo adapter registration in
+-     `shared/integrations/setup.ts`, and the test assertions about them;
+-   - in `README.md`, `AGENTS.md`, `docs/`, and `scripts/README.md`: the
+-     passages about the demo, its credentials, and this page;
+-   - in `.env.example`: the demo backends switch, which becomes
+-     `EXPO_PUBLIC_USE_DEMO_BACKENDS=false` with a note to set your URLs;
+-   - in `.maestro/` and `scripts/e2e/run.sh`: the demo flows' entries, and
+-     the demo sign-in backend;
+-3. deletes itself: this page, `scripts/remove-demo.js`, its test, and the
+-   `remove-demo` npm script, since there is nothing left to remove;
+-4. formats the changed files with Prettier;
+-5. fails if a `@demo` marker, an import of a removed demo, or a doc or flow
+-   that names a deleted file is left.
+-
+-It is meant to run once on a fresh project; commit first so you can review
+-the diff.
+-
+-## What you get
+-
+-- Home with the session card only, a single tab, and the Login and Profile
+-  screens.
+-- `npm run lint`, `npm run type-check`, `npm run test:ci`, and
+-  `npm run docs:check` pass, and the app starts in Expo Go.
+-- Sign-in reports **"Sign-in is not configured: register an AuthAdapter in
+-  shared/integrations/setup.ts."** until you register an adapter for your
+-  backend; see [Connect Your Backend](connect-your-backend.md).
+-- With `.env` copied from `.env.example`, the app opens on the configuration
+-  error screen until you set `EXPO_PUBLIC_API_URL` and
+-  `EXPO_PUBLIC_AUTH_API_URL`.
+-- The docs keep a worked list screen (endpoint, loading, error with Retry)
+-  in [Connect Your Backend](connect-your-backend.md#3-add-endpoints-for-a-feature)
+-  and its test in [Testing](testing.md#network).
+-
+-### Maestro flows
+-
+-| Flow                          | After removal                                     |
+-| ----------------------------- | ------------------------------------------------- |
+-| `01-cold-start.yaml`          | kept: a fresh start opens Home, signed out        |
+-| `06-login-back.yaml`          | kept: Back from Login returns Home (Android)      |
+-| `dark-mode.yaml`              | kept, without its Explore screenshot              |
+-| `02-tabs.yaml`                | deleted: there is one tab                         |
+-| `03-auth-session.yaml`        | deleted: signs in with the DummyJSON demo account |
+-| `04-login-keyboard.yaml`      | deleted: signs in with the DummyJSON demo account |
+-| `05-explore-error-retry.yaml` | deleted: the Explore tab                          |
+-
+-`subflows/sign-in.yaml` (the demo account) is deleted too. The e2e runner
+-keeps the local mock API (`scripts/e2e/mock-api.js`) and points both URLs at
+-it. Add your own sign-in flows against a test account on your backend.
+-
+-## Then
+-
+-1. Register your `AuthAdapter` and set `EXPO_PUBLIC_AUTH_API_URL`.
+-2. Set `EXPO_PUBLIC_API_URL` (see
+-   [Environment Variables](environment-variables.md)).
+-3. Add your features under `features/` with thin routes in `app/` (see
+-   [Conventions](conventions.md#project-structure)).
+-
+-## Marking your own demo code
+-
+-If you add example code or docs you want the script to remove with the demo,
+-wrap them the way `features/home/screens/HomeScreen.tsx` wraps Home's example
+-links. In Markdown, the markers are HTML comments on their own lines
+-(`<!-- @demo remove-block-start -->`); in YAML, shell, and `.env` files,
+-`#` comments.
+-
+-```tsx
+-import { View } from 'react-native';
+-// @demo remove-block-start
+-import { ExampleLinks } from '@/features/demo-showcase/components/ExampleLinks';
+-// @demo remove-block-end
+-
+-export function HomeExtras() {
+-  return (
+-    <View>
+-      {/* @demo remove-block-start */}
+-      <ExampleLinks />
+-      {/* @demo remove-block-end */}
+-    </View>
+-  );
+-}
+-```
+-
+-Prefer block markers over `remove-current-line` for imports: Prettier may
+-split a long import over several lines.
+diff --git a/docs/testing.md b/docs/testing.md
+index 0971317..2d8e73a 100644
+--- a/docs/testing.md
++++ b/docs/testing.md
+@@ -34,14 +34,6 @@ jest.setup.env.js             env for every test file (demo backends on)
+ jest.setup.ts                 shared mocks, reset before each test
+ ```
+ 
+-<!-- @demo remove-block-start -->
+-
+-The demo's tests are in `__tests__/features/demo-*/`, and the tests of the
+-starter's own scripts in `__tests__/scripts/`; `npm run remove-demo` deletes
+-the demo tests and its own.
+-
+-<!-- @demo remove-block-end -->
+-
+ ## Shared setup
+ 
+ `jest.setup.ts` runs for every test file (`setupFilesAfterEnv`) and mocks:
+@@ -230,22 +222,6 @@ on a simulator or emulator. No account is needed.
+ | `06-login-back.yaml` | Back from Login returns Home (Android system back; skipped on iOS, see below) |
+ | `dark-mode.yaml`     | screenshots with the device in dark mode                                      |
+ 
+-<!-- @demo remove-block-start -->
+-
+-The demo adds flows that need it; `npm run remove-demo` deletes them with it:
+-
+-| Flow                          | Checks                                                                    |
+-| ----------------------------- | ------------------------------------------------------------------------- |
+-| `02-tabs.yaml`                | the tab bar switches between Home and Explore                             |
+-| `03-auth-session.yaml`        | sign in, relaunch (still signed in), log out, relaunch (still signed out) |
+-| `04-login-keyboard.yaml`      | the username's return key moves to the password; the password's submits   |
+-| `05-explore-error-retry.yaml` | Explore shows the API error, then Retry loads the list (local mock API)   |
+-
+-They sign in with the DummyJSON demo account (`subflows/sign-in.yaml`), so
+-they need network access, and `dark-mode.yaml` also screenshots Explore.
+-
+-<!-- @demo remove-block-end -->
+-
+ Run them with a booted device that has Expo Go:
+ 
+ ```bash
+diff --git a/docs/ui-and-theming.md b/docs/ui-and-theming.md
+index e4cc498..0bfa0fa 100644
+--- a/docs/ui-and-theming.md
++++ b/docs/ui-and-theming.md
+@@ -51,14 +51,6 @@ const styles = StyleSheet.create({
+ });
+ ```
+ 
+-<!-- @demo remove-block-start -->
+-
+-The Component showcase (`features/demo-showcase/screens/ShowcaseScreen.tsx`,
+-opened from Home) shows text variants, buttons, cards, surfaces, and the
+-snackbar under the app theme.
+-
+-<!-- @demo remove-block-end -->
+-
+ Paper's component docs:
+ [callstack.github.io/react-native-paper](https://callstack.github.io/react-native-paper/docs/components/ActivityIndicator).
+ 
+diff --git a/scripts/README.md b/scripts/README.md
+index 26de05f..331d16b 100644
+--- a/scripts/README.md
++++ b/scripts/README.md
+@@ -14,16 +14,6 @@ optionally removes the demo, deletes the maintainer files listed in
+ 
+ <!-- @init remove-block-end -->
+ 
+-<!-- @demo remove-block-start -->
+-
+-## `remove-demo.js`
+-
+-Removes the demo features and `@demo`-marked code and docs, leaving the
+-foundation, and then itself (`npm run remove-demo`, `-- --dry-run` to
+-preview). See [`docs/remove-demo.md`](../docs/remove-demo.md).
+-
+-<!-- @demo remove-block-end -->
+-
+ ## `check-docs.js`
+ 
+ Checks the docs against the code (`npm run docs:check`, also run in CI):
+diff --git a/scripts/e2e/run.sh b/scripts/e2e/run.sh
+index 8ae936e..fff7c4b 100755
+--- a/scripts/e2e/run.sh
++++ b/scripts/e2e/run.sh
+@@ -60,16 +60,10 @@ set_dark_mode() {
+ node "$ROOT/scripts/e2e/mock-api.js" "$MOCK_PORT" >"$OUT/mock-api.log" 2>&1 &
+ PIDS+=($!)
+ 
+-# @demo remove-block-start
+-# Sign-in uses the DummyJSON demo backend, which needs network access.
+-AUTH_ENV=(EXPO_PUBLIC_USE_DEMO_BACKENDS=true)
+-# @demo remove-block-end
+-# @demo uncomment-block-start
+-# # The flows don't sign in, so the mock stands in for the auth backend. For
+-# # sign-in flows, set E2E_AUTH_API_URL to your backend and use a test account.
+-# AUTH_ENV=(EXPO_PUBLIC_USE_DEMO_BACKENDS=false
+-#   "EXPO_PUBLIC_AUTH_API_URL=${E2E_AUTH_API_URL:-http://localhost:$MOCK_PORT}")
+-# @demo uncomment-block-end
++# The flows don't sign in, so the mock stands in for the auth backend. For
++# sign-in flows, set E2E_AUTH_API_URL to your backend and use a test account.
++AUTH_ENV=(EXPO_PUBLIC_USE_DEMO_BACKENDS=false
++  "EXPO_PUBLIC_AUTH_API_URL=${E2E_AUTH_API_URL:-http://localhost:$MOCK_PORT}")
+ (
+   cd "$ROOT"
+   env "${AUTH_ENV[@]}" EXPO_PUBLIC_API_URL="http://localhost:$MOCK_PORT" \
+diff --git a/scripts/remove-demo.js b/scripts/remove-demo.js
+deleted file mode 100644
+index b897215..0000000
+--- a/scripts/remove-demo.js
++++ /dev/null
+@@ -1,177 +0,0 @@
+-#!/usr/bin/env node
+-/**
+- * Removes the starter's demo code (see docs/remove-demo.md):
+- *
+- * 1. deletes the demo folders, routes, and Maestro flows listed in
+- *    DEMO_PATHS, and then this script, its doc, its test, and its npm script;
+- * 2. edits the remaining source, docs, and config files (MARKED_DIRS and
+- *    MARKED_FILES):
+- *    - deletes a line containing `@demo remove-current-line`;
+- *    - deletes every line from one containing `@demo remove-block-start`
+- *      through the next line containing `@demo remove-block-end`;
+- *    - between `@demo uncomment-block-start` and `@demo uncomment-block-end`
+- *      lines, uncomments each line (drops its leading `# `) and deletes the
+- *      two marker lines: for text that only applies once the demo is gone
+- *      (.env.example, the e2e runner);
+- * 3. formats the changed files with Prettier (stripping leaves blank lines);
+- * 4. fails if any `@demo` marker, import of a removed path, or mention of a
+- *    deleted file is left.
+- *
+- * Usage: npm run remove-demo [-- --dry-run]
+- */
+-const { spawnSync } = require('child_process');
+-const fs = require('fs');
+-const path = require('path');
+-
+-const ROOT = path.resolve(__dirname, '..');
+-const DRY_RUN = process.argv.includes('--dry-run');
+-
+-const DEMO_PATHS = [
+-  'features/demo-auth',
+-  'features/demo-todos',
+-  'features/demo-showcase',
+-  'app/(tabs)/explore.tsx',
+-  'app/showcase.tsx',
+-  '__tests__/features/demo-auth',
+-  '__tests__/features/demo-todos',
+-  '__tests__/features/demo-showcase',
+-  // Flows that need the demo: the Explore tab, or the DummyJSON sign-in.
+-  '.maestro/02-tabs.yaml',
+-  '.maestro/03-auth-session.yaml',
+-  '.maestro/04-login-keyboard.yaml',
+-  '.maestro/05-explore-error-retry.yaml',
+-  '.maestro/subflows/sign-in.yaml',
+-  // This command: with the demo gone, it has nothing left to remove.
+-  'docs/remove-demo.md',
+-  '__tests__/scripts/removeDemo.test.ts',
+-  'scripts/remove-demo.js',
+-];
+-
+-const MARKED_DIRS = [
+-  'app',
+-  'features',
+-  'shared',
+-  '__tests__',
+-  'docs',
+-  '.maestro',
+-  'scripts',
+-];
+-const MARKED_FILES = ['README.md', 'AGENTS.md', '.env.example'];
+-const MARKED_EXT = /\.(ts|tsx|js|jsx|md|ya?ml|sh)$/;
+-const PRETTIER_EXT = /\.(ts|tsx|js|jsx|json|md)$/;
+-/** Text that names files, so it must not name a deleted one. */
+-const DOC_EXT = /(\.(md|ya?ml|sh)|^\.env\.example)$/;
+-
+-function markedFiles(dir) {
+-  const full = path.join(ROOT, dir);
+-  if (!fs.existsSync(full)) return [];
+-  return fs.readdirSync(full, { withFileTypes: true }).flatMap(entry => {
+-    const rel = path.join(dir, entry.name);
+-    if (entry.isDirectory()) return markedFiles(rel);
+-    return MARKED_EXT.test(entry.name) ? [rel] : [];
+-  });
+-}
+-
+-/** Returns the file's text without its marked demo lines. */
+-function stripMarkers(text, file) {
+-  const out = [];
+-  let block = null;
+-  for (const line of text.split('\n')) {
+-    const start = /@demo (remove|uncomment)-block-start/.exec(line);
+-    const end = /@demo (remove|uncomment)-block-end/.exec(line);
+-    if (start) {
+-      if (block) throw new Error(`${file}: nested @demo block`);
+-      block = start[1];
+-    } else if (end) {
+-      if (block !== end[1])
+-        throw new Error(`${file}: @demo ${end[1]}-block end without start`);
+-      block = null;
+-    } else if (block === 'uncomment') {
+-      out.push(line.replace(/^(\s*)# ?/, '$1'));
+-    } else if (!block && !line.includes('@demo remove-current-line')) {
+-      out.push(line);
+-    }
+-  }
+-  if (block) throw new Error(`${file}: unterminated @demo block`);
+-  return out.join('\n').replace(/\n{3,}/g, '\n\n');
+-}
+-
+-function main() {
+-  const log = message => process.stdout.write(`${message}\n`);
+-  log(DRY_RUN ? 'Dry run: nothing is changed.' : 'Removing the demo...');
+-
+-  const isDeleted = rel =>
+-    DEMO_PATHS.some(demo => rel === demo || rel.startsWith(`${demo}/`));
+-  for (const rel of DEMO_PATHS) {
+-    const full = path.join(ROOT, rel);
+-    if (!fs.existsSync(full)) continue;
+-    log(`  delete ${rel}`);
+-    if (!DRY_RUN) fs.rmSync(full, { recursive: true });
+-  }
+-  const testsDir = path.join(ROOT, '__tests__/scripts');
+-  if (
+-    !DRY_RUN &&
+-    fs.existsSync(testsDir) &&
+-    fs.readdirSync(testsDir).length === 0
+-  )
+-    fs.rmdirSync(testsDir);
+-
+-  const problems = [];
+-  const changed = [];
+-  const files = [
+-    ...MARKED_DIRS.flatMap(markedFiles),
+-    ...MARKED_FILES.filter(file => fs.existsSync(path.join(ROOT, file))),
+-  ].filter(rel => !isDeleted(rel));
+-  for (const rel of files) {
+-    const full = path.join(ROOT, rel);
+-    const text = fs.readFileSync(full, 'utf8');
+-    const stripped = stripMarkers(text, rel);
+-    if (stripped !== text) {
+-      log(`  strip ${rel}`);
+-      changed.push(rel);
+-      if (!DRY_RUN) fs.writeFileSync(full, stripped);
+-    }
+-    if (stripped.includes('@demo')) {
+-      problems.push(`${rel}: unhandled @demo marker`);
+-    }
+-    if (/from ['"]@\/features\/demo-/.test(stripped)) {
+-      problems.push(`${rel}: still imports a demo feature`);
+-    }
+-    if (DOC_EXT.test(rel)) {
+-      for (const demo of DEMO_PATHS) {
+-        if (stripped.includes(path.basename(demo)))
+-          problems.push(`${rel}: still mentions ${demo}`);
+-      }
+-    }
+-  }
+-
+-  const pkgFile = path.join(ROOT, 'package.json');
+-  const pkg = JSON.parse(fs.readFileSync(pkgFile, 'utf8'));
+-  if (pkg.scripts?.['remove-demo']) {
+-    log('  update package.json: remove the remove-demo script');
+-    delete pkg.scripts['remove-demo'];
+-    if (!DRY_RUN)
+-      fs.writeFileSync(pkgFile, `${JSON.stringify(pkg, null, 2)}\n`);
+-  }
+-
+-  const formattable = changed.filter(rel => PRETTIER_EXT.test(rel));
+-  if (!DRY_RUN && formattable.length > 0) {
+-    const prettier = spawnSync('npx', ['prettier', '--write', ...formattable], {
+-      cwd: ROOT,
+-      stdio: ['ignore', 'ignore', 'inherit'],
+-    });
+-    if (prettier.status !== 0) problems.push('prettier failed');
+-  }
+-
+-  if (problems.length > 0) {
+-    process.stderr.write(`${problems.join('\n')}\n`);
+-    process.exit(1);
+-  }
+-  log(
+-    DRY_RUN
+-      ? 'Dry run complete.'
+-      : 'Done. Next: register your AuthAdapter in shared/integrations/setup.ts, set your backend URLs in .env, then run npm run lint, npm run type-check, and npm run test:ci.'
+-  );
+-}
+-
+-main();

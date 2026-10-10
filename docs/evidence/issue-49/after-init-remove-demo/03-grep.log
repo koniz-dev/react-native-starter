@@ -1,0 +1,18 @@
+$ git grep -niE "demo-todos|demo-auth|demo-showcase|explore|showcase|emilys|dummyjson|jsonplaceholder|remove-demo|init-project|@demo|@init|koniz-dev|rnstarter|com\.example\." -- . ":(exclude)shared/config/env.ts" ":(exclude)__tests__"
+[exit 1]
+$ ls __tests__ scripts
+__tests__:
+app
+features
+shared
+
+scripts:
+README.md
+audit-allowlist.json
+check-audit.js
+check-docs.js
+e2e
+$ head -3 README.md
+# Acme Notes
+
+Acme Notes is an Expo (SDK 57) and React Native app. Its foundation (routing, session, HTTP, storage, theming, error reporting, i18n, test setup) came from a starter; every third-party service sits behind a typed seam with a no-op or console default.

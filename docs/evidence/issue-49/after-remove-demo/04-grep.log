@@ -1,0 +1,94 @@
+# Criterion 1, as written in the issue
+$ git grep -nE "demo-todos|demo-auth|demo-showcase|Explore|emilys|dummyjson|jsonplaceholder" -- README.md docs .env.example .maestro scripts/e2e
+[exit 1 — 1 means no matches]
+
+# Stricter: case-insensitive, more words, the whole tree except env.ts (DEMO_BACKENDS), __tests__ (fixture strings), the maintainer docs, and init-project.js (both deleted by init-project)
+$ git grep -niE "demo-todos|demo-auth|demo-showcase|explore|showcase|emilys|dummyjson|jsonplaceholder|remove-demo" -- . ":(exclude)shared/config/env.ts" ":(exclude)__tests__" ":(exclude)docs/maintainers" ":(exclude)scripts/init-project.js"
+[exit 1]
+
+$ git grep -n "@demo"
+[exit 1]
+
+$ cat .env.example
+# Copy to .env and adjust. See docs/environment-variables.md.
+
+# Leave false: the app needs your own backends (docs/connect-your-backend.md).
+EXPO_PUBLIC_USE_DEMO_BACKENDS=false
+
+# Your API and auth backends. Required when demo backends are off; must be
+# https outside development.
+# Set both to your servers, for example https://api.example.com and
+# https://auth.example.com. While one is empty, the app opens on the
+# configuration error screen, which names it.
+EXPO_PUBLIC_API_URL=
+EXPO_PUBLIC_AUTH_API_URL=
+
+# Origins (comma-separated) that may receive the auth token besides the auth
+# backend itself, e.g. your API on a separate first-party domain.
+EXPO_PUBLIC_API_TRUSTED_ORIGINS=
+
+# Request timeout in milliseconds (1000-120000). Defaults to 15000.
+# EXPO_PUBLIC_API_TIMEOUT_MS=15000
+
+# Minimum console log level: debug, info, warn, error, or silent.
+# Default: debug in development, info in preview, warn in production.
+# Errors reach the error reporter at every level (docs/error-reporting.md).
+# EXPO_PUBLIC_LOG_LEVEL=debug
+
+# development | preview | production. Defaults to development in dev builds
+# and production otherwise.
+# EXPO_PUBLIC_APP_ENV=development
+
+$ ls -R .maestro
+01-cold-start.yaml
+06-login-back.yaml
+config.yaml
+dark-mode.yaml
+scripts
+subflows
+
+.maestro/scripts:
+set-api-mode.js
+
+.maestro/subflows:
+open-app.yaml
+
+$ cat .maestro/config.yaml .maestro/dark-mode.yaml
+# Maestro workspace config: the numbered flows run in order; the dark-mode
+# flow runs separately (scripts/e2e/run.sh switches the device to dark mode).
+flows:
+  - '*.yaml'
+executionOrder:
+  continueOnFailure: false
+  flowsOrder:
+    - Cold start opens Home
+    - Back from Login returns Home
+excludeTags:
+  - dark
+# Run with the device in dark mode (scripts/e2e/run.sh switches it): the tab
+# bar and status bar follow the dark theme. Screenshots only.
+appId: ${APP_ID}
+name: Dark mode screenshots
+tags:
+  - dark
+---
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'false'
+- takeScreenshot: dark-home
+
+$ sed -n 60,72p scripts/e2e/run.sh
+node "$ROOT/scripts/e2e/mock-api.js" "$MOCK_PORT" >"$OUT/mock-api.log" 2>&1 &
+PIDS+=($!)
+
+# The flows don't sign in, so the mock stands in for the auth backend. For
+# sign-in flows, set E2E_AUTH_API_URL to your backend and use a test account.
+AUTH_ENV=(EXPO_PUBLIC_USE_DEMO_BACKENDS=false
+  "EXPO_PUBLIC_AUTH_API_URL=${E2E_AUTH_API_URL:-http://localhost:$MOCK_PORT}")
+(
+  cd "$ROOT"
+  env "${AUTH_ENV[@]}" EXPO_PUBLIC_API_URL="http://localhost:$MOCK_PORT" \
+    npx expo start --port "$METRO_PORT" --clear >"$OUT/metro.log" 2>&1
+) &
+PIDS+=($!)

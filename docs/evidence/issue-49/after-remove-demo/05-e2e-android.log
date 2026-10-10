@@ -1,0 +1,39 @@
+
+> react-native-starter@1.0.0 test:e2e:android
+> bash scripts/e2e/run.sh android
+
+Bundling for android...
+
+Requested 1 shards, but it cannot be higher than the number of flows (0). Will use 1 shards instead.
+
+Waiting for flows to complete...
+[Passed] Cold start opens Home (1m)
+[Passed] Back from Login returns Home (1m 1s)
+
+2/2 Flows Passed in 2m 1s
+
+Running on Medium_Phone_API_37.0
+ > Flow Dark mode screenshots
+Run subflows/open-app.yaml...
+  Run flow when ${CLEAR_STATE == 'true'} is true...
+  Run flow when false is true... SKIPPED
+  Launch app "${APP_ID}"... COMPLETED
+  Open ${APP_URL}... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)...
+    Assert that (Optional) id: tab-home is visible... COMPLETED
+    Run flow when Platform is IOS and "Open in .*" is visible...
+    Run flow when Platform is IOS and "Open in .*" is visible... SKIPPED
+    Run flow when "Development servers" is visible...
+    Run flow when "Development servers" is visible... SKIPPED
+    Tap on (Optional) "Wait"... WARNED
+    Tap on (Optional) "Continue"... WARNED
+    Run flow when Platform is ANDROID and "Go home" is visible...
+    Run flow when Platform is ANDROID and "Go home" is visible... SKIPPED
+    Run flow when Platform is IOS and "Go home" is visible...
+    Run flow when Platform is IOS and "Go home" is visible... SKIPPED
+    Wait for animation to end... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)... COMPLETED
+  Assert that "Session" is visible... COMPLETED
+Run subflows/open-app.yaml... COMPLETED
+Take screenshot dark-home... COMPLETED
+exit 0
