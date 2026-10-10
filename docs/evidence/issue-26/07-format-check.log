@@ -1,0 +1,9 @@
+$ npm run format:check
+# 2026-10-10T06:57:07Z  cwd=/private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/rel/clone
+
+> react-native-starter@1.0.0 format:check
+> prettier --check "**/*.{ts,tsx,js,jsx,json,md}"
+
+Checking formatting...
+All matched files use Prettier code style!
+# exit code: 0

@@ -1,0 +1,59 @@
+PASS __tests__/config/env.test.ts
+  parseEnv
+    ✓ accepts a complete production configuration (7 ms)
+    ✓ reports every missing required URL when demo backends are off (1 ms)
+    ✓ treats an empty value (KEY=) as missing (2 ms)
+    ✓ rejects a URL that is not absolute http(s) (1 ms)
+    ✓ rejects http outside development and allows it in development (1 ms)
+    ✓ fills missing URLs from the demo backends only when the flag is on (1 ms)
+    ✓ prefers explicit URLs over the demo backends (1 ms)
+    ✓ defaults the app environment from the build type
+    ✓ rejects unknown values for enums and booleans (1 ms)
+    ✓ parses and validates trusted origins (1 ms)
+  getConfig
+    ✓ throws a ConfigError naming the variables when configuration is invalid (36 ms)
+
+  console.error
+    API Error: { message: 'Unavailable', status: 503, data: { message: 'Try again' } }
+
+      93 |
+      94 |     // Log error for debugging
+    > 95 |     console.error('API Error:', apiError);
+         |             ^
+      96 |
+      97 |     return Promise.reject(apiError);
+      98 |   }
+
+      at error (services/api.ts:95:13)
+      at Axios.request (node_modules/axios/dist/browser/axios.cjs:5245:14)
+
+PASS __tests__/services/api.test.ts
+  api interceptors
+    ✓ injects the protected token into an outgoing request (10 ms)
+    ✓ rejects a normalized API error (42 ms)
+  token origin allow-list
+    ✓ trusts only the auth backend origin by default
+    ✓ does not send the auth token to the separate demo API host (2 ms)
+    ✓ attaches the token to the auth origin, with or without the default port (1 ms)
+    ✓ does not attach or read the token for another origin (1 ms)
+    ✓ does not attach the token to a look-alike host (1 ms)
+    ✓ sends no Authorization header when no token is stored (1 ms)
+    ✓ trusts origins listed in EXPO_PUBLIC_API_TRUSTED_ORIGINS, including the API (27 ms)
+  getOrigin
+    ✓ https://API.Example.com/v1?x=1 -> https://api.example.com
+    ✓ https://api.example.com:443/v1 -> https://api.example.com
+    ✓ http://localhost:80 -> http://localhost (1 ms)
+    ✓ http://localhost:3000/x -> http://localhost:3000
+    ✓ https://user:pass@api.example.com/x -> https://api.example.com
+    ✓ /relative/path -> null
+    ✓  -> null (1 ms)
+
+PASS __tests__/navigation/configError.test.tsx
+  startup with invalid configuration
+    ✓ shows the configuration error screen instead of the app (1704 ms)
+
+Test Suites: 3 passed, 3 total
+Tests:       28 passed, 28 total
+Snapshots:   0 total
+Time:        5.056 s
+Ran all test suites matching /__tests__\/config|__tests__\/navigation\/configError|__tests__\/services\/api/i.

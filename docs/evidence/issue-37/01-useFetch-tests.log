@@ -1,0 +1,41 @@
+PASS __tests__/shared/lib/useFetch.test.tsx (6.482 s)
+  useFetch
+    ✓ loads data, exposes a typed ApiError, and refetches (281 ms)
+    ✓ maps HTTP failures to ApiError codes (56 ms)
+    ✓ aborts the request on unmount and ignores its result (3 ms)
+    ✓ aborts the previous request when deps change (4 ms)
+    ✓ keeps the latest response when an older one arrives later (3 ms)
+    ✓ refetch aborts a request in flight and uses the newest fetchFn (4 ms)
+    ✓ keeps working when its effect is cleaned up and run again (431 ms)
+
+  console.warn
+    API GET /todos failed: server (503)
+
+      129 |     const args = [message, ...details.filter(item => item !== undefined)];
+      130 |     if (level === 'error') console.error(...args);
+    > 131 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      132 |     else if (level === 'info') console.info(...args);
+      133 |     else console.debug(...args);
+      134 |   };
+
+      at warn (shared/lib/logger.ts:131:40)
+      at Object.write [as warn] (shared/lib/logger.ts:142:33)
+      at warn (shared/http/httpClient.ts:139:12)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12
+      at apply (shared/http/httpClient.ts:145:4)
+      at Axios.request (node_modules/axios/dist/browser/axios.cjs:5245:14)
+
+PASS __tests__/features/demo-todos/TodosScreen.test.tsx (18.431 s)
+  <TodosScreen /> (Explore)
+    ✓ goes from loading to an error, then Retry loads the list (1085 ms)
+    ✓ shows the empty state for an empty list (87 ms)
+
+Test Suites: 2 passed, 2 total
+Tests:       9 passed, 9 total
+Snapshots:   0 total
+Time:        21.689 s
+Ran all test suites matching /__tests__\/shared\/lib\/useFetch|__tests__\/features\/demo-todos/i.

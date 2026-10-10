@@ -1,0 +1,6 @@
+Running on iPhone 16 Plus - iOS 18.6 - E0ACAF33-2846-4E2E-B304-D2322BC2F008
+ > Flow login
+Run flow when "Welcome Back" is not visible...
+  Tap on id: sign-in-button... COMPLETED
+Run flow when "Welcome Back" is not visible... COMPLETED
+Assert that "Welcome Back" is visible... COMPLETED

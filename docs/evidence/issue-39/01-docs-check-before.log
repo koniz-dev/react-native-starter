@@ -1,0 +1,25 @@
+# Docs before this change (5,327 lines in 28 Markdown files incl. AGENTS/CLAUDE/READMEs), first run of the new checker:
+Checked 25 files: 132 TypeScript snippets compiled with tsc.
+docs/fonts.md:21: path does not exist: assets/fonts/
+docs/fonts.md:234: path does not exist: assets/fonts/
+docs/getting-started.md:155: npm run prebuild:: no such script
+docs/how-to.md:53: path does not exist: app/settings/account.tsx
+docs/how-to.md:62: path does not exist: shared/ui/CustomButton.tsx
+docs/how-to.md:90: path does not exist: features/posts/api/postsApi.ts
+docs/how-to.md:125: path does not exist: shared/lib/useToggle.ts
+docs/splash-screen-and-app-icon.md:50: npm run prebuild:: no such script
+app/README.md:36: path does not exist: app/index.tsx
+app/README.md:122: path does not exist: app/(main)/_layout.tsx
+app/README.md:170: path does not exist: app/(main)/product/[id].tsx
+app/README.md:187: path does not exist: app/(main)/product/[id]/reviews.tsx
+app/README.md:292: path does not exist: app/(tabs)/profile/_layout.tsx
+app/README.md:328: path does not exist: app/(tabs)/shop/_layout.tsx
+docs/api-and-storage.md:404: error TS1109: Expression expected.
+docs/safe-areas.md:64: error TS1005: ';' expected.
+docs/safe-areas.md:65: error TS1005: ';' expected.
+docs/safe-areas.md:66: error TS1005: ';' expected.
+docs/splash-screen-and-app-icon.md:32: error TS1109: Expression expected.
+docs/system-bars.md:100: error TS1109: Expression expected.
+20 problem(s).
+
+(tsc stops at syntax errors, so these were only the first layer of problems.)

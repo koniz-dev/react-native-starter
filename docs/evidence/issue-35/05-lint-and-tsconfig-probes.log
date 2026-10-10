@@ -1,0 +1,69 @@
+# Probe: a component with an 'any', a missing effect dependency, an inline style, and a color literal; eslint must fail with errors (not warnings)
+import { useEffect, useState } from 'react';
+import { View } from 'react-native';
+
+export function Probe({ id }: { id: number }) {
+  const [value, setValue] = useState<any>(null);
+  useEffect(() => {
+    setValue(id);
+  }, []);
+  return <View style={{ backgroundColor: '#ff0000' }}>{value}</View>;
+}
+
+
+probe35/probe.tsx
+  5:38  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  7:5   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+probe35/probe.tsx:7:5
+   5 |   const [value, setValue] = useState<any>(null);
+   6 |   useEffect(() => {
+>  7 |     setValue(id);
+     |     ^^^^^^^^ Avoid calling setState() directly within an effect
+   8 |   }, []);
+   9 |   return <View style={{ backgroundColor: '#ff0000' }}>{value}</View>;
+  10 | }  react-hooks/set-state-in-effect
+  8:6   error  React Hook useEffect has a missing dependency: 'id'. Either include it or remove the dependency array. If 'setValue' needs the current value of 'id', you can also switch to useReducer instead of useState and read 'id' in the reducer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react-hooks/exhaustive-deps
+  9:23  error  Inline style: { backgroundColor: '#ff0000' }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             react-native/no-inline-styles
+  9:23  error  Color literal: { backgroundColor: '#ff0000' }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            react-native/no-color-literals
+
+✖ 5 problems (5 errors, 0 warnings)
+
+(eslint exits with status 1 on these errors; the "exit" line in the first capture of this log read the status of a pipe, not eslint, and was removed)
+
+# Probe: unchecked index access must fail tsc (noUncheckedIndexedAccess)
+const list: number[] = [1, 2, 3];
+export const first: number = list[0];
+probe35/index.ts(2,14): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+
+# Config files are linted:
+  app.config.ts - linted, 0 errors, 0 warnings
+  eslint.config.js - linted, 0 errors, 0 warnings
+  jest.setup.env.js - linted, 0 errors, 0 warnings
+
+# Effective severities for app/(tabs)/index.tsx (2 = error):
+  react-hooks/rules-of-hooks [2]
+  react-hooks/exhaustive-deps [2]
+  react-hooks/static-components [2]
+  react-hooks/use-memo [2]
+  react-hooks/component-hook-factories [2]
+  react-hooks/preserve-manual-memoization [2]
+  react-hooks/incompatible-library [2]
+  react-hooks/immutability [2]
+  react-hooks/globals [2]
+  react-hooks/refs [2]
+  react-hooks/set-state-in-effect [2]
+  react-hooks/error-boundaries [2]
+  react-hooks/purity [2]
+  react-hooks/set-state-in-render [2]
+  react-hooks/unsupported-syntax [2]
+  react-hooks/config [2]
+  react-hooks/gating [2]
+  @typescript-eslint/no-explicit-any [2]
+eslint exit on an 'any': 1

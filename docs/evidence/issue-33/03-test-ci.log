@@ -1,0 +1,132 @@
+
+> react-native-starter@1.0.0 test:ci
+> jest
+
+PASS __tests__/components/LoginScreen.test.tsx
+PASS __tests__/navigation/configError.test.tsx (5.456 s)
+  ● Console
+
+    console.log
+      🐛 [analytics] screen /
+
+      at Object.log [as debug] (utils/logger.ts:98:17)
+
+PASS __tests__/navigation/tabBarTheme.test.tsx (6.445 s)
+  ● Console
+
+    console.log
+      🐛 [analytics] screen /
+
+      at Object.log [as debug] (utils/logger.ts:98:17)
+
+    console.log
+      🐛 [analytics] screen /
+
+      at Object.log [as debug] (utils/logger.ts:98:17)
+
+PASS __tests__/navigation/statusBar.test.tsx (6.46 s)
+  ● Console
+
+    console.log
+      🐛 [analytics] screen /
+
+      at Object.log [as debug] (utils/logger.ts:98:17)
+
+    console.log
+      🐛 [analytics] screen /
+
+      at Object.log [as debug] (utils/logger.ts:98:17)
+
+PASS __tests__/integrations/seams.test.ts
+PASS __tests__/navigation/initialRoute.test.tsx (7.171 s)
+  ● Console
+
+    console.log
+      🐛 [analytics] screen /
+
+      at Object.log [as debug] (utils/logger.ts:98:17)
+
+    console.log
+      🐛 [analytics] screen /login
+
+      at Object.log [as debug] (utils/logger.ts:98:17)
+
+    console.log
+      🐛 [analytics] screen /login
+
+      at Object.log [as debug] (utils/logger.ts:98:17)
+
+    console.log
+      🐛 [analytics] screen /
+
+      at Object.log [as debug] (utils/logger.ts:98:17)
+
+PASS __tests__/components/LoadingScreen.test.tsx
+PASS __tests__/services/api.test.ts
+  ● Console
+
+    console.error
+      API Error: { message: 'Unavailable', status: 503, data: { message: 'Try again' } }
+
+      93 |
+      94 |     // Log error for debugging
+    > 95 |     console.error('API Error:', apiError);
+         |             ^
+      96 |
+      97 |     return Promise.reject(apiError);
+      98 |   }
+
+      at error (services/api.ts:95:13)
+      at Axios.request (node_modules/axios/dist/browser/axios.cjs:5245:14)
+
+PASS __tests__/integrations/screenTracking.test.tsx
+PASS __tests__/services/auth.test.ts
+PASS __tests__/hooks/useFetch.test.tsx
+PASS __tests__/integrations/i18n.test.tsx
+  ● Console
+
+    console.log
+      🐛 [analytics] screen /
+
+      at Object.log [as debug] (utils/logger.ts:98:17)
+
+    console.log
+      🐛 [analytics] screen /login
+
+      at Object.log [as debug] (utils/logger.ts:98:17)
+
+PASS __tests__/config/env.test.ts
+PASS __tests__/config/appConfig.test.ts
+PASS __tests__/utils/sum.test.ts
+PASS __tests__/utils/logger.test.ts
+PASS __tests__/components/HomeScreen.test.tsx
+PASS __tests__/services/storage.test.ts
+  ● Console
+
+    console.error
+      Error retrieving bad-json: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+          at JSON.parse (<anonymous>)
+          at parse (/Users/nguyenanhkiet/Playground/react-native-starter/services/storage.ts:34:38)
+          at Generator.next (<anonymous>)
+          at asyncGeneratorStep (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+          at _next (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+          at processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+      34 |     return jsonValue != null ? (JSON.parse(jsonValue) as T) : null;
+      35 |   } catch (error) {
+    > 36 |     console.error(`Error retrieving ${key}:`, error);
+         |             ^
+      37 |     return null;
+      38 |   }
+      39 | }
+
+      at error (services/storage.ts:36:13)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+
+Test Suites: 18 passed, 18 total
+Tests:       111 passed, 111 total
+Snapshots:   0 total
+Time:        9.564 s
+Ran all test suites.

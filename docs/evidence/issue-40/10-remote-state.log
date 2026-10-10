@@ -1,0 +1,6 @@
+# Remote branches and tags at the time of this commit (branch removal was not done; see summary)
+df74cee2e58db1876f3b53515e9857be84e25c42	refs/heads/state-management/jotai
+cf38debeafc546a2b55c9b4beb22ce209d2a7740	refs/heads/state-management/react-context
+b9065eef9b8ce95d324e5a3900fc8296f3fc2dab	refs/heads/state-management/redux
+00ede38a83c3e0da31d3063437d8d4b87e5fb9b3	refs/heads/state-management/zustand
+(no archive/* tags)

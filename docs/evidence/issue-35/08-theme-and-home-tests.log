@@ -1,0 +1,63 @@
+PASS __tests__/constants/theme.test.ts
+  ✓ getTheme falls back to light for an unknown scheme
+  light theme
+    ✓ is what getTheme returns for the scheme (6 ms)
+    ✓ uses the brand primary rather than the MD3 baseline (2 ms)
+    ✓ onPrimary on primary meets WCAG AA contrast (4.5:1) (1 ms)
+    ✓ onPrimaryContainer on primaryContainer meets WCAG AA contrast (4.5:1)
+    ✓ onSecondaryContainer on secondaryContainer meets WCAG AA contrast (4.5:1) (1 ms)
+    ✓ onBackground on background meets WCAG AA contrast (4.5:1)
+    ✓ onSurface on surface meets WCAG AA contrast (4.5:1)
+    ✓ primary on background meets WCAG AA contrast (4.5:1) (1 ms)
+    ✓ inversePrimary on inverseSurface meets WCAG AA contrast (4.5:1)
+  dark theme
+    ✓ is what getTheme returns for the scheme (1 ms)
+    ✓ uses the brand primary rather than the MD3 baseline
+    ✓ onPrimary on primary meets WCAG AA contrast (4.5:1)
+    ✓ onPrimaryContainer on primaryContainer meets WCAG AA contrast (4.5:1) (1 ms)
+    ✓ onSecondaryContainer on secondaryContainer meets WCAG AA contrast (4.5:1)
+    ✓ onBackground on background meets WCAG AA contrast (4.5:1)
+    ✓ onSurface on surface meets WCAG AA contrast (4.5:1)
+    ✓ primary on background meets WCAG AA contrast (4.5:1)
+    ✓ inversePrimary on inverseSurface meets WCAG AA contrast (4.5:1)
+
+PASS __tests__/components/HomeScreen.test.tsx
+  <HomeScreen />
+    ✓ renders correctly with title (292 ms)
+    ✓ renders all text variants section (102 ms)
+    ✓ renders buttons section (90 ms)
+  <HomeScreen /> showcase
+    ✓ pressing Contained shows "Contained pressed" in the snackbar (203 ms)
+    ✓ pressing Outlined shows "Outlined pressed" in the snackbar (89 ms)
+    ✓ pressing Ok shows "Card: Ok pressed" in the snackbar (114 ms)
+    ✓ pressing Show Snackbar shows "This is a snackbar message!" in the snackbar (107 ms)
+  <HomeScreen /> session
+    ✓ shows the signed-out state with the entry to the login demo (95 ms)
+    ✓ shows the signed-in user from the stored session (85 ms)
+    ✓ logging out clears the session and returns to the signed-out state (142 ms)
+    ✓ treats a secure storage failure as signed out (83 ms)
+    ✓ switches to signed out when the API reports the session expired (102 ms)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+PASS __tests__/navigation/tabBarTheme.test.tsx
+  tab bar in light mode
+    ✓ tab bar colors come from the active theme tokens (7 ms)
+    ✓ renders the tab bar with the theme background and tints (730 ms)
+  tab bar in dark mode
+    ✓ tab bar colors come from the active theme tokens (1 ms)
+    ✓ renders the tab bar with the theme background and tints (102 ms)
+
+Test Suites: 3 passed, 3 total
+Tests:       35 passed, 35 total
+Snapshots:   0 total
+Time:        5.382 s
+Ran all test suites matching /__tests__\/constants|__tests__\/navigation\/tabBarTheme|__tests__\/components\/HomeScreen/i.

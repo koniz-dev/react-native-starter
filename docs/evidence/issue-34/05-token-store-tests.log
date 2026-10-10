@@ -1,0 +1,164 @@
+PASS __tests__/services/auth.test.ts
+  authService.login
+    ✓ normalizes the demo response and persists the session after a successful login (89 ms)
+    ✓ rejects an incomplete response without persisting a session (2 ms)
+    ✓ does not persist a session when the login request fails (2 ms)
+    ✓ does not authenticate when protected storage is unavailable (3 ms)
+    ✓ reads and deletes only the token through protected storage (1 ms)
+  authApi cookie handling
+    ✓ does not store or send cookies for auth requests (1 ms)
+    ✓ sends the login request with withCredentials disabled (4 ms)
+
+  console.debug
+    [analytics] screen /profile
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /login
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /profile
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /login
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /login
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /login
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /profile
+
+      at debug (utils/logger.ts:133:18)
+
+PASS __tests__/services/tokenStore.test.tsx (20.149 s)
+  secure token store (iOS / Android)
+    ✓ stores, reads, and clears the token in SecureStore (19 ms)
+    ✓ refuses to store a token when secure storage is unavailable (3 ms)
+  memory token store (web)
+    ✓ keeps the token in memory only (2 ms)
+    ✓ does not share the token between instances (a reload starts empty) (1 ms)
+  platform selection
+    ✓ web uses a persistent store: false (1 ms)
+    ✓ ios uses a persistent store: true
+    ✓ android uses a persistent store: true (1 ms)
+    ✓ the default store follows Platform.OS (65 ms)
+    ✓ setTokenStore replaces the store and null restores the default (1 ms)
+  auth flow with the web token store
+    ✓ signs in, shows the session, logs out, and a reload returns to signed out (10147 ms)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /profile
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /profile
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /profile
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /profile
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /profile
+
+      at debug (utils/logger.ts:133:18)
+
+PASS __tests__/navigation/sessionRoutes.test.tsx (25.355 s)
+  session-guarded routes
+    ✓ restores a stored session on cold start, including a deep link into the protected group (5711 ms)
+    ✓ redirects a signed-out deep link into the protected group to Home (496 ms)
+    ✓ keeps signed-in users out of the login screen (973 ms)
+    ✓ signing in updates every consumer and leaves the login screen (2783 ms)
+    ✓ the protected group has a back button to the screen that opened it (697 ms)
+    ✓ signing out from the protected screen returns to Home signed out (419 ms)
+    ✓ a session-expired event (API 401) signs out and leaves the protected group (1441 ms)
+    ✓ opening the protected screen with an expired token signs out and returns Home (1543 ms)
+    ✓ shows a non-401 refresh failure on the protected screen and stays signed in (756 ms)
+
+Test Suites: 3 passed, 3 total
+Tests:       26 passed, 26 total
+Snapshots:   0 total
+Time:        26.386 s
+Ran all test suites matching /__tests__\/services\/tokenStore|__tests__\/services\/auth|__tests__\/navigation\/sessionRoutes/i.

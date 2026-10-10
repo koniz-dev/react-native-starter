@@ -1,0 +1,15 @@
+
+> react-native-starter@1.0.0 lint
+> eslint .
+
+
+/Users/nguyenanhkiet/Playground/react-native-starter/components/ThemedText.tsx
+  24:3  warning  Unused style detected: styles.default          react-native/no-unused-styles
+  25:3  warning  Unused style detected: styles.defaultSemiBold  react-native/no-unused-styles
+  26:3  warning  Unused style detected: styles.title            react-native/no-unused-styles
+  27:3  warning  Unused style detected: styles.subtitle         react-native/no-unused-styles
+  28:3  warning  Unused style detected: styles.link             react-native/no-unused-styles
+  28:9  warning  Color literal: { color: '#0a7ea4' }            react-native/no-color-literals
+
+✖ 6 problems (0 errors, 6 warnings)
+

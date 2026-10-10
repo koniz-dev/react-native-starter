@@ -1,0 +1,9 @@
+# The new tests run against the previous useFetch (git show HEAD:shared/lib/useFetch.ts), restored afterwards
+    ✕ loads data, exposes a typed ApiError, and refetches (70 ms)
+    ✕ maps HTTP failures to ApiError codes (53 ms)
+    ✕ aborts the request on unmount and ignores its result (1 ms)
+    ✕ aborts the previous request when deps change (2 ms)
+    ✕ keeps the latest response when an older one arrives later (4 ms)
+    ✕ refetch aborts a request in flight and uses the newest fetchFn (1 ms)
+    ✕ keeps working when its effect is cleaned up and run again (1132 ms)
+Tests:       7 failed, 7 total

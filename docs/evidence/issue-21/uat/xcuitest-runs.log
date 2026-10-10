@@ -1,0 +1,38 @@
+# XCUITest LoginKeyboard runs on the fixed login screen (key-by-key typing), iPhone 16 Pro / iOS 18.6, Expo Go 57.0.9
+## run f1
+Test Case '-[UITests.LoginKeyboard testReturnKeysAndSignInReachable]' started.
+DIAG username after typeText: Optional(emilys)
+Test Case '-[UITests.LoginKeyboard testReturnKeysAndSignInReachable]' passed (15.974 seconds).
+** TEST EXECUTE SUCCEEDED **
+## run f2
+Test Case '-[UITests.LoginKeyboard testReturnKeysAndSignInReachable]' started.
+DIAG username after typeText: Optional(emilys)
+Test Case '-[UITests.LoginKeyboard testReturnKeysAndSignInReachable]' passed (15.731 seconds).
+** TEST EXECUTE SUCCEEDED **
+## run f3
+Test Case '-[UITests.LoginKeyboard testReturnKeysAndSignInReachable]' started.
+DIAG username after typeText: Optional(emilys)
+Test Case '-[UITests.LoginKeyboard testReturnKeysAndSignInReachable]' passed (15.301 seconds).
+** TEST EXECUTE SUCCEEDED **
+
+# Control: same test with bulk typeText against the PRE-FIX login screen (shows the character drop is pre-existing and that the pre-fix keyboard has no 'next' key)
+## run b1
+Test Case '-[UITests.LoginKeyboard testReturnKeysAndSignInReachable]' started.
+DIAG username after typeText: Optional(e)
+UITests/LoginKeyboard.swift:30: error: -[UITests.LoginKeyboard testReturnKeysAndSignInReachable] : XCTAssertEqual failed: ("Optional("e")") is not equal to ("Optional("emilys")") - username typed
+UITests/LoginKeyboard.swift:31: error: -[UITests.LoginKeyboard testReturnKeysAndSignInReachable] : Failed to tap "next" Button: No matches found for Elements matching predicate '"next" IN identifiers' from input {(
+Test Case '-[UITests.LoginKeyboard testReturnKeysAndSignInReachable]' failed (7.199 seconds).
+** TEST EXECUTE FAILED **
+## run b2
+Test Case '-[UITests.LoginKeyboard testReturnKeysAndSignInReachable]' started.
+DIAG username after typeText: Optional(e)
+UITests/LoginKeyboard.swift:30: error: -[UITests.LoginKeyboard testReturnKeysAndSignInReachable] : XCTAssertEqual failed: ("Optional("e")") is not equal to ("Optional("emilys")") - username typed
+UITests/LoginKeyboard.swift:31: error: -[UITests.LoginKeyboard testReturnKeysAndSignInReachable] : Failed to tap "next" Button: No matches found for Elements matching predicate '"next" IN identifiers' from input {(
+Test Case '-[UITests.LoginKeyboard testReturnKeysAndSignInReachable]' failed (7.115 seconds).
+** TEST EXECUTE FAILED **
+## run b3
+Test Case '-[UITests.LoginKeyboard testReturnKeysAndSignInReachable]' started.
+DIAG username after typeText: Optional(emilys)
+UITests/LoginKeyboard.swift:31: error: -[UITests.LoginKeyboard testReturnKeysAndSignInReachable] : Failed to tap "next" Button: No matches found for Elements matching predicate '"next" IN identifiers' from input {(
+Test Case '-[UITests.LoginKeyboard testReturnKeysAndSignInReachable]' failed (7.090 seconds).
+** TEST EXECUTE FAILED **

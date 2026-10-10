@@ -1,0 +1,16 @@
+# What is left after the removal
+$ find app features -type f
+app/(app)/_layout.tsx
+app/(app)/profile.tsx
+app/(auth)/_layout.tsx
+app/(auth)/login.tsx
+app/(tabs)/_layout.tsx
+app/(tabs)/index.tsx
+app/README.md
+app/_layout.tsx
+features/auth/screens/LoginScreen.tsx
+features/auth/screens/ProfileScreen.tsx
+features/home/screens/HomeScreen.tsx
+
+$ grep -rn '@demo\|features/demo-' app features shared __tests__ (expect nothing)
+(nothing)

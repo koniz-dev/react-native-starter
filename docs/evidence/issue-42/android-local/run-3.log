@@ -1,0 +1,40 @@
+
+> react-native-starter@1.0.0 test:e2e:android
+> bash scripts/e2e/run.sh android
+
+Bundling for android...
+
+Requested 1 shards, but it cannot be higher than the number of flows (0). Will use 1 shards instead.
+
+Waiting for flows to complete...
+[Failed] Cold start opens Home (2m 51s) (Assertion is false: "Session" is visible)
+
+Flow Cold start opens Home failed and continueOnFailure is set to false, aborting running sequential Flows
+
+
+1/1 Flow Failed
+
+Running on Medium_Phone_API_37.0
+ > Flow Dark mode screenshots
+Run subflows/open-app.yaml...
+  Run flow when ${CLEAR_STATE == 'true'} is true...
+  Run flow when false is true... SKIPPED
+  Launch app "${APP_ID}"... COMPLETED
+  Open ${APP_URL}... COMPLETED
+  Tap on (Optional) "Continue"... WARNED
+  Assert that "Session" is visible... FAILED
+Run subflows/open-app.yaml... FAILED
+
+Assertion is false: "Session" is visible
+
+Assertion '"Session" is visible' failed. Check the UI hierarchy in debug artifacts to verify the element state and properties.
+
+Possible causes:
+- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
+- Element may be temporarily unavailable due to loading state
+- This could be a real regression that needs to be addressed
+
+==== Debug output (logs & screenshots) ====
+
+/Users/nguyenanhkiet/Playground/react-native-starter/e2e-results/android/maestro-dark/2026-10-09_232306
+runner exit=1

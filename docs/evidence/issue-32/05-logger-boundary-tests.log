@@ -1,0 +1,117 @@
+PASS __tests__/config/env.test.ts
+  parseEnv
+    ✓ accepts a complete production configuration (8 ms)
+    ✓ parses and validates the API timeout (3 ms)
+    ✓ defaults the log level per environment and accepts an override (2 ms)
+    ✓ reports every missing required URL when demo backends are off (1 ms)
+    ✓ treats an empty value (KEY=) as missing
+    ✓ rejects a URL that is not absolute http(s) (1 ms)
+    ✓ rejects http outside development and allows it in development (1 ms)
+    ✓ fills missing URLs from the demo backends only when the flag is on (1 ms)
+    ✓ prefers explicit URLs over the demo backends
+    ✓ defaults the app environment from the build type (6 ms)
+    ✓ rejects unknown values for enums and booleans (1 ms)
+    ✓ parses and validates trusted origins (1 ms)
+  getConfig
+    ✓ throws a ConfigError naming the variables when configuration is invalid (46 ms)
+
+PASS __tests__/utils/logger.test.ts
+  logger
+    levels
+      ✓ writes only messages at or above the minimum level (15 ms)
+      ✓ writes every level in development (2 ms)
+      ✓ writes nothing to the console when silent (1 ms)
+      ✓ reads the settings on every call (1 ms)
+      ✓ uses the configured level from config/env.ts (1 ms)
+    forwarding to the error reporter in production
+      ✓ reports an Error with the message and redacted context (1 ms)
+      ✓ reports a message when there is no Error (1 ms)
+      ✓ reports a thrown non-Error value as a message with the value (1 ms)
+      ✓ does not forward warnings (1 ms)
+      ✓ also forwards in development (1 ms)
+      ✓ setErrorReporter registers a provider (1 ms)
+      ✓ keeps working when the reporter throws (2 ms)
+      ✓ the default reporter writes one console line (2 ms)
+    redaction
+      ✓ always redacts auth headers, cookies, tokens, and passwords (2 ms)
+      ✓ redacts response bodies outside development only (16 ms)
+      ✓ reduces Errors to name, message, code, and status outside development (3 ms)
+      ✓ prints a redacted Error summary in production and the Error in development (1 ms)
+      ✓ handles circular and deeply nested values (1 ms)
+      ✓ redacts what the logger writes outside development (1 ms)
+
+  console.debug
+    [analytics] screen /boom
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /boom
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /boom
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /boom
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (utils/logger.ts:133:18)
+
+  console.debug
+    [analytics] screen /boom
+
+      at debug (utils/logger.ts:133:18)
+
+PASS __tests__/components/ErrorBoundary.test.tsx (5.688 s)
+  error boundaries
+    ✓ "Go home" on a route boundary returns to Home (314 ms)
+    ✓ "Try again" on a route boundary re-renders the screen (181 ms)
+    in light mode
+      ✓ a route boundary catches a throwing screen, reports it, and renders a themed fallback (771 ms)
+      ✓ the app boundary sits inside the theme provider and reports with the component stack (66 ms)
+    in dark mode
+      ✓ a route boundary catches a throwing screen, reports it, and renders a themed fallback (125 ms)
+      ✓ the app boundary sits inside the theme provider and reports with the component stack (56 ms)
+    app boundary
+      ✓ "Try again" re-renders the children (28 ms)
+      ✓ "Go home" navigates to Home and re-renders (24 ms)
+      ✓ reports in every build, with the component stack (23 ms)
+
+Test Suites: 3 passed, 3 total
+Tests:       41 passed, 41 total
+Snapshots:   0 total
+Time:        6.353 s, estimated 9 s
+Ran all test suites matching /__tests__\/utils\/logger|__tests__\/components\/ErrorBoundary|__tests__\/config\/env/i.

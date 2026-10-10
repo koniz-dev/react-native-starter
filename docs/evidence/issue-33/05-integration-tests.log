@@ -1,0 +1,40 @@
+PASS __tests__/integrations/seams.test.ts
+  createSeam
+    ✓ starts with the default, accepts a replacement, and resets (6 ms)
+  analytics seam
+    ✓ defaults to debug logging and sends nothing else (2 ms)
+    ✓ routes calls to a registered provider (1 ms)
+  feature flags seam
+    ✓ defaults to the static values in config/featureFlags.ts
+    ✓ treats truthy non-boolean values as enabled
+  push notifications seam
+    ✓ reports push as not configured by default (2 ms)
+  updates seam
+    ✓ never finds an update by default and applying does nothing
+
+  console.log
+    🐛 [analytics] screen /
+
+      at Object.log [as debug] (utils/logger.ts:98:17)
+
+PASS __tests__/integrations/screenTracking.test.tsx
+  screen tracking
+    ✓ reports a screen view for the initial route and each navigation (1560 ms)
+
+  console.log
+    🐛 [analytics] screen /login
+
+      at Object.log [as debug] (utils/logger.ts:98:17)
+
+PASS __tests__/integrations/i18n.test.tsx
+  i18n seam
+    ✓ defaults to English (4 ms)
+    ✓ fills placeholders and leaves unknown ones untouched (1 ms)
+    ✓ switches every key when another dictionary is registered (1 ms)
+    ✓ the shipped screens read their strings through the seam (1956 ms)
+
+Test Suites: 3 passed, 3 total
+Tests:       12 passed, 12 total
+Snapshots:   0 total
+Time:        4.571 s, estimated 5 s
+Ran all test suites matching /__tests__\/integrations/i.

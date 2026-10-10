@@ -1,0 +1,87 @@
+/**
+ * Scratch-copy test (not committed to the repo's suite): runs the
+ * state-management recipes extracted from docs/recipes/state-management.md
+ * by `node scripts/check-docs.js --keep` against the real SessionProvider.
+ */
+import { act, render, screen, waitFor } from '@testing-library/react-native';
+import { Text } from 'react-native';
+import { useEffect } from 'react';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { SessionProvider, useSession } from '@/shared/session/SessionProvider';
+import { STORAGE_KEYS, setItem } from '@/shared/storage/storage';
+import { secureStore } from '@/testing';
+import * as Zustand from '../../.docs-check/docs_recipes_state-management_md_L42';
+import * as Redux from '../../.docs-check/docs_recipes_state-management_md_L95';
+import * as Jotai from '../../.docs-check/docs_recipes_state-management_md_L170';
+import * as Ctx from '../../.docs-check/docs_recipes_state-management_md_L209';
+
+async function signIn() {
+  secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'token');
+  await setItem(STORAGE_KEYS.USER_DATA, { id: 1, email: 'a@b.c', name: 'A' });
+}
+
+let signOutRef: (() => Promise<void>) | null = null;
+function SignOutHandle() {
+  const { signOut } = useSession();
+  useEffect(() => {
+    signOutRef = signOut;
+  }, [signOut]);
+  return null;
+}
+
+async function exercise(
+  tree: (child: React.ReactNode) => React.ReactElement,
+  Probe: () => React.ReactElement
+) {
+  await signIn();
+  render(<SessionProvider>{tree(<><SignOutHandle /><Probe /></>)}</SessionProvider>);
+  await waitFor(() => expect(screen.getByTestId('fav').props.children).toBe('true'));
+  await act(async () => {
+    await signOutRef?.();
+  });
+  await waitFor(() => expect(screen.getByTestId('fav').props.children).toBe('false'));
+}
+
+describe('state-management recipes', () => {
+  it('Zustand: toggles and resets on sign-out', async () => {
+    function Probe() {
+      const toggle = Zustand.useFavorites(s => s.toggle);
+      const fav = Zustand.useIsFavorite(7);
+      useEffect(() => toggle(7), [toggle]);
+      return <Text testID="fav">{String(fav)}</Text>;
+    }
+    await exercise(child => <><Zustand.ResetFavoritesOnSignOut />{child}</>, Probe);
+  });
+
+  it('Redux Toolkit: toggles and resets on sign-out', async () => {
+    function Probe() {
+      const dispatch = Redux.useAppDispatch();
+      const fav = Redux.useIsFavorite(7);
+      useEffect(() => {
+        dispatch(Redux.toggle(7));
+      }, [dispatch]);
+      return <Text testID="fav">{String(fav)}</Text>;
+    }
+    await exercise(child => <Redux.StoreProvider>{child}</Redux.StoreProvider>, Probe);
+  });
+
+  it('Jotai: toggles and resets on sign-out', async () => {
+    function Probe() {
+      const toggle = useSetAtom(Jotai.toggleFavoriteAtom);
+      const fav = Jotai.useIsFavorite(7);
+      useAtomValue(Jotai.favoriteIdsAtom);
+      useEffect(() => toggle(7), [toggle]);
+      return <Text testID="fav">{String(fav)}</Text>;
+    }
+    await exercise(child => <><Jotai.ResetFavoritesOnSignOut />{child}</>, Probe);
+  });
+
+  it('React Context: toggles and resets on sign-out', async () => {
+    function Probe() {
+      const { ids, toggle } = Ctx.useFavorites();
+      useEffect(() => toggle(7), []); // eslint-disable-line react-hooks/exhaustive-deps
+      return <Text testID="fav">{String(ids.includes(7))}</Text>;
+    }
+    await exercise(child => <Ctx.FavoritesProvider>{child}</Ctx.FavoritesProvider>, Probe);
+  });
+});

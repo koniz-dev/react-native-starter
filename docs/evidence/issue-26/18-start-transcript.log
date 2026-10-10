@@ -1,0 +1,10 @@
+$ npm start   (in /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/rel/clone, HEAD f3f4bd7bb2e8080c3c2b8fad0eef3cc8c9c8ac69, tag v1.0.0-mvp)
+$ curl -s localhost:8081/status
+packager-status:running
+# web (what pressing w opens): GET http://localhost:8081/
+<title>RN Starter (Dev)</title>
+<div id="root">
+# web bundle
+HTTP 200, 6536501 bytes
+# iOS (what pressing i does with Expo Go installed): xcrun simctl openurl booted exp://127.0.0.1:8081
+npm start -> web: Home rendered (Not signed in)

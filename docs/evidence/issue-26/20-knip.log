@@ -1,0 +1,56 @@
+$ npx -y knip@5 --no-progress   (report only; triage in summary.md)
+Unused files (5)
+.maestro/scripts/set-api-mode.js         
+docs/evidence/issue-34/web/web-smoke.js  
+docs/evidence/issue-35/web/theme-shots.js
+docs/evidence/issue-36/web/web-smoke.js  
+scripts/e2e/mock-api.js                  
+Unused dependencies (1)
+react-native-worklets  package.json:52:6
+Unlisted dependencies (1)
+expo-updates  app.config.ts
+Unlisted binaries (1)
+expo-doctor  .github/workflows/ci.yml
+Unused exports (13)
+DEFAULT_LOG_LEVELS        env                      shared/config/env.ts:20:14                    
+readRawEnv                env            function  shared/config/env.ts:49:17                    
+ConfigError               env            class     shared/config/env.ts:213:14                   
+englishI18n                                        shared/i18n/index.ts:42:14                    
+pushNotificationsSeam                              shared/integrations/pushNotifications.ts:36:14
+updatesSeam                                        shared/integrations/updates.ts:24:14          
+emitSessionExpired                       function  shared/session/session.ts:31:17               
+isSecureStorageAvailable  secureStorage  function  shared/storage/secureStorage.ts:4:23          
+ErrorFallback                            function  shared/ui/ErrorBoundary.tsx:98:17             
+getColorScheme                           function  testing/colorScheme.ts:12:17                  
+TEST_SAFE_AREA_METRICS                             testing/index.ts:1:31                         
+TEST_SAFE_AREA_METRICS                             testing/render.tsx:14:14                      
+secureStoreModule                                  testing/secureStore.ts:13:14                  
+Unused exported types (25)
+AppEnv                env           type       shared/config/env.ts:14:13                    
+AppConfig             env           interface  shared/config/env.ts:26:18                    
+ConfigResult          env           type       shared/config/env.ts:113:13                   
+ApiErrorCode                        type       shared/http/apiError.ts:6:13                  
+HttpClientOptions                   interface  shared/http/httpClient.ts:29:18               
+TranslationKey                      type       shared/i18n/index.ts:10:15                    
+TranslationParams                   type       shared/i18n/index.ts:12:13                    
+I18n                                interface  shared/i18n/index.ts:14:18                    
+FeatureFlags                        interface  shared/integrations/featureFlags.ts:13:18     
+PushPermissionResult                type       shared/integrations/pushNotifications.ts:9:13 
+PushNotification                    interface  shared/integrations/pushNotifications.ts:13:18
+PushNotifications                   interface  shared/integrations/pushNotifications.ts:19:18
+Seam                                interface  shared/integrations/seam.ts:7:18              
+UpdateCheckResult                   type       shared/integrations/updates.ts:8:13           
+Updates                             interface  shared/integrations/updates.ts:12:18          
+LogContext            loggerModule  type       shared/lib/logger.ts:24:13                    
+Logger                loggerModule  interface  shared/lib/logger.ts:33:18                    
+UseFetchResult                      interface  shared/lib/useFetch.ts:24:18                  
+UnauthorizedHandler                 type       shared/session/session.ts:41:13               
+RefreshTokenHandler                 type       shared/session/session.ts:67:13               
+SessionUser                         type       shared/session/SessionProvider.tsx:28:13      
+Session                             type       shared/session/SessionProvider.tsx:30:13      
+SessionContextValue                 interface  shared/session/SessionProvider.tsx:35:18      
+TokenStore                          interface  shared/session/tokenStore.ts:20:18            
+ProvidersOptions                    interface  testing/render.tsx:19:18                      
+Duplicate exports (1)
+api|default  shared/http/api.ts
+# exit code: 1
