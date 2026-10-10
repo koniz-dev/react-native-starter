@@ -1,0 +1,3 @@
+$ npm run remove-demo && npm run docs:check && npx jest __tests__/shared
+No problems.
+Tests:       159 passed, 159 total

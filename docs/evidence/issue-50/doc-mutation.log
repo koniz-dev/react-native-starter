@@ -1,0 +1,5 @@
+# docs/connect-your-backend.md with the rotation line "await refreshTokens.set(data.refresh_token);" deleted from the example
+    Expected: "refresh-2"
+    Received: "refresh-1"
+  ● the documented AuthAdapter against a non-DummyJSON backend › refreshes on a 401 with rotation, keeping only the newest refresh token
+Tests:       1 failed, 5 passed, 6 total

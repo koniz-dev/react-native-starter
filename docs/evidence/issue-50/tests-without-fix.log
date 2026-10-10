@@ -1,0 +1,6 @@
+# shared/http/apiError.ts and shared/session/authService.ts as on main (b02f576); the new tests kept
+$ npx jest __tests__/shared/session/authService.test.ts __tests__/shared/http/httpClient.test.ts
+  ● authService with an adapter › calls the adapter's logout while the token is still stored, then clears the session
+  ● authService with an adapter › logs a failed adapter logout and signs out anyway
+  ● toApiError › reads the message of an error envelope
+Tests:       3 failed, 33 passed, 36 total

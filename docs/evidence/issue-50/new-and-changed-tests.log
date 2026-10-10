@@ -1,0 +1,50 @@
+  authService with an adapter
+    ✓ signs in through the adapter and stores the token and normalized user (11 ms)
+    ✓ rejects a response without a token and stores nothing (3 ms)
+    ✓ rejects an incomplete user and stores nothing (3 ms)
+    ✓ passes on a failed login and stores nothing (3 ms)
+    ✓ does not sign in when protected storage is unavailable (3 ms)
+    ✓ reads and deletes only the token through protected storage (2 ms)
+    ✓ calls the adapter's logout while the token is still stored, then clears the session (1 ms)
+    ✓ logs a failed adapter logout and signs out anyway (2 ms)
+    ✓ reloads the user with fetchUser when the adapter has it (1 ms)
+    ✓ returns the stored user when the adapter cannot fetch one
+    ✓ uses the adapter's refresh as the HTTP client's refresh handler and stores the new token (2 ms)
+  without an adapter
+    ✓ reports that sign-in is not configured (1 ms)
+  auth backend clients
+    ✓ neither store nor send cookies (1 ms)
+    ✓ send the login request with withCredentials disabled (4 ms)
+  createHttpClient
+    ✓ applies the configured timeout and base URL (9 ms)
+    ✓ maps a timeout to code "timeout" (6 ms)
+    ✓ maps a request without a response to code "network" (2 ms)
+    ✓ maps an aborted request to code "canceled" (1 ms)
+    ✓ clears the session and emits session-expired on a 401 with no refresh handler (4 ms)
+    ✓ refreshes once and retries the request with the new token (2 ms)
+    ✓ clears the session when the refresh handler fails (2 ms)
+    ✓ does not refresh twice when the retried request is rejected again (2 ms)
+    ✓ shares one refresh between concurrent 401s (3 ms)
+    ✓ leaves the session alone for a 401 on a request sent without a token (1 ms)
+    ✓ runs a custom unauthorized handler instead of the default (1 ms)
+  auth client
+    ✓ rejects wrong credentials with the server message and keeps any session (2 ms)
+    ✓ never sends a token to the auth backend (1 ms)
+  toApiError
+    ✓ maps HTTP 401 to unauthorized
+    ✓ maps HTTP 403 to client (1 ms)
+    ✓ maps HTTP 404 to client
+    ✓ maps HTTP 422 to client
+    ✓ maps HTTP 500 to server
+    ✓ maps HTTP 503 to server (1 ms)
+    ✓ prefers the server message, then axios, for HTTP errors
+    ✓ reads the message of an error envelope (1 ms)
+    ✓ wraps non-axios errors as unknown and returns ApiErrors unchanged
+  the documented AuthAdapter against a non-DummyJSON backend
+    ✓ signs in with a tokens-only response, loading the user from /me (14 ms)
+    ✓ shows the envelope's message for a wrong password and stores nothing (43 ms)
+    ✓ refreshes on a 401 with rotation, keeping only the newest refresh token (15 ms)
+    ✓ signs out and drops the refresh token when the refresh is rejected (19 ms)
+    ✓ revokes the refresh token on logout, with the access token still sent (6 ms)
+    ✓ signs out locally when the backend is unreachable on logout (33 ms)
+Tests:       42 passed, 42 total
