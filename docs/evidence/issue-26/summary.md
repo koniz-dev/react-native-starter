@@ -159,3 +159,13 @@ agent may judge (CLAUDE.md "Acceptance verification"):
 - `npm ci` warns that `fsevents` (optional, macOS file watching) has an
   install script not approved by npm 11's `allowScripts`; it ships a
   prebuilt binary and nothing depends on the script.
+
+## Owner UAT
+
+2026-10-10: the owner reviewed the screenshots in this folder (item 1 of
+[Left for the owner](#left-for-the-owner)) and accepted the visual result.
+The optional physical-device run (item 2) was not done; the platforms are
+verified on a simulator and an emulator only, as `release.md` states.
+
+Verdict: every criterion passes; the starter is **MVP-ready at
+`v1.0.0-mvp`** within the scope in [release.md](release.md).
