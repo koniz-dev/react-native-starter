@@ -28,5 +28,8 @@ jest.mock('react-native/Libraries/Utilities/useColorScheme', () => ({
 beforeEach(async () => {
   resetSecureStore();
   await AsyncStorage.clear();
+  // Each test is an app that has launched before; a test of the first launch
+  // after an install removes the marker (see clearSessionFromPreviousInstall).
+  await AsyncStorage.setItem('install_marker', 'true');
   setColorScheme('light');
 });

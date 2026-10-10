@@ -22,7 +22,11 @@ import {
   type AuthResponse,
   type LoginCredentials,
 } from '@/shared/session/authService';
-import { clearStoredSession, onSessionExpired } from '@/shared/session/session';
+import {
+  clearSessionFromPreviousInstall,
+  clearStoredSession,
+  onSessionExpired,
+} from '@/shared/session/session';
 import { getErrorReporter } from '@/shared/integrations/errorReporter';
 
 export type SessionUser = AuthResponse['user'];
@@ -52,6 +56,7 @@ const SIGNED_OUT: Session = { status: 'signedOut', user: null };
 /** Reads the stored session; a storage failure counts as signed out. */
 async function readStoredSession(): Promise<Session> {
   try {
+    await clearSessionFromPreviousInstall();
     if (await authService.isAuthenticated()) {
       return { status: 'signedIn', user: await authService.getCurrentUser() };
     }

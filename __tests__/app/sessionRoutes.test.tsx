@@ -4,7 +4,12 @@ import { renderRouter, screen } from 'expo-router/testing-library';
 import { authService } from '@/shared/session/authService';
 import { defaultUnauthorizedHandler } from '@/shared/session/session';
 import { ApiError } from '@/shared/http/apiError';
-import { setItem, STORAGE_KEYS } from '@/shared/storage/storage';
+import {
+  getItem,
+  removeItem,
+  setItem,
+  STORAGE_KEYS,
+} from '@/shared/storage/storage';
 import { secureStore } from '@/testing';
 
 const user = { id: 1, email: 'emily@example.com', name: 'Emily Johnson' };
@@ -141,5 +146,50 @@ describe('session-guarded routes', () => {
     ).toBeTruthy();
     expect(app.getPathname()).toBe('/profile');
     expect(screen.getByText('emily@example.com')).toBeTruthy();
+  });
+});
+
+describe('first launch after an install', () => {
+  // iOS keeps the Keychain (the token) when an app is deleted; AsyncStorage,
+  // with the install marker and the stored user, goes with the app.
+  beforeEach(async () => {
+    await removeItem(STORAGE_KEYS.INSTALL_MARKER);
+  });
+
+  it('clears a token left by a previous install and starts signed out', async () => {
+    secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'previous-install-token');
+
+    renderRouter('./app', { initialUrl: '/' });
+
+    expect(await screen.findByText('Not signed in')).toBeTruthy();
+    expect(screen.queryByText(/Signed in as/)).toBeNull();
+    expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
+    await expect(getItem(STORAGE_KEYS.INSTALL_MARKER)).resolves.toBe(true);
+  });
+
+  it('restores the session on later launches (the marker is set)', async () => {
+    secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'previous-install-token');
+    const first = renderRouter('./app', { initialUrl: '/' });
+    expect(await screen.findByText('Not signed in')).toBeTruthy();
+    first.unmount();
+
+    // Sign in, then relaunch: still signed in.
+    secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
+    await setItem(STORAGE_KEYS.USER_DATA, user);
+    renderRouter('./app', { initialUrl: '/' });
+    expect(await screen.findByText('Signed in as Emily Johnson')).toBeTruthy();
+    expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('stored-token');
+  });
+
+  it('keeps an existing session from before the marker existed', async () => {
+    // An app updated to this version: no marker yet, but its stored user is
+    // there, so this is not a fresh install.
+    await storeSession();
+
+    renderRouter('./app', { initialUrl: '/' });
+
+    expect(await screen.findByText('Signed in as Emily Johnson')).toBeTruthy();
+    expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('stored-token');
+    await expect(getItem(STORAGE_KEYS.INSTALL_MARKER)).resolves.toBe(true);
   });
 });

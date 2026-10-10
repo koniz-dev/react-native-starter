@@ -5,13 +5,35 @@
  * use it without importing the auth service (which is itself built on the
  * HTTP client).
  */
-import { removeItem, STORAGE_KEYS } from '@/shared/storage/storage';
+import {
+  getItem,
+  removeItem,
+  setItem,
+  STORAGE_KEYS,
+} from '@/shared/storage/storage';
 import { getTokenStore } from './tokenStore';
 
 /** Removes the stored token (token store) and profile (AsyncStorage). */
 export async function clearStoredSession(): Promise<void> {
   await getTokenStore().clear();
   await removeItem(STORAGE_KEYS.USER_DATA);
+}
+
+/**
+ * Clears a session left by a previous install. iOS keeps Keychain items when
+ * an app is deleted, so a reinstall would start with the old token but no
+ * stored user (AsyncStorage goes with the app). On the first launch after an
+ * install, with no install marker and no stored user in AsyncStorage, the
+ * stored session is cleared before it is read; then the marker is written.
+ * An existing install that predates the marker keeps its stored user, so it
+ * stays signed in.
+ */
+export async function clearSessionFromPreviousInstall(): Promise<void> {
+  if ((await getItem<boolean>(STORAGE_KEYS.INSTALL_MARKER)) !== null) return;
+  if ((await getItem<unknown>(STORAGE_KEYS.USER_DATA)) === null) {
+    await clearStoredSession();
+  }
+  await setItem(STORAGE_KEYS.INSTALL_MARKER, true);
 }
 
 type SessionExpiredListener = () => void;

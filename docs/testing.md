@@ -46,11 +46,16 @@ the demo tests and its own.
 
 `jest.setup.ts` runs for every test file (`setupFilesAfterEnv`) and mocks:
 
-| Module                          | Mock                                                | Reset before each test     |
-| ------------------------------- | --------------------------------------------------- | -------------------------- |
-| AsyncStorage                    | the library's in-memory mock                        | cleared                    |
-| `expo-secure-store`             | an in-memory store (`secureStore` from `@/testing`) | emptied, defaults restored |
-| `useColorScheme` (React Native) | returns the scheme set with `setColorScheme()`      | back to `'light'`          |
+| Module                          | Mock                                                | Reset before each test               |
+| ------------------------------- | --------------------------------------------------- | ------------------------------------ |
+| AsyncStorage                    | the library's in-memory mock                        | cleared, then the install marker set |
+| `expo-secure-store`             | an in-memory store (`secureStore` from `@/testing`) | emptied, defaults restored           |
+| `useColorScheme` (React Native) | returns the scheme set with `setColorScheme()`      | back to `'light'`                    |
+
+The install marker makes every test an app that has launched before, so a
+token seeded in secure storage is restored. To test the first launch after an
+install, remove it: `await removeItem(STORAGE_KEYS.INSTALL_MARKER)` (see
+`__tests__/app/sessionRoutes.test.tsx`).
 
 So tests don't repeat these mocks. Seed or inspect state directly:
 

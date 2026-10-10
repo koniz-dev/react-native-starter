@@ -153,6 +153,26 @@ picked by platform:
 | iOS / Android | iOS Keychain / Android Keystore (Expo SecureStore) | Still signed in        |
 | Web           | Memory only (`createMemoryTokenStore()`)           | Signed out             |
 
+### After a reinstall
+
+iOS keeps Keychain items when an app is deleted, but deletes its AsyncStorage.
+Without a check, a reinstalled app would start with the previous install's
+token and no stored user, and show a signed-in session the user never
+started. So on the first launch after an install, before the session is
+restored, `clearSessionFromPreviousInstall()` (`shared/session/session.ts`)
+looks for an install marker (`STORAGE_KEYS.INSTALL_MARKER`) in AsyncStorage.
+If there is no marker and no stored user, it deletes the stored token. Then
+it writes the marker, and later launches restore the session as usual. An app
+updated from a version without the marker still has its stored user, so it
+stays signed in. On Android, the Keystore data goes with the app, so the
+check only matters on iOS.
+
+The check clears only the access token and the stored user. Anything your
+adapter keeps in secure storage, such as a refresh token, also survives a
+reinstall on iOS. It isn't used, because `refresh` runs only after a request
+with a token gets a 401, and the next `login` overwrites it. To delete it
+anyway, clear it at the start of `login`.
+
 ### Why the token is not persisted on web
 
 A browser has no storage that the page's scripts can read but injected
@@ -213,7 +233,7 @@ export async function example() {
 ```
 
 `STORAGE_KEYS` holds the keys the foundation uses (`AUTH_TOKEN`,
-`USER_DATA`); keep your own keys in your feature. For secrets use
+`USER_DATA`, `INSTALL_MARKER`); keep your own keys in your feature. For secrets use
 `shared/storage/secureStorage.ts` (Expo SecureStore; unavailable on web). For
 a token that must also work on web, such as a refresh token, use a store from
 `shared/session/tokenStore.ts` instead (secure storage on native, memory on

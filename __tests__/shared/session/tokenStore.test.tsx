@@ -59,7 +59,8 @@ describe('memory token store (web)', () => {
     await expect(store.get()).resolves.toBeNull();
 
     expect(SecureStore.setItemAsync).not.toHaveBeenCalled();
-    expect(await AsyncStorage.getAllKeys()).toEqual([]);
+    // Nothing besides the install marker that the test setup writes.
+    expect(await AsyncStorage.getAllKeys()).toEqual(['install_marker']);
   });
 
   it('does not share the token between instances (a reload starts empty)', async () => {

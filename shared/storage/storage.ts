@@ -9,6 +9,8 @@ import { logger } from '@/shared/lib/logger';
 export const STORAGE_KEYS = {
   AUTH_TOKEN: 'auth_token',
   USER_DATA: 'user_data',
+  /** Set on the first launch; AsyncStorage is deleted with the app. */
+  INSTALL_MARKER: 'install_marker',
 } as const;
 
 /**
