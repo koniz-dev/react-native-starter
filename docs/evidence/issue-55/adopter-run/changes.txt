@@ -1,0 +1,8 @@
+ docs/testing.md         | 67 +++++++++++++++++++++++++++++++++++++------------
+ scripts/e2e/mock-api.js | 33 ++++++++++++------------
+ scripts/e2e/run.sh      | 40 +++++++++++++++++++++++------
+ 3 files changed, 100 insertions(+), 40 deletions(-)
+ M docs/testing.md
+ M scripts/e2e/mock-api.js
+ M scripts/e2e/run.sh
+?? .maestro/03-notes-signed-in.yaml

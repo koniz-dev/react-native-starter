@@ -1,0 +1,58 @@
+# Signed in against the project's backend (E2E_API_URL; see
+# docs/testing.md#your-backend-or-mock) with a test account from
+# MAESTRO_E2E_USERNAME / MAESTRO_E2E_PASSWORD: the Notes list loads, the
+# session survives a relaunch, and logout signs out.
+appId: ${APP_ID}
+name: Notes signed in against your backend
+---
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'true'
+- waitForAnimationToEnd
+- tapOn:
+    id: sign-in-button
+- extendedWaitUntil:
+    visible:
+      id: login-username
+    timeout: 20000
+- tapOn:
+    id: login-username
+- waitForAnimationToEnd
+- inputText: ${MAESTRO_E2E_USERNAME}
+# The emulator's keyboard sometimes repeats the first key; retype if it did.
+- runFlow:
+    when:
+      notVisible: ${MAESTRO_E2E_USERNAME}
+    commands:
+      - eraseText: 60
+      - inputText: ${MAESTRO_E2E_USERNAME}
+- tapOn:
+    id: login-password
+- inputText: ${MAESTRO_E2E_PASSWORD}
+- hideKeyboard
+- tapOn:
+    id: login-submit
+- extendedWaitUntil:
+    visible: Signed in as .*
+    timeout: 30000
+- takeScreenshot: 03-signed-in
+- tapOn:
+    id: tab-notes
+- extendedWaitUntil:
+    visible: 'North wall: crack above window'
+    timeout: 30000
+- takeScreenshot: 03-notes-list
+- stopApp
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'false'
+- assertVisible: Signed in as .*
+- takeScreenshot: 03-relaunch-still-signed-in
+- tapOn:
+    id: logout-button
+- extendedWaitUntil:
+    visible: Not signed in
+    timeout: 15000
+- takeScreenshot: 03-signed-out
