@@ -3,7 +3,9 @@
   "files": [
     "docs/maintainers/",
     "scripts/maintainers/",
-    "scripts/maintainer-files.json"
+    "scripts/maintainer-files.json",
+    ".github/SECURITY.md",
+    ".github/workflows/dependency-review.yml"
   ],
   "blocks": [
     {

@@ -232,6 +232,8 @@ describe('init-project on a copy of the template', () => {
       'docs/maintainers',
       'scripts/maintainers',
       'scripts/maintainer-files.json',
+      '.github/SECURITY.md',
+      '.github/workflows/dependency-review.yml',
       'scripts/init-project.js',
       '__tests__/scripts/initProject.test.ts',
     ]) {

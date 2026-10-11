@@ -1,0 +1,73 @@
+# Opens the starter's monthly dependency review issue (owner: koniz-dev),
+# with the current audit and outdated reports. Maintainer-only: it runs only
+# on the upstream repository, and init-project deletes it in a new project
+# (scripts/maintainer-files.json). See docs/maintainers/dependency-review.md.
+name: Dependency review (monthly)
+
+on:
+  schedule:
+    - cron: '0 2 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  open-issue:
+    name: Open the review issue
+    if: github.repository == 'koniz-dev/react-native-starter'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Open the issue (once per month)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          month=$(date -u +%Y-%m)
+          title="Dependency review $month"
+          if gh issue list --state all --search "\"$title\" in:title" --json title \
+            --jq '.[].title' | grep -qx "$title"; then
+            echo "$title already exists"
+            exit 0
+          fi
+          audit=$(npm run --silent audit:check 2>&1 || true)
+          outdated=$(npm outdated 2>&1 || true)
+          {
+            echo "## Context"
+            echo
+            echo "Monthly dependency and security review (docs/maintainers/dependency-review.md)."
+            echo "Owner: koniz-dev. Opened by the scheduled workflow on \`$(git rev-parse --short HEAD)\`."
+            echo
+            echo '### `npm run audit:check`'
+            echo
+            echo '```'
+            echo "$audit"
+            echo '```'
+            echo
+            echo '### `npm outdated`'
+            echo
+            echo '```'
+            echo "${outdated:-Everything is up to date.}"
+            echo '```'
+            echo
+            echo "## Acceptance criteria"
+            echo
+            echo "1. Every high or critical advisory is fixed, or reviewed in \`scripts/audit-allowlist.json\` with a \`reviewBy\` at most 3 months out; tracking issues are re-checked."
+            echo "2. Patch and minor updates that the Expo SDK allows (\`npx expo install --check\`) are applied, or deferred with a reason."
+            echo "3. A new Expo SDK release, if any, has an upgrade issue (support policy: within about 4 weeks)."
+            echo "4. Gates pass; CI is green. The review is recorded as evidence."
+          } > body.md
+          gh issue create --title "$title" --body-file body.md \
+            --label task --label epic:tooling --label priority:P2 --label status:todo

@@ -19,8 +19,20 @@ their CI starts green; adopters re-review the entries for their project
   [koniz-dev/react-native-starter#43](https://github.com/koniz-dev/react-native-starter/issues/43):
   upgrade once upstream releases a fixed `node-forge` or `braces`, then remove
   the entry.
-- Owner: koniz-dev. Cadence: every entry's `reviewBy` is at most three months
-  out; `audit:check` fails when it passes, which forces the next review.
+- Owner: koniz-dev.
+- Cadence:
+  - **monthly:** on the 1st, the workflow
+    `.github/workflows/dependency-review.yml` opens "Dependency review
+    YYYY-MM" (in `status:todo`). The issue includes the current
+    `audit:check` and `npm outdated` output, and a checklist covering
+    advisories, patch/minor updates, and a new Expo SDK. The workflow runs
+    only on the upstream repository, and can also be started by hand
+    (`gh workflow run dependency-review.yml`);
+  - **per entry:** every allowlist entry's `reviewBy` is at most three months
+    out. `audit:check` fails once that date passes, which forces a review
+    even if a monthly one was missed.
+- Security reports from users follow the
+  [Support Policy](support-policy.md#security-reports).
 
 ## Reviewing an advisory
 

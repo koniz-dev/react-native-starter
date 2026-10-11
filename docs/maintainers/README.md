@@ -18,16 +18,23 @@ built) **and** this page (how work is tracked, verified, and released).
 - [Release Gate](release-gate.md): MVP readiness, maintenance mode, and what
   verification covers.
 - [Dependency Review](dependency-review.md): the starter's review of the
-  advisories in `scripts/audit-allowlist.json`.
+  advisories in `scripts/audit-allowlist.json`, and the monthly review.
+- [Support Policy](support-policy.md): reporting defects and
+  vulnerabilities, what maintenance mode accepts, and the Expo SDK, React
+  Native, and Node upgrade policy.
 - [`scripts/maintainers/bootstrap-issue-labels.sh`](../../scripts/maintainers/bootstrap-issue-labels.sh):
   creates the label taxonomy; the canonical `epic:*` list.
 
 ## Project goal
 
 The product is a **trustworthy, documented React Native starter**, not a
-finished app. The target is the MVP release gate, then maintenance mode, both
-defined in [Release Gate](release-gate.md). Judge every issue, UAT finding,
-and "can we accept this?" question against that gate:
+finished app. Both gates in [Release Gate](release-gate.md) are met:
+the starter was MVP-ready at `v1.1.1`
+([#57](https://github.com/koniz-dev/react-native-starter/issues/57)), and it
+is now in **maintenance mode**. Only the changes listed in
+[Support Policy](support-policy.md#what-maintenance-mode-accepts) are
+accepted; anything else needs a new release-readiness issue. Judge every
+issue, UAT finding, and "can we accept this?" question against that gate:
 
 - Baseline flows must work end to end on every advertised platform: initial
   navigation, light/dark theming, API loading/error/retry, and the auth
