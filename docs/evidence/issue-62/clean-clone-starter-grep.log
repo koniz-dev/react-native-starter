@@ -1,0 +1,2 @@
+$ git grep -n -i starter -- . ":(exclude)__tests__" ":(exclude)package-lock.json"
+[exit 1]

@@ -1,0 +1,77 @@
+$ git ls-files (after init)
+.env.example
+.github/workflows/ci.yml
+.github/workflows/e2e-android.yml
+.gitignore
+.maestro/01-cold-start.yaml
+.maestro/06-login-back.yaml
+.maestro/config.yaml
+.maestro/dark-mode.yaml
+.maestro/scripts/set-api-mode.js
+.maestro/subflows/open-app.yaml
+.nvmrc
+.prettierignore
+.prettierrc
+AGENTS.md
+CLAUDE.md
+LICENSE
+README.md
+app.config.ts
+docs/README.md
+docs/api-and-storage.md
+docs/app-config.md
+docs/connect-your-backend.md
+docs/conventions.md
+docs/environment-variables.md
+docs/error-reporting.md
+docs/getting-started.md
+docs/plug-in-a-provider.md
+docs/testing.md
+docs/ui-and-theming.md
+eas.json
+eslint.config.js
+index.ts
+jest.setup.env.js
+jest.setup.ts
+package-lock.json
+package.json
+scripts/README.md
+scripts/audit-allowlist.json
+scripts/check-audit.js
+scripts/check-docs.js
+scripts/e2e/mock-api.js
+scripts/e2e/run.sh
+tsconfig.json
+
+$ git grep -i starter (outside __tests__ and the lockfile)
+fatal: Unimplemented pathspec magic '_' in ':!__tests__'
+[exit 128]
+$ git grep markers / template docs
+[exit 1]
+$ cat README.md
+# Acme Notes
+
+Acme Notes is an Expo (SDK 57) and React Native app.
+
+## Run it
+
+```bash
+npm ci                 # Node 24 (.nvmrc) or 22.13+
+cp .env.example .env   # then set the backend URLs (docs/environment-variables.md)
+npm start              # then press i, a, or w, or scan the QR code with Expo Go
+```
+
+Scripts, platforms, and troubleshooting: [Getting Started](docs/getting-started.md).
+
+## Documentation
+
+- [Documentation index](docs/README.md)
+- [Conventions](docs/conventions.md): structure, navigation, code style.
+- [Connect Your Backend](docs/connect-your-backend.md): URLs, sign-in, endpoints.
+- [Testing](docs/testing.md): unit, full-app, and end-to-end tests.
+
+Coding agents: see [AGENTS.md](AGENTS.md).
+
+## License
+
+[MIT](LICENSE)
