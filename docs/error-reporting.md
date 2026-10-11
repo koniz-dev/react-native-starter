@@ -59,8 +59,27 @@ export async function saveSettings(
 - **No `console` in app code.** ESLint `no-console` is an error everywhere
   except `shared/lib/logger.ts` and the default reporter.
 
-The HTTP client logs failed requests as method, path, error code, and status
-only (see [API and Storage](api-and-storage.md)).
+### Failed requests
+
+The HTTP client logs every failed request as one line with the method, path,
+error code, and status only, never headers or bodies, for example
+`API GET /notes failed: server (503)` (see
+[API and Storage](api-and-storage.md)). The level depends on the `ApiError`
+code:
+
+| Code                               | Level   | Why                                                                                            | Shown by default in  |
+| ---------------------------------- | ------- | ---------------------------------------------------------------------------------------------- | -------------------- |
+| `client`, `server`, `unauthorized` | `info`  | The server answered with a 4xx or 5xx. The caller gets the `ApiError` and shows it to the user | development, preview |
+| `network`, `timeout`, `unknown`    | `warn`  | No answer, or an unexpected error: often a wrong URL, a server that is down, or a bug          | every build          |
+| `canceled`                         | `debug` | The app aborted the request itself, for example when a screen unmounts                         | development          |
+
+None of them goes to the error reporter: the caller decides whether a failure
+is an error. In development, React Native shows a LogBox toast for every
+`console.warn`. Logging answered failures at `info` keeps that toast from
+covering the screen when the app already shows the failure, such as a wrong
+password or a 503 with Retry; the line still appears in the Metro terminal.
+Set `EXPO_PUBLIC_LOG_LEVEL=warn` to hide the `info` lines, or call
+`logger.error` where a failure is a real error.
 
 ## Error reporter seam
 

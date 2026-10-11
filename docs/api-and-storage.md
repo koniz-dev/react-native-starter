@@ -22,7 +22,8 @@ The factory gives every client the same behavior:
 - every failure rejected as an [`ApiError`](#errors);
 - [401 handling](#expired-sessions-401) with an optional refresh;
 - failures logged as method, path, code, and status, without headers or
-  bodies.
+  bodies, at a level that depends on the code
+  ([Failed requests](error-reporting.md#failed-requests)).
 
 A client for another backend:
 

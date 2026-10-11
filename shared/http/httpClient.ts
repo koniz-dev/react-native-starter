@@ -10,7 +10,8 @@
  * - a 401 on an authenticated request tries the optional token refresh once,
  *   then runs the unauthorized handler (default: clear the session and emit
  *   session-expired; see shared/session/session.ts);
- * - failures are logged through the logger without bodies or headers.
+ * - failures are logged through the logger without bodies or headers, at the
+ *   level from requestFailureLogLevel.
  */
 import axios, {
   type AxiosError,
@@ -19,12 +20,34 @@ import axios, {
 } from 'axios';
 import { getConfig } from '@/shared/config/env';
 import { logger } from '@/shared/lib/logger';
-import { toApiError } from './apiError';
+import { toApiError, type ApiErrorCode } from './apiError';
 import { getTokenStore } from '@/shared/session/tokenStore';
 import {
   getUnauthorizedHandler,
   refreshAccessToken,
 } from '@/shared/session/session';
+
+/**
+ * The log level for a failed request. The server answered a 4xx or 5xx: the
+ * caller gets the ApiError and shows it, so `info` keeps it visible in
+ * development and preview without a LogBox toast over the screen. No answer
+ * (network, timeout) or an unexpected error: `warn`. Canceled by the caller,
+ * e.g. on unmount: `debug`.
+ */
+export function requestFailureLogLevel(
+  code: ApiErrorCode
+): 'debug' | 'info' | 'warn' {
+  switch (code) {
+    case 'client':
+    case 'server':
+    case 'unauthorized':
+      return 'info';
+    case 'canceled':
+      return 'debug';
+    default:
+      return 'warn';
+  }
+}
 
 export interface HttpClientOptions {
   /** Base URL, read from config when each request is made. */
@@ -134,7 +157,7 @@ export function createHttpClient(options: HttpClientOptions): AxiosInstance {
     }
 
     const apiError = toApiError(error);
-    logger.warn(
+    logger[requestFailureLogLevel(apiError.code)](
       `API ${describe(config)} failed: ${apiError.code}${
         apiError.status ? ` (${apiError.status})` : ''
       }`

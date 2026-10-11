@@ -11,10 +11,20 @@ import {
   setErrorReporter,
   type ErrorReporter,
 } from '@/shared/integrations/errorReporter';
-import { ApiError } from '@/shared/http/apiError';
+import {
+  AxiosError,
+  CanceledError,
+  type InternalAxiosRequestConfig,
+} from 'axios';
+import { ApiError, type ApiErrorCode } from '@/shared/http/apiError';
+import {
+  createHttpClient,
+  requestFailureLogLevel,
+} from '@/shared/http/httpClient';
 
 const PRODUCTION: LoggerSettings = { minLevel: 'warn', development: false };
 const DEVELOPMENT: LoggerSettings = { minLevel: 'debug', development: true };
+const PREVIEW: LoggerSettings = { minLevel: 'info', development: false };
 
 function mockReporter(): jest.Mocked<ErrorReporter> {
   return {
@@ -108,6 +118,92 @@ describe('logger', () => {
         development: true,
       });
     });
+  });
+
+  describe('failed requests', () => {
+    function failWith(config: InternalAxiosRequestConfig, code: string): never {
+      const status = { client: 422, server: 503, unauthorized: 401 }[code];
+      if (status) {
+        throw new AxiosError(
+          'Request failed',
+          'ERR_BAD_RESPONSE',
+          config,
+          null,
+          {
+            config,
+            status,
+            statusText: String(status),
+            headers: {},
+            data: { error: { message: 'Not here' } },
+          }
+        );
+      }
+      if (code === 'timeout') {
+        throw new AxiosError('timeout exceeded', 'ECONNABORTED', config);
+      }
+      if (code === 'network') {
+        throw new AxiosError('Network Error', 'ERR_NETWORK', config);
+      }
+      if (code === 'canceled')
+        throw new CanceledError(undefined, undefined, config);
+      throw new TypeError('Unexpected');
+    }
+
+    // The app's logger, as a development build (jest.setup.env.js) writes it:
+    // console.warn is what raises a LogBox toast in React Native.
+    it.each([
+      ['client', 'info', 'API GET /notes failed: client (422)'],
+      ['server', 'info', 'API GET /notes failed: server (503)'],
+      ['unauthorized', 'info', 'API GET /notes failed: unauthorized (401)'],
+      ['network', 'warn', 'API GET /notes failed: network'],
+      ['timeout', 'warn', 'API GET /notes failed: timeout'],
+      // These two errors carry no request config: no method or path.
+      ['unknown', 'warn', 'API request failed: unknown'],
+      ['canceled', 'debug', 'API request failed: canceled'],
+    ] as const)(
+      'a %s failure is written with console.%s in development',
+      async (code, method, message) => {
+        const client = createHttpClient({
+          getBaseURL: () => 'https://api.example.com',
+        });
+        client.defaults.adapter = async config => failWith(config, code);
+
+        await expect(client.get('/notes')).rejects.toMatchObject({ code });
+
+        expect(consoleSpies[method]).toHaveBeenCalledWith(message);
+        for (const other of ['debug', 'info', 'warn', 'error'] as const) {
+          if (other !== method)
+            expect(consoleSpies[other]).not.toHaveBeenCalled();
+        }
+        expect(reporter.captureException).not.toHaveBeenCalled();
+        expect(reporter.captureMessage).not.toHaveBeenCalled();
+      }
+    );
+
+    it.each([
+      // code, development (debug), preview (info), production (warn)
+      ['client', true, true, false],
+      ['server', true, true, false],
+      ['unauthorized', true, true, false],
+      ['network', true, true, true],
+      ['timeout', true, true, true],
+      ['unknown', true, true, true],
+      ['canceled', true, false, false],
+    ] as [ApiErrorCode, boolean, boolean, boolean][])(
+      'a %s failure is shown in development: %s, preview: %s, production: %s',
+      (code, development, preview, production) => {
+        const level = requestFailureLogLevel(code);
+        const shown = (settings: LoggerSettings) => {
+          jest.clearAllMocks();
+          createLogger(() => settings)[level]('message');
+          return consoleSpies[level].mock.calls.length === 1;
+        };
+
+        expect(shown(DEVELOPMENT)).toBe(development);
+        expect(shown(PREVIEW)).toBe(preview);
+        expect(shown(PRODUCTION)).toBe(production);
+      }
+    );
   });
 
   describe('forwarding to the error reporter in production', () => {
