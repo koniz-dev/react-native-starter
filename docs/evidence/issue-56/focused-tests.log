@@ -1,0 +1,50 @@
+    ✓ accepts a complete production configuration (6 ms)
+    ✓ accepts base URLs with a path prefix (1 ms)
+    ✓ parses and validates the API timeout (4 ms)
+    ✓ defaults the log level per environment and accepts an override (2 ms)
+    ✓ reports every missing required URL when demo backends are off
+    ✓ treats an empty value (KEY=) as missing (1 ms)
+    ✓ rejects a URL that is not absolute http(s)
+    ✓ rejects http outside development and allows it in development (1 ms)
+    ✓ fills missing URLs from the demo backends only when the flag is on (1 ms)
+    ✓ prefers explicit URLs over the demo backends
+    ✓ defaults the app environment from the build type
+    ✓ rejects unknown values for enums and booleans (1 ms)
+    ✓ parses and validates trusted origins
+    ✓ throws a ConfigError naming the variables when configuration is invalid (29 ms)
+    ✓ applies the configured timeout and base URL (10 ms)
+    ✓ keeps a base URL path (/api/v1 + /me) and still attaches the token (5 ms)
+    ✓ keeps a base URL path (/api/v1/ + /me) and still attaches the token (1 ms)
+    ✓ keeps a base URL path (/api/v1 + me) and still attaches the token (2 ms)
+    ✓ does not send the token to another origin that shares the path (1 ms)
+    ✓ maps a timeout to code "timeout" (4 ms)
+    ✓ maps a request without a response to code "network" (2 ms)
+    ✓ maps an aborted request to code "canceled" (1 ms)
+    ✓ clears the session and emits session-expired on a 401 with no refresh handler (3 ms)
+    ✓ refreshes once and retries the request with the new token (2 ms)
+    ✓ clears the session when the refresh handler fails (1 ms)
+    ✓ does not refresh twice when the retried request is rejected again (2 ms)
+    ✓ shares one refresh between concurrent 401s (3 ms)
+    ✓ leaves the session alone for a 401 on a request sent without a token (1 ms)
+    ✓ runs a custom unauthorized handler instead of the default (1 ms)
+    ✓ rejects wrong credentials with the server message and keeps any session (1 ms)
+    ✓ never sends a token to the auth backend
+    ✓ maps HTTP 401 to unauthorized (1 ms)
+    ✓ maps HTTP 403 to client
+    ✓ maps HTTP 404 to client
+    ✓ maps HTTP 422 to client (1 ms)
+    ✓ maps HTTP 500 to server
+    ✓ maps HTTP 503 to server
+    ✓ prefers the server message, then axios, for HTTP errors (1 ms)
+    ✓ reads the message of an error envelope
+    ✓ wraps non-axios errors as unknown and returns ApiErrors unchanged (1 ms)
+    ✓ signs in with a tokens-only response, loading the user from /me (11 ms)
+    ✓ shows the envelope's message for a wrong password and stores nothing (26 ms)
+    ✓ rejects a login response without the envelope with a readable message and stores nothing (2 ms)
+    ✓ rejects a login response without a refresh token with a readable message and stores nothing (1 ms)
+    ✓ rejects a user payload without the required fields (3 ms)
+    ✓ refreshes on a 401 with rotation, keeping only the newest refresh token (5 ms)
+    ✓ signs out and drops the refresh token when the refresh is rejected (8 ms)
+    ✓ revokes the refresh token on logout, with the access token still sent (2 ms)
+    ✓ signs out locally when the backend is unreachable on logout (7 ms)
+Tests:       49 passed, 49 total

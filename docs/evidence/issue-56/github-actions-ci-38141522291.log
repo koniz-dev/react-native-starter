@@ -1,0 +1,787 @@
+Verify	Set up job	﻿2026-10-11T13:01:24.5252694Z Current runner version: '2.337.0'
+Verify	Set up job	2026-10-11T13:01:24.5273861Z ##[group]Runner Image Provisioner
+Verify	Set up job	2026-10-11T13:01:24.5274503Z Hosted Compute Agent
+Verify	Set up job	2026-10-11T13:01:24.5274945Z Version: 20261002.596
+Verify	Set up job	2026-10-11T13:01:24.5275381Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+Verify	Set up job	2026-10-11T13:01:24.5275831Z Build Date: 2026-10-02T22:28:27Z
+Verify	Set up job	2026-10-11T13:01:24.5276313Z Worker ID: {c6c95f30-9d9d-45fb-93a3-6d91b9fdc59f}
+Verify	Set up job	2026-10-11T13:01:24.5276768Z Region: southcentralus
+Verify	Set up job	2026-10-11T13:01:24.5277160Z Cloud: Azure
+Verify	Set up job	2026-10-11T13:01:24.5277521Z ##[endgroup]
+Verify	Set up job	2026-10-11T13:01:24.5278416Z ##[group]Operating System
+Verify	Set up job	2026-10-11T13:01:24.5278865Z Ubuntu
+Verify	Set up job	2026-10-11T13:01:24.5279345Z 24.04.5
+Verify	Set up job	2026-10-11T13:01:24.5279701Z LTS
+Verify	Set up job	2026-10-11T13:01:24.5280078Z ##[endgroup]
+Verify	Set up job	2026-10-11T13:01:24.5280451Z ##[group]Runner Image
+Verify	Set up job	2026-10-11T13:01:24.5280881Z Image: ubuntu-24.04
+Verify	Set up job	2026-10-11T13:01:24.5281236Z Version: 20261004.327.1
+Verify	Set up job	2026-10-11T13:01:24.5282179Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+Verify	Set up job	2026-10-11T13:01:24.5283362Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+Verify	Set up job	2026-10-11T13:01:24.5283980Z ##[endgroup]
+Verify	Set up job	2026-10-11T13:01:24.5284701Z ##[group]GITHUB_TOKEN Permissions
+Verify	Set up job	2026-10-11T13:01:24.5286167Z Contents: read
+Verify	Set up job	2026-10-11T13:01:24.5286534Z Metadata: read
+Verify	Set up job	2026-10-11T13:01:24.5286882Z ##[endgroup]
+Verify	Set up job	2026-10-11T13:01:24.5288431Z Secret source: Actions
+Verify	Set up job	2026-10-11T13:01:24.5289017Z Cache mode: write
+Verify	Set up job	2026-10-11T13:01:24.5289975Z Prepare workflow directory
+Verify	Set up job	2026-10-11T13:01:24.5523665Z Prepare all required actions
+Verify	Set up job	2026-10-11T13:01:24.5561363Z Getting action download info
+Verify	Set up job	2026-10-11T13:01:24.8053794Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+Verify	Set up job	2026-10-11T13:01:24.8959733Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+Verify	Set up job	2026-10-11T13:01:25.1084505Z Complete job name: Verify
+Verify	Check out repository	﻿2026-10-11T13:01:25.1670338Z ##[group]Run actions/checkout@v4
+Verify	Check out repository	2026-10-11T13:01:25.1670875Z with:
+Verify	Check out repository	2026-10-11T13:01:25.1671161Z   repository: koniz-dev/react-native-starter
+Verify	Check out repository	2026-10-11T13:01:25.1673473Z   token: ***
+Verify	Check out repository	2026-10-11T13:01:25.1673726Z   ssh-strict: true
+Verify	Check out repository	2026-10-11T13:01:25.1673984Z   ssh-user: git
+Verify	Check out repository	2026-10-11T13:01:25.1674251Z   persist-credentials: true
+Verify	Check out repository	2026-10-11T13:01:25.1674534Z   clean: true
+Verify	Check out repository	2026-10-11T13:01:25.1674792Z   sparse-checkout-cone-mode: true
+Verify	Check out repository	2026-10-11T13:01:25.1675091Z   fetch-depth: 1
+Verify	Check out repository	2026-10-11T13:01:25.1675336Z   fetch-tags: false
+Verify	Check out repository	2026-10-11T13:01:25.1675590Z   show-progress: true
+Verify	Check out repository	2026-10-11T13:01:25.1675849Z   lfs: false
+Verify	Check out repository	2026-10-11T13:01:25.1676091Z   submodules: false
+Verify	Check out repository	2026-10-11T13:01:25.1676350Z   set-safe-directory: true
+Verify	Check out repository	2026-10-11T13:01:25.1676643Z   allow-unsafe-pr-checkout: false
+Verify	Check out repository	2026-10-11T13:01:25.1677012Z ##[endgroup]
+Verify	Check out repository	2026-10-11T13:01:25.2460261Z Syncing repository: koniz-dev/react-native-starter
+Verify	Check out repository	2026-10-11T13:01:25.2462178Z ##[group]Getting Git version info
+Verify	Check out repository	2026-10-11T13:01:25.2462901Z Working directory is '/home/runner/work/react-native-starter/react-native-starter'
+Verify	Check out repository	2026-10-11T13:01:25.2464082Z [command]/usr/bin/git version
+Verify	Check out repository	2026-10-11T13:01:25.2540565Z git version 2.55.0
+Verify	Check out repository	2026-10-11T13:01:25.2556459Z ##[endgroup]
+Verify	Check out repository	2026-10-11T13:01:25.2570181Z Temporarily overriding HOME='/home/runner/work/_temp/2eada649-60b8-453b-8c7c-c62b94e94ee8' before making global git config changes
+Verify	Check out repository	2026-10-11T13:01:25.2571569Z Adding repository directory to the temporary git global config as a safe directory
+Verify	Check out repository	2026-10-11T13:01:25.2574489Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/react-native-starter/react-native-starter
+Verify	Check out repository	2026-10-11T13:01:25.2677693Z Deleting the contents of '/home/runner/work/react-native-starter/react-native-starter'
+Verify	Check out repository	2026-10-11T13:01:25.2684815Z ##[group]Initializing the repository
+Verify	Check out repository	2026-10-11T13:01:25.2688667Z [command]/usr/bin/git init /home/runner/work/react-native-starter/react-native-starter
+Verify	Check out repository	2026-10-11T13:01:25.2881957Z hint: Using 'master' as the name for the initial branch. This default branch name
+Verify	Check out repository	2026-10-11T13:01:25.2883849Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Verify	Check out repository	2026-10-11T13:01:25.2884965Z hint: to use in all of your new repositories, which will suppress this warning,
+Verify	Check out repository	2026-10-11T13:01:25.2885795Z hint: call:
+Verify	Check out repository	2026-10-11T13:01:25.2886280Z hint:
+Verify	Check out repository	2026-10-11T13:01:25.2886877Z hint: 	git config --global init.defaultBranch <name>
+Verify	Check out repository	2026-10-11T13:01:25.2887526Z hint:
+Verify	Check out repository	2026-10-11T13:01:25.2888146Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Verify	Check out repository	2026-10-11T13:01:25.2889081Z hint: 'development'. The just-created branch can be renamed via this command:
+Verify	Check out repository	2026-10-11T13:01:25.2889997Z hint:
+Verify	Check out repository	2026-10-11T13:01:25.2890499Z hint: 	git branch -m <name>
+Verify	Check out repository	2026-10-11T13:01:25.2891052Z hint:
+Verify	Check out repository	2026-10-11T13:01:25.2891730Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Verify	Check out repository	2026-10-11T13:01:25.2893087Z Initialized empty Git repository in /home/runner/work/react-native-starter/react-native-starter/.git/
+Verify	Check out repository	2026-10-11T13:01:25.2896863Z [command]/usr/bin/git remote add origin https://github.com/koniz-dev/react-native-starter
+Verify	Check out repository	2026-10-11T13:01:25.2976998Z ##[endgroup]
+Verify	Check out repository	2026-10-11T13:01:25.2977858Z ##[group]Disabling automatic garbage collection
+Verify	Check out repository	2026-10-11T13:01:25.2981362Z [command]/usr/bin/git config --local gc.auto 0
+Verify	Check out repository	2026-10-11T13:01:25.3071889Z ##[endgroup]
+Verify	Check out repository	2026-10-11T13:01:25.3072468Z ##[group]Setting up auth
+Verify	Check out repository	2026-10-11T13:01:25.3078562Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Verify	Check out repository	2026-10-11T13:01:25.3115976Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Verify	Check out repository	2026-10-11T13:01:25.3610541Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Verify	Check out repository	2026-10-11T13:01:25.3644537Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Verify	Check out repository	2026-10-11T13:01:25.3843608Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Verify	Check out repository	2026-10-11T13:01:25.3883023Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Verify	Check out repository	2026-10-11T13:01:25.4086016Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Verify	Check out repository	2026-10-11T13:01:25.4363387Z ##[endgroup]
+Verify	Check out repository	2026-10-11T13:01:25.4364797Z ##[group]Fetching the repository
+Verify	Check out repository	2026-10-11T13:01:25.4374382Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +281be40ec8cd10aa3ca93a0ff7e40612ed29aea9:refs/remotes/origin/main
+Verify	Check out repository	2026-10-11T13:01:26.0025320Z From https://github.com/koniz-dev/react-native-starter
+Verify	Check out repository	2026-10-11T13:01:26.0026351Z  * [new ref]         281be40ec8cd10aa3ca93a0ff7e40612ed29aea9 -> origin/main
+Verify	Check out repository	2026-10-11T13:01:26.0028360Z ##[endgroup]
+Verify	Check out repository	2026-10-11T13:01:26.0028988Z ##[group]Determining the checkout info
+Verify	Check out repository	2026-10-11T13:01:26.0030762Z ##[endgroup]
+Verify	Check out repository	2026-10-11T13:01:26.0035260Z [command]/usr/bin/git sparse-checkout disable
+Verify	Check out repository	2026-10-11T13:01:26.0085576Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Verify	Check out repository	2026-10-11T13:01:26.0198104Z ##[group]Checking out the ref
+Verify	Check out repository	2026-10-11T13:01:26.0309089Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Verify	Check out repository	2026-10-11T13:01:26.1476276Z Switched to a new branch 'main'
+Verify	Check out repository	2026-10-11T13:01:26.1480595Z branch 'main' set up to track 'origin/main'.
+Verify	Check out repository	2026-10-11T13:01:26.1486263Z ##[endgroup]
+Verify	Check out repository	2026-10-11T13:01:26.1530924Z [command]/usr/bin/git log -1 --format=%H
+Verify	Check out repository	2026-10-11T13:01:26.1559063Z 281be40ec8cd10aa3ca93a0ff7e40612ed29aea9
+Verify	Set up Node.js	﻿2026-10-11T13:01:26.2125934Z ##[group]Run actions/setup-node@v4
+Verify	Set up Node.js	2026-10-11T13:01:26.2126720Z with:
+Verify	Set up Node.js	2026-10-11T13:01:26.2127281Z   node-version-file: .nvmrc
+Verify	Set up Node.js	2026-10-11T13:01:26.2127927Z   cache: npm
+Verify	Set up Node.js	2026-10-11T13:01:26.2128491Z   always-auth: false
+Verify	Set up Node.js	2026-10-11T13:01:26.2129089Z   check-latest: false
+Verify	Set up Node.js	2026-10-11T13:01:26.2135521Z   token: ***
+Verify	Set up Node.js	2026-10-11T13:01:26.2136063Z ##[endgroup]
+Verify	Set up Node.js	2026-10-11T13:01:26.3145841Z Resolved .nvmrc as 24
+Verify	Set up Node.js	2026-10-11T13:01:26.3386329Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/x64
+Verify	Set up Node.js	2026-10-11T13:01:26.3390337Z (node:2076) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Verify	Set up Node.js	2026-10-11T13:01:26.3496406Z (Use `node --trace-deprecation ...` to show where the warning was created)
+Verify	Set up Node.js	2026-10-11T13:01:26.3502055Z ##[group]Environment details
+Verify	Set up Node.js	2026-10-11T13:01:26.6790109Z node: v24.21.0
+Verify	Set up Node.js	2026-10-11T13:01:26.6793928Z npm: 11.19.0
+Verify	Set up Node.js	2026-10-11T13:01:26.6795161Z yarn: 1.22.22
+Verify	Set up Node.js	2026-10-11T13:01:26.6796093Z ##[endgroup]
+Verify	Set up Node.js	2026-10-11T13:01:26.6801325Z [command]/opt/hostedtoolcache/node/24.21.0/x64/bin/npm config get cache
+Verify	Set up Node.js	2026-10-11T13:01:26.7639894Z /home/runner/.npm
+Verify	Set up Node.js	2026-10-11T13:01:26.9613673Z Cache hit for: node-cache-Linux-x64-npm-10f9dc59c99c82563481e37a50745bae137261a45ffc8c4ba105eb544b91396b
+Verify	Set up Node.js	2026-10-11T13:01:26.9687045Z (node:2076) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+Verify	Set up Node.js	2026-10-11T13:01:28.1223760Z Received 104857600 of 156509062 (67.0%), 99.9 MBs/sec
+Verify	Set up Node.js	2026-10-11T13:01:28.4873578Z Received 156509062 of 156509062 (100.0%), 109.3 MBs/sec
+Verify	Set up Node.js	2026-10-11T13:01:28.4874407Z Cache Size: ~149 MB (156509062 B)
+Verify	Set up Node.js	2026-10-11T13:01:28.4981445Z [command]/usr/bin/tar -xf /home/runner/work/_temp/b4e0a80d-3736-4013-a6a9-f824cc450fe6/cache.tzst -P -C /home/runner/work/react-native-starter/react-native-starter --use-compress-program unzstd
+Verify	Set up Node.js	2026-10-11T13:01:28.8303106Z Cache restored successfully
+Verify	Set up Node.js	2026-10-11T13:01:28.8374101Z Cache restored from key: node-cache-Linux-x64-npm-10f9dc59c99c82563481e37a50745bae137261a45ffc8c4ba105eb544b91396b
+Verify	Install dependencies	﻿2026-10-11T13:01:28.8569381Z ##[group]Run npm ci
+Verify	Install dependencies	2026-10-11T13:01:28.8569678Z ^[[36;1mnpm ci^[[0m
+Verify	Install dependencies	2026-10-11T13:01:28.8789897Z shell: /usr/bin/bash -e {0}
+Verify	Install dependencies	2026-10-11T13:01:28.8790233Z ##[endgroup]
+Verify	Install dependencies	2026-10-11T13:01:31.8597793Z npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+Verify	Install dependencies	2026-10-11T13:01:31.9945484Z npm warn deprecated abab@2.0.6: Use your platform's native atob() and btoa() methods instead
+Verify	Install dependencies	2026-10-11T13:01:32.0231821Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Verify	Install dependencies	2026-10-11T13:01:32.0239545Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Verify	Install dependencies	2026-10-11T13:01:32.0241932Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Verify	Install dependencies	2026-10-11T13:01:32.0271647Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Verify	Install dependencies	2026-10-11T13:01:32.2202057Z npm warn deprecated domexception@4.0.0: Use your platform's native DOMException instead
+Verify	Install dependencies	2026-10-11T13:01:32.8319638Z npm warn deprecated uuid@7.0.3: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+Verify	Install dependencies	2026-10-11T13:01:40.9756908Z 
+Verify	Install dependencies	2026-10-11T13:01:40.9757959Z added 1067 packages, and audited 1068 packages in 12s
+Verify	Install dependencies	2026-10-11T13:01:40.9758293Z 
+Verify	Install dependencies	2026-10-11T13:01:40.9758484Z 180 packages are looking for funding
+Verify	Install dependencies	2026-10-11T13:01:40.9758841Z   run `npm fund` for details
+Verify	Install dependencies	2026-10-11T13:01:41.0850449Z 
+Verify	Install dependencies	2026-10-11T13:01:41.0852016Z 65 vulnerabilities (16 moderate, 49 high)
+Verify	Install dependencies	2026-10-11T13:01:41.0852375Z 
+Verify	Install dependencies	2026-10-11T13:01:41.0852635Z To address all issues (including breaking changes), run:
+Verify	Install dependencies	2026-10-11T13:01:41.0852986Z   npm audit fix --force
+Verify	Install dependencies	2026-10-11T13:01:41.0853142Z 
+Verify	Install dependencies	2026-10-11T13:01:41.0853297Z Run `npm audit` for details.
+Verify	Lint	﻿2026-10-11T13:01:41.1858665Z ##[group]Run npm run lint
+Verify	Lint	2026-10-11T13:01:41.1858864Z ^[[36;1mnpm run lint^[[0m
+Verify	Lint	2026-10-11T13:01:41.1914686Z shell: /usr/bin/bash -e {0}
+Verify	Lint	2026-10-11T13:01:41.1915038Z ##[endgroup]
+Verify	Lint	2026-10-11T13:01:41.2646778Z 
+Verify	Lint	2026-10-11T13:01:46.7386215Z > react-native-starter@1.0.0 lint
+Verify	Lint	2026-10-11T13:01:46.7386535Z > eslint . --max-warnings 0
+Verify	Lint	2026-10-11T13:01:46.7386647Z 
+Verify	Check formatting	﻿2026-10-11T13:01:46.8602748Z ##[group]Run npm run format:check
+Verify	Check formatting	2026-10-11T13:01:46.8603074Z ^[[36;1mnpm run format:check^[[0m
+Verify	Check formatting	2026-10-11T13:01:46.8663486Z shell: /usr/bin/bash -e {0}
+Verify	Check formatting	2026-10-11T13:01:46.8663659Z ##[endgroup]
+Verify	Check formatting	2026-10-11T13:01:47.0436910Z 
+Verify	Check formatting	2026-10-11T13:01:47.0437485Z > react-native-starter@1.0.0 format:check
+Verify	Check formatting	2026-10-11T13:01:47.0437805Z > prettier --check "**/*.{ts,tsx,js,jsx,json,md}"
+Verify	Check formatting	2026-10-11T13:01:47.0437950Z 
+Verify	Check formatting	2026-10-11T13:01:47.1047668Z Checking formatting...
+Verify	Check formatting	2026-10-11T13:01:48.3254193Z All matched files use Prettier code style!
+Verify	Type-check	﻿2026-10-11T13:01:48.3604699Z ##[group]Run npm run type-check
+Verify	Type-check	2026-10-11T13:01:48.3604903Z ^[[36;1mnpm run type-check^[[0m
+Verify	Type-check	2026-10-11T13:01:48.3659011Z shell: /usr/bin/bash -e {0}
+Verify	Type-check	2026-10-11T13:01:48.3659337Z ##[endgroup]
+Verify	Type-check	2026-10-11T13:01:48.4396337Z 
+Verify	Type-check	2026-10-11T13:01:48.4397075Z > react-native-starter@1.0.0 type-check
+Verify	Type-check	2026-10-11T13:01:48.4397332Z > tsc --noEmit
+Verify	Type-check	2026-10-11T13:01:48.4397418Z 
+Verify	Run Jest tests	﻿2026-10-11T13:01:50.4933221Z ##[group]Run npm run test:ci
+Verify	Run Jest tests	2026-10-11T13:01:50.4933420Z ^[[36;1mnpm run test:ci^[[0m
+Verify	Run Jest tests	2026-10-11T13:01:50.4987599Z shell: /usr/bin/bash -e {0}
+Verify	Run Jest tests	2026-10-11T13:01:50.4987794Z ##[endgroup]
+Verify	Run Jest tests	2026-10-11T13:01:50.5705694Z 
+Verify	Run Jest tests	2026-10-11T13:01:50.5706412Z > react-native-starter@1.0.0 test:ci
+Verify	Run Jest tests	2026-10-11T13:01:50.5706692Z > jest --coverage
+Verify	Run Jest tests	2026-10-11T13:01:50.5706778Z 
+Verify	Run Jest tests	2026-10-11T13:01:54.0588787Z PASS __tests__/shared/lib/logger.test.ts
+Verify	Run Jest tests	2026-10-11T13:02:01.7696200Z PASS __tests__/scripts/initProject.test.ts (7.687 s)
+Verify	Run Jest tests	2026-10-11T13:02:02.0122016Z PASS __tests__/shared/session/authService.test.ts
+Verify	Run Jest tests	2026-10-11T13:02:06.1288247Z PASS __tests__/shared/http/httpClient.test.ts (14.576 s)
+Verify	Run Jest tests	2026-10-11T13:02:06.1501157Z PASS __tests__/shared/session/realBackendAdapter.test.ts (14.674 s)
+Verify	Run Jest tests	2026-10-11T13:02:06.1629853Z   ● Console
+Verify	Run Jest tests	2026-10-11T13:02:06.1630508Z 
+Verify	Run Jest tests	2026-10-11T13:02:06.1630948Z     console.info
+Verify	Run Jest tests	2026-10-11T13:02:06.1631438Z       API POST /sessions failed: client (422)
+Verify	Run Jest tests	2026-10-11T13:02:06.1631807Z 
+Verify	Run Jest tests	2026-10-11T13:02:06.1632069Z       at info (shared/lib/logger.ts:132:40)
+Verify	Run Jest tests	2026-10-11T13:02:06.1632474Z 
+Verify	Run Jest tests	2026-10-11T13:02:06.1632694Z     console.info
+Verify	Run Jest tests	2026-10-11T13:02:06.1633294Z       API POST /sessions/refresh failed: unauthorized (401)
+Verify	Run Jest tests	2026-10-11T13:02:06.1639670Z 
+Verify	Run Jest tests	2026-10-11T13:02:06.1640177Z       at info (shared/lib/logger.ts:132:40)
+Verify	Run Jest tests	2026-10-11T13:02:06.1640666Z 
+Verify	Run Jest tests	2026-10-11T13:02:06.1644872Z     console.info
+Verify	Run Jest tests	2026-10-11T13:02:06.1645359Z       API GET /me failed: unauthorized (401)
+Verify	Run Jest tests	2026-10-11T13:02:06.1645686Z 
+Verify	Run Jest tests	2026-10-11T13:02:06.1645978Z       at info (shared/lib/logger.ts:132:40)
+Verify	Run Jest tests	2026-10-11T13:02:06.1646298Z 
+Verify	Run Jest tests	2026-10-11T13:02:06.1646577Z     console.warn
+Verify	Run Jest tests	2026-10-11T13:02:06.1651457Z       API DELETE /sessions failed: network
+Verify	Run Jest tests	2026-10-11T13:02:06.1651872Z 
+Verify	Run Jest tests	2026-10-11T13:02:06.1652806Z     ^[[0m ^[[90m 129 |^[[39m     ^[[36mconst^[[39m args ^[[33m=^[[39m [message^[[33m,^[[39m ^[[33m...^[[39mdetails^[[33m.^[[39mfilter(item ^[[33m=>^[[39m item ^[[33m!==^[[39m undefined)]^[[33m;^[[39m
+Verify	Run Jest tests	2026-10-11T13:02:06.1653915Z      ^[[90m 130 |^[[39m     ^[[36mif^[[39m (level ^[[33m===^[[39m ^[[32m'error'^[[39m) console^[[33m.^[[39merror(^[[33m...^[[39margs)^[[33m;^[[39m
+Verify	Run Jest tests	2026-10-11T13:02:06.1659965Z     ^[[31m^[[1m>^[[22m^[[39m^[[90m 131 |^[[39m     ^[[36melse^[[39m ^[[36mif^[[39m (level ^[[33m===^[[39m ^[[32m'warn'^[[39m) console^[[33m.^[[39mwarn(^[[33m...^[[39margs)^[[33m;^[[39m
+Verify	Run Jest tests	2026-10-11T13:02:06.1793415Z      ^[[90m     |^[[39m                                        ^[[31m^[[1m^^[[22m^[[39m
+Verify	Run Jest tests	2026-10-11T13:02:06.1800309Z      ^[[90m 132 |^[[39m     ^[[36melse^[[39m ^[[36mif^[[39m (level ^[[33m===^[[39m ^[[32m'info'^[[39m) console^[[33m.^[[39minfo(^[[33m...^[[39margs)^[[33m;^[[39m
+Verify	Run Jest tests	2026-10-11T13:02:06.1801351Z      ^[[90m 133 |^[[39m     ^[[36melse^[[39m console^[[33m.^[[39mdebug(^[[33m...^[[39margs)^[[33m;^[[39m
+Verify	Run Jest tests	2026-10-11T13:02:06.1802002Z      ^[[90m 134 |^[[39m   }^[[33m;^[[39m^[[0m
+Verify	Run Jest tests	2026-10-11T13:02:06.1802488Z 
+Verify	Run Jest tests	2026-10-11T13:02:06.1812117Z       at warn (shared/lib/logger.ts:131:40)
+Verify	Run Jest tests	2026-10-11T13:02:06.1813212Z       at Object.write [as warn] (shared/lib/logger.ts:142:33)
+Verify	Run Jest tests	2026-10-11T13:02:06.1813684Z       at shared/http/httpClient.ts:160:50
+Verify	Run Jest tests	2026-10-11T13:02:06.1814291Z       at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+Verify	Run Jest tests	2026-10-11T13:02:06.1814954Z       at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+Verify	Run Jest tests	2026-10-11T13:02:06.1815527Z       at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+Verify	Run Jest tests	2026-10-11T13:02:06.1816090Z       at node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12
+Verify	Run Jest tests	2026-10-11T13:02:06.1816739Z       at apply (shared/http/httpClient.ts:166:4)
+Verify	Run Jest tests	2026-10-11T13:02:06.1817325Z       at Axios.request (node_modules/axios/dist/browser/axios.cjs:5245:14)
+Verify	Run Jest tests	2026-10-11T13:02:06.1835361Z 
+Verify	Run Jest tests	2026-10-11T13:02:06.1835874Z     console.warn
+Verify	Run Jest tests	2026-10-11T13:02:06.1836485Z       Signing out on the auth backend failed { error: 'Network error: check your connection' }
+Verify	Run Jest tests	2026-10-11T13:02:06.1836960Z 
+Verify	Run Jest tests	2026-10-11T13:02:06.1839745Z     ^[[0m ^[[90m 129 |^[[39m     ^[[36mconst^[[39m args ^[[33m=^[[39m [message^[[33m,^[[39m ^[[33m...^[[39mdetails^[[33m.^[[39mfilter(item ^[[33m=>^[[39m item ^[[33m!==^[[39m undefined)]^[[33m;^[[39m
+Verify	Run Jest tests	2026-10-11T13:02:06.1843796Z      ^[[90m 130 |^[[39m     ^[[36mif^[[39m (level ^[[33m===^[[39m ^[[32m'error'^[[39m) console^[[33m.^[[39merror(^[[33m...^[[39margs)^[[33m;^[[39m
+Verify	Run Jest tests	2026-10-11T13:02:06.1844982Z     ^[[31m^[[1m>^[[22m^[[39m^[[90m 131 |^[[39m     ^[[36melse^[[39m ^[[36mif^[[39m (level ^[[33m===^[[39m ^[[32m'warn'^[[39m) console^[[33m.^[[39mwarn(^[[33m...^[[39margs)^[[33m;^[[39m
+Verify	Run Jest tests	2026-10-11T13:02:06.1845793Z      ^[[90m     |^[[39m                                        ^[[31m^[[1m^^[[22m^[[39m
+Verify	Run Jest tests	2026-10-11T13:02:06.1847620Z      ^[[90m 132 |^[[39m     ^[[36melse^[[39m ^[[36mif^[[39m (level ^[[33m===^[[39m ^[[32m'info'^[[39m) console^[[33m.^[[39minfo(^[[33m...^[[39margs)^[[33m;^[[39m
+Verify	Run Jest tests	2026-10-11T13:02:06.1848581Z      ^[[90m 133 |^[[39m     ^[[36melse^[[39m console^[[33m.^[[39mdebug(^[[33m...^[[39margs)^[[33m;^[[39m
+Verify	Run Jest tests	2026-10-11T13:02:06.1849329Z      ^[[90m 134 |^[[39m   }^[[33m;^[[39m^[[0m
+Verify	Run Jest tests	2026-10-11T13:02:06.1879587Z 
+Verify	Run Jest tests	2026-10-11T13:02:06.1902491Z       at warn (shared/lib/logger.ts:131:40)
+Verify	Run Jest tests	2026-10-11T13:02:06.1903315Z       at Object.write [as warn] (shared/lib/logger.ts:142:33)
+Verify	Run Jest tests	2026-10-11T13:02:06.1904031Z       at Object.warn (shared/session/authService.ts:148:14)
+Verify	Run Jest tests	2026-10-11T13:02:06.1904511Z           at Generator.throw (<anonymous>)
+Verify	Run Jest tests	2026-10-11T13:02:06.1905107Z       at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+Verify	Run Jest tests	2026-10-11T13:02:06.1905818Z       at _throw (node_modules/@babel/runtime/helpers/asyncToGenerator.js:20:9)
+Verify	Run Jest tests	2026-10-11T13:02:06.1906250Z 
+Verify	Run Jest tests	2026-10-11T13:02:06.3088101Z PASS __tests__/shared/config/env.test.ts
+Verify	Run Jest tests	2026-10-11T13:02:06.6890580Z PASS __tests__/shared/lib/useFetch.test.tsx
+Verify	Run Jest tests	2026-10-11T13:02:08.6025822Z PASS __tests__/shared/ui/ErrorBoundary.test.tsx
+Verify	Run Jest tests	2026-10-11T13:02:08.6250855Z   ● Console
+Verify	Run Jest tests	2026-10-11T13:02:08.6257478Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6257956Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:08.6258435Z       [analytics] screen /boom
+Verify	Run Jest tests	2026-10-11T13:02:08.6258839Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6259209Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:08.6259506Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6259710Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:08.6260045Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:08.6260278Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6260505Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:08.6260775Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6261090Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:08.6261386Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:08.6261534Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6261665Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:08.6261851Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6261935Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:08.6262145Z       [analytics] screen /boom
+Verify	Run Jest tests	2026-10-11T13:02:08.6262292Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6262416Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:08.6262585Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6262666Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:08.6262858Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:08.6262992Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6263106Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:08.6263647Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6263727Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:08.6263916Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:08.6264060Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6264175Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:08.6264342Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6264419Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:08.6264625Z       [analytics] screen /boom
+Verify	Run Jest tests	2026-10-11T13:02:08.6264771Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6264888Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:08.6265067Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6265146Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:08.6265342Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:08.6265485Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6265611Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:08.6265791Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6265871Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:08.6266090Z       [analytics] screen /boom
+Verify	Run Jest tests	2026-10-11T13:02:08.6266242Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6266397Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:08.6266580Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6266668Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:08.6266857Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:08.6266987Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6267109Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:08.6267482Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6267565Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:08.6267787Z       [analytics] screen /boom
+Verify	Run Jest tests	2026-10-11T13:02:08.6267940Z 
+Verify	Run Jest tests	2026-10-11T13:02:08.6268069Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:08.6268244Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.8020563Z PASS __tests__/shared/session/tokenStore.test.tsx
+Verify	Run Jest tests	2026-10-11T13:02:09.8081460Z   ● Console
+Verify	Run Jest tests	2026-10-11T13:02:09.8081729Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.8082243Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.8082581Z       [analytics] screen /login
+Verify	Run Jest tests	2026-10-11T13:02:09.8082829Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.8083035Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.8083303Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.8083463Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.8083743Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:09.8083952Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.8084202Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.8084457Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.8084605Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.8084906Z       [analytics] screen /login
+Verify	Run Jest tests	2026-10-11T13:02:09.8085144Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.8085337Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.8085587Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.8085736Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.8086002Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:09.8086206Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.8086390Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.8086637Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.8086789Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.8087059Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:09.8087270Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.8087472Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.8087716Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9211567Z PASS __tests__/app/sessionRoutes.test.tsx (7.869 s)
+Verify	Run Jest tests	2026-10-11T13:02:09.9609271Z   ● Console
+Verify	Run Jest tests	2026-10-11T13:02:09.9609864Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9610147Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9612758Z       [analytics] screen /profile
+Verify	Run Jest tests	2026-10-11T13:02:09.9613084Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9613345Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9613668Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9613891Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9614245Z       [analytics] screen /profile
+Verify	Run Jest tests	2026-10-11T13:02:09.9656494Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9658825Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9659448Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9659663Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9669290Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:09.9669648Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9669915Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9670214Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9670418Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9670764Z       [analytics] screen /login
+Verify	Run Jest tests	2026-10-11T13:02:09.9671034Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9671277Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9671568Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9671760Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9672072Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:09.9672839Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9673084Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9673377Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9673566Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9673920Z       [analytics] screen /login
+Verify	Run Jest tests	2026-10-11T13:02:09.9674195Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9674429Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9674718Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9674906Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9675218Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:09.9675469Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9675702Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9675995Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9676185Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9676536Z       [analytics] screen /profile
+Verify	Run Jest tests	2026-10-11T13:02:09.9676866Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9677107Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9677391Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9677583Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9677885Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:09.9678144Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9678381Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9684039Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9684313Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9684675Z       [analytics] screen /profile
+Verify	Run Jest tests	2026-10-11T13:02:09.9685263Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9685503Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9685771Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9685956Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9686253Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:09.9686510Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9686736Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9687010Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9687189Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9687509Z       [analytics] screen /profile
+Verify	Run Jest tests	2026-10-11T13:02:09.9687759Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9687981Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9688257Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9688446Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9688744Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:09.9688984Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9689364Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9689661Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9689865Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9690187Z       [analytics] screen /profile
+Verify	Run Jest tests	2026-10-11T13:02:09.9690452Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9690687Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9690982Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9691178Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9691483Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:09.9691739Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9691984Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9692274Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9692465Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9692773Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:09.9693027Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9693264Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9693551Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9693739Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9694074Z       [analytics] screen /profile
+Verify	Run Jest tests	2026-10-11T13:02:09.9694341Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9694575Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9694865Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9695059Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9695361Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:09.9695617Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9695847Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9696136Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9696341Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9696664Z       [analytics] screen /profile
+Verify	Run Jest tests	2026-10-11T13:02:09.9696934Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9697166Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9697448Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9697643Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9697947Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:09.9698198Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9698442Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9698732Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9698920Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9699344Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:09.9699597Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9699833Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9700161Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9700352Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9700663Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:09.9700938Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9701450Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9701735Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9701926Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:09.9702234Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:09.9702496Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9702737Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:09.9703029Z 
+Verify	Run Jest tests	2026-10-11T13:02:09.9980587Z PASS __tests__/shared/http/api.test.ts
+Verify	Run Jest tests	2026-10-11T13:02:10.0010674Z   ● Console
+Verify	Run Jest tests	2026-10-11T13:02:10.0042163Z 
+Verify	Run Jest tests	2026-10-11T13:02:10.0070198Z     console.info
+Verify	Run Jest tests	2026-10-11T13:02:10.0074736Z       API request failed: server (503)
+Verify	Run Jest tests	2026-10-11T13:02:10.0075160Z 
+Verify	Run Jest tests	2026-10-11T13:02:10.0075423Z       at info (shared/lib/logger.ts:132:40)
+Verify	Run Jest tests	2026-10-11T13:02:10.0075745Z 
+Verify	Run Jest tests	2026-10-11T13:02:10.4907704Z PASS __tests__/features/auth/LoginScreen.test.tsx
+Verify	Run Jest tests	2026-10-11T13:02:10.4938041Z   ● Console
+Verify	Run Jest tests	2026-10-11T13:02:10.4938379Z 
+Verify	Run Jest tests	2026-10-11T13:02:10.4938678Z     console.error
+Verify	Run Jest tests	2026-10-11T13:02:10.4939881Z       An update to SessionProvider inside a test was not wrapped in act(...).
+Verify	Run Jest tests	2026-10-11T13:02:10.4940324Z       
+Verify	Run Jest tests	2026-10-11T13:02:10.4940709Z       When testing, code that causes React state updates should be wrapped into act(...):
+Verify	Run Jest tests	2026-10-11T13:02:10.4941096Z       
+Verify	Run Jest tests	2026-10-11T13:02:10.4941770Z       act(() => {
+Verify	Run Jest tests	2026-10-11T13:02:10.4942029Z         /* fire events that update state */
+Verify	Run Jest tests	2026-10-11T13:02:10.4942285Z       });
+Verify	Run Jest tests	2026-10-11T13:02:10.4942498Z       /* assert on the output */
+Verify	Run Jest tests	2026-10-11T13:02:10.4942727Z       
+Verify	Run Jest tests	2026-10-11T13:02:10.4943299Z       This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+Verify	Run Jest tests	2026-10-11T13:02:10.4943748Z 
+Verify	Run Jest tests	2026-10-11T13:02:10.4944134Z     ^[[0m ^[[90m 91 |^[[39m     readStoredSession()^[[33m.^[[39mthen(restored ^[[33m=>^[[39m {
+Verify	Run Jest tests	2026-10-11T13:02:10.4944880Z      ^[[90m 92 |^[[39m       ^[[36mif^[[39m (^[[33m!^[[39mchangedRef^[[33m.^[[39mcurrent ^[[33m&&^[[39m isMountedRef^[[33m.^[[39mcurrent) {
+Verify	Run Jest tests	2026-10-11T13:02:10.4945512Z     ^[[31m^[[1m>^[[22m^[[39m^[[90m 93 |^[[39m         setSession(restored)^[[33m;^[[39m
+Verify	Run Jest tests	2026-10-11T13:02:10.4945966Z      ^[[90m    |^[[39m         ^[[31m^[[1m^^[[22m^[[39m
+Verify	Run Jest tests	2026-10-11T13:02:10.4946264Z      ^[[90m 94 |^[[39m       }
+Verify	Run Jest tests	2026-10-11T13:02:10.4946537Z      ^[[90m 95 |^[[39m     })^[[33m;^[[39m
+Verify	Run Jest tests	2026-10-11T13:02:10.4947044Z      ^[[90m 96 |^[[39m     ^[[90m// The HTTP client has already cleared the stored session.^[[39m^[[0m
+Verify	Run Jest tests	2026-10-11T13:02:10.4947356Z 
+Verify	Run Jest tests	2026-10-11T13:02:10.4947634Z       at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14402:19
+Verify	Run Jest tests	2026-10-11T13:02:10.4948329Z       at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2315:13)
+Verify	Run Jest tests	2026-10-11T13:02:10.4949399Z       at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14401:9)
+Verify	Run Jest tests	2026-10-11T13:02:10.4950202Z       at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12086:9)
+Verify	Run Jest tests	2026-10-11T13:02:10.4951012Z       at dispatchSetStateInternal (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6208:13)
+Verify	Run Jest tests	2026-10-11T13:02:10.4951772Z       at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6165:7)
+Verify	Run Jest tests	2026-10-11T13:02:10.4952313Z       at setSession (shared/session/SessionProvider.tsx:93:9)
+Verify	Run Jest tests	2026-10-11T13:02:10.4952541Z 
+Verify	Run Jest tests	2026-10-11T13:02:10.4952627Z     console.error
+Verify	Run Jest tests	2026-10-11T13:02:10.4952967Z       An update to SessionProvider inside a test was not wrapped in act(...).
+Verify	Run Jest tests	2026-10-11T13:02:10.4953315Z       
+Verify	Run Jest tests	2026-10-11T13:02:10.4953678Z       When testing, code that causes React state updates should be wrapped into act(...):
+Verify	Run Jest tests	2026-10-11T13:02:10.4954054Z       
+Verify	Run Jest tests	2026-10-11T13:02:10.4954223Z       act(() => {
+Verify	Run Jest tests	2026-10-11T13:02:10.4954456Z         /* fire events that update state */
+Verify	Run Jest tests	2026-10-11T13:02:10.4954709Z       });
+Verify	Run Jest tests	2026-10-11T13:02:10.4954914Z       /* assert on the output */
+Verify	Run Jest tests	2026-10-11T13:02:10.4955131Z       
+Verify	Run Jest tests	2026-10-11T13:02:10.4955687Z       This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+Verify	Run Jest tests	2026-10-11T13:02:10.4956430Z 
+Verify	Run Jest tests	2026-10-11T13:02:10.4956757Z     ^[[0m ^[[90m 91 |^[[39m     readStoredSession()^[[33m.^[[39mthen(restored ^[[33m=>^[[39m {
+Verify	Run Jest tests	2026-10-11T13:02:10.4957445Z      ^[[90m 92 |^[[39m       ^[[36mif^[[39m (^[[33m!^[[39mchangedRef^[[33m.^[[39mcurrent ^[[33m&&^[[39m isMountedRef^[[33m.^[[39mcurrent) {
+Verify	Run Jest tests	2026-10-11T13:02:10.4958070Z     ^[[31m^[[1m>^[[22m^[[39m^[[90m 93 |^[[39m         setSession(restored)^[[33m;^[[39m
+Verify	Run Jest tests	2026-10-11T13:02:10.4958476Z      ^[[90m    |^[[39m         ^[[31m^[[1m^^[[22m^[[39m
+Verify	Run Jest tests	2026-10-11T13:02:10.4958764Z      ^[[90m 94 |^[[39m       }
+Verify	Run Jest tests	2026-10-11T13:02:10.4959039Z      ^[[90m 95 |^[[39m     })^[[33m;^[[39m
+Verify	Run Jest tests	2026-10-11T13:02:10.4959629Z      ^[[90m 96 |^[[39m     ^[[90m// The HTTP client has already cleared the stored session.^[[39m^[[0m
+Verify	Run Jest tests	2026-10-11T13:02:10.4959910Z 
+Verify	Run Jest tests	2026-10-11T13:02:10.4960242Z       at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14402:19
+Verify	Run Jest tests	2026-10-11T13:02:10.4960958Z       at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2315:13)
+Verify	Run Jest tests	2026-10-11T13:02:10.4961805Z       at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14401:9)
+Verify	Run Jest tests	2026-10-11T13:02:10.4962847Z       at scheduleUpdateOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12086:9)
+Verify	Run Jest tests	2026-10-11T13:02:10.4963632Z       at dispatchSetStateInternal (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6208:13)
+Verify	Run Jest tests	2026-10-11T13:02:10.4964405Z       at dispatchSetState (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6165:7)
+Verify	Run Jest tests	2026-10-11T13:02:10.4964979Z       at setSession (shared/session/SessionProvider.tsx:93:9)
+Verify	Run Jest tests	2026-10-11T13:02:10.4965218Z 
+Verify	Run Jest tests	2026-10-11T13:02:10.6449932Z PASS __tests__/shared/integrations/seams.test.ts
+Verify	Run Jest tests	2026-10-11T13:02:10.8477801Z PASS __tests__/features/home/HomeScreen.test.tsx
+Verify	Run Jest tests	2026-10-11T13:02:10.9386753Z PASS __tests__/app/appConfig.test.ts
+Verify	Run Jest tests	2026-10-11T13:02:11.0200483Z PASS __tests__/shared/storage/storage.test.ts
+Verify	Run Jest tests	2026-10-11T13:02:11.2850081Z PASS __tests__/features/demo-todos/TodosScreen.test.tsx
+Verify	Run Jest tests	2026-10-11T13:02:11.2880641Z   ● Console
+Verify	Run Jest tests	2026-10-11T13:02:11.2922778Z 
+Verify	Run Jest tests	2026-10-11T13:02:11.2970465Z     console.info
+Verify	Run Jest tests	2026-10-11T13:02:11.2972674Z       API GET /todos failed: server (503)
+Verify	Run Jest tests	2026-10-11T13:02:11.2999781Z 
+Verify	Run Jest tests	2026-10-11T13:02:11.3020655Z       at info (shared/lib/logger.ts:132:40)
+Verify	Run Jest tests	2026-10-11T13:02:11.3021131Z 
+Verify	Run Jest tests	2026-10-11T13:02:11.4053351Z PASS __tests__/features/demo-auth/dummyJsonAdapter.test.ts
+Verify	Run Jest tests	2026-10-11T13:02:11.6540613Z PASS __tests__/shared/integrations/i18n.test.tsx
+Verify	Run Jest tests	2026-10-11T13:02:11.6617854Z   ● Console
+Verify	Run Jest tests	2026-10-11T13:02:11.6638456Z 
+Verify	Run Jest tests	2026-10-11T13:02:11.6682603Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:11.6683209Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:11.6683538Z 
+Verify	Run Jest tests	2026-10-11T13:02:11.6683808Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:11.6684135Z 
+Verify	Run Jest tests	2026-10-11T13:02:11.6684338Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:11.6684678Z       [analytics] screen /login
+Verify	Run Jest tests	2026-10-11T13:02:11.6684999Z 
+Verify	Run Jest tests	2026-10-11T13:02:11.6685240Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:11.6685535Z 
+Verify	Run Jest tests	2026-10-11T13:02:11.7530501Z PASS __tests__/shared/ui/theme.test.ts
+Verify	Run Jest tests	2026-10-11T13:02:12.2335622Z PASS __tests__/app/tabBarTheme.test.tsx
+Verify	Run Jest tests	2026-10-11T13:02:12.2370933Z   ● Console
+Verify	Run Jest tests	2026-10-11T13:02:12.2371558Z 
+Verify	Run Jest tests	2026-10-11T13:02:12.2372058Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:12.2372433Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:12.2372737Z 
+Verify	Run Jest tests	2026-10-11T13:02:12.2373025Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:12.2373415Z 
+Verify	Run Jest tests	2026-10-11T13:02:12.2373650Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:12.2374002Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:12.2374282Z 
+Verify	Run Jest tests	2026-10-11T13:02:12.2374555Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:12.2374882Z 
+Verify	Run Jest tests	2026-10-11T13:02:12.4962554Z PASS __tests__/app/initialRoute.test.tsx
+Verify	Run Jest tests	2026-10-11T13:02:12.5020731Z   ● Console
+Verify	Run Jest tests	2026-10-11T13:02:12.5021046Z 
+Verify	Run Jest tests	2026-10-11T13:02:12.5042170Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:12.5048387Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:12.5049437Z 
+Verify	Run Jest tests	2026-10-11T13:02:12.5049740Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:12.5050079Z 
+Verify	Run Jest tests	2026-10-11T13:02:12.5050336Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:12.5050660Z       [analytics] screen /login
+Verify	Run Jest tests	2026-10-11T13:02:12.5050877Z 
+Verify	Run Jest tests	2026-10-11T13:02:12.5051074Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:12.5051309Z 
+Verify	Run Jest tests	2026-10-11T13:02:12.5051478Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:12.5051738Z       [analytics] screen /login
+Verify	Run Jest tests	2026-10-11T13:02:12.5051951Z 
+Verify	Run Jest tests	2026-10-11T13:02:12.5052148Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:12.5052372Z 
+Verify	Run Jest tests	2026-10-11T13:02:12.5052538Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:12.5052782Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:12.5052989Z 
+Verify	Run Jest tests	2026-10-11T13:02:12.5053188Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:12.5053416Z 
+Verify	Run Jest tests	2026-10-11T13:02:12.7068746Z PASS __tests__/shared/ui/LoadingScreen.test.tsx
+Verify	Run Jest tests	2026-10-11T13:02:13.0640662Z PASS __tests__/features/demo-auth/DemoCredentialsHint.test.tsx
+Verify	Run Jest tests	2026-10-11T13:02:13.1097536Z PASS __tests__/shared/integrations/screenTracking.test.tsx
+Verify	Run Jest tests	2026-10-11T13:02:13.7039867Z PASS __tests__/app/configError.test.tsx
+Verify	Run Jest tests	2026-10-11T13:02:13.7066345Z   ● Console
+Verify	Run Jest tests	2026-10-11T13:02:13.7066715Z 
+Verify	Run Jest tests	2026-10-11T13:02:13.7066971Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:13.7067306Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:13.7067567Z 
+Verify	Run Jest tests	2026-10-11T13:02:13.7067817Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:13.7068107Z 
+Verify	Run Jest tests	2026-10-11T13:02:13.7160613Z PASS __tests__/app/statusBar.test.tsx
+Verify	Run Jest tests	2026-10-11T13:02:13.7184136Z   ● Console
+Verify	Run Jest tests	2026-10-11T13:02:13.7184715Z 
+Verify	Run Jest tests	2026-10-11T13:02:13.7184962Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:13.7185336Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:13.7185613Z 
+Verify	Run Jest tests	2026-10-11T13:02:13.7185872Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:13.7186190Z 
+Verify	Run Jest tests	2026-10-11T13:02:13.7186389Z     console.debug
+Verify	Run Jest tests	2026-10-11T13:02:13.7186706Z       [analytics] screen /
+Verify	Run Jest tests	2026-10-11T13:02:13.7186961Z 
+Verify	Run Jest tests	2026-10-11T13:02:13.7187211Z       at debug (shared/lib/logger.ts:133:18)
+Verify	Run Jest tests	2026-10-11T13:02:13.7187563Z 
+Verify	Run Jest tests	2026-10-11T13:02:14.1180368Z PASS __tests__/features/demo-showcase/ShowcaseScreen.test.tsx
+Verify	Run Jest tests	2026-10-11T13:02:15.0314439Z PASS __tests__/scripts/removeDemo.test.ts (8.297 s)
+Verify	Run Jest tests	2026-10-11T13:02:15.7500188Z -----------------------------------|---------|----------|---------|---------|-------------------
+Verify	Run Jest tests	2026-10-11T13:02:15.7500943Z File                               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+Verify	Run Jest tests	2026-10-11T13:02:15.7501524Z -----------------------------------|---------|----------|---------|---------|-------------------
+Verify	Run Jest tests	2026-10-11T13:02:15.7505255Z All files                          |   97.55 |    91.66 |   95.09 |   97.73 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7506092Z  app                               |     100 |      100 |   57.14 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7506636Z   _layout.tsx                      |     100 |      100 |   57.14 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7507155Z   showcase.tsx                     |       0 |        0 |       0 |       0 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7507625Z  app/(app)                         |    87.5 |       75 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7508095Z   _layout.tsx                      |    87.5 |       75 |     100 |     100 | 24                
+Verify	Run Jest tests	2026-10-11T13:02:15.7508750Z   profile.tsx                      |       0 |        0 |       0 |       0 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7509389Z  app/(auth)                        |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7509871Z   _layout.tsx                      |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7510337Z   login.tsx                        |       0 |        0 |       0 |       0 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7510809Z  app/(tabs)                        |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7511277Z   _layout.tsx                      |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7512172Z   explore.tsx                      |       0 |        0 |       0 |       0 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7512663Z   index.tsx                        |       0 |        0 |       0 |       0 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7513163Z  features/auth/screens             |   95.55 |    79.16 |   83.33 |   95.45 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7513677Z   LoginScreen.tsx                  |    92.3 |       80 |      60 |    92.3 | 132-136           
+Verify	Run Jest tests	2026-10-11T13:02:15.7514191Z   ProfileScreen.tsx                |     100 |    78.57 |     100 |     100 | 38,67-72          
+Verify	Run Jest tests	2026-10-11T13:02:15.7514720Z  features/demo-auth                |     100 |    91.66 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7515264Z   DemoCredentialsHint.tsx          |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7515798Z   dummyJsonAdapter.ts              |     100 |       90 |     100 |     100 | 31                
+Verify	Run Jest tests	2026-10-11T13:02:15.7516352Z  features/demo-showcase/components |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7517081Z   ExampleLinks.tsx                 |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7517583Z  features/demo-showcase/screens    |   77.77 |      100 |      60 |   71.42 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7518088Z   ShowcaseScreen.tsx               |   77.77 |      100 |      60 |   71.42 | 133-137           
+Verify	Run Jest tests	2026-10-11T13:02:15.7518605Z  features/demo-todos               |       0 |        0 |       0 |       0 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7519044Z   types.ts                         |       0 |        0 |       0 |       0 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7519652Z  features/demo-todos/api           |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7520118Z   todosApi.ts                      |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7520621Z  features/demo-todos/screens       |     100 |    95.83 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7521133Z   TodosScreen.tsx                  |     100 |    95.83 |     100 |     100 | 65                
+Verify	Run Jest tests	2026-10-11T13:02:15.7521622Z  features/home/screens             |     100 |     87.5 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7522119Z   HomeScreen.tsx                   |     100 |     87.5 |     100 |     100 | 38                
+Verify	Run Jest tests	2026-10-11T13:02:15.7522598Z  shared/config                     |     100 |    97.95 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7523056Z   env.ts                           |     100 |    97.95 |     100 |     100 | 128               
+Verify	Run Jest tests	2026-10-11T13:02:15.7523504Z   featureFlags.ts                  |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7523975Z  shared/http                       |   98.83 |    95.45 |     100 |   98.73 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7524423Z   api.ts                           |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7524886Z   apiError.ts                      |   97.29 |    95.55 |     100 |   96.77 | 66                
+Verify	Run Jest tests	2026-10-11T13:02:15.7525363Z   httpClient.ts                    |     100 |    95.34 |     100 |     100 | 110               
+Verify	Run Jest tests	2026-10-11T13:02:15.7525850Z  shared/i18n                       |     100 |    83.33 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7526281Z   en.ts                            |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7526713Z   index.ts                         |     100 |    83.33 |     100 |     100 | 38                
+Verify	Run Jest tests	2026-10-11T13:02:15.7527187Z  shared/integrations               |   95.91 |       75 |   96.55 |   95.34 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7527658Z   analytics.ts                     |     100 |     87.5 |     100 |     100 | 25                
+Verify	Run Jest tests	2026-10-11T13:02:15.7528437Z   errorReporter.ts                 |   81.81 |       40 |   83.33 |   77.77 | 41,57             
+Verify	Run Jest tests	2026-10-11T13:02:15.7528918Z   featureFlags.ts                  |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7529658Z   pushNotifications.ts             |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7530136Z   seam.ts                          |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7530572Z   setup.ts                         |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7531014Z   updates.ts                       |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7531510Z   useScreenTracking.ts             |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7532009Z  shared/lib                        |   98.01 |    95.38 |   95.23 |   98.86 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7532459Z   logger.ts                        |   96.87 |    96.15 |   91.66 |   98.18 | 84                
+Verify	Run Jest tests	2026-10-11T13:02:15.7532912Z   useFetch.ts                      |     100 |     92.3 |     100 |     100 | 83                
+Verify	Run Jest tests	2026-10-11T13:02:15.7533810Z  shared/session                    |   98.42 |    89.58 |   97.95 |   98.36 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7534305Z   SessionProvider.tsx              |   97.95 |    81.81 |     100 |   97.87 | 151               
+Verify	Run Jest tests	2026-10-11T13:02:15.7534794Z   authService.ts                   |   97.22 |    91.66 |   91.66 |   97.14 | 77                
+Verify	Run Jest tests	2026-10-11T13:02:15.7535257Z   session.ts                       |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7535707Z   tokenStore.ts                    |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7536144Z  shared/storage                    |      92 |       80 |     100 |      92 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7536587Z   secureStorage.ts                 |      80 |       75 |     100 |      80 | 18,26             
+Verify	Run Jest tests	2026-10-11T13:02:15.7537028Z   storage.ts                       |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7537454Z  shared/ui                         |    97.5 |    83.33 |     100 |   97.36 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7537935Z   ConfigErrorScreen.tsx            |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7538407Z   ErrorBoundary.tsx                |   96.15 |       75 |     100 |   95.83 | 26                
+Verify	Run Jest tests	2026-10-11T13:02:15.7538867Z   LoadingScreen.tsx                |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7539520Z   theme.ts                         |     100 |      100 |     100 |     100 |                   
+Verify	Run Jest tests	2026-10-11T13:02:15.7540052Z -----------------------------------|---------|----------|---------|---------|-------------------
+Verify	Run Jest tests	2026-10-11T13:02:15.7834055Z 
+Verify	Run Jest tests	2026-10-11T13:02:15.7836092Z Test Suites: 29 passed, 29 total
+Verify	Run Jest tests	2026-10-11T13:02:15.7836453Z Tests:       276 passed, 276 total
+Verify	Run Jest tests	2026-10-11T13:02:15.7836625Z Snapshots:   0 total
+Verify	Run Jest tests	2026-10-11T13:02:15.7836811Z Time:        24.76 s
+Verify	Run Jest tests	2026-10-11T13:02:15.7836951Z Ran all test suites.
+Verify	Expo Doctor	﻿2026-10-11T13:02:15.8015044Z ##[group]Run npx expo-doctor
+Verify	Expo Doctor	2026-10-11T13:02:15.8015251Z ^[[36;1mnpx expo-doctor^[[0m
+Verify	Expo Doctor	2026-10-11T13:02:15.8069729Z shell: /usr/bin/bash -e {0}
+Verify	Expo Doctor	2026-10-11T13:02:15.8069906Z ##[endgroup]
+Verify	Expo Doctor	2026-10-11T13:02:16.8194200Z Running 21 checks on your project...
+Verify	Expo Doctor	2026-10-11T13:02:19.4143285Z 21/21 checks passed. No issues detected!
+Verify	Audit production dependencies (reviewed allowlist)	﻿2026-10-11T13:02:19.4511959Z ##[group]Run npm run audit:check
+Verify	Audit production dependencies (reviewed allowlist)	2026-10-11T13:02:19.4512169Z ^[[36;1mnpm run audit:check^[[0m
+Verify	Audit production dependencies (reviewed allowlist)	2026-10-11T13:02:19.4568364Z shell: /usr/bin/bash -e {0}
+Verify	Audit production dependencies (reviewed allowlist)	2026-10-11T13:02:19.4568543Z ##[endgroup]
+Verify	Audit production dependencies (reviewed allowlist)	2026-10-11T13:02:19.5290410Z 
+Verify	Audit production dependencies (reviewed allowlist)	2026-10-11T13:02:19.5291035Z > react-native-starter@1.0.0 audit:check
+Verify	Audit production dependencies (reviewed allowlist)	2026-10-11T13:02:19.5291309Z > node scripts/check-audit.js
+Verify	Audit production dependencies (reviewed allowlist)	2026-10-11T13:02:19.5291746Z 
+Verify	Audit production dependencies (reviewed allowlist)	2026-10-11T13:02:20.8723944Z high     braces GHSA-vfj7-8cjw-p6xm: allowlisted until 2027-01-09 (https://github.com/advisories/GHSA-vfj7-8cjw-p6xm)
+Verify	Audit production dependencies (reviewed allowlist)	2026-10-11T13:02:20.8724901Z high     node-forge GHSA-86w9-cpqp-85rv: allowlisted until 2027-01-09 (https://github.com/advisories/GHSA-86w9-cpqp-85rv)
+Verify	Audit production dependencies (reviewed allowlist)	2026-10-11T13:02:20.8725366Z moderate decode-uri-component GHSA-vcc3-ghjq-m6fr: reported (not gated)
+Verify	Audit production dependencies (reviewed allowlist)	2026-10-11T13:02:20.8725689Z moderate sprintf-js GHSA-hp3w-g68c-fv3c: reported (not gated)
+Verify	Audit production dependencies (reviewed allowlist)	2026-10-11T13:02:20.8725989Z moderate uuid GHSA-w5hq-g745-h8pq: reported (not gated)
+Verify	Audit production dependencies (reviewed allowlist)	2026-10-11T13:02:20.8726343Z npm audit --omit=dev: 5 advisories (records: 0 critical, 45 high, 16 moderate, 0 low).
+Verify	Audit production dependencies (reviewed allowlist)	2026-10-11T13:02:20.8726724Z No unreviewed high or critical advisories.
+Verify	Export web build	﻿2026-10-11T13:02:20.8858219Z ##[group]Run npx expo export --platform web --output-dir dist
+Verify	Export web build	2026-10-11T13:02:20.8858698Z ^[[36;1mnpx expo export --platform web --output-dir dist^[[0m
+Verify	Export web build	2026-10-11T13:02:20.8913231Z shell: /usr/bin/bash -e {0}
+Verify	Export web build	2026-10-11T13:02:20.8913494Z ##[endgroup]
+Verify	Export web build	2026-10-11T13:02:21.6246781Z Starting Metro Bundler
+Verify	Export web build	2026-10-11T13:02:21.6247099Z 
+Verify	Export web build	2026-10-11T13:02:34.6452199Z Web Bundled 12829ms index.ts (1183 modules)
+Verify	Export web build	2026-10-11T13:02:34.9672532Z 
+Verify	Export web build	2026-10-11T13:02:34.9679566Z › Assets (19):
+Verify	Export web build	2026-10-11T13:02:34.9743908Z node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.6e435534bd35da5fef04168860a9b8fa.ttf (1.3MB)
+Verify	Export web build	2026-10-11T13:02:34.9744927Z node_modules/expo-router/assets/arrow_down.017bc6ba3fc25503e5eb5e53826d48a8.png (9.5KB)
+Verify	Export web build	2026-10-11T13:02:34.9745592Z node_modules/expo-router/assets/error.d1ea1496f9057eb392d5bbf3732a61b7.png (469B)
+Verify	Export web build	2026-10-11T13:02:34.9746167Z node_modules/expo-router/assets/file.19eeb73b9593a38f8e9f418337fc7d10.png (138B)
+Verify	Export web build	2026-10-11T13:02:34.9746779Z node_modules/expo-router/assets/forward.d8b800c443b8972542883e0b9de2bdc6.png (188B)
+Verify	Export web build	2026-10-11T13:02:34.9747445Z node_modules/expo-router/assets/pkg.ab19f4cbc543357183a20571f68380a3.png (364B)
+Verify	Export web build	2026-10-11T13:02:34.9748148Z node_modules/expo-router/assets/react-navigation/elements/back-icon-mask.0a328cd9c1afd0afe8e3b1ec5165b1b4.png (653B)
+Verify	Export web build	2026-10-11T13:02:34.9748965Z node_modules/expo-router/assets/react-navigation/elements/back-icon.35ba0eaec5a4f5ed12ca16fabeae451d.png (207B)
+Verify	Export web build	2026-10-11T13:02:34.9750028Z node_modules/expo-router/assets/react-navigation/elements/clear-icon.c94f6478e7ae0cdd9f15de1fcb9e5e55.png (4 variations | 425B)
+Verify	Export web build	2026-10-11T13:02:34.9750977Z node_modules/expo-router/assets/react-navigation/elements/close-icon.808e1b1b9b53114ec2838071a7e6daa7.png (4 variations | 235B)
+Verify	Export web build	2026-10-11T13:02:34.9751873Z node_modules/expo-router/assets/react-navigation/elements/search-icon.286d67d3f74808a60a78d3ebf1a5fb57.png (928B)
+Verify	Export web build	2026-10-11T13:02:34.9752579Z node_modules/expo-router/assets/sitemap.412dd9275b6b48ad28f5e3d81bb1f626.png (465B)
+Verify	Export web build	2026-10-11T13:02:34.9753215Z node_modules/expo-router/assets/unmatched.20e71bdf79e3a97bf55fd9e164041578.png (4.8KB)
+Verify	Export web build	2026-10-11T13:02:34.9757687Z 
+Verify	Export web build	2026-10-11T13:02:34.9758395Z › web bundles (1):
+Verify	Export web build	2026-10-11T13:02:34.9782813Z _expo/static/js/web/index-07c44cb4875611c8d899b5a4f761577c.js (2.3MB)
+Verify	Export web build	2026-10-11T13:02:34.9783166Z 
+Verify	Export web build	2026-10-11T13:02:34.9783501Z › Files (3):
+Verify	Export web build	2026-10-11T13:02:34.9784042Z favicon.ico (15KB)
+Verify	Export web build	2026-10-11T13:02:34.9784251Z index.html (1.2KB)
+Verify	Export web build	2026-10-11T13:02:34.9784588Z metadata.json (49B)
+Verify	Export web build	2026-10-11T13:02:34.9843557Z 
+Verify	Export web build	2026-10-11T13:02:34.9847009Z Exported: dist
+Verify	Check docs (snippets compile, paths and scripts exist)	﻿2026-10-11T13:02:35.1386033Z ##[group]Run npm install --no-save zustand@5 @reduxjs/toolkit@2 react-redux@9 jotai@3 @tanstack/react-query@5
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:35.1386929Z ^[[36;1mnpm install --no-save zustand@5 @reduxjs/toolkit@2 react-redux@9 jotai@3 @tanstack/react-query@5^[[0m
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:35.1387488Z ^[[36;1mnpm run docs:check^[[0m
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:35.1459557Z shell: /usr/bin/bash -e {0}
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:35.1459999Z ##[endgroup]
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:38.2180172Z 
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:38.2180800Z added 14 packages, and audited 1082 packages in 3s
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:38.2181082Z 
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:38.2181176Z 183 packages are looking for funding
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:38.2181813Z   run `npm fund` for details
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:38.3359403Z 
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:38.3360155Z 65 vulnerabilities (16 moderate, 49 high)
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:38.3360443Z 
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:38.3360664Z To address all issues (including breaking changes), run:
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:38.3360998Z   npm audit fix --force
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:38.3361145Z 
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:38.3361255Z Run `npm audit` for details.
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:38.4401130Z 
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:38.4401828Z > react-native-starter@1.0.0 docs:check
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:38.4402142Z > node scripts/check-docs.js
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:38.4402248Z 
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:40.4838050Z Checked 22 files: 43 TypeScript snippets compiled with tsc.
+Verify	Check docs (snippets compile, paths and scripts exist)	2026-10-11T13:02:40.4838519Z No problems.
+Verify	Post Set up Node.js	﻿2026-10-11T13:02:40.5010224Z Post job cleanup.
+Verify	Post Set up Node.js	2026-10-11T13:02:40.5842942Z (node:3007) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Verify	Post Set up Node.js	2026-10-11T13:02:40.5843493Z (Use `node --trace-deprecation ...` to show where the warning was created)
+Verify	Post Set up Node.js	2026-10-11T13:02:40.5845383Z Cache hit occurred on the primary key node-cache-Linux-x64-npm-10f9dc59c99c82563481e37a50745bae137261a45ffc8c4ba105eb544b91396b, not saving cache.
+Verify	Post Check out repository	﻿2026-10-11T13:02:40.5964906Z Post job cleanup.
+Verify	Post Check out repository	2026-10-11T13:02:40.6545936Z [command]/usr/bin/git version
+Verify	Post Check out repository	2026-10-11T13:02:40.6584262Z git version 2.55.0
+Verify	Post Check out repository	2026-10-11T13:02:40.6611198Z Temporarily overriding HOME='/home/runner/work/_temp/a9159f5d-fef9-4225-bd04-9ab7b5b0becb' before making global git config changes
+Verify	Post Check out repository	2026-10-11T13:02:40.6612113Z Adding repository directory to the temporary git global config as a safe directory
+Verify	Post Check out repository	2026-10-11T13:02:40.6615218Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/react-native-starter/react-native-starter
+Verify	Post Check out repository	2026-10-11T13:02:40.6652519Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Verify	Post Check out repository	2026-10-11T13:02:40.6684419Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Verify	Post Check out repository	2026-10-11T13:02:40.6895416Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Verify	Post Check out repository	2026-10-11T13:02:40.6928174Z http.https://github.com/.extraheader
+Verify	Post Check out repository	2026-10-11T13:02:40.6937502Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+Verify	Post Check out repository	2026-10-11T13:02:40.6993238Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Verify	Post Check out repository	2026-10-11T13:02:40.7230543Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Verify	Post Check out repository	2026-10-11T13:02:40.7267296Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Verify	Complete job	﻿2026-10-11T13:02:40.7596805Z Cleaning up orphan processes
+Verify	Complete job	2026-10-11T13:02:40.7820041Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
