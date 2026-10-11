@@ -268,6 +268,7 @@ describe('init-project on a copy of the template', () => {
       ],
       { cwd: dir, encoding: 'utf8' }
     );
+    expect(leftovers.status).toBe(1);
     expect(leftovers.stdout).toBe('');
 
     // Formatted: Prettier finds nothing to change.
@@ -295,6 +296,7 @@ describe('init-project on a copy of the template', () => {
       cwd: dir,
       encoding: 'utf8',
     });
+    expect(markers.status).toBe(1);
     expect(markers.stdout).toBe('');
   }, 60000);
 
@@ -328,12 +330,14 @@ describe('init-project on a copy of the template', () => {
         'starter',
         '--',
         '.',
-        ':!__tests__',
-        ':!package-lock.json',
-        ':!scripts/init-project.js',
+        ':(exclude)__tests__',
+        ':(exclude)package-lock.json',
+        ':(exclude)scripts/init-project.js',
       ],
       { cwd: dir, encoding: 'utf8' }
     );
+    // Exit 1: no match (an invalid pathspec would exit 128).
+    expect(starter.status).toBe(1);
     expect(starter.stdout).toBe('');
     expect(
       JSON.parse(read(dir, 'package.json')).scripts['remove-demo']

@@ -121,6 +121,7 @@ describe('remove-demo on a copy of the template', () => {
       ['grep', '--cached', '-niE', DEMO_WORDS, '--', ...CHECKED_PATHS],
       { cwd: dir, encoding: 'utf8' }
     );
+    expect(leftovers.status).toBe(1); // no match (128 would be a bad pathspec)
     expect(leftovers.stdout).toBe('');
 
     // The env template turns the demo backends off.
