@@ -1,0 +1,7 @@
+$ gh release view v1.1.1
+{"isDraft":false,"isPrerelease":false,"name":"v1.1.1: MVP baseline (maintenance mode)","publishedAt":"2026-10-11T14:53:31Z","tagName":"v1.1.1","url":"https://github.com/koniz-dev/react-native-starter/releases/tag/v1.1.1"}
+
+$ gh api repos/koniz-dev/react-native-starter/releases/latest --jq .tag_name
+v1.1.1
+$ git rev-parse v1.1.1^{commit}
+ea6e2a4e1c7c7bb55116654f47e38e6e7a52da96

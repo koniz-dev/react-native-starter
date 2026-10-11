@@ -1,0 +1,219 @@
+Open the review issue	Set up job	﻿2026-10-11T14:52:30.0583377Z Current runner version: '2.337.0'
+Open the review issue	Set up job	2026-10-11T14:52:30.0612341Z ##[group]Runner Image Provisioner
+Open the review issue	Set up job	2026-10-11T14:52:30.0613505Z Hosted Compute Agent
+Open the review issue	Set up job	2026-10-11T14:52:30.0614111Z Version: 20261002.596
+Open the review issue	Set up job	2026-10-11T14:52:30.0614784Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+Open the review issue	Set up job	2026-10-11T14:52:30.0615577Z Build Date: 2026-10-02T22:28:27Z
+Open the review issue	Set up job	2026-10-11T14:52:30.0616273Z Worker ID: {203a65da-c47c-459e-a63d-2ce5d0c89794}
+Open the review issue	Set up job	2026-10-11T14:52:30.0617040Z Region: eastus2
+Open the review issue	Set up job	2026-10-11T14:52:30.0617600Z Cloud: Azure
+Open the review issue	Set up job	2026-10-11T14:52:30.0618119Z ##[endgroup]
+Open the review issue	Set up job	2026-10-11T14:52:30.0620016Z ##[group]Operating System
+Open the review issue	Set up job	2026-10-11T14:52:30.0620692Z Ubuntu
+Open the review issue	Set up job	2026-10-11T14:52:30.0621305Z 24.04.5
+Open the review issue	Set up job	2026-10-11T14:52:30.0621844Z LTS
+Open the review issue	Set up job	2026-10-11T14:52:30.0622355Z ##[endgroup]
+Open the review issue	Set up job	2026-10-11T14:52:30.0623057Z ##[group]Runner Image
+Open the review issue	Set up job	2026-10-11T14:52:30.0623657Z Image: ubuntu-24.04
+Open the review issue	Set up job	2026-10-11T14:52:30.0624278Z Version: 20261004.327.1
+Open the review issue	Set up job	2026-10-11T14:52:30.0625417Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+Open the review issue	Set up job	2026-10-11T14:52:30.0627309Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+Open the review issue	Set up job	2026-10-11T14:52:30.0628576Z ##[endgroup]
+Open the review issue	Set up job	2026-10-11T14:52:30.0630431Z ##[group]GITHUB_TOKEN Permissions
+Open the review issue	Set up job	2026-10-11T14:52:30.0633185Z Contents: read
+Open the review issue	Set up job	2026-10-11T14:52:30.0633966Z Issues: write
+Open the review issue	Set up job	2026-10-11T14:52:30.0634535Z Metadata: read
+Open the review issue	Set up job	2026-10-11T14:52:30.0635158Z ##[endgroup]
+Open the review issue	Set up job	2026-10-11T14:52:30.0637494Z Secret source: Actions
+Open the review issue	Set up job	2026-10-11T14:52:30.0638897Z Cache mode: write
+Open the review issue	Set up job	2026-10-11T14:52:30.0639998Z Prepare workflow directory
+Open the review issue	Set up job	2026-10-11T14:52:30.0982799Z Prepare all required actions
+Open the review issue	Set up job	2026-10-11T14:52:30.1032909Z Getting action download info
+Open the review issue	Set up job	2026-10-11T14:52:30.3131699Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+Open the review issue	Set up job	2026-10-11T14:52:30.4087876Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+Open the review issue	Set up job	2026-10-11T14:52:30.5953735Z Complete job name: Open the review issue
+Open the review issue	Check out repository	﻿2026-10-11T14:52:30.6725434Z ##[group]Run actions/checkout@v4
+Open the review issue	Check out repository	2026-10-11T14:52:30.6726345Z with:
+Open the review issue	Check out repository	2026-10-11T14:52:30.6726847Z   repository: koniz-dev/react-native-starter
+Open the review issue	Check out repository	2026-10-11T14:52:30.6731092Z   token: ***
+Open the review issue	Check out repository	2026-10-11T14:52:30.6731544Z   ssh-strict: true
+Open the review issue	Check out repository	2026-10-11T14:52:30.6731997Z   ssh-user: git
+Open the review issue	Check out repository	2026-10-11T14:52:30.6732459Z   persist-credentials: true
+Open the review issue	Check out repository	2026-10-11T14:52:30.6732969Z   clean: true
+Open the review issue	Check out repository	2026-10-11T14:52:30.6733426Z   sparse-checkout-cone-mode: true
+Open the review issue	Check out repository	2026-10-11T14:52:30.6733950Z   fetch-depth: 1
+Open the review issue	Check out repository	2026-10-11T14:52:30.6734389Z   fetch-tags: false
+Open the review issue	Check out repository	2026-10-11T14:52:30.6734846Z   show-progress: true
+Open the review issue	Check out repository	2026-10-11T14:52:30.6735296Z   lfs: false
+Open the review issue	Check out repository	2026-10-11T14:52:30.6735712Z   submodules: false
+Open the review issue	Check out repository	2026-10-11T14:52:30.6736166Z   set-safe-directory: true
+Open the review issue	Check out repository	2026-10-11T14:52:30.6736680Z   allow-unsafe-pr-checkout: false
+Open the review issue	Check out repository	2026-10-11T14:52:30.6737470Z ##[endgroup]
+Open the review issue	Check out repository	2026-10-11T14:52:30.7779351Z Syncing repository: koniz-dev/react-native-starter
+Open the review issue	Check out repository	2026-10-11T14:52:30.7781765Z ##[group]Getting Git version info
+Open the review issue	Check out repository	2026-10-11T14:52:30.7782733Z Working directory is '/home/runner/work/react-native-starter/react-native-starter'
+Open the review issue	Check out repository	2026-10-11T14:52:30.7784148Z [command]/usr/bin/git version
+Open the review issue	Check out repository	2026-10-11T14:52:30.7879458Z git version 2.55.0
+Open the review issue	Check out repository	2026-10-11T14:52:30.7904242Z ##[endgroup]
+Open the review issue	Check out repository	2026-10-11T14:52:30.7919975Z Temporarily overriding HOME='/home/runner/work/_temp/87ea7a97-ada6-4cfc-b021-b4f11a030d1d' before making global git config changes
+Open the review issue	Check out repository	2026-10-11T14:52:30.7922395Z Adding repository directory to the temporary git global config as a safe directory
+Open the review issue	Check out repository	2026-10-11T14:52:30.7926069Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/react-native-starter/react-native-starter
+Open the review issue	Check out repository	2026-10-11T14:52:30.7988830Z Deleting the contents of '/home/runner/work/react-native-starter/react-native-starter'
+Open the review issue	Check out repository	2026-10-11T14:52:30.7995296Z ##[group]Initializing the repository
+Open the review issue	Check out repository	2026-10-11T14:52:30.7999420Z [command]/usr/bin/git init /home/runner/work/react-native-starter/react-native-starter
+Open the review issue	Check out repository	2026-10-11T14:52:30.8135818Z hint: Using 'master' as the name for the initial branch. This default branch name
+Open the review issue	Check out repository	2026-10-11T14:52:30.8138168Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Open the review issue	Check out repository	2026-10-11T14:52:30.8139510Z hint: to use in all of your new repositories, which will suppress this warning,
+Open the review issue	Check out repository	2026-10-11T14:52:30.8140321Z hint: call:
+Open the review issue	Check out repository	2026-10-11T14:52:30.8140758Z hint:
+Open the review issue	Check out repository	2026-10-11T14:52:30.8141313Z hint: 	git config --global init.defaultBranch <name>
+Open the review issue	Check out repository	2026-10-11T14:52:30.8141977Z hint:
+Open the review issue	Check out repository	2026-10-11T14:52:30.8142601Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Open the review issue	Check out repository	2026-10-11T14:52:30.8143615Z hint: 'development'. The just-created branch can be renamed via this command:
+Open the review issue	Check out repository	2026-10-11T14:52:30.8144381Z hint:
+Open the review issue	Check out repository	2026-10-11T14:52:30.8144798Z hint: 	git branch -m <name>
+Open the review issue	Check out repository	2026-10-11T14:52:30.8145276Z hint:
+Open the review issue	Check out repository	2026-10-11T14:52:30.8145899Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Open the review issue	Check out repository	2026-10-11T14:52:30.8152547Z Initialized empty Git repository in /home/runner/work/react-native-starter/react-native-starter/.git/
+Open the review issue	Check out repository	2026-10-11T14:52:30.8165517Z [command]/usr/bin/git remote add origin https://github.com/koniz-dev/react-native-starter
+Open the review issue	Check out repository	2026-10-11T14:52:30.8229497Z ##[endgroup]
+Open the review issue	Check out repository	2026-10-11T14:52:30.8230630Z ##[group]Disabling automatic garbage collection
+Open the review issue	Check out repository	2026-10-11T14:52:30.8233306Z [command]/usr/bin/git config --local gc.auto 0
+Open the review issue	Check out repository	2026-10-11T14:52:30.8270077Z ##[endgroup]
+Open the review issue	Check out repository	2026-10-11T14:52:30.8271340Z ##[group]Setting up auth
+Open the review issue	Check out repository	2026-10-11T14:52:30.8280737Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Open the review issue	Check out repository	2026-10-11T14:52:30.8319488Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Open the review issue	Check out repository	2026-10-11T14:52:30.8721582Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Open the review issue	Check out repository	2026-10-11T14:52:30.8760453Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Open the review issue	Check out repository	2026-10-11T14:52:30.8997439Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Open the review issue	Check out repository	2026-10-11T14:52:30.9026012Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Open the review issue	Check out repository	2026-10-11T14:52:30.9265501Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Open the review issue	Check out repository	2026-10-11T14:52:30.9313405Z ##[endgroup]
+Open the review issue	Check out repository	2026-10-11T14:52:30.9314771Z ##[group]Fetching the repository
+Open the review issue	Check out repository	2026-10-11T14:52:30.9329261Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +81805c2fa8f81dd4e98411d1a70dee4cc7b1b13d:refs/remotes/origin/main
+Open the review issue	Check out repository	2026-10-11T14:52:31.1932393Z From https://github.com/koniz-dev/react-native-starter
+Open the review issue	Check out repository	2026-10-11T14:52:31.1933896Z  * [new ref]         81805c2fa8f81dd4e98411d1a70dee4cc7b1b13d -> origin/main
+Open the review issue	Check out repository	2026-10-11T14:52:31.1937626Z ##[endgroup]
+Open the review issue	Check out repository	2026-10-11T14:52:31.1939304Z ##[group]Determining the checkout info
+Open the review issue	Check out repository	2026-10-11T14:52:31.1940929Z ##[endgroup]
+Open the review issue	Check out repository	2026-10-11T14:52:31.1947144Z [command]/usr/bin/git sparse-checkout disable
+Open the review issue	Check out repository	2026-10-11T14:52:31.2001922Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Open the review issue	Check out repository	2026-10-11T14:52:31.2034926Z ##[group]Checking out the ref
+Open the review issue	Check out repository	2026-10-11T14:52:31.2039423Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Open the review issue	Check out repository	2026-10-11T14:52:31.2208790Z Switched to a new branch 'main'
+Open the review issue	Check out repository	2026-10-11T14:52:31.2215050Z branch 'main' set up to track 'origin/main'.
+Open the review issue	Check out repository	2026-10-11T14:52:31.2221460Z ##[endgroup]
+Open the review issue	Check out repository	2026-10-11T14:52:31.2264930Z [command]/usr/bin/git log -1 --format=%H
+Open the review issue	Check out repository	2026-10-11T14:52:31.2292191Z 81805c2fa8f81dd4e98411d1a70dee4cc7b1b13d
+Open the review issue	Set up Node.js	﻿2026-10-11T14:52:31.2605366Z ##[group]Run actions/setup-node@v4
+Open the review issue	Set up Node.js	2026-10-11T14:52:31.2606063Z with:
+Open the review issue	Set up Node.js	2026-10-11T14:52:31.2606513Z   node-version-file: .nvmrc
+Open the review issue	Set up Node.js	2026-10-11T14:52:31.2607079Z   cache: npm
+Open the review issue	Set up Node.js	2026-10-11T14:52:31.2607532Z   always-auth: false
+Open the review issue	Set up Node.js	2026-10-11T14:52:31.2608430Z   check-latest: false
+Open the review issue	Set up Node.js	2026-10-11T14:52:31.2613484Z   token: ***
+Open the review issue	Set up Node.js	2026-10-11T14:52:31.2613954Z ##[endgroup]
+Open the review issue	Set up Node.js	2026-10-11T14:52:31.3985870Z Resolved .nvmrc as 24
+Open the review issue	Set up Node.js	2026-10-11T14:52:31.4044551Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/x64
+Open the review issue	Set up Node.js	2026-10-11T14:52:31.4050232Z (node:2328) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Open the review issue	Set up Node.js	2026-10-11T14:52:31.4053285Z (Use `node --trace-deprecation ...` to show where the warning was created)
+Open the review issue	Set up Node.js	2026-10-11T14:52:31.4055729Z ##[group]Environment details
+Open the review issue	Set up Node.js	2026-10-11T14:52:31.8403822Z node: v24.21.0
+Open the review issue	Set up Node.js	2026-10-11T14:52:31.8405275Z npm: 11.19.0
+Open the review issue	Set up Node.js	2026-10-11T14:52:31.8406454Z yarn: 1.22.22
+Open the review issue	Set up Node.js	2026-10-11T14:52:31.8409147Z ##[endgroup]
+Open the review issue	Set up Node.js	2026-10-11T14:52:31.8429714Z [command]/opt/hostedtoolcache/node/24.21.0/x64/bin/npm config get cache
+Open the review issue	Set up Node.js	2026-10-11T14:52:31.9592056Z /home/runner/.npm
+Open the review issue	Set up Node.js	2026-10-11T14:52:32.0450317Z Cache hit for: node-cache-Linux-x64-npm-10f9dc59c99c82563481e37a50745bae137261a45ffc8c4ba105eb544b91396b
+Open the review issue	Set up Node.js	2026-10-11T14:52:32.0570419Z (node:2328) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+Open the review issue	Set up Node.js	2026-10-11T14:52:32.8122023Z Received 156509062 of 156509062 (100.0%), 209.9 MBs/sec
+Open the review issue	Set up Node.js	2026-10-11T14:52:32.8122968Z Cache Size: ~149 MB (156509062 B)
+Open the review issue	Set up Node.js	2026-10-11T14:52:32.8183238Z [command]/usr/bin/tar -xf /home/runner/work/_temp/6284d001-d36d-4e53-a980-49f38b712930/cache.tzst -P -C /home/runner/work/react-native-starter/react-native-starter --use-compress-program unzstd
+Open the review issue	Set up Node.js	2026-10-11T14:52:33.3461181Z Cache restored successfully
+Open the review issue	Set up Node.js	2026-10-11T14:52:33.3536459Z Cache restored from key: node-cache-Linux-x64-npm-10f9dc59c99c82563481e37a50745bae137261a45ffc8c4ba105eb544b91396b
+Open the review issue	Install dependencies	﻿2026-10-11T14:52:33.3793669Z ##[group]Run npm ci
+Open the review issue	Install dependencies	2026-10-11T14:52:33.3794012Z ^[[36;1mnpm ci^[[0m
+Open the review issue	Install dependencies	2026-10-11T14:52:33.4094557Z shell: /usr/bin/bash -e {0}
+Open the review issue	Install dependencies	2026-10-11T14:52:33.4094964Z ##[endgroup]
+Open the review issue	Install dependencies	2026-10-11T14:52:38.1983967Z npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+Open the review issue	Install dependencies	2026-10-11T14:52:38.4823796Z npm warn deprecated abab@2.0.6: Use your platform's native atob() and btoa() methods instead
+Open the review issue	Install dependencies	2026-10-11T14:52:38.5113279Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Open the review issue	Install dependencies	2026-10-11T14:52:38.5145510Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Open the review issue	Install dependencies	2026-10-11T14:52:38.5174340Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Open the review issue	Install dependencies	2026-10-11T14:52:38.5193235Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Open the review issue	Install dependencies	2026-10-11T14:52:38.8605432Z npm warn deprecated domexception@4.0.0: Use your platform's native DOMException instead
+Open the review issue	Install dependencies	2026-10-11T14:52:39.8930997Z npm warn deprecated uuid@7.0.3: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+Open the review issue	Install dependencies	2026-10-11T14:52:53.9042430Z 
+Open the review issue	Install dependencies	2026-10-11T14:52:53.9043508Z added 1067 packages, and audited 1068 packages in 20s
+Open the review issue	Install dependencies	2026-10-11T14:52:53.9044063Z 
+Open the review issue	Install dependencies	2026-10-11T14:52:53.9044421Z 180 packages are looking for funding
+Open the review issue	Install dependencies	2026-10-11T14:52:53.9045171Z   run `npm fund` for details
+Open the review issue	Install dependencies	2026-10-11T14:52:54.0723841Z 
+Open the review issue	Install dependencies	2026-10-11T14:52:54.0724731Z 65 vulnerabilities (16 moderate, 49 high)
+Open the review issue	Install dependencies	2026-10-11T14:52:54.0725192Z 
+Open the review issue	Install dependencies	2026-10-11T14:52:54.0725636Z To address all issues (including breaking changes), run:
+Open the review issue	Install dependencies	2026-10-11T14:52:54.0726252Z   npm audit fix --force
+Open the review issue	Install dependencies	2026-10-11T14:52:54.0726502Z 
+Open the review issue	Install dependencies	2026-10-11T14:52:54.0726724Z Run `npm audit` for details.
+Open the review issue	Open the issue (once per month)	﻿2026-10-11T14:52:54.1875249Z ##[group]Run month=$(date -u +%Y-%m)
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1875674Z ^[[36;1mmonth=$(date -u +%Y-%m)^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1876446Z ^[[36;1mtitle="Dependency review $month"^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1877170Z ^[[36;1mif gh issue list --state all --search "\"$title\" in:title" --json title \^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1877901Z ^[[36;1m  --jq '.[].title' | grep -qx "$title"; then^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1878494Z ^[[36;1m  echo "$title already exists"^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1878906Z ^[[36;1m  exit 0^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1879119Z ^[[36;1mfi^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1879394Z ^[[36;1maudit=$(npm run --silent audit:check 2>&1 || true)^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1879766Z ^[[36;1moutdated=$(npm outdated 2>&1 || true)^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1880048Z ^[[36;1m{^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1880244Z ^[[36;1m  echo "## Context"^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1880484Z ^[[36;1m  echo^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1880894Z ^[[36;1m  echo "Monthly dependency and security review (docs/maintainers/dependency-review.md)."^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1881593Z ^[[36;1m  echo "Owner: koniz-dev. Opened by the scheduled workflow on \`$(git rev-parse --short HEAD)\`."^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1882142Z ^[[36;1m  echo^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1882480Z ^[[36;1m  echo '### `npm run audit:check`'^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1882791Z ^[[36;1m  echo^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1883001Z ^[[36;1m  echo '```'^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1883218Z ^[[36;1m  echo "$audit"^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1883456Z ^[[36;1m  echo '```'^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1883663Z ^[[36;1m  echo^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1883871Z ^[[36;1m  echo '### `npm outdated`'^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1884127Z ^[[36;1m  echo^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1884332Z ^[[36;1m  echo '```'^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1884594Z ^[[36;1m  echo "${outdated:-Everything is up to date.}"^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1884906Z ^[[36;1m  echo '```'^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1885116Z ^[[36;1m  echo^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1885341Z ^[[36;1m  echo "## Acceptance criteria"^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1885603Z ^[[36;1m  echo^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1886255Z ^[[36;1m  echo "1. Every high or critical advisory is fixed, or reviewed in \`scripts/audit-allowlist.json\` with a \`reviewBy\` at most 3 months out; tracking issues are re-checked."^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1887291Z ^[[36;1m  echo "2. Patch and minor updates that the Expo SDK allows (\`npx expo install --check\`) are applied, or deferred with a reason."^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1888078Z ^[[36;1m  echo "3. A new Expo SDK release, if any, has an upgrade issue (support policy: within about 4 weeks)."^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1888838Z ^[[36;1m  echo "4. Gates pass; CI is green. The review is recorded as evidence."^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1889220Z ^[[36;1m} > body.md^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1889518Z ^[[36;1mgh issue create --title "$title" --body-file body.md \^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1889996Z ^[[36;1m  --label task --label epic:tooling --label priority:P2 --label status:todo^[[0m
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1955596Z shell: /usr/bin/bash -e {0}
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1955867Z env:
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1959050Z   GH_TOKEN: ***
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:54.1959295Z ##[endgroup]
+Open the review issue	Open the issue (once per month)	2026-10-11T14:52:59.7669488Z https://github.com/koniz-dev/react-native-starter/issues/60
+Open the review issue	Post Set up Node.js	﻿2026-10-11T14:52:59.7792643Z Post job cleanup.
+Open the review issue	Post Set up Node.js	2026-10-11T14:52:59.8992826Z (node:2463) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Open the review issue	Post Set up Node.js	2026-10-11T14:52:59.8994320Z (Use `node --trace-deprecation ...` to show where the warning was created)
+Open the review issue	Post Set up Node.js	2026-10-11T14:52:59.8996319Z Cache hit occurred on the primary key node-cache-Linux-x64-npm-10f9dc59c99c82563481e37a50745bae137261a45ffc8c4ba105eb544b91396b, not saving cache.
+Open the review issue	Post Check out repository	﻿2026-10-11T14:52:59.9146128Z Post job cleanup.
+Open the review issue	Post Check out repository	2026-10-11T14:52:59.9982402Z [command]/usr/bin/git version
+Open the review issue	Post Check out repository	2026-10-11T14:53:00.0027887Z git version 2.55.0
+Open the review issue	Post Check out repository	2026-10-11T14:53:00.0073278Z Temporarily overriding HOME='/home/runner/work/_temp/66260192-5b65-4b68-b2fc-b3558d213a98' before making global git config changes
+Open the review issue	Post Check out repository	2026-10-11T14:53:00.0074493Z Adding repository directory to the temporary git global config as a safe directory
+Open the review issue	Post Check out repository	2026-10-11T14:53:00.0089950Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/react-native-starter/react-native-starter
+Open the review issue	Post Check out repository	2026-10-11T14:53:00.0122977Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Open the review issue	Post Check out repository	2026-10-11T14:53:00.0161370Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Open the review issue	Post Check out repository	2026-10-11T14:53:00.0427661Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Open the review issue	Post Check out repository	2026-10-11T14:53:00.0458171Z http.https://github.com/.extraheader
+Open the review issue	Post Check out repository	2026-10-11T14:53:00.0472634Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+Open the review issue	Post Check out repository	2026-10-11T14:53:00.0517878Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Open the review issue	Post Check out repository	2026-10-11T14:53:00.0782318Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Open the review issue	Post Check out repository	2026-10-11T14:53:00.0824804Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Open the review issue	Complete job	﻿2026-10-11T14:53:00.1217375Z Cleaning up orphan processes
+Open the review issue	Complete job	2026-10-11T14:53:00.1576054Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

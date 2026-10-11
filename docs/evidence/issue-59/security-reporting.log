@@ -1,0 +1,8 @@
+$ gh api repos/koniz-dev/react-native-starter/private-vulnerability-reporting   (before)
+{"enabled":false}
+$ gh api -X PUT repos/koniz-dev/react-native-starter/private-vulnerability-reporting
+exit 0
+$ gh api repos/koniz-dev/react-native-starter/private-vulnerability-reporting   (after)
+{"enabled":true}
+$ gh api graphql: repository { isSecurityPolicyEnabled securityPolicyUrl }
+{"data":{"repository":{"isSecurityPolicyEnabled":true,"securityPolicyUrl":"https://github.com/koniz-dev/react-native-starter/security/policy"}}}

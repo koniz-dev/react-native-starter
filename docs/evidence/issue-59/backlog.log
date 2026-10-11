@@ -1,0 +1,7 @@
+$ gh issue list --state open (2026-10-11, after #59 work)
+#60 Dependency review 2026-10 [task,epic:tooling,priority:P2,status:todo]
+#59 Maintenance readiness: move the starter to maintenance mode at v1.1.1 [task,epic:docs,priority:P1,status:in-progress]
+#43 Track upstream fixes for the allowlisted npm audit findings [task,epic:tooling,priority:P2,status:blocked]
+
+$ gh issue list --state open --label priority:P0 / priority:P1 (excluding #59 itself)
+#59 Maintenance readiness: move the starter to maintenance mode at v1.1.1
