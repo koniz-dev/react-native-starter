@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="iPhone 16 Plus - iOS 18.6 - E0ACAF33-2846-4E2E-B304-D2322BC2F008" tests="5" failures="0" time="300.217" timestamp="2026-10-11T23:03:43">
+    <testcase id="Cold start opens Home" name="Cold start opens Home" classname="Cold start opens Home" file=".maestro/01-cold-start.yaml" time="48.633" timestamp="2026-10-11T23:03:43" status="SUCCESS"/>
+    <testcase id="Tab navigation" name="Tab navigation" classname="Tab navigation" file=".maestro/02-tabs.yaml" time="34.5" timestamp="2026-10-11T23:04:32" status="SUCCESS"/>
+    <testcase id="Sign-in session survives a relaunch; logout clears it" name="Sign-in session survives a relaunch; logout clears it" classname="Sign-in session survives a relaunch; logout clears it" file=".maestro/03-auth-session.yaml" time="124.309" timestamp="2026-10-11T23:05:06" status="SUCCESS"/>
+    <testcase id="Explore error state and Retry" name="Explore error state and Retry" classname="Explore error state and Retry" file=".maestro/05-explore-error-retry.yaml" time="35.393" timestamp="2026-10-11T23:07:11" status="SUCCESS"/>
+    <testcase id="Login keyboard return keys" name="Login keyboard return keys" classname="Login keyboard return keys" file=".maestro/04-login-keyboard.yaml" time="57.33" timestamp="2026-10-11T23:07:46" status="SUCCESS"/>
+  </testsuite>
+</testsuites>
