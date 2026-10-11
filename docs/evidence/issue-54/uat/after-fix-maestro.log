@@ -1,0 +1,54 @@
+Running on Medium_Phone_API_37.0
+ > Flow Handled request failures without a LogBox toast
+Run scripts/set-api-mode.js... COMPLETED
+Run subflows/open-app.yaml...
+  Run flow when ${CLEAR_STATE == 'true'} is true...
+    Clear state of ${APP_ID}... COMPLETED
+    Run flow when Platform is IOS...
+    Run flow when Platform is IOS... SKIPPED
+  Run flow when true is true... COMPLETED
+  Launch app "${APP_ID}"... COMPLETED
+  Open ${APP_URL}... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)...
+    Assert that (Optional) id: tab-home is visible... WARNED
+    Run flow when Platform is IOS and "Open in .*" is visible...
+    Run flow when Platform is IOS and "Open in .*" is visible... SKIPPED
+    Run flow when "Development servers" is visible...
+    Run flow when "Development servers" is visible... SKIPPED
+    Tap on (Optional) "Wait"... WARNED
+    Tap on (Optional) "Continue"... WARNED
+    Run flow when Platform is ANDROID and "Go home" is visible...
+    Run flow when Platform is ANDROID and "Go home" is visible... SKIPPED
+    Run flow when Platform is IOS and "Go home" is visible...
+    Run flow when Platform is IOS and "Go home" is visible... SKIPPED
+    Wait for animation to end... COMPLETED
+      Press back... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)... COMPLETED
+  Assert that "Session" is visible... COMPLETED
+Run subflows/open-app.yaml... COMPLETED
+Assert that "Not signed in" is visible... COMPLETED
+Tap on id: sign-in-button... COMPLETED
+Assert that "Welcome Back" is visible... COMPLETED
+Tap on id: login-username... COMPLETED
+Input text emilys... COMPLETED
+Tap on id: login-password... COMPLETED
+Input text wrongpass... COMPLETED
+Hide Keyboard... COMPLETED
+Tap on id: login-submit... COMPLETED
+Assert that "Invalid credentials" is visible... COMPLETED
+Take screenshot 01-wrong-password... COMPLETED
+Assert that "API .* failed.*" is not visible... COMPLETED
+Swipe from (50%, 30%) to (50%, 31%) in 5000 ms... COMPLETED
+Take screenshot 01b-wrong-password-later... COMPLETED
+Assert that "API .* failed.*" is not visible... COMPLETED
+Press back... COMPLETED
+Assert that "Not signed in" is visible... COMPLETED
+Tap on id: tab-explore... COMPLETED
+Assert that "Service unavailable" is visible... COMPLETED
+Swipe from (50%, 30%) to (50%, 31%) in 2500 ms... COMPLETED
+Take screenshot 02-explore-503... COMPLETED
+Assert that "API .* failed.*" is not visible... COMPLETED
+Tap on id: tab-home... COMPLETED
+Assert that "Not signed in" is visible... COMPLETED
+Take screenshot 03-home-after-tab-tap... COMPLETED
+maestro exit 0

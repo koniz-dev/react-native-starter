@@ -1,0 +1,14 @@
+env: load .env
+env: export EXPO_PUBLIC_API_TRUSTED_ORIGINS EXPO_PUBLIC_AUTH_API_URL
+Starting project at /Users/nguyenanhkiet/Playground/react-native-starter
+Starting Metro Bundler
+
+warning: Bundler cache is empty, rebuilding (this may take a minute)
+Waiting on http://localhost:8081
+
+Logs for your project will appear below.
+Android Bundled 13875ms index.ts (1770 modules)
+Android Bundled 9921ms index.ts (1738 modules)
+ DEBUG  [analytics] screen /
+ DEBUG  [analytics] screen /login
+ WARN  API POST /auth/login failed: client (400)
