@@ -8,8 +8,7 @@ Project scripts, run from the project root (most through `npm run`).
 
 Turns the template into your project (`npm run init-project`, prompts for
 each value, or flags; `-- --dry-run` to preview): sets the app identity,
-optionally removes the demo, deletes the maintainer files listed in
-`maintainer-files.json`, and then deletes itself. See
+optionally removes the demo, and then deletes itself. See
 [`docs/getting-started.md`](../docs/getting-started.md#make-it-your-project-first).
 
 <!-- @init remove-block-end -->

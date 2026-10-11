@@ -18,9 +18,8 @@
  * 5. every `docs/<page>.md#anchor` mentioned in source files (comments in
  *    app/, features/, shared/, scripts/, testing/, app.config.ts) exists.
  *
- * Once the maintainer files (scripts/maintainer-files.json) are deleted,
- * references to them are skipped. The demo gets no such pass: removing it
- * removes its docs too, so a doc that still names it is reported.
+ * Removing the demo removes its docs too, so a doc that still names it is
+ * reported.
  *
  * Usage: npm run docs:check [-- --keep]   (--keep leaves .docs-check/)
  */
@@ -96,11 +95,6 @@ function anchorsOf(file) {
   }
   return anchors;
 }
-
-const MAINTAINER_REMOVED = !fs.existsSync(path.join(ROOT, 'docs/maintainers'));
-const MAINTAINER_REF =
-  /docs\/maintainers\/|scripts\/maintainers\/|scripts\/maintainer-files\.json/;
-const skipRemoved = value => MAINTAINER_REMOVED && MAINTAINER_REF.test(value);
 
 function isPlaceholder(value) {
   return /[<>*{}|…]|\.\.\./.test(value);
@@ -191,7 +185,6 @@ function main() {
         const [rel, anchor] = target.split('#');
         const resolved = path.normalize(path.join(path.dirname(file), rel));
         if (!fs.existsSync(path.join(ROOT, resolved))) {
-          if (skipRemoved(resolved)) continue;
           report(file, lineNo, `broken link ${target}`);
         } else if (anchor && resolved.endsWith('.md')) {
           anchorCache[resolved] ??= anchorsOf(resolved);
@@ -208,7 +201,6 @@ function main() {
           ROOT_FILES.has(value);
         if (!isRepoPath || isPlaceholder(m[1])) continue;
         if (!fs.existsSync(path.join(ROOT, value))) {
-          if (skipRemoved(value)) continue;
           report(file, lineNo, `path does not exist: ${value}`);
         }
       }

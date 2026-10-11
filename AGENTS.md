@@ -5,17 +5,6 @@ Router, TypeScript strict, React Native Paper (Material Design 3), Jest and
 React Native Testing Library, and Maestro end-to-end flows. Follow these
 instructions when you change the code; the linked docs have the details.
 
-<!-- @maintainer remove-block-start -->
-
-> **Maintaining the starter itself?** Only if `docs/maintainers/` exists and
-> `git remote get-url origin` is the upstream repository named in
-> `docs/maintainers/README.md`, also follow that file. Otherwise ignore
-> `docs/maintainers/` and `scripts/maintainers/`: they are the starter's own
-> process, not this project's (`scripts/maintainer-files.json` lists the
-> files, which can be deleted).
-
-<!-- @maintainer remove-block-end -->
-
 ## Project structure
 
 ```

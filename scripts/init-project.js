@@ -9,8 +9,7 @@
  *    holder, and the identity examples in the docs and the e2e workflow;
  * 2. runs `npm run remove-demo` when asked (--remove-demo), before planning
  *    the other changes, since it edits some of the same files;
- * 3. deletes the starter's maintainer files (scripts/maintainer-files.json)
- *    and every `@init remove-block` in the docs;
+ * 3. deletes every `@init remove-block` in the docs;
  * 4. deletes itself, its test, and its npm script, then formats the changed
  *    files with Prettier.
  *
@@ -31,7 +30,6 @@ const readline = require('readline/promises');
 const ROOT = path.resolve(__dirname, '..');
 const PLACEHOLDER_BUNDLE_PREFIX = 'com.example.';
 const VERSION = '1.0.0';
-const MANIFEST = 'scripts/maintainer-files.json';
 /** Deleted by remove-demo itself, so its absence means the demo is gone. */
 const REMOVE_DEMO = 'scripts/remove-demo.js';
 const SELF_FILES = [
@@ -402,35 +400,6 @@ function planChanges(input) {
       .filter(Boolean)
       .join(', ');
     write(file, summary, transform(marked(file)(read(file), file)));
-  }
-
-  if (exists(MANIFEST)) {
-    const manifest = JSON.parse(read(MANIFEST));
-    for (const block of manifest.blocks ?? []) {
-      const pending = changes.find(change => change.file === block.file);
-      const text = pending ? pending.content : read(block.file);
-      const start = text.indexOf(block.start);
-      const end = text.indexOf(block.end);
-      if (start < 0 || end < start) continue;
-      const content =
-        text.slice(0, start) +
-        text.slice(end + block.end.length).replace(/^\n+/, '');
-      if (pending) {
-        pending.content = content;
-        pending.summary += ', remove the maintainer block';
-      } else {
-        changes.push({
-          file: block.file,
-          action: 'write',
-          summary: 'remove the maintainer block',
-          content,
-        });
-      }
-    }
-    for (const file of manifest.files) {
-      if (exists(file))
-        changes.push({ file, action: 'delete', summary: 'maintainer file' });
-    }
   }
 
   for (const file of SELF_FILES) {

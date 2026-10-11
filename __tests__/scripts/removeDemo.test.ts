@@ -28,8 +28,6 @@ const CHECKED_PATHS = [
   'shared',
   'testing',
   ':!shared/config/env.ts',
-  // The starter's own process docs (deleted in your project).
-  ':!docs/maintainers',
 ];
 
 /** A committed copy of the working tree, sharing this repo's node_modules. */

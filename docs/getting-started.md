@@ -19,8 +19,7 @@ and whether to remove the demo. Then it:
   `README.md`, `LICENSE`, and the docs' examples, and resets the version to
   `1.0.0`;
 - removes the demo if you chose to;
-- deletes the files that belong to the starter's own maintainers, and then
-  itself.
+- deletes itself.
 
 `npm run init-project -- --dry-run` lists every change first. It refuses to
 run on uncommitted changes or a second time unless you pass `--force`.

@@ -162,7 +162,7 @@ describe('init-project on a copy of the template', () => {
     expect(result.stderr).toBe('');
     expect(result.status).toBe(0);
     expect(result.stdout).toContain('update app.config.ts');
-    expect(result.stdout).toContain('delete docs/maintainers/');
+    expect(result.stdout).toContain('delete scripts/init-project.js');
     if (HAS_DEMO) expect(result.stdout).toContain('delete features/demo-auth');
     expect(result.stdout.match(/Dry run complete\./g)).toHaveLength(1);
     expect(gitStatus(dir)).toBe('');
@@ -195,7 +195,7 @@ describe('init-project on a copy of the template', () => {
     expect(read(dir, 'package.json')).toContain('"init-project"');
   });
 
-  it('sets the identity, removes the maintainer files, and deletes itself', () => {
+  it('sets the identity and deletes itself', () => {
     const dir = copy();
     const result = run(dir, [...IDENTITY, '--keep-demo']);
     expect(result.stderr).toBe('');
@@ -226,14 +226,8 @@ describe('init-project on a copy of the template', () => {
     expect(read(dir, '.github/workflows/e2e-android.yml')).toContain(
       'E2E_APP_URL=acmenotes-dev://'
     );
-    expect(read(dir, 'AGENTS.md')).not.toContain('@maintainer');
 
     for (const file of [
-      'docs/maintainers',
-      'scripts/maintainers',
-      'scripts/maintainer-files.json',
-      '.github/SECURITY.md',
-      '.github/workflows/dependency-review.yml',
       'scripts/init-project.js',
       '__tests__/scripts/initProject.test.ts',
     ]) {
