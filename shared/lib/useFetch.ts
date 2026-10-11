@@ -56,6 +56,10 @@ export function useFetch<T>(
   if (!sameDeps(trackedDeps, deps)) {
     setTrackedDeps(deps);
     setDepsVersion(version => version + 1);
+    // Back to loading for the new deps, during render rather than in the
+    // effect (react-hooks/set-state-in-effect).
+    setLoading(true);
+    setError(null);
   }
 
   // The latest fetchFn, without making it a dependency (callers usually pass
@@ -67,15 +71,15 @@ export function useFetch<T>(
 
   const controllerRef = useRef<AbortController | null>(null);
 
-  const run = useCallback(async () => {
+  // Starts a request. It sets state only once the request settles; callers
+  // set loading first (the initial state, a deps change, or refetch).
+  const load = useCallback(async () => {
     controllerRef.current?.abort();
     const controller = new AbortController();
     controllerRef.current = controller;
     const isCurrent = () =>
       controllerRef.current === controller && !controller.signal.aborted;
 
-    setLoading(true);
-    setError(null);
     try {
       const result = await fetchFnRef.current(controller.signal);
       if (isCurrent()) setData(result);
@@ -89,13 +93,19 @@ export function useFetch<T>(
     }
   }, []);
 
+  const refetch = useCallback(() => {
+    setLoading(true);
+    setError(null);
+    return load();
+  }, [load]);
+
   useEffect(() => {
-    void run();
+    void load();
     return () => {
       // Unmount or deps change: drop the request and its result.
       controllerRef.current?.abort();
     };
-  }, [run, depsVersion]);
+  }, [load, depsVersion]);
 
-  return { data, loading, error, refetch: run };
+  return { data, loading, error, refetch };
 }

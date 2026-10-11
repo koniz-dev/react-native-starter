@@ -130,6 +130,35 @@ describe('useFetch', () => {
     expect(fetchFn).toHaveBeenCalledTimes(2);
   });
 
+  it('goes back to loading without the old error on a deps change and on refetch', async () => {
+    const { fetchFn, calls } = controlledFetch<string>();
+    const { rerender, result } = renderHook(
+      ({ id }: { id: number }) => useFetch(fetchFn, [id]),
+      { initialProps: { id: 1 } }
+    );
+    await act(async () => calls[0]?.reject(new Error('down')));
+    expect(result.current).toMatchObject({ loading: false, data: null });
+    expect(result.current.error?.message).toBe('down');
+
+    // The render with the new deps already shows loading, not the old error.
+    rerender({ id: 2 });
+    expect(result.current).toMatchObject({ loading: true, error: null });
+
+    await act(async () => calls[1]?.reject(new Error('still down')));
+    expect(result.current.error?.message).toBe('still down');
+
+    await act(async () => {
+      void result.current.refetch();
+    });
+    expect(result.current).toMatchObject({ loading: true, error: null });
+    await act(async () => calls[2]?.resolve('back'));
+    expect(result.current).toMatchObject({
+      loading: false,
+      error: null,
+      data: 'back',
+    });
+  });
+
   it('keeps the latest response when an older one arrives later', async () => {
     const { fetchFn, calls } = controlledFetch<string>();
     const { rerender, result } = renderHook(
