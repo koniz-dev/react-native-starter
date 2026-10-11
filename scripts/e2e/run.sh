@@ -7,6 +7,13 @@
 # with the device in dark mode, and stops everything. Output:
 # e2e-results/<platform>/ (gitignored).
 #
+# Your own backend or mock instead (docs/testing.md#your-backend-or-mock):
+#   E2E_API_URL        the app's API URL (default: the e2e mock)
+#   E2E_AUTH_API_URL   the auth URL (default: E2E_API_URL)
+#   E2E_BACKEND_CMD    a command that starts it (e.g. "node scripts/my-mock.js"),
+#                      run in the background and stopped at the end
+# On Android, the ports of localhost URLs are forwarded with adb reverse.
+#
 # Needs: the Maestro CLI (`maestro` on PATH, or MAESTRO=/path/to/maestro) and
 # a booted device with Expo Go. See docs/testing.md#end-to-end-flows-maestro.
 set -euo pipefail
@@ -59,21 +66,36 @@ set_dark_mode() {
 
 node "$ROOT/scripts/e2e/mock-api.js" "$MOCK_PORT" >"$OUT/mock-api.log" 2>&1 &
 PIDS+=($!)
+MOCK_API_URL="http://localhost:$MOCK_PORT"
+API_URL="${E2E_API_URL:-$MOCK_API_URL}"
 
 # @demo remove-block-start
-# Sign-in uses the DummyJSON demo backend, which needs network access.
-AUTH_ENV=(EXPO_PUBLIC_USE_DEMO_BACKENDS=true)
+# Sign-in uses the DummyJSON demo backend (network access needed) unless
+# E2E_AUTH_API_URL is set.
+AUTH_API_URL="${E2E_AUTH_API_URL:-}"
+DEMO_BACKENDS=true
 # @demo remove-block-end
 # @demo uncomment-block-start
-# # The flows don't sign in, so the mock stands in for the auth backend. For
-# # sign-in flows, set E2E_AUTH_API_URL to your backend and use a test account.
-# AUTH_ENV=(EXPO_PUBLIC_USE_DEMO_BACKENDS=false
-#   "EXPO_PUBLIC_AUTH_API_URL=${E2E_AUTH_API_URL:-http://localhost:$MOCK_PORT}")
+# AUTH_API_URL="${E2E_AUTH_API_URL:-$API_URL}"
+# DEMO_BACKENDS=false
 # @demo uncomment-block-end
+
+if [ -n "${E2E_BACKEND_CMD:-}" ]; then
+  (cd "$ROOT" && exec bash -c "$E2E_BACKEND_CMD") >"$OUT/backend.log" 2>&1 &
+  PIDS+=($!)
+  # Ready once it answers anything over HTTP.
+  for _ in $(seq 1 30); do
+    curl -s -o /dev/null "$API_URL" && break
+    sleep 1
+  done
+  curl -s -o /dev/null "$API_URL" || { echo "The backend at $API_URL did not start (see $OUT/backend.log)" >&2; exit 1; }
+fi
+
+APP_ENV=(EXPO_PUBLIC_USE_DEMO_BACKENDS="$DEMO_BACKENDS" EXPO_PUBLIC_API_URL="$API_URL")
+[ -n "$AUTH_API_URL" ] && APP_ENV+=(EXPO_PUBLIC_AUTH_API_URL="$AUTH_API_URL")
 (
   cd "$ROOT"
-  env "${AUTH_ENV[@]}" EXPO_PUBLIC_API_URL="http://localhost:$MOCK_PORT" \
-    npx expo start --port "$METRO_PORT" --clear >"$OUT/metro.log" 2>&1
+  env "${APP_ENV[@]}" npx expo start --port "$METRO_PORT" --clear >"$OUT/metro.log" 2>&1
 ) &
 PIDS+=($!)
 
@@ -98,11 +120,15 @@ if [ "$PLATFORM" = android ]; then
   adb shell settings put global animator_duration_scale 0
   adb shell settings put secure anr_show_background 0
   adb reverse "tcp:$METRO_PORT" "tcp:$METRO_PORT" >/dev/null
-  adb reverse "tcp:$MOCK_PORT" "tcp:$MOCK_PORT" >/dev/null
+  for url in "$MOCK_API_URL" "$API_URL" "$AUTH_API_URL"; do
+    if [[ "$url" =~ ^https?://(localhost|127\.0\.0\.1):([0-9]+) ]]; then
+      adb reverse "tcp:${BASH_REMATCH[2]}" "tcp:${BASH_REMATCH[2]}" >/dev/null
+    fi
+  done
 fi
 
 set_dark_mode no
-COMMON=(-e "APP_ID=$APP_ID" -e "APP_URL=$APP_URL" -e "MOCK_API_URL=http://localhost:$MOCK_PORT")
+COMMON=(-e "APP_ID=$APP_ID" -e "APP_URL=$APP_URL" -e "MOCK_API_URL=$MOCK_API_URL")
 
 # Flows tagged android-only use the system back, which iOS doesn't have.
 EXCLUDE=dark

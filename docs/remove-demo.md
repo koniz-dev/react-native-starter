@@ -71,9 +71,11 @@ the diff.
 | `04-login-keyboard.yaml`      | deleted: signs in with the DummyJSON demo account |
 | `05-explore-error-retry.yaml` | deleted: the Explore tab                          |
 
-`subflows/sign-in.yaml` (the demo account) is deleted too. The e2e runner
-keeps the local mock API (`scripts/e2e/mock-api.js`) and points both URLs at
-it. Add your own sign-in flows against a test account on your backend.
+`subflows/sign-in.yaml` (the demo account) is deleted too, and so is the
+e2e mock's demo route (`GET /todos`). The e2e runner keeps the mock and points
+both URLs at it. Add your own sign-in flows against a test account on your
+backend or mock
+([Your backend or mock](testing.md#your-backend-or-mock)).
 
 ## Then
 
