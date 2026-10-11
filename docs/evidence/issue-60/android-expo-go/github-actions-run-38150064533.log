@@ -1,0 +1,602 @@
+Maestro on Android emulator (expo-go)	Set up job	﻿2026-10-11T15:09:00.2224776Z Current runner version: '2.337.0'
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2251336Z ##[group]Runner Image Provisioner
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2252286Z Hosted Compute Agent
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2252932Z Version: 20261002.596
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2253667Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2254415Z Build Date: 2026-10-02T22:28:27Z
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2255143Z Worker ID: {b6641620-56c4-41d9-a7bb-fee2d8aa8b38}
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2255882Z Region: westus
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2256460Z Cloud: Azure
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2257056Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2258915Z ##[group]Operating System
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2259579Z Ubuntu
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2260205Z 24.04.5
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2260762Z LTS
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2261316Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2261928Z ##[group]Runner Image
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2262497Z Image: ubuntu-24.04
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2263566Z Version: 20261004.327.1
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2264685Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2266516Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2267563Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2268950Z ##[group]GITHUB_TOKEN Permissions
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2270880Z Contents: read
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2271614Z Metadata: read
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2272182Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2274328Z Secret source: Actions
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2275358Z Cache mode: write
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2276098Z Prepare workflow directory
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2695072Z Prepare all required actions
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.2747585Z Getting action download info
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.6510160Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.7780403Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:00.8669965Z Download action repository 'actions/setup-java@v4' (SHA:cf277c60eb25467037889841efdb72551f06f6c3)
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:01.4200808Z Download action repository 'reactivecircus/android-emulator-runner@v2' (SHA:a421e43855164a8197daf9d8d40fe71c6996bb0d)
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:01.7997171Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+Maestro on Android emulator (expo-go)	Set up job	2026-10-11T15:09:02.1175961Z Complete job name: Maestro on Android emulator (expo-go)
+Maestro on Android emulator (expo-go)	Check out repository	﻿2026-10-11T15:09:02.2196673Z ##[group]Run actions/checkout@v4
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.2198293Z with:
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.2199575Z   repository: koniz-dev/react-native-starter
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.2209654Z   token: ***
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.2210726Z   ssh-strict: true
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.2211691Z   ssh-user: git
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.2212714Z   persist-credentials: true
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.2213790Z   clean: true
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.2214791Z   sparse-checkout-cone-mode: true
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.2215987Z   fetch-depth: 1
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.2216940Z   fetch-tags: false
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.2217903Z   show-progress: true
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.2219192Z   lfs: false
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.2220186Z   submodules: false
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.2221274Z   set-safe-directory: true
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.2222391Z   allow-unsafe-pr-checkout: false
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.2223818Z env:
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.2224815Z   MAESTRO_VERSION: 2.11.0
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.2226366Z   MAESTRO_SHA256: 5384593cb4e7a106489e75a821d157dd43f4e438df6bc308b72e82c685e1283a
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.2228187Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3459742Z Syncing repository: koniz-dev/react-native-starter
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3464216Z ##[group]Getting Git version info
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3466913Z Working directory is '/home/runner/work/react-native-starter/react-native-starter'
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3471112Z [command]/usr/bin/git version
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3500015Z git version 2.55.0
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3530868Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3546391Z Temporarily overriding HOME='/home/runner/work/_temp/0ca0efba-2850-479e-9ca3-9542ee08d64d' before making global git config changes
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3551405Z Adding repository directory to the temporary git global config as a safe directory
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3556413Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/react-native-starter/react-native-starter
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3612952Z Deleting the contents of '/home/runner/work/react-native-starter/react-native-starter'
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3617470Z ##[group]Initializing the repository
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3623421Z [command]/usr/bin/git init /home/runner/work/react-native-starter/react-native-starter
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3738130Z hint: Using 'master' as the name for the initial branch. This default branch name
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3740831Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3742948Z hint: to use in all of your new repositories, which will suppress this warning,
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3745011Z hint: call:
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3745809Z hint:
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3746837Z hint: 	git config --global init.defaultBranch <name>
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3748921Z hint:
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3750136Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3751993Z hint: 'development'. The just-created branch can be renamed via this command:
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3753743Z hint:
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3754600Z hint: 	git branch -m <name>
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3755534Z hint:
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3757427Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3760218Z Initialized empty Git repository in /home/runner/work/react-native-starter/react-native-starter/.git/
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3764774Z [command]/usr/bin/git remote add origin https://github.com/koniz-dev/react-native-starter
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3812196Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3814074Z ##[group]Disabling automatic garbage collection
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3816026Z [command]/usr/bin/git config --local gc.auto 0
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3850013Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3851482Z ##[group]Setting up auth
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3858225Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.3895593Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.4294283Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.4362693Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.4659613Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.4698359Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.4935957Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.4983579Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.4985149Z ##[group]Fetching the repository
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.4995085Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +4dc5f90d4f5afef4624c25bc349f121207aefa49:refs/remotes/origin/main
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.9655717Z From https://github.com/koniz-dev/react-native-starter
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.9660320Z  * [new ref]         4dc5f90d4f5afef4624c25bc349f121207aefa49 -> origin/main
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.9668899Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.9671897Z ##[group]Determining the checkout info
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.9675456Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.9677961Z [command]/usr/bin/git sparse-checkout disable
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.9747185Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.9790732Z ##[group]Checking out the ref
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.9796474Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.9983605Z Switched to a new branch 'main'
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.9988683Z branch 'main' set up to track 'origin/main'.
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:02.9997723Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:03.0046825Z [command]/usr/bin/git log -1 --format=%H
+Maestro on Android emulator (expo-go)	Check out repository	2026-10-11T15:09:03.0076593Z 4dc5f90d4f5afef4624c25bc349f121207aefa49
+Maestro on Android emulator (expo-go)	Set up Node.js	﻿2026-10-11T15:09:03.0406899Z ##[group]Run actions/setup-node@v4
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.0407818Z with:
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.0408778Z   node-version-file: .nvmrc
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.0409588Z   cache: npm
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.0410344Z   always-auth: false
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.0411127Z   check-latest: false
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.0414772Z   token: ***
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.0415532Z env:
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.0416283Z   MAESTRO_VERSION: 2.11.0
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.0417304Z   MAESTRO_SHA256: 5384593cb4e7a106489e75a821d157dd43f4e438df6bc308b72e82c685e1283a
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.0418324Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.1808035Z Resolved .nvmrc as 24
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.1949465Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/x64
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.1952857Z (node:2339) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.1955400Z (Use `node --trace-deprecation ...` to show where the warning was created)
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.1958238Z ##[group]Environment details
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.6235502Z node: v24.21.0
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.6236427Z npm: 11.19.0
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.6237046Z yarn: 1.22.22
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.6238292Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.6296596Z [command]/opt/hostedtoolcache/node/24.21.0/x64/bin/npm config get cache
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:03.7598127Z /home/runner/.npm
+Maestro on Android emulator (expo-go)	Set up Node.js	2026-10-11T15:09:04.0173103Z npm cache is not found
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	﻿2026-10-11T15:09:04.0397573Z ##[group]Run actions/setup-java@v4
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.0397962Z with:
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.0398221Z   distribution: temurin
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.0398875Z   java-version: 17
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.0399163Z   java-package: jdk
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.0399445Z   check-latest: false
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.0399732Z   server-id: github
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.0400008Z   server-username: GITHUB_ACTOR
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.0400326Z   server-password: GITHUB_TOKEN
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.0400627Z   overwrite-settings: true
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.0400906Z   job-status: success
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.0403749Z   token: ***
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.0404004Z env:
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.0404254Z   MAESTRO_VERSION: 2.11.0
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.0404724Z   MAESTRO_SHA256: 5384593cb4e7a106489e75a821d157dd43f4e438df6bc308b72e82c685e1283a
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.0405184Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.2351340Z ##[warning]setup-java v4 is deprecated and will no longer receive updates. Please migrate to actions/setup-java@v5.
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.2360815Z ##[group]Installed distributions
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.2529919Z Resolved Java 17.0.20+1 from tool-cache
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.2530732Z Setting Java 17.0.20+1 as the default
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.2534007Z (node:2383) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.2536079Z (Use `node --trace-deprecation ...` to show where the warning was created)
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.2537450Z Creating toolchains.xml for JDK version 17 from temurin
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.2615235Z Writing to /home/runner/.m2/toolchains.xml
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.2615817Z 
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.2616122Z Java configuration:
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.2616710Z   Distribution: temurin
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.2617313Z   Version: 17.0.20+1
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.2618209Z   Path: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.2619110Z 
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.2619791Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.2624384Z Creating settings.xml with server-id: github
+Maestro on Android emulator (expo-go)	Set up Java 17 (Maestro)	2026-10-11T15:09:04.2658883Z Writing to /home/runner/.m2/settings.xml
+Maestro on Android emulator (expo-go)	Install dependencies	﻿2026-10-11T15:09:04.2822061Z ##[group]Run npm ci
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:04.2822445Z ^[[36;1mnpm ci^[[0m
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:04.3113699Z shell: /usr/bin/bash -e {0}
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:04.3114148Z env:
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:04.3114458Z   MAESTRO_VERSION: 2.11.0
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:04.3115213Z   MAESTRO_SHA256: 5384593cb4e7a106489e75a821d157dd43f4e438df6bc308b72e82c685e1283a
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:04.3115930Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:04.3116598Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:04.3117127Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:08.9640779Z npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:09.9549156Z npm warn deprecated domexception@4.0.0: Use your platform's native DOMException instead
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:10.1757555Z npm warn deprecated abab@2.0.6: Use your platform's native atob() and btoa() methods instead
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:11.6469319Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:11.8661485Z npm warn deprecated uuid@7.0.3: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:11.9088138Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:11.9093907Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:12.1605005Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:19.9358343Z npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:30.1647493Z 
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:30.1648837Z added 1066 packages, and audited 1067 packages in 26s
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:30.1649433Z 
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:30.1650150Z 180 packages are looking for funding
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:30.1650857Z   run `npm fund` for details
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:30.3498026Z 
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:30.3499686Z 65 vulnerabilities (16 moderate, 49 high)
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:30.3500200Z 
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:30.3500683Z To address all issues (including breaking changes), run:
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:30.3501405Z   npm audit fix --force
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:30.3501715Z 
+Maestro on Android emulator (expo-go)	Install dependencies	2026-10-11T15:09:30.3501987Z Run `npm audit` for details.
+Maestro on Android emulator (expo-go)	Configure the app (.env.example)	﻿2026-10-11T15:09:30.4384993Z ##[group]Run cp .env.example .env
+Maestro on Android emulator (expo-go)	Configure the app (.env.example)	2026-10-11T15:09:30.4385349Z ^[[36;1mcp .env.example .env^[[0m
+Maestro on Android emulator (expo-go)	Configure the app (.env.example)	2026-10-11T15:09:30.4460204Z shell: /usr/bin/bash -e {0}
+Maestro on Android emulator (expo-go)	Configure the app (.env.example)	2026-10-11T15:09:30.4460544Z env:
+Maestro on Android emulator (expo-go)	Configure the app (.env.example)	2026-10-11T15:09:30.4460744Z   MAESTRO_VERSION: 2.11.0
+Maestro on Android emulator (expo-go)	Configure the app (.env.example)	2026-10-11T15:09:30.4461126Z   MAESTRO_SHA256: 5384593cb4e7a106489e75a821d157dd43f4e438df6bc308b72e82c685e1283a
+Maestro on Android emulator (expo-go)	Configure the app (.env.example)	2026-10-11T15:09:30.4461657Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+Maestro on Android emulator (expo-go)	Configure the app (.env.example)	2026-10-11T15:09:30.4462142Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+Maestro on Android emulator (expo-go)	Configure the app (.env.example)	2026-10-11T15:09:30.4462515Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Install the Maestro CLI (release zip, checksum verified)	﻿2026-10-11T15:09:30.4613428Z ##[group]Run curl -fsSL -o maestro.zip "https://github.com/mobile-dev-inc/maestro/releases/download/cli-${MAESTRO_VERSION}/maestro.zip"
+Maestro on Android emulator (expo-go)	Install the Maestro CLI (release zip, checksum verified)	2026-10-11T15:09:30.4614457Z ^[[36;1mcurl -fsSL -o maestro.zip "https://github.com/mobile-dev-inc/maestro/releases/download/cli-${MAESTRO_VERSION}/maestro.zip"^[[0m
+Maestro on Android emulator (expo-go)	Install the Maestro CLI (release zip, checksum verified)	2026-10-11T15:09:30.4615123Z ^[[36;1mecho "${MAESTRO_SHA256}  maestro.zip" | sha256sum -c -^[[0m
+Maestro on Android emulator (expo-go)	Install the Maestro CLI (release zip, checksum verified)	2026-10-11T15:09:30.4615703Z ^[[36;1munzip -q maestro.zip -d "$HOME"^[[0m
+Maestro on Android emulator (expo-go)	Install the Maestro CLI (release zip, checksum verified)	2026-10-11T15:09:30.4616039Z ^[[36;1mecho "$HOME/maestro/bin" >> "$GITHUB_PATH"^[[0m
+Maestro on Android emulator (expo-go)	Install the Maestro CLI (release zip, checksum verified)	2026-10-11T15:09:30.4679757Z shell: /usr/bin/bash -e {0}
+Maestro on Android emulator (expo-go)	Install the Maestro CLI (release zip, checksum verified)	2026-10-11T15:09:30.4680025Z env:
+Maestro on Android emulator (expo-go)	Install the Maestro CLI (release zip, checksum verified)	2026-10-11T15:09:30.4680221Z   MAESTRO_VERSION: 2.11.0
+Maestro on Android emulator (expo-go)	Install the Maestro CLI (release zip, checksum verified)	2026-10-11T15:09:30.4680599Z   MAESTRO_SHA256: 5384593cb4e7a106489e75a821d157dd43f4e438df6bc308b72e82c685e1283a
+Maestro on Android emulator (expo-go)	Install the Maestro CLI (release zip, checksum verified)	2026-10-11T15:09:30.4681123Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+Maestro on Android emulator (expo-go)	Install the Maestro CLI (release zip, checksum verified)	2026-10-11T15:09:30.4681629Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+Maestro on Android emulator (expo-go)	Install the Maestro CLI (release zip, checksum verified)	2026-10-11T15:09:30.4682051Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Install the Maestro CLI (release zip, checksum verified)	2026-10-11T15:09:31.9216990Z maestro.zip: OK
+Maestro on Android emulator (expo-go)	Download Expo Go for the project's SDK	﻿2026-10-11T15:09:33.9967899Z ##[group]Run url=$(curl -fsSL https://api.expo.dev/v2/versions/latest \
+Maestro on Android emulator (expo-go)	Download Expo Go for the project's SDK	2026-10-11T15:09:33.9968880Z ^[[36;1murl=$(curl -fsSL https://api.expo.dev/v2/versions/latest \^[[0m
+Maestro on Android emulator (expo-go)	Download Expo Go for the project's SDK	2026-10-11T15:09:33.9969719Z ^[[36;1m  | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const j=JSON.parse(s);const d=j.data??j;process.stdout.write(d.sdkVersions['57.0.0'].androidClientUrl)})")^[[0m
+Maestro on Android emulator (expo-go)	Download Expo Go for the project's SDK	2026-10-11T15:09:33.9970435Z ^[[36;1mecho "Expo Go: $url"^[[0m
+Maestro on Android emulator (expo-go)	Download Expo Go for the project's SDK	2026-10-11T15:09:33.9970702Z ^[[36;1mcurl -fsSL -o app.apk "$url"^[[0m
+Maestro on Android emulator (expo-go)	Download Expo Go for the project's SDK	2026-10-11T15:09:34.0034750Z shell: /usr/bin/bash -e {0}
+Maestro on Android emulator (expo-go)	Download Expo Go for the project's SDK	2026-10-11T15:09:34.0035029Z env:
+Maestro on Android emulator (expo-go)	Download Expo Go for the project's SDK	2026-10-11T15:09:34.0035229Z   MAESTRO_VERSION: 2.11.0
+Maestro on Android emulator (expo-go)	Download Expo Go for the project's SDK	2026-10-11T15:09:34.0035616Z   MAESTRO_SHA256: 5384593cb4e7a106489e75a821d157dd43f4e438df6bc308b72e82c685e1283a
+Maestro on Android emulator (expo-go)	Download Expo Go for the project's SDK	2026-10-11T15:09:34.0036168Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+Maestro on Android emulator (expo-go)	Download Expo Go for the project's SDK	2026-10-11T15:09:34.0036679Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+Maestro on Android emulator (expo-go)	Download Expo Go for the project's SDK	2026-10-11T15:09:34.0037099Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Download Expo Go for the project's SDK	2026-10-11T15:09:34.1367956Z Expo Go: https://github.com/expo/expo-go-releases/releases/download/Expo-Go-57.0.9/Expo-Go-57.0.9.apk
+Maestro on Android emulator (expo-go)	Enable KVM	﻿2026-10-11T15:09:36.8987471Z ##[group]Run echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+Maestro on Android emulator (expo-go)	Enable KVM	2026-10-11T15:09:36.8988357Z ^[[36;1mecho 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules^[[0m
+Maestro on Android emulator (expo-go)	Enable KVM	2026-10-11T15:09:36.8989246Z ^[[36;1msudo udevadm control --reload-rules^[[0m
+Maestro on Android emulator (expo-go)	Enable KVM	2026-10-11T15:09:36.8989572Z ^[[36;1msudo udevadm trigger --name-match=kvm^[[0m
+Maestro on Android emulator (expo-go)	Enable KVM	2026-10-11T15:09:36.9053979Z shell: /usr/bin/bash -e {0}
+Maestro on Android emulator (expo-go)	Enable KVM	2026-10-11T15:09:36.9054248Z env:
+Maestro on Android emulator (expo-go)	Enable KVM	2026-10-11T15:09:36.9054453Z   MAESTRO_VERSION: 2.11.0
+Maestro on Android emulator (expo-go)	Enable KVM	2026-10-11T15:09:36.9054840Z   MAESTRO_SHA256: 5384593cb4e7a106489e75a821d157dd43f4e438df6bc308b72e82c685e1283a
+Maestro on Android emulator (expo-go)	Enable KVM	2026-10-11T15:09:36.9055390Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+Maestro on Android emulator (expo-go)	Enable KVM	2026-10-11T15:09:36.9055911Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+Maestro on Android emulator (expo-go)	Enable KVM	2026-10-11T15:09:36.9056307Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Enable KVM	2026-10-11T15:09:36.9219038Z KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	﻿2026-10-11T15:09:36.9643140Z ##[group]Run reactivecircus/android-emulator-runner@v2
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9643526Z with:
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9643720Z   api-level: 34
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9643922Z   arch: x86_64
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9644112Z   target: google_apis
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9644331Z   disable-animations: true
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9644620Z   script: adb install -r app.apk
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	npm run test:e2e:android
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9644938Z   cores: 2
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9645121Z   avd-name: test
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9645325Z   force-avd-creation: true
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9645559Z   emulator-boot-timeout: 600
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9645796Z   emulator-port: 5554
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9646228Z   emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9646708Z   disable-spellchecker: false
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9646962Z   disable-linux-hw-accel: auto
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9647209Z   enable-hw-keyboard: false
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9647441Z   channel: stable
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9647630Z env:
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9647852Z   MAESTRO_VERSION: 2.11.0
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9648210Z   MAESTRO_SHA256: 5384593cb4e7a106489e75a821d157dd43f4e438df6bc308b72e82c685e1283a
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9649079Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9649564Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:36.9649934Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0229199Z ##[group]Configure emulator
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0231509Z API level: 34
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0232057Z System image API level: 34
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0232708Z target: google_apis
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0233403Z CPU architecture: x86_64
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0234008Z Hardware profile: 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0239305Z Cores: 2
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0248375Z RAM size: 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0248822Z Heap size: 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0249233Z SD card path or size: 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0249481Z Disk size: 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0249862Z AVD name: test
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0250298Z force avd creation: true
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0250674Z Emulator boot timeout: 600
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0250944Z emulator port: 5554
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0251901Z emulator options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0252808Z disable animations: true
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0253262Z disable spellchecker: false
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0253635Z disable Linux hardware acceleration: false
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0253973Z enable hardware keyboard: false
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0254271Z Channel: 0 (stable)
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0254481Z Script:
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0254692Z adb install -r app.apk
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0254938Z npm run test:e2e:android
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0255202Z Pre emulator launch script:
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0255672Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0256024Z ##[group]Install Android SDK
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:37.0492807Z [command]/usr/bin/sh -c \yes | sdkmanager --licenses > /dev/null
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:42.5912995Z Installing latest build tools, platform tools, and platform.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:42.5934186Z [command]/usr/bin/sh -c \sdkmanager --install 'build-tools;37.0.0' platform-tools 'platforms;android-34'> /dev/null
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:44.2587384Z Installing latest emulator.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:44.2604403Z [command]/usr/bin/sh -c \sdkmanager --install emulator --channel=0 > /dev/null
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:53.6156291Z Installing system images.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:09:53.6174447Z [command]/usr/bin/sh -c \sdkmanager --install 'system-images;android-34;google_apis;x86_64' --channel=0 > /dev/null
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:28.6120203Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:28.6121652Z ##[group]Create AVD
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:28.6124166Z Creating AVD.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:28.6147189Z [command]/usr/bin/sh -c \echo no | avdmanager create avd --force -n test --package 'system-images;android-34;google_apis;x86_64'
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.4213232Z Loading local repository...                                                     
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.4229955Z [=========                              ] 25% Loading local repository...       
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.4239853Z [=========                              ] 25% Fetch remote repository...        
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.4254965Z [=======================================] 100% Fetch remote repository...       
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.6804569Z Auto-selecting single ABI x86_64
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.7625500Z Do you wish to create a custom hardware profile? [no] [command]/usr/bin/sh -c \printf 'hw.cpu.ncore=2\n' >> /home/runner/.android/avd/test.avd/config.ini
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.7647696Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.7650092Z ##[group]Launch Emulator
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.7650616Z Starting emulator.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.7671589Z [command]/usr/bin/sh -c \/usr/local/lib/android/sdk/emulator/emulator -port 5554 -avd test -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim &
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.7789555Z INFO         | Android emulator version 37.2.12.0 (build_id 16428233) (CL:N/A)
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.7790160Z INFO         | Graphics backend: gfxstream
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.7790890Z INFO         | Found systemPath /usr/local/lib/android/sdk/system-images/android-34/google_apis/x86_64/
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8291992Z INFO         | Saving last run QEMU version for the AVD to 2
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8292904Z INFO         | Increasing RAM size to 2560MB
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8293891Z ##############################################################################
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8294747Z ##                        WARNING - ACTION REQUIRED                         ##
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8295708Z ##  Consider using the '-metrics-collection' flag to help improve the       ##
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8296734Z ##  emulator by sending anonymized usage data. Or use the '-no-metrics'     ##
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8297741Z ##  flag to bypass this warning and turn off the metrics collection.        ##
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8299242Z ##  In a future release this warning will turn into a one-time blocking     ##
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8300125Z ##  prompt to ask for explicit user input regarding metrics collection.     ##
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8301052Z ##                                                                          ##
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8302339Z ##  Please see '-help-metrics-collection' for more details. You can use     ##
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8303602Z ##  '-metrics-to-file' or '-metrics-to-console' flags to see what type of   ##
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8304792Z ##  data is being collected by emulator as part of usage statistics.        ##
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8305685Z ##############################################################################
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8306393Z INFO         | Guest GLES Driver: Auto (ext controls)
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8307411Z INFO         | emuglConfig_init: vulkan_mode_selected:swiftshader gles_mode_selected:swiftshader
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8308330Z INFO         | Checking system compatibility:
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8309226Z INFO         |   Checking: hasSufficientDiskSpace
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8310029Z INFO         |      Ok: Disk space requirements to run avd: `test` are met
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8310765Z INFO         |   Checking: hasSufficientHwGpu
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8311545Z INFO         |      Ok: Hardware GPU compatibility checks are not required
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8312305Z INFO         |   Checking: hasSufficientSystem
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8313067Z INFO         |      Ok: System requirements to run avd: `test` are met
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:29.8314895Z WARNING      | Feature QuickbootFileBacked is disabled due to stability issues, if you really want that, the environment variable ANDROID_EMU_FORCE_QUICKBOOT_FILE_BACKED need to set to 1
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8205939Z ERROR        | Unable to connect to adb daemon on port: 5037
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8208151Z INFO         | Storing crashdata in: /tmp/android-runner/emu-crash-37.2.12.db, detection is enabled for process: 2806
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8210156Z INFO         | Initializing gfxstream backend
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8221526Z INFO         | startOpenglesRendererImpl: gpu info
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8222228Z INFO         | 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8229937Z INFO         | initIcdPaths: ICD set to 'swiftshader', using Swiftshader ICD
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8240109Z INFO         | Setting ICD filenames for the loader = /usr/local/lib/android/sdk/emulator/lib64/vulkan/vk_swiftshader_icd.json
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8241816Z INFO         | SharedLibrary::open for [/usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/lib64/vulkan/libvulkan.so]
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8243389Z INFO         | SharedLibrary::open for [/usr/local/lib/android/sdk/emulator/qemu/linux-x86_64/lib64/vulkan/libvulkan.so.1]
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8244395Z INFO         | SharedLibrary::open for [/usr/local/lib/android/sdk/emulator/lib64/vulkan/libvulkan.so]
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8245258Z INFO         | Added library: /usr/local/lib/android/sdk/emulator/lib64/vulkan/libvulkan.so
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8442466Z INFO         | Selecting Vulkan device: SwiftShader Device (Subzero), Version: 1.3.0
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8443996Z INFO         | Using Vulkan externalMemoryMode: OpaqueFd for VkEmulation
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8582589Z INFO         | Format VK_FORMAT_G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16 does not support YCbCr sampler conversion
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8612613Z INFO         | SharedLibrary::open for [libX11]
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8614018Z WARNING      | Could not open libX11.so, try libX11.so.6
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8615148Z INFO         | SharedLibrary::open for [libX11.so.6]
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8616029Z INFO         | SharedLibrary::open for [libX11-xcb]
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8616978Z WARNING      | Could not open libX11-xcb.so, try libX11-xcb.so.1
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8617937Z INFO         | SharedLibrary::open for [libX11-xcb.so.1]
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8718639Z INFO         | Initializing VkEmulation features:
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8719706Z INFO         |     glInteropSupported: false
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8720889Z INFO         |     useDeferredCommands: true
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8721787Z INFO         |     createResourceWithRequirements: true
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8722688Z INFO         |     useVulkanComposition: false
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8736096Z INFO         |     useVulkanNativeSwapchain: false
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8736915Z INFO         |     enable guestRenderDoc: false
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8737667Z INFO         |     ASTC LDR emulation mode: Gpu
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8738590Z INFO         |     enable ETC2 emulation: true
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8739319Z INFO         |     enable Ycbcr emulation: false
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8739993Z INFO         |     guestVulkanOnly: false
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8740716Z INFO         |     useDedicatedAllocations: false
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8741476Z INFO         |     guestVulkanMaxApiVersion: 1.3.0
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8742256Z INFO         |     enableProtectedMemoryEmulation: false
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8743434Z INFO         | Graphics Adapter Vendor Google (Google Inc.)
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8744691Z INFO         | Graphics Adapter Android Emulator OpenGL ES Translator (Google SwiftShader)
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8745998Z INFO         | Graphics API Version OpenGL ES 3.0 (OpenGL ES 3.0 SwiftShader 4.0.0.1)
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8751030Z INFO         | Graphics API Extensions GL_OES_EGL_sync GL_OES_EGL_image GL_OES_EGL_image_external GL_OES_depth24 GL_OES_depth32 GL_OES_element_index_uint GL_OES_texture_float GL_OES_texture_float_linear GL_OES_compressed_paletted_texture GL_OES_compressed_ETC1_RGB8_texture GL_OES_depth_texture GL_OES_texture_half_float GL_OES_texture_half_float_linear GL_OES_packed_depth_stencil GL_OES_vertex_half_float GL_OES_standard_derivatives GL_OES_texture_npot GL_OES_rgb8_rgba8 GL_EXT_color_buffer_float GL_EXT_color_buffer_half_float GL_EXT_texture_format_BGRA8888 GL_APPLE_texture_format_BGRA8888 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8753404Z INFO         | Graphics Device Extensions N/A
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8753824Z INFO         | Disabling sparse binding feature support
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8786837Z INFO         | Sending adb public key [QAAAAKkvqpBnG4Bk8sAXArnfqhmVKeqBiU+wy7bo5op5BXLcnR66yBWZZ0uS7VwB59AS/N7t5PFL3UiEbL2hz2IE63w7RLk9y4bbtwrKQjzj0wP36WeHPccpZ9l5duzkNhiwELYMM0xccEbqTDLDT72ocNapwgxc56LwEpk/bA4S6Pgct+T89g2cS4U/0JxOp7vYdp3hyWh6wpYx0oebZHe40QsRoSA5SsjeihWzwFsFIPDrz83N/rBZhHeIcbOojApm2nZNmWTIk4ruWb4VPssY4UqBctC37anLGfYQ47dShmb9NHOziLQD0X4oa1kw/kVMWQ3/h8ZTkGLeAWx57SCE6P9CdJi08xb4DXCopvNjzG/7lEkl7c82gU91jaluK8cCovgAOJol0sU7791DAmX/G/VlcypzreLymlUBhkZXEOfoE3vjDLGAVWs+BDxr4u4gUStZeVakmf+ZEaUxNyM+j0czWJJk8xiasIoKab7VzezRqv83982K9ndbniEI6X4tl8o2a9Zb6ChRjuxldafD8FjP1iV6t02sz79ggJf2A8cdzNpFVWyEziTXYkxAef81T3H5jXt+SYCMozKd3nliifuj9y9XvtErjdPiq03ZLyP5FkKzi9LCfEGPoMplmlnlDkJ3IJ4Ok97loFXOCXsbYf3I5zXwzdq9vt9ZW+zbw92/vGP4lAEAAQA= runner@unknown]
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8793075Z INFO         | Userspace boot properties:
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8793826Z INFO         |   androidboot.boot_devices=pci0000:00/0000:00:03.0 pci0000:00/0000:00:06.0
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8794473Z INFO         |   androidboot.dalvik.vm.heapsize=576m
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8795016Z INFO         |   androidboot.debug.hwui.renderer=skiagl
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8795551Z INFO         |   androidboot.debug.sf.nobootanimation=1
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8796049Z INFO         |   androidboot.hardware=ranchu
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8796561Z INFO         |   androidboot.hardware.gltransport=pipe
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8797067Z INFO         |   androidboot.hardware.vulkan=ranchu
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8797539Z INFO         |   androidboot.logcat=*:V
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8798013Z INFO         |   androidboot.opengles.version=196608
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8798850Z INFO         |   androidboot.qemu=1
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8804086Z INFO         |   androidboot.qemu.adb.pubkey=QAAAAKkvqpBnG4Bk8sAXArnfqhmVKeqBiU+wy7bo5op5BXLcnR66yBWZZ0uS7VwB59AS/N7t5PFL3UiEbL2hz2IE63w7RLk9y4bbtwrKQjzj0wP36WeHPccpZ9l5duzkNhiwELYMM0xccEbqTDLDT72ocNapwgxc56LwEpk/bA4S6Pgct+T89g2cS4U/0JxOp7vYdp3hyWh6wpYx0oebZHe40QsRoSA5SsjeihWzwFsFIPDrz83N/rBZhHeIcbOojApm2nZNmWTIk4ruWb4VPssY4UqBctC37anLGfYQ47dShmb9NHOziLQD0X4oa1kw/kVMWQ3/h8ZTkGLeAWx57SCE6P9CdJi08xb4DXCopvNjzG/7lEkl7c82gU91jaluK8cCovgAOJol0sU7791DAmX/G/VlcypzreLymlUBhkZXEOfoE3vjDLGAVWs+BDxr4u4gUStZeVakmf+ZEaUxNyM+j0czWJJk8xiasIoKab7VzezRqv83982K9ndbniEI6X4tl8o2a9Zb6ChRjuxldafD8FjP1iV6t02sz79ggJf2A8cdzNpFVWyEziTXYkxAef81T3H5jXt+SYCMozKd3nliifuj9y9XvtErjdPiq03ZLyP5FkKzi9LCfEGPoMplmlnlDkJ3IJ4Ok97loFXOCXsbYf3I5zXwzdq9vt9ZW+zbw92/vGP4lAEAAQA= runner@unknown
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8808103Z INFO         |   androidboot.qemu.avd_name=test
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8808819Z INFO         |   androidboot.qemu.camera_hq_edge_processing=0
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8809264Z INFO         |   androidboot.qemu.camera_protocol_ver=1
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8809692Z INFO         |   androidboot.qemu.cpuvulkan.version=4206592
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8810164Z INFO         |   androidboot.qemu.gltransport.drawFlushInterval=800
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8810619Z INFO         |   androidboot.qemu.gltransport.name=pipe
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8811022Z INFO         |   androidboot.qemu.hwcodec.avcdec=2
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8811420Z INFO         |   androidboot.qemu.hwcodec.hevcdec=2
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8811802Z INFO         |   androidboot.qemu.hwcodec.vpxdec=2
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8812294Z INFO         |   androidboot.qemu.settings.system.screen_off_timeout=2147483647
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8812795Z INFO         |   androidboot.qemu.skin=320x640
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8813155Z INFO         |   androidboot.qemu.virtiowifi=1
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8813608Z INFO         |   androidboot.qemu.vsync=60
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8814016Z INFO         |   androidboot.serialno=EMULATOR37X2X12X0
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8814640Z INFO         |   androidboot.vbmeta.digest=451e57ed688ff746d2c636d52169ade253e2bc5bb30a5c3ff23679ca15d3bcd3
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8815239Z INFO         |   androidboot.vbmeta.hash_alg=sha256
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8815606Z INFO         |   androidboot.vbmeta.size=6656
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.8815973Z INFO         |   androidboot.veritymode=enforcing
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.9020153Z WARNING: cannnot unmap ptr 0x7f21fe401000 as it is in the protected range from 0x7f215e400000 to 0x7f21fe600000
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:30.9183655Z INFO         | Monitoring duration of emulator setup.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:31.9271447Z INFO         | Activated packet streamer for bluetooth emulation
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:31.9272607Z INFO         | Successfully initialized netsim WiFi
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:31.9329615Z INFO         | Setting display: 0 configuration to: 320x640, dpi: 160x160 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:31.9330486Z INFO         | setDisplayActiveConfig: id:0, 320x640
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:31.9331368Z INFO         | emulatorSetupEnvironment: Environment scene is not required
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:31.9404928Z USER_INFO    | Emulator is performing a full startup. This may take upto two minutes, or more.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:31.9405941Z WARNING      | Failed to process .ini file /home/runner/.android/emu-update-last-check.ini for reading.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:32.0783113Z WARNING      | Failed to process .ini file /home/runner/.android/emu-update-last-check.ini for reading.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:39.7732304Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:39.7774691Z * daemon not running; starting now at tcp:5037
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:40.0292055Z * daemon started successfully
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:40.0292999Z adb: device offline
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:40.0301655Z The process '/usr/local/lib/android/sdk/platform-tools/adb' failed with exit code 1
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:42.0330222Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:42.0363922Z adb: device offline
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:42.0371037Z The process '/usr/local/lib/android/sdk/platform-tools/adb' failed with exit code 1
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:44.0412411Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:44.1029200Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:46.1100141Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:46.1617024Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:48.1724847Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:48.1936456Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:50.1983835Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:50.2207780Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:52.2279381Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:52.2515499Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:54.2601012Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:54.2869605Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:56.2925011Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:56.3219426Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:58.3254064Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:10:58.3594543Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:00.3699979Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:00.3941464Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:02.4019521Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:02.4182377Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:04.4222306Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:04.4459914Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:06.4501447Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:06.4727702Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:08.4778212Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:08.5558270Z 1
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:08.5568785Z Emulator booted.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:08.5602342Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell input keyevent 82
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:08.7142919Z Disabling animations.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:08.7180503Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell settings put global window_animation_scale 0.0
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:08.9325354Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell settings put global transition_animation_scale 0.0
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:08.9682348Z INFO         | Boot completed in 39156 ms
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:08.9683589Z INFO         | Increasing screen off timeout, logcat buffer size to 2M.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:08.9980405Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell settings put global animator_duration_scale 0.0
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:09.4279852Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:09.4313725Z [command]/usr/bin/sh -c adb install -r app.apk
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:30.0418816Z Performing Streamed Install
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:30.0419779Z Success
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:30.0496643Z [command]/usr/bin/sh -c npm run test:e2e:android
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:30.2105394Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:30.2107281Z > react-native-starter@1.0.0 test:e2e:android
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:30.2108167Z > bash scripts/e2e/run.sh android
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:30.2108962Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:11:34.2959523Z Bundling for android...
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:12:03.3365548Z Anonymous analytics enabled. To opt out, set MAESTRO_CLI_NO_ANALYTICS environment variable to any value before running Maestro.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:12:03.3367647Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:12:09.5793456Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:12:09.5795279Z Requested 1 shards, but it cannot be higher than the number of flows (0). Will use 1 shards instead.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:12:14.3021711Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:12:14.3029876Z Waiting for flows to complete...
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:13:27.9430217Z [Passed] Cold start opens Home (1m 14s)
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:13:39.3813593Z ERROR        | Failed to find ColorBuffer: 269
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:13:39.3814320Z ERROR        | Failed to bind to texture: invalid color buffer.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:14:12.3180308Z [Passed] Back from Login returns Home (44s)
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:14:36.3689770Z [Passed] Tab navigation (24s)
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:14:45.4749202Z ERROR        | Failed to find ColorBuffer: 417
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:14:45.4760348Z ERROR        | Failed to bind to texture: invalid color buffer.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:15:48.4485593Z ERROR        | Failed to find ColorBuffer: 487
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:15:48.4486654Z ERROR        | Failed to bind to texture: invalid color buffer.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:16:08.9858263Z ERROR        | Failed to find ColorBuffer: 547
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:16:08.9859917Z ERROR        | Failed to bind to texture: invalid color buffer.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:16:17.3317622Z [Passed] Sign-in session survives a relaunch; logout clears it (1m 41s)
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:17:16.5556773Z ERROR        | Failed to find ColorBuffer: 618
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:17:16.5557532Z ERROR        | Failed to bind to texture: invalid color buffer.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:17:19.1150145Z [Passed] Login keyboard return keys (1m 2s)
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:17:30.0874777Z ERROR        | Failed to find ColorBuffer: 669
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:17:30.0875843Z ERROR        | Failed to bind to texture: invalid color buffer.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:17:46.1769905Z [Passed] Explore error state and Retry (27s)
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:17:46.1814685Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:17:46.1815203Z 6/6 Flows Passed in 5m 32s
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:17:46.1815524Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:17:55.5821755Z Running on test
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:17:55.5827075Z  > Flow Dark mode screenshots
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:17:56.9543748Z Run subflows/open-app.yaml...
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:17:57.0209712Z   Run flow when ${CLEAR_STATE == 'true'} is true...
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:17:57.0329861Z   Run flow when false is true... SKIPPED
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:17:59.8363395Z   Launch app "${APP_ID}"... COMPLETED
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:01.2470231Z   Open ${APP_URL}... COMPLETED
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:01.2497347Z   Repeat while id: tab-home is not visible (up to 10 times)...
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:05.1226549Z     Assert that (Optional) id: tab-home is visible... COMPLETED
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:05.1233529Z     Run flow when Platform is IOS and "Open in .*" is visible...
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:05.1248690Z     Run flow when Platform is IOS and "Open in .*" is visible... SKIPPED
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:05.1261114Z     Run flow when "Development servers" is visible...
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:08.3972753Z     Run flow when "Development servers" is visible... SKIPPED
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:08.9191983Z     Tap on (Optional) "Wait"...ERROR        | Failed to find ColorBuffer: 751
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:08.9193347Z ERROR        | Failed to bind to texture: invalid color buffer.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:09.0720442Z  WARNED
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:09.4581534Z     Tap on (Optional) "Continue"... WARNED
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:09.4582404Z     Run flow when Platform is ANDROID and "Go home" is visible...
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:09.7041901Z     Run flow when Platform is ANDROID and "Go home" is visible... SKIPPED
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:09.7043204Z     Run flow when Platform is IOS and "Go home" is visible...
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:09.7054112Z     Run flow when Platform is IOS and "Go home" is visible... SKIPPED
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:09.8920995Z     Wait for animation to end... COMPLETED
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:16.9091624Z   Repeat while id: tab-home is not visible (up to 10 times)... COMPLETED
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:17.0409945Z   Assert that "Session" is visible... COMPLETED
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:17.0411109Z Run subflows/open-app.yaml... COMPLETED
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:17.0985860Z Take screenshot dark-home... COMPLETED
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:19.5747158Z Tap on id: tab-explore... COMPLETED
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:19.7147916Z Assert that "API Example" is visible... COMPLETED
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:19.7753430Z Take screenshot dark-explore... COMPLETED
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:21.9088765Z Tap on id: tab-home... COMPLETED
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:23.6922657Z ##[group]Terminate Emulator
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:23.6962588Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 emu kill
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:23.6994086Z OK: killing emulator, bye bye
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:23.7029931Z OK
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:23.7047213Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:23.7060525Z INFO         | Wait for emulator (pid 2806) 20 seconds to shutdown gracefully before kill;you can set environment variable ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL(in seconds) to change the default value (20 seconds)
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:23.7088858Z 
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:23.7239428Z USER_INFO    | Snapshots have been disabled by the user, save request is ignored.
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:23.7243851Z INFO         | Saving snapshot 'default_boot' took 0 ms
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:24.0086140Z ERROR        | stop: Not implemented
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:24.0087326Z WARNING      | Emulator client has not yet been configured.. Call configure me first!
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:24.0216285Z INFO         | removeAll
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-11T15:18:24.0895926Z WARNING      | Netsim Wifi dns:///localhost:38589 is gone due to Stream removed (CANCELLED)
+Maestro on Android emulator (expo-go)	Upload Maestro results	﻿2026-10-11T15:18:24.2610671Z ##[group]Run actions/upload-artifact@v4
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.2610978Z with:
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.2611186Z   name: e2e-android-expo-go-results
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.2611462Z   path: e2e-results/android
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.2611698Z   if-no-files-found: ignore
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.2611923Z   compression-level: 6
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.2612134Z   overwrite: false
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.2612346Z   include-hidden-files: false
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.2612576Z env:
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.2612773Z   MAESTRO_VERSION: 2.11.0
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.2613129Z   MAESTRO_SHA256: 5384593cb4e7a106489e75a821d157dd43f4e438df6bc308b72e82c685e1283a
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.2613635Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.2614108Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.2614510Z   ANDROID_AVD_HOME: /home/runner/.android/avd
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.2614776Z ##[endgroup]
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.4403086Z (node:4320) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.4404065Z (Use `node --trace-deprecation ...` to show where the warning was created)
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.4895983Z With the provided path, there will be 91 files uploaded
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.4899280Z Artifact name is valid!
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.4900447Z Root directory input is valid!
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:24.8757633Z Beginning upload of artifact content to blob storage
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:25.1460927Z (node:4320) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:25.8442722Z Uploaded bytes 2072148
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:25.9165015Z Finished uploading artifact content to blob storage!
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:25.9166824Z SHA256 digest of uploaded artifact zip is 66ede183dfd9017e8af39ffb2ad0f3b262c279d53834f2948fafc419ace3a9ba
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:25.9168829Z Finalizing artifact upload
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:26.1908022Z Artifact e2e-android-expo-go-results.zip successfully finalized. Artifact ID 11705779871
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:26.1910408Z Artifact e2e-android-expo-go-results has been successfully uploaded! Final size is 2072148 bytes. Artifact ID is 11705779871
+Maestro on Android emulator (expo-go)	Upload Maestro results	2026-10-11T15:18:26.1916001Z Artifact download URL: https://github.com/koniz-dev/react-native-starter/actions/runs/38150064533/artifacts/11705779871
+Maestro on Android emulator (expo-go)	Post Set up Java 17 (Maestro)	﻿2026-10-11T15:18:26.2189191Z Post job cleanup.
+Maestro on Android emulator (expo-go)	Post Set up Java 17 (Maestro)	2026-10-11T15:18:26.3641647Z (node:4333) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Maestro on Android emulator (expo-go)	Post Set up Java 17 (Maestro)	2026-10-11T15:18:26.3643504Z (Use `node --trace-deprecation ...` to show where the warning was created)
+Maestro on Android emulator (expo-go)	Post Set up Node.js	﻿2026-10-11T15:18:26.3832351Z Post job cleanup.
+Maestro on Android emulator (expo-go)	Post Set up Node.js	2026-10-11T15:18:26.5297058Z (node:4341) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Maestro on Android emulator (expo-go)	Post Set up Node.js	2026-10-11T15:18:26.5297927Z (Use `node --trace-deprecation ...` to show where the warning was created)
+Maestro on Android emulator (expo-go)	Post Set up Node.js	2026-10-11T15:18:26.5533161Z [command]/usr/bin/tar --posix -cf cache.tzst --exclude cache.tzst -P -C /home/runner/work/react-native-starter/react-native-starter --files-from manifest.txt --use-compress-program zstdmt
+Maestro on Android emulator (expo-go)	Post Set up Node.js	2026-10-11T15:18:27.6884721Z Failed to save: Unable to reserve cache with key node-cache-Linux-x64-npm-bda2238ab11e31a674de569339ad1681edd3fddf8cfc6f9e0837e73faa7f7d0d, another job may be creating this cache.
+Maestro on Android emulator (expo-go)	Post Check out repository	﻿2026-10-11T15:18:27.7176068Z Post job cleanup.
+Maestro on Android emulator (expo-go)	Post Check out repository	2026-10-11T15:18:27.8151151Z [command]/usr/bin/git version
+Maestro on Android emulator (expo-go)	Post Check out repository	2026-10-11T15:18:27.8211131Z git version 2.55.0
+Maestro on Android emulator (expo-go)	Post Check out repository	2026-10-11T15:18:27.8255446Z Temporarily overriding HOME='/home/runner/work/_temp/80f387f3-338f-4216-86ef-60290b152571' before making global git config changes
+Maestro on Android emulator (expo-go)	Post Check out repository	2026-10-11T15:18:27.8258213Z Adding repository directory to the temporary git global config as a safe directory
+Maestro on Android emulator (expo-go)	Post Check out repository	2026-10-11T15:18:27.8266358Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/react-native-starter/react-native-starter
+Maestro on Android emulator (expo-go)	Post Check out repository	2026-10-11T15:18:27.8311759Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Maestro on Android emulator (expo-go)	Post Check out repository	2026-10-11T15:18:27.8353907Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Maestro on Android emulator (expo-go)	Post Check out repository	2026-10-11T15:18:27.8650593Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Maestro on Android emulator (expo-go)	Post Check out repository	2026-10-11T15:18:27.8679948Z http.https://github.com/.extraheader
+Maestro on Android emulator (expo-go)	Post Check out repository	2026-10-11T15:18:27.8691590Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+Maestro on Android emulator (expo-go)	Post Check out repository	2026-10-11T15:18:27.8729489Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Maestro on Android emulator (expo-go)	Post Check out repository	2026-10-11T15:18:27.9034939Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Maestro on Android emulator (expo-go)	Post Check out repository	2026-10-11T15:18:27.9082778Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Maestro on Android emulator (expo-go)	Complete job	﻿2026-10-11T15:18:27.9473101Z Cleaning up orphan processes
+Maestro on Android emulator (expo-go)	Complete job	2026-10-11T15:18:28.0040221Z Terminate orphan process: pid (2968) (adb)
+Maestro on Android emulator (expo-go)	Complete job	2026-10-11T15:18:28.0080740Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-java@v4, actions/setup-node@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

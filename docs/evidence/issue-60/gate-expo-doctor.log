@@ -1,0 +1,4 @@
+env: load .env
+env: export EXPO_PUBLIC_API_TRUSTED_ORIGINS EXPO_PUBLIC_API_URL EXPO_PUBLIC_AUTH_API_URL EXPO_PUBLIC_USE_DEMO_BACKENDS
+Running 21 checks on your project...
+21/21 checks passed. No issues detected!
