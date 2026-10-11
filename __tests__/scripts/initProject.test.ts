@@ -78,12 +78,15 @@ describe('init-project input', () => {
     expect([...args.flags]).toEqual(['--remove-demo', '--dry-run']);
   });
 
-  it('rejects unknown arguments, missing values, and conflicting demo flags', () => {
+  it('rejects unknown arguments, missing values, and conflicting flags', () => {
     expect(() => init.parseArgs(['--colour'])).toThrow(/unknown argument/);
     expect(() => init.parseArgs(['--name'])).toThrow(/needs a value/);
     expect(() => init.parseArgs(['--remove-demo', '--keep-demo'])).toThrow(
       /not both/
     );
+    expect(() =>
+      init.parseArgs(['--remove-recipes', '--keep-recipes'])
+    ).toThrow(/not both/);
   });
 
   it('derives a slug and quotes strings the way Prettier does', () => {
@@ -215,14 +218,35 @@ describe('init-project on a copy of the template', () => {
     expect(lock.name).toBe('acme-notes');
     expect(lock.packages[''].name).toBe('acme-notes');
 
-    expect(read(dir, 'README.md')).toMatch(/^# Acme Notes\n/);
-    expect(read(dir, 'README.md')).toContain('## Documentation');
+    // The app's own README replaces the template's pitch.
+    const readme = read(dir, 'README.md');
+    expect(readme).toMatch(/^# Acme Notes\n/);
+    expect(readme).toContain('## Run it');
+    expect(readme).toContain('## Documentation');
+    expect(readme).not.toMatch(/What you get|template/);
     expect(read(dir, 'LICENSE')).toContain(
       `Copyright (c) ${new Date().getFullYear()} Acme Inc.`
     );
-    expect(read(dir, 'docs/make-it-yours.md')).toContain(
+    // The onboarding checklist goes; what stays useful is in App Config.
+    expect(exists(dir, 'docs/make-it-yours.md')).toBe(false);
+    expect(read(dir, 'docs/app-config.md')).toContain(
       '`com.acme.notes.preview`'
     );
+    expect(read(dir, 'docs/app-config.md')).toContain('`Acme Notes (Dev)`');
+    // The recipes go by default, with their links and CI's install.
+    expect(exists(dir, 'docs/recipes')).toBe(false);
+    expect(read(dir, 'AGENTS.md')).not.toContain('recipes/');
+    expect(read(dir, 'docs/api-and-storage.md')).not.toContain(
+      '@tanstack/react-query'
+    );
+    expect(read(dir, '.github/workflows/ci.yml')).not.toContain(
+      'npm install --no-save'
+    );
+    // The project owns the inherited advisory review.
+    for (const entry of JSON.parse(read(dir, 'scripts/audit-allowlist.json'))
+      .advisories) {
+      expect(entry.owner).toBe('Acme Inc. (re-review by reviewBy)');
+    }
     expect(read(dir, '.github/workflows/e2e-android.yml')).toContain(
       'E2E_APP_URL=acmenotes-dev://'
     );
@@ -240,7 +264,7 @@ describe('init-project on a copy of the template', () => {
       [
         'grep',
         '-iE',
-        'koniz-dev|react-native-starter|rnstarter|com\\.example|@init|init-project',
+        'koniz-dev|react-native-starter|rnstarter|com\\.example|@init|@recipes|init-project|make-it-yours',
       ],
       { cwd: dir, encoding: 'utf8' }
     );
@@ -253,6 +277,25 @@ describe('init-project on a copy of the template', () => {
       { cwd: dir, encoding: 'utf8' }
     );
     expect(prettier.status).toBe(0);
+  }, 60000);
+
+  it('keeps the recipes with --keep-recipes, without their markers', () => {
+    const dir = copy();
+    const result = run(dir, [...IDENTITY, '--keep-demo', '--keep-recipes']);
+    expect(result.status).toBe(0);
+    expect(exists(dir, 'docs/recipes/state-management.md')).toBe(true);
+    expect(read(dir, 'AGENTS.md')).toContain('recipes/state-management.md');
+    expect(read(dir, 'docs/api-and-storage.md')).toContain(
+      '@tanstack/react-query'
+    );
+    expect(read(dir, '.github/workflows/ci.yml')).toContain(
+      'npm install --no-save'
+    );
+    const markers = spawnSync('git', ['grep', '-n', '@recipes'], {
+      cwd: dir,
+      encoding: 'utf8',
+    });
+    expect(markers.stdout).toBe('');
   }, 60000);
 
   it('removes the demo with --remove-demo and refuses a second run', () => {
@@ -276,6 +319,22 @@ describe('init-project on a copy of the template', () => {
       /^EXPO_PUBLIC_USE_DEMO_BACKENDS=false$/m
     );
     expect(exists(dir, 'scripts/remove-demo.js')).toBe(false);
+    // Nothing reads like the template any more (tests may name it).
+    const starter = spawnSync(
+      'git',
+      [
+        'grep',
+        '-i',
+        'starter',
+        '--',
+        '.',
+        ':!__tests__',
+        ':!package-lock.json',
+        ':!scripts/init-project.js',
+      ],
+      { cwd: dir, encoding: 'utf8' }
+    );
+    expect(starter.stdout).toBe('');
     expect(
       JSON.parse(read(dir, 'package.json')).scripts['remove-demo']
     ).toBeUndefined();

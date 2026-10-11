@@ -1,7 +1,7 @@
 # Error Reporting and Logging
 
 App code logs through one logger, and errors flow from it to one
-error-reporting seam. The starter ships no crash-reporting SDK: by default
+error-reporting seam. The app ships no crash-reporting SDK: by default
 reports go to the console. To send them to Sentry, Bugsnag, or similar,
 install the provider and register an adapter; no other code changes.
 

@@ -1,6 +1,6 @@
 # Remove the Demo
 
-The starter ships three demos so you can see the foundation working:
+The project ships three demos so you can see the foundation working:
 
 | Demo            | What it is                                                           | Where                                                  |
 | --------------- | -------------------------------------------------------------------- | ------------------------------------------------------ |

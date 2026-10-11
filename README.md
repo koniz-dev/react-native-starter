@@ -18,7 +18,7 @@ npm start              # then press i, a, or w, or scan the QR code with Expo Go
 <!-- @init remove-block-start -->
 
 Made a repository from this template? Run `npm run init-project` first: it
-sets your app's name and IDs and removes what belongs to the starter
+sets your app's name and IDs and removes what belongs to the template
 ([Getting Started](docs/getting-started.md#make-it-your-project-first)).
 
 <!-- @init remove-block-end -->
@@ -38,7 +38,7 @@ Details, platforms, and troubleshooting: [Getting Started](docs/getting-started.
 - **Validated configuration**: environment variables checked with zod at
   startup, three build variants, EAS profiles
   ([Environment Variables](docs/environment-variables.md),
-  [Make It Yours](docs/make-it-yours.md)).
+  [App Config](docs/app-config.md)).
 - **React Native Paper** (Material Design 3) with one brand theme, light and
   dark ([UI and Theming](docs/ui-and-theming.md)).
 - **Seams** for analytics, feature flags, push, OTA updates, error reporting,

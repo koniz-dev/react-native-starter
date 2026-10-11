@@ -8,7 +8,7 @@
  * EXPO_PUBLIC_APP_ENV for the runtime config in shared/config/env.ts).
  *
  * To make the app yours, change the values in APP below and replace the
- * images in assets/. See docs/make-it-yours.md.
+ * images in assets/. See docs/app-config.md.
  */
 import type { ConfigContext, ExpoConfig } from 'expo/config';
 

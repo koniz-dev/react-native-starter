@@ -1,13 +1,19 @@
 # Documentation
 
-Guides for this starter. Each topic has one page; for general Expo and React
+Guides for this app's code base. Each topic has one page; for general Expo and React
 Native topics, the pages link to the official documentation.
 
 ## Start here
 
 - [Getting Started](getting-started.md): install, run, scripts, troubleshooting.
-- [Make It Yours](make-it-yours.md): app identity, icons, variants, theme, and
-  everything else to change.
+
+<!-- @init remove-block-start -->
+
+- [Make It Yours](make-it-yours.md): the checklist for a new project.
+
+<!-- @init remove-block-end -->
+
+- [App Config](app-config.md): app identity, build variants, icons and splash.
 - [Connect Your Backend](connect-your-backend.md): URLs, an auth adapter, and
   endpoints.
 
@@ -26,10 +32,14 @@ Native topics, the pages link to the official documentation.
 - [UI and Theming](ui-and-theming.md): Paper, the brand theme, dark mode,
   fonts, safe areas.
 
+<!-- @recipes remove-block-start -->
+
 ## Recipes
 
 - [State Management](recipes/state-management.md): Zustand, Redux Toolkit,
   Jotai, or React Context next to the session provider.
+
+<!-- @recipes remove-block-end -->
 
 ## Reference
 

@@ -1,6 +1,6 @@
 # Plug In a Provider
 
-The starter ships typed **seams** for services most apps add later. Each has
+The app has typed **seams** for services most apps add later. Each has
 a default that needs no account, key, or native setup, so the app runs as-is.
 To use a provider, install its SDK, write a small adapter to the seam's
 interface, and register it in `shared/integrations/setup.ts`, which runs

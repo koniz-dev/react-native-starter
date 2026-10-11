@@ -1,6 +1,6 @@
 # Agent Instructions
 
-This is an Expo (SDK 57) and React Native app built from a starter: Expo
+This is an Expo (SDK 57) and React Native app: Expo
 Router, TypeScript strict, React Native Paper (Material Design 3), Jest and
 React Native Testing Library, and Maestro end-to-end flows. Follow these
 instructions when you change the code; the linked docs have the details.
@@ -79,9 +79,16 @@ Lint enforces most of these as errors. Details:
   Don't call the SDK from features. See
   [Plug In a Provider](docs/plug-in-a-provider.md) and
   [Error Reporting](docs/error-reporting.md#plugging-in-a-provider).
-- **App state** beyond the session: see
-  [State Management](docs/recipes/state-management.md); persist preferences
-  with the wrappers in `shared/storage/`.
+- **App state** beyond the session: persist preferences with the wrappers
+  in `shared/storage/`.
+
+<!-- @recipes remove-block-start -->
+
+- **A store library:** see
+  [State Management](docs/recipes/state-management.md) (Zustand, Redux
+  Toolkit, Jotai, React Context).
+
+<!-- @recipes remove-block-end -->
 
 ## Configuration and environment
 
@@ -94,7 +101,7 @@ Lint enforces most of these as errors. Details:
   never commit `.env`. `EXPO_PUBLIC_*` values ship in the app bundle, so they
   must not be secrets.
 - App name, IDs, icons, and build variants live in `app.config.ts` and
-  `eas.json` ([Make It Yours](docs/make-it-yours.md)).
+  `eas.json` ([App Config](docs/app-config.md)).
 
 ## Gates
 
@@ -131,7 +138,7 @@ Keep commits small and single-purpose.
 
 - [Getting Started](docs/getting-started.md): install, run, scripts,
   troubleshooting.
-- [Make It Yours](docs/make-it-yours.md): app identity, icons, variants.
+- [App Config](docs/app-config.md): app identity, build variants, icons.
 - [Connect Your Backend](docs/connect-your-backend.md): URLs, auth adapter,
   endpoints.
 
@@ -147,5 +154,11 @@ Keep commits small and single-purpose.
   [UI and Theming](docs/ui-and-theming.md),
   [Error Reporting](docs/error-reporting.md),
   [Plug In a Provider](docs/plug-in-a-provider.md),
-  [Testing](docs/testing.md),
-  [State Management](docs/recipes/state-management.md).
+  [Testing](docs/testing.md).
+
+<!-- @recipes remove-block-start -->
+
+- [State Management](docs/recipes/state-management.md): store library
+  recipes.
+
+<!-- @recipes remove-block-end -->

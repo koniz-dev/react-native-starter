@@ -207,5 +207,5 @@ are lint errors in app code. Run it with `node`, or through an npm script.
 ## Commits
 
 Small, single-purpose commits, each passing the local gate
-(`npm run lint && npm run type-check && npm run test:ci`). The starter has
-no commit-message convention; use your team's.
+(`npm run lint && npm run type-check && npm run test:ci`). There is no
+commit-message convention here; use your team's.

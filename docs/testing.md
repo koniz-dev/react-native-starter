@@ -1,7 +1,7 @@
 # Testing Guide
 
 Jest with the `jest-expo` preset and React Native Testing Library. Tests run
-in Node with native modules mocked; they are the starter's main verification
+in Node with native modules mocked; they are the project's main verification
 harness, alongside the Maestro flows and manual runs on simulators.
 
 ## Commands
@@ -37,7 +37,7 @@ jest.setup.ts                 shared mocks, reset before each test
 <!-- @demo remove-block-start -->
 
 The demo's tests are in `__tests__/features/demo-*/`, and the tests of the
-starter's own scripts in `__tests__/scripts/`; `npm run remove-demo` deletes
+template's setup scripts in `__tests__/scripts/`; `npm run remove-demo` deletes
 the demo tests and its own.
 
 <!-- @demo remove-block-end -->
@@ -147,8 +147,8 @@ it('reports a screen view for each route', async () => {
 });
 ```
 
-The same goes for `setAuthAdapter()` and the error reporter. The starter's
-own full-app tests that set a seam do this
+The same goes for `setAuthAdapter()` and the error reporter. The
+full-app tests that set a seam do this
 (`__tests__/shared/integrations/screenTracking.test.tsx`,
 `__tests__/shared/integrations/i18n.test.tsx`,
 `__tests__/shared/ui/ErrorBoundary.test.tsx`), so they keep passing when you

@@ -39,8 +39,12 @@ dependency path, exposure, owner, review date, and tracking link; see
 [Dependency advisories](../docs/getting-started.md#dependency-advisories) for
 reviewing them in your project.
 
+<!-- @init remove-block-start -->
+
 ## No reset-project command
 
-This starter intentionally does not ship a destructive `reset-project` script.
-Create a branch or copy the files you want to adapt instead of moving the
-committed `app/` directory from an automated script.
+The template intentionally does not ship a destructive `reset-project`
+script. Create a branch or copy the files you want to adapt instead of moving
+the committed `app/` directory from an automated script.
+
+<!-- @init remove-block-end -->

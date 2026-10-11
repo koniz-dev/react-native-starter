@@ -36,26 +36,35 @@ you (icons, colors, backend, providers).
   Android emulator). Building the native iOS app yourself needs Xcode 26.4+,
   which Expo SDK 57 requires.
 
-## Supported platforms
+## Platforms
 
-| Platform | Verified                                                                            | Notes                                                                                                                        |
-| -------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Android  | Expo Go, a native debug build, and a production release build (`prebuild` + Gradle) | Emulator runs of the [Maestro flows](testing.md#end-to-end-flows-maestro); a release build needs `https` backend URLs        |
-| iOS      | Expo Go on the iOS Simulator                                                        | Native iOS builds have not been verified for this release; build with EAS Build or locally with Xcode 26.4+ (below)          |
-| Web      | Static export (`npx expo export --platform web`)                                    | The sign-in token is kept in memory, so a reload signs out ([Connect Your Backend](connect-your-backend.md#sessions-on-web)) |
+| Platform | Runs in                                                                                 | Notes                                                                                                                        |
+| -------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Android  | Expo Go, and native builds (`npm run prebuild:preview` or another variant, then Gradle) | The [Maestro flows](testing.md#end-to-end-flows-maestro) run on an emulator; a release build needs `https` backend URLs      |
+| iOS      | Expo Go on the iOS Simulator, and native builds (EAS Build or Xcode 26.4+)              | See below for native builds                                                                                                  |
+| Web      | A static export (`npx expo export --platform web`)                                      | The sign-in token is kept in memory, so a reload signs out ([Connect Your Backend](connect-your-backend.md#sessions-on-web)) |
 
-**Native iOS builds** are untested by the starter. Two ways to make one: EAS
-Build (`eas build --platform ios --profile preview`, with your Expo and Apple
+<!-- @init remove-block-start -->
+
+What each template release was verified on (devices, OS versions, and
+builds) is in its
+[release notes](https://github.com/koniz-dev/react-native-starter/releases).
+Native iOS builds were not part of that verification.
+
+<!-- @init remove-block-end -->
+
+**Native iOS builds:** with EAS Build
+(`eas build --platform ios --profile preview`, with your Expo and Apple
 accounts; the profiles are in `eas.json`), or locally with Xcode 26.4+:
 `npm run prebuild:preview`, then `npx expo run:ios` or open
 `ios/*.xcworkspace` in Xcode. See
-[Make It Yours](make-it-yours.md#build-variants).
+[App Config](app-config.md#build-variants).
 
 Expo SDK 57 (React Native 0.86, React 19.2). Not included: a production
-backend, store builds and submission,
-and real analytics, crash-reporting, push, feature-flag, or update providers
-(the starter has [seams](plug-in-a-provider.md) with no-op or console
-defaults). Landscape layouts are not designed.
+backend, store builds and submission, and real analytics, crash-reporting,
+push, feature-flag, or update providers (the app has
+[seams](plug-in-a-provider.md) with no-op or console defaults). Landscape
+layouts are not designed.
 
 ## Install and run
 
@@ -92,7 +101,7 @@ emulator), or `w` (web), or scan the QR code with Expo Go.
 | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
 | `npm start`                                                   | Metro for the development variant                                                                             |
 | `npm run ios` / `npm run android` / `npm run web`             | Metro and open that platform                                                                                  |
-| `npm run start:preview`, `npm run start:production`           | Metro for another variant (production without dev mode); see [Make It Yours](make-it-yours.md#build-variants) |
+| `npm run start:preview`, `npm run start:production`           | Metro for another variant (production without dev mode); see [App Config](app-config.md#build-variants)       |
 | `npm run prebuild:development` (or `:preview`, `:production`) | Generate the native `ios/` and `android/` projects for a variant (gitignored)                                 |
 | `npm run config:print`                                        | Print the resolved app config (`APP_VARIANT=preview npm run config:print` for another variant)                |
 | `npm run lint` / `npm run lint:fix`                           | ESLint, failing on any warning                                                                                |
@@ -128,9 +137,9 @@ unchanged. To build and run the generated native project, use
 
 `npm run audit:check` fails on a high or critical advisory in the app's
 runtime dependencies unless `scripts/audit-allowlist.json` has a review of it
-whose `reviewBy` date has not passed. The file ships with the starter's
-review of advisories in its own dependency tree (build tools only, not in the
-app bundles), so CI starts green. Make the review yours:
+whose `reviewBy` date has not passed. Its first entries are the review made
+for the template's dependency tree (build tools only, not in the app
+bundles), so CI starts green. Make the review yours:
 
 1. For each entry, read the advisory (`tracking`) and check that `path` and
    `exposure` still hold for your dependencies (`npm ls <package>`).
@@ -149,12 +158,18 @@ New advisories fail the check until you fix or review them the same way.
 
 ## Next
 
-1. [Make It Yours](make-it-yours.md): app name, IDs, icons, theme, variants.
-2. [Connect Your Backend](connect-your-backend.md).
+<!-- @init remove-block-start -->
+
+- [Make It Yours](make-it-yours.md): the checklist for a new project.
+
+<!-- @init remove-block-end -->
+
+- [App Config](app-config.md): app name, IDs, icons, variants.
+- [Connect Your Backend](connect-your-backend.md).
 
 <!-- @demo remove-block-start -->
 
-3. [Remove the Demo](remove-demo.md).
+- [Remove the Demo](remove-demo.md).
 
 <!-- @demo remove-block-end -->
 

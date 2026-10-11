@@ -5,12 +5,17 @@
  *
  * 1. sets the app identity: the APP block in app.config.ts (name, slug,
  *    scheme, bundle ID, version 1.0.0), package.json and package-lock.json
- *    (name = slug, version 1.0.0), the README title and intro, the LICENSE
- *    holder, and the identity examples in the docs and the e2e workflow;
+ *    (name = slug, version 1.0.0), the LICENSE holder, the owner of the
+ *    audit allowlist entries, and the identity examples in the docs and the
+ *    e2e workflow; README.md becomes a short README for the app;
  * 2. runs `npm run remove-demo` when asked (--remove-demo), before planning
  *    the other changes, since it edits some of the same files;
- * 3. deletes every `@init remove-block` in the docs;
- * 4. deletes itself, its test, and its npm script, then formats the changed
+ * 3. deletes the template's onboarding text: every `@init remove-block` and
+ *    docs/make-it-yours.md;
+ * 4. deletes the state-management recipes and every `@recipes remove-block`
+ *    (the TanStack Query example, links, and CI's install of their
+ *    libraries), unless --keep-recipes;
+ * 5. deletes itself, its test, and its npm script, then formats the changed
  *    files with Prettier.
  *
  * It refuses to run on a dirty working tree or a project that is already
@@ -20,7 +25,8 @@
  *   npm run init-project                      (prompts for each value)
  *   npm run init-project -- --name "Acme Notes" --bundle-id com.acme.notes \
  *     [--slug acme-notes] [--scheme acmenotes] [--owner "Acme Inc."] \
- *     [--remove-demo | --keep-demo] [--dry-run] [--force]
+ *     [--remove-demo | --keep-demo] [--remove-recipes | --keep-recipes]
+ *     [--dry-run] [--force]
  */
 const { spawnSync } = require('child_process');
 const fs = require('fs');
@@ -38,11 +44,21 @@ const SELF_FILES = [
 ];
 /** Text files that can hold `@init remove-block` markers. */
 const MARKED_FILES = [
-  'README.md',
+  'docs/README.md',
   'docs/getting-started.md',
-  'docs/make-it-yours.md',
   'scripts/README.md',
 ];
+/** Template onboarding pages, deleted once the project is initialized. */
+const TEMPLATE_DOCS = ['docs/make-it-yours.md'];
+const RECIPES = 'docs/recipes';
+/** Files that can hold `@recipes remove-block` markers. */
+const RECIPE_MARKED_FILES = [
+  'AGENTS.md',
+  'docs/README.md',
+  'docs/api-and-storage.md',
+  '.github/workflows/ci.yml',
+];
+const ALLOWLIST = 'scripts/audit-allowlist.json';
 
 // ---------------------------------------------------------------------------
 // Input
@@ -51,6 +67,8 @@ const MARKED_FILES = [
 const FLAGS = new Set([
   '--remove-demo',
   '--keep-demo',
+  '--remove-recipes',
+  '--keep-recipes',
   '--dry-run',
   '--force',
   '--help',
@@ -80,6 +98,9 @@ function parseArgs(argv) {
   }
   if (args.flags.has('--remove-demo') && args.flags.has('--keep-demo')) {
     throw new Error('use --remove-demo or --keep-demo, not both');
+  }
+  if (args.flags.has('--remove-recipes') && args.flags.has('--keep-recipes')) {
+    throw new Error('use --remove-recipes or --keep-recipes, not both');
   }
   return args;
 }
@@ -207,7 +228,27 @@ async function collectInput(args) {
       removeDemo = /^y(es)?$/i.test(answer);
     }
 
-    const input = { name, slug, scheme, bundleId, owner, removeDemo };
+    // The recipes go unless kept: a project picks one store library, or none.
+    const recipesPresent = fs.existsSync(path.join(ROOT, RECIPES));
+    let removeRecipes = recipesPresent && !args.flags.has('--keep-recipes');
+    if (removeRecipes && !args.flags.has('--remove-recipes') && rl) {
+      const answer = (
+        await rl.question(
+          'Keep the state-management recipes (Zustand, Redux, Jotai, Context)? (y/N): '
+        )
+      ).trim();
+      removeRecipes = !/^y(es)?$/i.test(answer);
+    }
+
+    const input = {
+      name,
+      slug,
+      scheme,
+      bundleId,
+      owner,
+      removeDemo,
+      removeRecipes,
+    };
     const errors = Object.keys(validators)
       .map(key => validators[key](input[key]))
       .filter(Boolean);
@@ -267,31 +308,79 @@ function replaceAppBlock(text, input, current) {
   return out.replace(`e.g. ${current.scheme}://.`, `e.g. ${input.scheme}://.`);
 }
 
-/** Deletes every block between `@init remove-block-start` and `-end` lines. */
-function stripInitBlocks(text, file) {
+/**
+ * Deletes every block between `@<tag> remove-block-start` and `-end` lines
+ * (Markdown or YAML comments).
+ */
+function stripBlocks(text, file, tag) {
   const out = [];
   let inBlock = false;
   for (const line of text.split('\n')) {
-    if (line.includes('@init remove-block-start')) {
-      if (inBlock) throw new Error(`${file}: nested @init block`);
+    if (line.includes(`@${tag} remove-block-start`)) {
+      if (inBlock) throw new Error(`${file}: nested @${tag} block`);
       inBlock = true;
-    } else if (line.includes('@init remove-block-end')) {
-      if (!inBlock) throw new Error(`${file}: @init block end without start`);
+    } else if (line.includes(`@${tag} remove-block-end`)) {
+      if (!inBlock) throw new Error(`${file}: @${tag} block end without start`);
       inBlock = false;
     } else if (!inBlock) {
       out.push(line);
     }
   }
-  if (inBlock) throw new Error(`${file}: unterminated @init block`);
+  if (inBlock) throw new Error(`${file}: unterminated @${tag} block`);
   return out.join('\n').replace(/\n{3,}/g, '\n\n');
 }
 
-function replaceReadmeIntro(text, name) {
-  const start = text.indexOf('\n## ');
-  if (!text.startsWith('# ') || start < 0)
-    throw new Error('README.md: no title or sections');
-  const intro = `# ${name}\n\n${name} is an Expo (SDK 57) and React Native app. Its foundation (routing, session, HTTP, storage, theming, error reporting, i18n, test setup) came from a starter; every third-party service sits behind a typed seam with a no-op or console default.\n`;
-  return intro + text.slice(start);
+/** Keeps a block's content and drops only its `@<tag>` marker lines. */
+function dropMarkerLines(text, tag) {
+  return text
+    .split('\n')
+    .filter(line => !line.includes(`@${tag} remove-block-`))
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n');
+}
+
+/** The project's README, replacing the template's. */
+function appReadme(name) {
+  const expo = JSON.parse(read('package.json')).dependencies?.expo ?? '';
+  const sdk = /\d+/.exec(expo)?.[0];
+  return `# ${name}
+
+${name} is an Expo${sdk ? ` (SDK ${sdk})` : ''} and React Native app.
+
+## Run it
+
+\`\`\`bash
+npm ci                 # Node 24 (.nvmrc) or 22.13+
+cp .env.example .env   # then set the backend URLs (docs/environment-variables.md)
+npm start              # then press i, a, or w, or scan the QR code with Expo Go
+\`\`\`
+
+Scripts, platforms, and troubleshooting: [Getting Started](docs/getting-started.md).
+
+## Documentation
+
+- [Documentation index](docs/README.md)
+- [Conventions](docs/conventions.md): structure, navigation, code style.
+- [Connect Your Backend](docs/connect-your-backend.md): URLs, sign-in, endpoints.
+- [Testing](docs/testing.md): unit, full-app, and end-to-end tests.
+
+Coding agents: see [AGENTS.md](AGENTS.md).
+
+## License
+
+[MIT](LICENSE)
+`;
+}
+
+/** The allowlist with the project as owner; the review itself is inherited. */
+function allowlistFor(text, owner) {
+  const list = JSON.parse(text);
+  list.$comment =
+    'High/critical npm audit advisories (npm audit --omit=dev) reviewed and accepted until reviewBy. Checked by scripts/check-audit.js (npm run audit:check). The first entries come from the review made for the template; re-review each one by its reviewBy date; see docs/getting-started.md#dependency-advisories.';
+  for (const entry of list.advisories ?? []) {
+    entry.owner = `${owner} (re-review by reviewBy)`;
+  }
+  return `${JSON.stringify(list, null, 2)}\n`;
 }
 
 /** Markdown table cells and inline code can't hold a raw |. */
@@ -379,27 +468,62 @@ function planChanges(input) {
       )
       .replace(`\`${current.name}\``, `\`${md(input.name)}\``);
 
-  const marked = file =>
-    MARKED_FILES.includes(file) ? stripInitBlocks : text => text;
-  const docs = {
-    'README.md': text => replaceReadmeIntro(text, input.name),
-    'docs/make-it-yours.md': text => nameCells(replaceIds(text)),
+  if (exists('README.md')) {
+    write('README.md', 'the README for the app', appReadme(input.name));
+  }
+  if (exists(ALLOWLIST)) {
+    write(
+      ALLOWLIST,
+      `owner -> ${input.owner}`,
+      allowlistFor(read(ALLOWLIST), input.owner)
+    );
+  }
+
+  const identity = {
+    'docs/app-config.md': text => nameCells(replaceIds(text)),
     'docs/testing.md': replaceIds,
     '.github/workflows/e2e-android.yml': replaceIds,
   };
-  for (const file of new Set([...MARKED_FILES, ...Object.keys(docs)])) {
+  const files = new Set([
+    ...MARKED_FILES,
+    ...RECIPE_MARKED_FILES,
+    ...Object.keys(identity),
+  ]);
+  for (const file of files) {
     if (!exists(file)) continue;
-    const transform = docs[file] ?? (text => text);
-    const summary = [
-      file === 'README.md' ? 'title and intro' : null,
-      docs[file] && file !== 'README.md' ? 'identity examples' : null,
-      MARKED_FILES.includes(file) && read(file).includes('@init remove-block')
-        ? 'remove @init blocks'
-        : null,
-    ]
-      .filter(Boolean)
-      .join(', ');
-    write(file, summary, transform(marked(file)(read(file), file)));
+    const original = read(file);
+    let text = original;
+    const summary = [];
+    if (identity[file]) {
+      text = identity[file](text);
+      summary.push('identity examples');
+    }
+    if (MARKED_FILES.includes(file) && text.includes('@init remove-block')) {
+      text = stripBlocks(text, file, 'init');
+      summary.push('remove @init blocks');
+    }
+    if (RECIPE_MARKED_FILES.includes(file) && text.includes('@recipes ')) {
+      if (input.removeRecipes) {
+        text = stripBlocks(text, file, 'recipes');
+        summary.push('remove the recipe references');
+      } else {
+        text = dropMarkerLines(text, 'recipes');
+        summary.push('keep the recipe references');
+      }
+    }
+    write(file, summary.join(', '), text);
+  }
+
+  for (const file of TEMPLATE_DOCS) {
+    if (exists(file))
+      changes.push({ file, action: 'delete', summary: 'template onboarding' });
+  }
+  if (input.removeRecipes && exists(RECIPES)) {
+    changes.push({
+      file: `${RECIPES}/`,
+      action: 'delete',
+      summary: 'state-management recipes (--keep-recipes keeps them)',
+    });
   }
 
   for (const file of SELF_FILES) {
@@ -449,6 +573,8 @@ Prompts for every value that is not given (in a terminal).
   --owner <holder>      LICENSE copyright holder (default: git user.name)
   --remove-demo         also run npm run remove-demo
   --keep-demo           keep the demo (the default without a terminal)
+  --remove-recipes      delete the state-management recipes (the default)
+  --keep-recipes        keep them (docs/recipes/)
   --dry-run             list every change without making it
   --force               run on uncommitted changes or a second time
   --help                show this help`;
@@ -528,7 +654,7 @@ async function main() {
         ]
       : []),
     'Review the advisories in scripts/audit-allowlist.json and make them yours\n     (docs/getting-started.md#dependency-advisories).',
-    'Replace the images in assets/ and the palette in shared/ui/theme.ts\n     (docs/make-it-yours.md).',
+    'Replace the images in assets/ and the palette in shared/ui/theme.ts\n     (docs/app-config.md, docs/ui-and-theming.md).',
     'Run npm run lint, npm run type-check, and npm run test:ci, then commit.',
   ];
   log(
@@ -545,4 +671,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { parseArgs, validators, slugify, tsString, stripInitBlocks };
+module.exports = { parseArgs, validators, slugify, tsString };

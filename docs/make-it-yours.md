@@ -1,25 +1,22 @@
 # Make It Yours
 
-Everything to change to turn the starter into your app. Most of it is
+A one-time checklist for turning the template into your app. Most of it is
 configuration; the code changes are an auth adapter and your own features.
 
-<!-- @init remove-block-start -->
-
-**Start with `npm run init-project`** ([Getting Started](getting-started.md#make-it-your-project-first)):
-it sets the app name, slug, scheme, bundle ID, version, `package.json` name,
-README title, and LICENSE holder, and optionally removes the demo. The
-checklist below is the reference for
-what it changes (the first row) and what is left for you.
-
-<!-- @init remove-block-end -->
+Start with `npm run init-project`
+([Getting Started](getting-started.md#make-it-your-project-first)). It sets
+the first row (name, slug, scheme, bundle ID, version) along with the
+`package.json` name, README, and LICENSE holder, optionally removes the demo
+and the state-management recipes, and deletes this page: what you need
+later is in [App Config](app-config.md) and the other guides.
 
 ## Checklist
 
 | What                                                          | Where                                                                                    |
 | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| App name, slug, URL scheme, bundle / package ID, version      | the `APP` block at the top of `app.config.ts`                                            |
-| Store build number (iOS `buildNumber`, Android `versionCode`) | `APP_BUILD_NUMBER` at build time (default `1`); raise it for every store upload          |
-| Icon, Android adaptive icon, splash image, favicon            | replace the files in `assets/` ([below](#icons-and-splash-screen))                       |
+| App name, slug, URL scheme, bundle / package ID, version      | the `APP` block in `app.config.ts` ([App Config](app-config.md#identity))                |
+| Store build number (iOS `buildNumber`, Android `versionCode`) | `APP_BUILD_NUMBER` at build time ([App Config](app-config.md#identity))                  |
+| Icon, Android adaptive icon, splash image, favicon            | replace the files in `assets/` ([App Config](app-config.md#icons-and-splash-screen))     |
 | Splash and adaptive-icon background colors                    | `APP.splashBackground`, `APP.adaptiveIconBackground` in `app.config.ts`                  |
 | Brand colors                                                  | `palette` in `shared/ui/theme.ts` ([UI and Theming](ui-and-theming.md))                  |
 | Fonts                                                         | [UI and Theming](ui-and-theming.md#fonts)                                                |
@@ -27,7 +24,7 @@ what it changes (the first row) and what is left for you.
 | Sign-in against your backend                                  | an `AuthAdapter` ([Connect Your Backend](connect-your-backend.md))                       |
 | Analytics, flags, push, OTA, crash reporting                  | adapters in `shared/integrations/setup.ts` ([Plug In a Provider](plug-in-a-provider.md)) |
 | UI strings                                                    | `shared/i18n/en.ts` (and more locales via the i18n seam)                                 |
-| Per-variant build settings and env for EAS Build              | `eas.json` build profiles                                                                |
+| Build variants and EAS Build profiles                         | `app.config.ts`, `eas.json` ([App Config](app-config.md#build-variants))                 |
 
 <!-- @demo remove-block-start -->
 
@@ -35,46 +32,6 @@ The demo screens and the DummyJSON adapter: `npm run remove-demo`
 ([Remove the Demo](remove-demo.md)).
 
 <!-- @demo remove-block-end -->
-
-## Build variants
-
-`APP_VARIANT` selects one of three variants in `app.config.ts`. Each gets its
-own name, bundle ID, and scheme, so all three install side by side:
-
-| Variant                 | Name                   | Bundle / package ID             | Scheme              | `EXPO_PUBLIC_APP_ENV` |
-| ----------------------- | ---------------------- | ------------------------------- | ------------------- | --------------------- |
-| `development` (default) | `RN Starter (Dev)`     | `com.example.rnstarter.dev`     | `rnstarter-dev`     | `development`         |
-| `preview`               | `RN Starter (Preview)` | `com.example.rnstarter.preview` | `rnstarter-preview` | `preview`             |
-| `production`            | `RN Starter`           | `com.example.rnstarter`         | `rnstarter`         | `production`          |
-
-- `npm start` runs the development variant; `npm run start:preview` and
-  `npm run start:production` run the others.
-- `npm run prebuild:preview` (and the other variants) generates the native
-  projects; build them with Xcode / Android Studio or
-  `npx expo run:ios` / `npx expo run:android`.
-- `eas.json` has matching `development`, `preview`, and `production` build
-  profiles for [EAS Build](https://docs.expo.dev/build/introduction/), which
-  needs your own Expo account. Nothing else in the starter does.
-- Outside development, backend URLs must be `https`. `.env` is not committed,
-  so set the variables in the build profile's `env` or with `eas env:create`.
-
-## Icons and splash screen
-
-All four images are placeholders. Replace the files, keeping their names and
-sizes:
-
-| File                       | Size                   | Used for                                                                  |
-| -------------------------- | ---------------------- | ------------------------------------------------------------------------- |
-| `assets/icon.png`          | 1024×1024, opaque      | iOS icon and the default elsewhere (`icon`)                               |
-| `assets/adaptive-icon.png` | 1024×1024, transparent | Android adaptive icon foreground; keep the artwork inside the center ~66% |
-| `assets/splash-icon.png`   | 1024×1024, transparent | Splash image, 200 pt wide, on `APP.splashBackground` (light and dark)     |
-| `assets/favicon.png`       | 48×48                  | Web favicon                                                               |
-
-The splash screen and icons are part of the native build: Expo Go shows its
-own, so check them in a build (`npm run prebuild:preview`, then build). The
-native splash stays up until the stored session has been read
-(`app/_layout.tsx`). See
-[Expo: splash screen and app icon](https://docs.expo.dev/develop/user-interface/splash-screen-and-app-icon/).
 
 ## After the checklist
 

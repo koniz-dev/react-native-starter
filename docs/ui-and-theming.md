@@ -95,7 +95,7 @@ export function useAppTheme() {
 
 ## Fonts
 
-The starter uses the platform's system fonts. To use your own, add the font
+The app uses the platform's system fonts. To use your own, add the font
 files to the project (for example in a new assets/fonts folder), load them before rendering, and give Paper the
 family:
 

@@ -1,6 +1,6 @@
 /**
  * The app's single theme: React Native Paper's Material Design 3 theme with
- * the starter's brand colors. Paper components, the navigation theme, and the
+ * the app's brand colors. Paper components, the navigation theme, and the
  * tab bar all read from it; there is no second color system.
  *
  * To rebrand, change `palette` below (keep each `on*` color readable on its

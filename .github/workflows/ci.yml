@@ -51,10 +51,12 @@ jobs:
       - name: Export web build
         run: npx expo export --platform web --output-dir dist
 
-      # Last, because it adds packages to node_modules: the state-management
-      # recipes and the TanStack Query example need their libraries to
-      # compile (not saved to package.json).
       - name: Check docs (snippets compile, paths and scripts exist)
         run: |
+          # @recipes remove-block-start
+          # The state-management recipes and the TanStack Query example need
+          # their libraries to compile (not saved to package.json). This step
+          # runs last because of that install.
           npm install --no-save zustand@5 @reduxjs/toolkit@2 react-redux@9 jotai@3 @tanstack/react-query@5
+          # @recipes remove-block-end
           npm run docs:check

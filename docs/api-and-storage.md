@@ -295,6 +295,8 @@ or [SWR](https://swr.vercel.app/) when you need any of:
 - mutations with cache updates or optimistic UI;
 - request deduplication and retries.
 
+<!-- @recipes remove-block-start -->
+
 To migrate gradually, keep the `useFetch` result shape and swap the
 implementation, so screens don't change. With TanStack Query (install it and
 wrap the app in a `QueryClientProvider` inside `SessionProvider`):
@@ -330,3 +332,5 @@ Then `useFetch(fetchFn, [userId])` becomes
 `useQueryFetch(['user', userId], fetchFn)`. Clear the query cache on sign-out
 (`queryClient.clear()`) the way the
 [state-management recipes](recipes/state-management.md) reset their stores.
+
+<!-- @recipes remove-block-end -->

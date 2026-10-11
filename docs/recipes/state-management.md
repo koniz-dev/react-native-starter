@@ -1,6 +1,6 @@
 # Recipe: State Management
 
-The starter does not pick a store library. Server data is loaded per screen
+The app doesn't pick a store library. Server data is loaded per screen
 (`useFetch`, or a data library such as TanStack Query), and the one piece of
 app-wide state, the session, lives in `SessionProvider`
 (`shared/session/SessionProvider.tsx`). When you need shared client state
@@ -271,13 +271,3 @@ in `beforeEach`. See [Testing](../testing.md).
 Jotai 3 and Redux Toolkit (through Immer) ship ES modules, which Jest doesn't
 transform by default: add `jotai`, or `immer|@reduxjs/toolkit|react-redux|reselect|redux|redux-thunk`,
 to the `transformIgnorePatterns` allowlist in `package.json`.
-
-## The old branches
-
-Earlier versions of the starter had `state-management/*` branches with a
-Redux, Context, Zustand, and Jotai variant of the whole app. They predate
-Expo SDK 57, store the token in AsyncStorage, and no longer merge with
-`main`, so they were retired. Their last commits are kept as the tags
-`archive/state-management-redux`, `archive/state-management-react-context`,
-`archive/state-management-zustand`, and `archive/state-management-jotai`;
-use the recipes above instead.

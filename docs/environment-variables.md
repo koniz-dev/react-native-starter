@@ -1,6 +1,6 @@
 # Environment Variables
 
-The starter reads all configuration from `EXPO_PUBLIC_*` variables through one
+The app reads all configuration from `EXPO_PUBLIC_*` variables through one
 module, [`shared/config/env.ts`](../shared/config/env.ts). It validates them with a zod schema
 when the app starts and shows a **Configuration error** screen naming each
 missing or invalid variable, instead of silently falling back to a demo backend.

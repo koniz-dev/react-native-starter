@@ -1,6 +1,6 @@
 # Connect Your Backend
 
-The starter talks to two base URLs: the **API** (`EXPO_PUBLIC_API_URL`, your
+The app talks to two base URLs: the **API** (`EXPO_PUBLIC_API_URL`, your
 app's data) and the **auth backend** (`EXPO_PUBLIC_AUTH_API_URL`, sign-in).
 They can be the same server. Connecting yours takes three steps: set the
 URLs, write an auth adapter, and add endpoints for your features.
@@ -69,8 +69,7 @@ drives the route guards. What your backend's sign-in looks like is up to an
 `public` sends no token (a 401 there is a wrong password); `authenticated`
 sends the stored token (a 401 there signs the user out).
 
-This example is for a backend that differs from the starter's defaults in the
-usual ways:
+This example is for a backend with the shapes real backends commonly use:
 
 - every success response is wrapped in an envelope: `{ "data": ... }`;
 - `POST /sessions` takes `{ email, password }` and returns only tokens:

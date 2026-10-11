@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Removes the starter's demo code (see docs/remove-demo.md):
+ * Removes the demo code (see docs/remove-demo.md):
  *
  * 1. deletes the demo folders, routes, and Maestro flows listed in
  *    DEMO_PATHS, and then this script, its doc, its test, and its npm script;
