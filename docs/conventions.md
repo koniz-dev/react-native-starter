@@ -103,6 +103,11 @@ Then the route: one line in `app/<name>.tsx` (for `/<name>`), or in
 export { HomeScreen as default } from '@/features/home/screens/HomeScreen';
 ```
 
+Move its strings to `shared/i18n/en.ts` and read them with `t()` (the keys
+are typed), add its tests under
+`__tests__/features/<name>/`, and its endpoints in `api/` (see
+[Connect Your Backend](connect-your-backend.md#3-add-endpoints-for-a-feature)).
+
 ### A tab that needs sign-in
 
 Tabs live in `app/(tabs)/`, not in `app/(app)/`, so the sign-in guard doesn't
@@ -111,27 +116,42 @@ a token, get a 401, and show a raw error. The 401 doesn't touch the session:
 there was no token to reject. Instead, check the session in the screen, and
 mount the part that loads data only when the user is signed in:
 
+First add the prompt's strings to `shared/i18n/en.ts`:
+
+```ts
+const en = {
+  // ...
+  'notes.signedOut': 'Sign in to see your notes',
+  'notes.signIn': 'Sign in',
+};
+```
+
 ```tsx
 // features/notes/screens/NotesScreen.tsx
 import { router } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, Text } from 'react-native-paper';
-import { t } from '@/shared/i18n';
+import { Button, Text, useTheme } from 'react-native-paper';
 import { useSession } from '@/shared/session/SessionProvider';
 import { LoadingScreen } from '@/shared/ui/LoadingScreen';
 
+// In your app: import { t } from '@/shared/i18n'; the keys above make it
+// type-check.
+declare function t(key: 'notes.signedOut' | 'notes.signIn'): string;
 declare function NotesList(): React.JSX.Element; // loads with useFetch
 
 export function NotesScreen() {
+  const theme = useTheme();
   const { session } = useSession();
   if (session.status === 'loading') return <LoadingScreen />;
   if (session.status === 'signedOut') {
     return (
-      <SafeAreaView style={styles.prompt}>
-        <Text>{t('home.session.signedOut')}</Text>
+      <SafeAreaView
+        style={[styles.prompt, { backgroundColor: theme.colors.background }]}
+      >
+        <Text>{t('notes.signedOut')}</Text>
         <Button mode="contained" onPress={() => router.push('/login')}>
-          {t('home.session.signIn')}
+          {t('notes.signIn')}
         </Button>
       </SafeAreaView>
     );
@@ -144,13 +164,8 @@ const styles = StyleSheet.create({
 });
 ```
 
-Use your own strings for the prompt. After sign-in, the Login screen returns
-to the tab, which now renders the list.
-
-Move its strings to `shared/i18n/en.ts` and read them with `t()` (the keys
-are typed), add its tests under
-`__tests__/features/<name>/`, and its endpoints in `api/` (see
-[Connect Your Backend](connect-your-backend.md#3-add-endpoints-for-a-feature)).
+After sign-in, the Login screen returns to the tab, which now renders the
+list.
 
 ## Where code goes
 
@@ -177,8 +192,9 @@ are lint errors in app code. Run it with `node`, or through an npm script.
 - **Imports:** `@/` for anything outside the current feature, relative within
   it. `import type` for types.
 - **Types:** TypeScript strict with `noUncheckedIndexedAccess`; no `any`
-  (lint error). Validate data at the edges (config with zod, API payloads in
-  adapters).
+  (lint error). Validate data at the edges with zod: config, and API payloads
+  in adapters and `api/` modules (examples in
+  [Connect Your Backend](connect-your-backend.md#2-sign-in-write-an-authadapter)).
 - **Styles:** `StyleSheet.create` at the bottom of the file; colors from the
   theme, never literals (both are lint errors).
 - **Text:** user-facing strings through `t()`.

@@ -21,6 +21,12 @@ EXPO_PUBLIC_API_TRUSTED_ORIGINS=https://files.example.com
 The values are validated at startup; outside development they must be
 `https`. All variables: [Environment Variables](environment-variables.md).
 
+Both URLs may include a path prefix, such as
+`https://example.com/api/v1`: requests keep it, so `api.get('/notes')` goes
+to `https://example.com/api/v1/notes`. Write endpoint paths relative to that
+prefix. Only the origin (scheme, host, and port) decides which requests carry
+the token.
+
 ### A backend on your computer
 
 In development, `http` URLs are allowed, but `localhost` means the device
@@ -66,30 +72,52 @@ sends the stored token (a 401 there signs the user out).
 This example is for a backend that differs from the starter's defaults in the
 usual ways:
 
+- every success response is wrapped in an envelope: `{ "data": ... }`;
 - `POST /sessions` takes `{ email, password }` and returns only tokens:
-  `{ "access_token", "refresh_token" }`; the user comes from `GET /me`;
+  `{ "data": { "access_token", "refresh_token" } }`; the user comes from
+  `GET /me`;
 - `POST /sessions/refresh` rotates the refresh token: it returns a new pair,
   and the old refresh token stops working;
 - `DELETE /sessions` revokes a refresh token.
 
+The adapter checks every payload with zod before it uses it, as the
+[conventions](conventions.md#code-style) ask: a typed `http.post<Tokens>()`
+alone is only a cast, and a payload of another shape would fail later with a
+less useful error.
+
 ```ts
 // features/auth/myBackendAdapter.ts
 import { Platform } from 'react-native';
+import { z } from 'zod';
 import type { AuthAdapter } from '@/shared/session/authService';
 import {
   createMemoryTokenStore,
   createSecureTokenStore,
 } from '@/shared/session/tokenStore';
 
-interface Tokens {
-  access_token: string;
-  refresh_token: string;
-}
+const TokensSchema = z.object({
+  access_token: z.string().min(1),
+  refresh_token: z.string().min(1),
+});
 
-interface MyUser {
-  uuid: string;
-  email: string;
-  full_name?: string;
+const UserSchema = z.object({
+  uuid: z.string(),
+  email: z.string(),
+  full_name: z.string().optional(),
+});
+
+/**
+ * The content of a `{ "data": ... }` response, checked against `schema`. A
+ * mismatch throws a readable message; zod's details stay in `cause`.
+ */
+function unwrap<T>(schema: z.ZodType<T>, body: unknown): T {
+  const result = z.object({ data: schema }).safeParse(body);
+  if (!result.success) {
+    throw new Error('Unexpected response from the server', {
+      cause: result.error,
+    });
+  }
+  return result.data.data;
 }
 
 // The refresh token is stored like the access token: in the Keychain /
@@ -103,25 +131,32 @@ export const myBackendAuthAdapter: AuthAdapter = {
   // Required: credentials -> access token + your backend's user payload.
   // The Login form's username field holds the email here.
   login: async ({ username, password }, { public: http }) => {
-    const { data: tokens } = await http.post<Tokens>('/sessions', {
-      email: username,
-      password,
-    });
+    const tokens = unwrap(
+      TokensSchema,
+      (await http.post('/sessions', { email: username, password })).data
+    );
     // No user in the response: load it with the new token. Pass the token
     // yourself; it isn't stored until login returns.
-    const { data: user } = await http.get<MyUser>('/me', {
-      headers: { Authorization: `Bearer ${tokens.access_token}` },
-    });
+    const user = unwrap(
+      UserSchema,
+      (
+        await http.get('/me', {
+          headers: { Authorization: `Bearer ${tokens.access_token}` },
+        })
+      ).data
+    );
     await refreshTokens.set(tokens.refresh_token);
     return { token: tokens.access_token, user };
   },
 
   // Required: your payload -> { id, email, name }; throw if it's incomplete.
+  // It also reads the user stored by an earlier version of the app.
   normalizeUser: raw => {
-    const user = raw as Partial<MyUser>;
-    if (!user.uuid || !user.email) {
+    const result = UserSchema.safeParse(raw);
+    if (!result.success) {
       throw new Error('The sign-in response did not include the user');
     }
+    const user = result.data;
     return {
       id: user.uuid,
       email: user.email,
@@ -131,19 +166,24 @@ export const myBackendAuthAdapter: AuthAdapter = {
 
   // Optional: reload the user (the Profile screen calls it).
   fetchUser: async ({ authenticated }) =>
-    (await authenticated.get<MyUser>('/me')).data,
+    unwrap(UserSchema, (await authenticated.get('/me')).data),
 
   // Optional: a new access token on a 401, or null to sign the user out.
   refresh: async ({ public: http }) => {
     const refreshToken = await refreshTokens.get();
     if (!refreshToken) return null;
     try {
-      const { data } = await http.post<Tokens>('/sessions/refresh', {
-        refresh_token: refreshToken,
-      });
+      const tokens = unwrap(
+        TokensSchema,
+        (
+          await http.post('/sessions/refresh', {
+            refresh_token: refreshToken,
+          })
+        ).data
+      );
       // Rotation: keep the new refresh token; the old one no longer works.
-      await refreshTokens.set(data.refresh_token);
-      return data.access_token;
+      await refreshTokens.set(tokens.refresh_token);
+      return tokens.access_token;
     } catch (error) {
       // The user is signed out next, so drop the rejected refresh token.
       await refreshTokens.clear();
@@ -255,23 +295,45 @@ shows that group while signed in. See
 
 ## 3. Add endpoints for a feature
 
-Build endpoints on the shared API client in the feature's `api/` folder:
+Build endpoints on the shared API client in the feature's `api/` folder, and
+check each payload with zod there, so a screen only sees data of the shape it
+expects:
 
 ```ts
 // features/posts/api/postsApi.ts
+import { z } from 'zod';
 import { api } from '@/shared/http/api';
 
-export interface Post {
-  id: number;
-  title: string;
+const PostSchema = z.object({
+  id: z.number(),
+  title: z.string(),
+});
+
+export type Post = z.infer<typeof PostSchema>;
+
+/** `body` checked against `schema`; a mismatch throws a readable message. */
+function parse<T>(schema: z.ZodType<T>, body: unknown): T {
+  const result = schema.safeParse(body);
+  if (!result.success) {
+    throw new Error('Unexpected response from the server', {
+      cause: result.error,
+    });
+  }
+  return result.data;
 }
 
 export const postsApi = {
-  list: async (): Promise<Post[]> => (await api.get<Post[]>('/posts')).data,
+  list: async (signal?: AbortSignal): Promise<Post[]> =>
+    parse(z.array(PostSchema), (await api.get('/posts', { signal })).data),
   create: async (title: string): Promise<Post> =>
-    (await api.post<Post>('/posts', { title })).data,
+    parse(PostSchema, (await api.post('/posts', { title })).data),
 };
 ```
+
+If your API wraps responses in an envelope such as `{ "data": [...] }`,
+parse the envelope and return its content, as `unwrap` does in the sign-in
+example. When several features share it, the helper can live in
+`shared/http/`.
 
 and load them in a screen with `useFetch` (loading, a typed `ApiError`, refetch;
 the `signal` cancels the request when the screen goes away). This screen shows
@@ -280,18 +342,17 @@ the loading state, then the error with a Retry button, or the list:
 ```tsx
 // features/posts/screens/PostsScreen.tsx
 import { Button, Text } from 'react-native-paper';
-import { api } from '@/shared/http/api';
 import { useFetch } from '@/shared/lib/useFetch';
 import { LoadingScreen } from '@/shared/ui/LoadingScreen';
 
-interface Post {
-  id: number;
-  title: string;
-}
+// From ../api/postsApi.ts above.
+declare const postsApi: {
+  list(signal?: AbortSignal): Promise<{ id: number; title: string }[]>;
+};
 
 export function PostsScreen() {
-  const { data, loading, error, refetch } = useFetch(
-    async signal => (await api.get<Post[]>('/posts', { signal })).data
+  const { data, loading, error, refetch } = useFetch(signal =>
+    postsApi.list(signal)
   );
 
   if (loading && !data) return <LoadingScreen message="Loading posts..." />;

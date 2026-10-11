@@ -1,9 +1,9 @@
 /**
  * Runs the example AuthAdapter in docs/connect-your-backend.md (taken from
  * the page itself, so the documented code is what is tested) against a fake
- * backend with the shapes that page describes: a tokens-only login plus
- * GET /me, rotating refresh tokens, an error envelope, and revocation on
- * logout. The requests go through the real auth clients, session service,
+ * backend with the shapes that page describes: success responses in a
+ * `{ data }` envelope, a tokens-only login plus GET /me, rotating refresh
+ * tokens, an error envelope, and revocation on logout. The requests go through the real auth clients, session service,
  * and token stores.
  */
 import fs from 'fs';
@@ -66,6 +66,8 @@ function fakeBackend() {
     validAccess: new Set<string>(),
     validRefresh: new Set<string>(),
     down: false,
+    /** Replaces the next success body, for a backend of another shape. */
+    nextBody: undefined as unknown,
   };
   const issue = () => {
     state.issued += 1;
@@ -82,8 +84,15 @@ function fakeBackend() {
     status: number,
     data: unknown
   ): AxiosResponse | never => {
+    const body =
+      status >= 400 || data === null
+        ? data
+        : state.nextBody !== undefined
+          ? state.nextBody
+          : { data };
+    if (status < 400) state.nextBody = undefined;
     const response = {
-      data,
+      data: body,
       status,
       statusText: String(status),
       headers: {},
@@ -208,6 +217,34 @@ describe('the documented AuthAdapter against a non-DummyJSON backend', () => {
       message: 'Wrong email or password',
     });
     expect(secureStore.size).toBe(0);
+  });
+
+  it.each([
+    ['without the envelope', { access_token: 'a', refresh_token: 'r' }],
+    ['without a refresh token', { data: { access_token: 'a' } }],
+  ])(
+    'rejects a login response %s with a readable message and stores nothing',
+    async (_case, body) => {
+      backend.state.nextBody = body;
+
+      const error: unknown = await signIn().catch(caught => caught);
+
+      expect(error).toMatchObject({
+        message: 'Unexpected response from the server',
+      });
+      expect((error as Error).cause).toBeInstanceOf(Error); // zod's details
+      expect(secureStore.size).toBe(0);
+      expect(backend.requests.map(r => r.url)).toEqual(['/sessions']);
+    }
+  );
+
+  it('rejects a user payload without the required fields', async () => {
+    await signIn();
+    backend.state.nextBody = { data: { email: 'ada@example.com' } };
+
+    await expect(authService.fetchProfile()).rejects.toMatchObject({
+      message: 'Unexpected response from the server',
+    });
   });
 
   it('refreshes on a 401 with rotation, keeping only the newest refresh token', async () => {

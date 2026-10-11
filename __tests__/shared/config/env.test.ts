@@ -32,6 +32,21 @@ describe('parseEnv', () => {
     });
   });
 
+  it('accepts base URLs with a path prefix', () => {
+    const result = parseEnv(
+      {
+        ...valid,
+        EXPO_PUBLIC_API_URL: 'https://example.com/api/v1',
+        EXPO_PUBLIC_AUTH_API_URL: 'https://example.com/auth/',
+      },
+      false
+    );
+    expect(result.success && result.config).toMatchObject({
+      apiUrl: 'https://example.com/api/v1',
+      authApiUrl: 'https://example.com/auth/',
+    });
+  });
+
   it('parses and validates the API timeout', () => {
     const ok = parseEnv(
       { ...valid, EXPO_PUBLIC_API_TIMEOUT_MS: '30000' },

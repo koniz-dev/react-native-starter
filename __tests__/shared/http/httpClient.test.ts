@@ -108,6 +108,53 @@ describe('createHttpClient', () => {
     expect(seen?.baseURL).toBe(getConfig().authApiUrl);
   });
 
+  it.each([
+    ['/api/v1', '/me'],
+    ['/api/v1/', '/me'],
+    ['/api/v1', 'me'],
+  ])(
+    'keeps a base URL path (%s + %s) and still attaches the token',
+    async (basePath, url) => {
+      await signIn();
+      let seen: { url: string; authorization: unknown } | undefined;
+      const client = createHttpClient({
+        getBaseURL: () => `${getConfig().authApiUrl}${basePath}`,
+        authenticated: true,
+      });
+      client.defaults.adapter = async config => {
+        seen = {
+          url: client.getUri(config),
+          authorization: config.headers.Authorization,
+        };
+        return response(config, 200);
+      };
+
+      await client.get(url);
+
+      expect(seen).toEqual({
+        url: `${getConfig().authApiUrl}/api/v1/me`,
+        authorization: 'Bearer old-token',
+      });
+    }
+  );
+
+  it('does not send the token to another origin that shares the path', async () => {
+    await signIn();
+    let authorization: unknown = 'not called';
+    const client = createHttpClient({
+      getBaseURL: () => 'https://other.example.com/api/v1',
+      authenticated: true,
+    });
+    client.defaults.adapter = async config => {
+      authorization = config.headers.Authorization;
+      return response(config, 200);
+    };
+
+    await client.get('/me');
+
+    expect(authorization).toBeUndefined();
+  });
+
   it('maps a timeout to code "timeout"', async () => {
     const client = authenticatedClient(async config => {
       throw new AxiosError(

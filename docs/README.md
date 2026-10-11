@@ -45,3 +45,16 @@ Native topics, the pages link to the official documentation.
 `npm run docs:check` compiles every TypeScript snippet in these pages against
 the code and checks every path, link, and `npm run` script they mention; CI
 runs it.
+
+When a page names something the reader will create, which doesn't exist yet,
+write it so the check skips it:
+
+- a path with a placeholder, such as `features/<name>/api/` or
+  `scripts/<your-mock>.js`;
+- or a comment on a snippet's first line, such as
+  `// features/posts/api/postsApi.ts`: a path inside a code block isn't
+  checked, only one in inline code is.
+
+A snippet that uses code from another snippet declares it, for example
+`declare const postsApi: ...` (see
+[Connect Your Backend](connect-your-backend.md#3-add-endpoints-for-a-feature)).

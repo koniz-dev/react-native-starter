@@ -52,7 +52,8 @@ Details: [Conventions](docs/conventions.md#project-structure).
 - **Imports:** `@/` for anything outside the current feature, relative within
   it; `import type` for types.
 - **Types:** strict, `noUncheckedIndexedAccess`, no `any`. Validate data at
-  the edges (config with zod, API payloads in adapters).
+  the edges with zod: config, and API payloads in adapters and `api/`
+  modules.
 - **Styles:** `StyleSheet.create` at the bottom of the file; colors from the
   Paper theme (`useTheme()`), never literals.
 - **Text:** every user-facing string goes in `shared/i18n/en.ts` and is read
@@ -115,8 +116,10 @@ npm run lint && npm run type-check && npm run test:ci
 ```
 
 CI also runs `npm run format:check`, `npm run docs:check` (compiles the
-docs' snippets and checks their paths), `npm run audit:check`, and a web
-export. Run `npm run docs:check` when you change docs. For flows on a device,
+docs' snippets and checks their paths), `npm run audit:check`,
+`npx expo-doctor`, and a web export. Run `npm run docs:check` when you change
+docs; name a file that doesn't exist yet with a placeholder
+([docs/README.md](docs/README.md)). For flows on a device,
 `npm run test:e2e:ios` or `npm run test:e2e:android` runs the Maestro flows;
 add a flow in `.maestro/` for a new user journey. Test new behavior, not only
 rendering: see [Testing](docs/testing.md).
