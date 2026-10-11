@@ -1,0 +1,8 @@
+$ gh api graphql: repository(react-native-starter) { isSecurityPolicyEnabled securityPolicyUrl }
+{"data":{"repository":{"isSecurityPolicyEnabled":true,"securityPolicyUrl":"https://github.com/koniz-dev/react-native-starter/security/policy"}}}
+$ gh api repos/koniz-dev/react-native-starter/private-vulnerability-reporting
+{"enabled":true}
+$ gh api repos/koniz-dev/.github/contents/SECURITY.md --jq .path
+SECURITY.md
+$ gh api repos/koniz-dev/react-native-starter/contents/.github/SECURITY.md (should be 404)
+{"message":"Not Found","documentation_url":"https://docs.github.com/rest/repos/contents#get-repository-content","status":"404"}gh: Not Found (HTTP 404)

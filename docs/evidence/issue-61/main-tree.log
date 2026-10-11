@@ -1,0 +1,33 @@
+$ git ls-tree -r --name-only origin/main | grep -E maintainer-only names
+[exit 1]
+$ git grep -i maintainer origin/main
+[exit 1]
+$ git ls-tree origin/main (top level, what Use this template copies)
+.env.example
+.github
+.gitignore
+.maestro
+.nvmrc
+.prettierignore
+.prettierrc
+AGENTS.md
+CLAUDE.md
+LICENSE
+README.md
+__tests__
+app.config.ts
+app
+assets
+docs
+eas.json
+eslint.config.js
+features
+index.ts
+jest.setup.env.js
+jest.setup.ts
+package-lock.json
+package.json
+scripts
+shared
+testing
+tsconfig.json
