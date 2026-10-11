@@ -445,6 +445,10 @@ E2E_API_URL=http://localhost:4000 E2E_BACKEND_CMD="node scripts/<your-mock>.js" 
   flow types `${MAESTRO_E2E_USERNAME}` and the password never goes in the
   repository. Start the flow with `.maestro/subflows/open-app.yaml` and
   `CLEAR_STATE: 'true'` so it begins signed out.
+- **The results contain the test account.** Maestro writes the values of
+  those variables into `e2e-results/` (`commands.json` and its logs), and the
+  manual Android workflow uploads that folder as an artifact. Use an account
+  that only reaches test data, and don't share the results publicly.
 - **A backend on another machine or HTTPS** works too: set the URL, and leave
   `E2E_BACKEND_CMD` unset. Only `localhost` URLs get `adb reverse`; see
   [A backend on your computer](connect-your-backend.md#a-backend-on-your-computer).
