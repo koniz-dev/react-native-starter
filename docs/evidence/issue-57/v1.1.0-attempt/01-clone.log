@@ -1,0 +1,23 @@
+$ git clone --branch v1.1.0 https://github.com/koniz-dev/react-native-starter.git clone
+Cloning into 'clone'...
+Note: switching to '281be40ec8cd10aa3ca93a0ff7e40612ed29aea9'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+exit 0
+HEAD 281be40ec8cd10aa3ca93a0ff7e40612ed29aea9 docs: validate payloads in the backend examples; base URL paths; small fixes
+tag v1.1.0
+node v24.21.0, npm 11.19.0, Darwin x86_64, macOS 15.8.1

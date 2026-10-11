@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="Medium_Phone_API_37.0" tests="4" failures="0" time="316.025" timestamp="2026-10-11T20:43:36">
+    <testcase id="Cold start opens Home" name="Cold start opens Home" classname="Cold start opens Home" file=".maestro/01-cold-start.yaml" time="74.563" timestamp="2026-10-11T20:43:36" status="SUCCESS"/>
+    <testcase id="Notes tab asks a signed-out user to sign in" name="Notes tab asks a signed-out user to sign in" classname="Notes tab asks a signed-out user to sign in" file=".maestro/02-notes-signed-out.yaml" time="55.722" timestamp="2026-10-11T20:44:51" status="SUCCESS"/>
+    <testcase id="Back from Login returns Home" name="Back from Login returns Home" classname="Back from Login returns Home" file=".maestro/06-login-back.yaml" time="62.482" timestamp="2026-10-11T20:45:46" status="SUCCESS">
+      <properties>
+        <property name="tags" value="android-only"/>
+      </properties>
+    </testcase>
+    <testcase id="Notes signed in against your backend" name="Notes signed in against your backend" classname="Notes signed in against your backend" file=".maestro/03-notes-signed-in.yaml" time="123.21" timestamp="2026-10-11T20:46:49" status="SUCCESS"/>
+  </testsuite>
+</testsuites>

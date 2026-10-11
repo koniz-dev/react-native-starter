@@ -1,0 +1,6 @@
+$ gh repo create koniz-dev/rns-release-trial --private --template koniz-dev/react-native-starter --clone
+https://github.com/koniz-dev/rns-release-trial
+Cloning into 'rns-release-trial'...
+exit 0
+trial tree 1a0f8c32007474b9ffcf0ddc1bb6f98554c1c054
+v1.1.1 tree 1a0f8c32007474b9ffcf0ddc1bb6f98554c1c054

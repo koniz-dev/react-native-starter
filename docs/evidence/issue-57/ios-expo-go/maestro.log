@@ -1,0 +1,10 @@
+
+Waiting for flows to complete...
+[Passed] Cold start opens Home (43s)
+[Passed] Tab navigation (31s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 59s)
+[Passed] Explore error state and Retry (39s)
+[Passed] Login keyboard return keys (58s)
+
+5/5 Flows Passed in 4m 50s
+

@@ -1,0 +1,17 @@
+env: load .env
+env: export EXPO_PUBLIC_API_TRUSTED_ORIGINS EXPO_PUBLIC_API_URL EXPO_PUBLIC_AUTH_API_URL
+Starting project at /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/rr/clone
+Starting Metro Bundler
+
+Waiting on http://localhost:8081
+
+Logs for your project will appear below.
+iOS Bundled 992ms index.ts (1546 modules)
+iOS Bundled 1047ms index.ts (1596 modules)
+ DEBUG  [analytics] screen /
+ DEBUG  [analytics] screen /login
+ DEBUG  [analytics] screen /
+iOS Bundled 99ms index.ts (1 module)
+ DEBUG  [analytics] screen /
+iOS Bundled 84ms index.ts (1 module)
+ DEBUG  [analytics] screen /
