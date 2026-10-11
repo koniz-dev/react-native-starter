@@ -155,3 +155,13 @@ agent may judge:
   26.7.
 - **`v1.1.0-attempt/`** keeps the gate logs from the first tag, including
   the remove-demo failure.
+
+## Owner UAT
+
+2026-10-11: the owner reviewed the screenshots in this folder (item 1 of
+[Left for the owner](#left-for-the-owner)) and accepted the result. The
+optional physical-device run (item 2) was not done; the platforms are
+verified on simulators and emulators only, as `release.md` states.
+
+Verdict: every criterion passes; the starter is **MVP-ready at `v1.1.1`**
+within the scope in [release.md](release.md).
