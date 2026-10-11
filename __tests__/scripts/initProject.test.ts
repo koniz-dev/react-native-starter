@@ -265,9 +265,12 @@ describe('init-project on a copy of the template', () => {
     const script = read(dir, 'scripts/init-project.js');
     const result = run(dir, [...IDENTITY, '--remove-demo']);
     expect(result.status).toBe(0);
-    // One closing message, with the sign-in step the demo no longer covers.
+    // One closing message, with the sign-in step the demo no longer covers
+    // when this run removed it (not when remove-demo had already run).
     expect(result.stdout.match(/Done/g)).toHaveLength(1);
-    expect(result.stdout).toContain('1. Register your AuthAdapter');
+    expect(result.stdout.includes('1. Register your AuthAdapter')).toBe(
+      HAS_DEMO
+    );
     expect(exists(dir, 'features/demo-auth')).toBe(false);
     expect(read(dir, 'shared/integrations/setup.ts')).not.toMatch(/demo-auth/);
     // remove-demo ran before the identity changes, so neither undid the other.
