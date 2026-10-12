@@ -1,0 +1,2 @@
+15:23:21.547 [ INFO] maestro.cli.runner.CliConsoleListener.onCommandStart: Clear state of ${APP_ID} RUNNING
+15:45:53.581 [ INFO] maestro.cli.runner.CliConsoleListener.onCommandFinished: Clear state of ${APP_ID} COMPLETED

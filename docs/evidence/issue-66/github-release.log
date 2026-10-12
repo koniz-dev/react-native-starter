@@ -1,0 +1,7 @@
+$ gh release view v1.1.3 --json tagName,name,isDraft,isPrerelease,publishedAt,url
+{"isDraft":false,"isPrerelease":false,"name":"v1.1.3: the demo's backends go with the demo; Expo SDK 57 patches","publishedAt":"2026-10-12T15:51:42Z","tagName":"v1.1.3","url":"https://github.com/koniz-dev/react-native-starter/releases/tag/v1.1.3"}
+$ gh api repos/koniz-dev/react-native-starter/releases/latest -q .tag_name
+v1.1.3
+$ git ls-remote --tags origin v1.1.3*
+3c20a705c47eda1539b280f0b2c7707b5f270fe5	refs/tags/v1.1.3
+be229099bab3d6dfb316e7bf2486d47ea153f80c	refs/tags/v1.1.3^{}
