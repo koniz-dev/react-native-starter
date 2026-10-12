@@ -1,0 +1,3 @@
+# Keep LF in the working tree on every OS (Prettier, ESLint, docs:check,
+# and bash expect it).
+* text=auto eol=lf

@@ -82,7 +82,7 @@ function anchorsOf(file) {
   const anchors = new Set();
   const counts = {};
   let inFence = false;
-  for (const line of text.split('\n')) {
+  for (const line of text.split(/\r?\n/)) {
     if (line.startsWith('```')) inFence = !inFence;
     const match = !inFence && /^#{1,6}\s+(.*)$/.exec(line);
     if (!match) continue;
@@ -125,7 +125,7 @@ function main() {
   fs.mkdirSync(OUT);
 
   for (const file of docFiles()) {
-    const lines = fs.readFileSync(path.join(ROOT, file), 'utf8').split('\n');
+    const lines = fs.readFileSync(path.join(ROOT, file), 'utf8').split(/\r?\n/);
     let fence = null;
     let requires = [];
     lines.forEach((line, index) => {
@@ -226,7 +226,7 @@ function main() {
     'testing',
     'app.config.ts',
   ].flatMap(sourceFiles)) {
-    const lines = fs.readFileSync(path.join(ROOT, file), 'utf8').split('\n');
+    const lines = fs.readFileSync(path.join(ROOT, file), 'utf8').split(/\r?\n/);
     lines.forEach((line, index) => {
       for (const m of line.matchAll(/docs\/([\w-]+\.md)(#[\w-]+)?/g)) {
         const doc = `docs/${m[1]}`;
@@ -254,12 +254,22 @@ function main() {
       2
     )
   );
+  // The project's tsc with this Node: `npx` needs a shell on Windows.
   const tsc = spawnSync(
-    'npx',
-    ['tsc', '-p', path.join(OUT, 'tsconfig.json'), '--pretty', 'false'],
+    process.execPath,
+    [
+      require.resolve('typescript/bin/tsc'),
+      '-p',
+      path.join(OUT, 'tsconfig.json'),
+      '--pretty',
+      'false',
+    ],
     { cwd: ROOT, encoding: 'utf8' }
   );
-  for (const raw of `${tsc.stdout}${tsc.stderr}`.split('\n')) {
+  if (tsc.error) {
+    problems.push(`tsc did not run: ${tsc.error.message}`);
+  }
+  for (const raw of `${tsc.stdout ?? ''}${tsc.stderr ?? ''}`.split(/\r?\n/)) {
     const m = /\.docs-check\/([^(]+)\((\d+),\d+\): (.*)$/.exec(raw);
     if (!m) {
       if (raw.trim()) problems.push(`tsc: ${raw.trim()}`);

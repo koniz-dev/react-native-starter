@@ -74,11 +74,25 @@ function markedFiles(dir) {
   });
 }
 
+/**
+ * Runs the project's Prettier with this Node (not `npx`, which needs a shell
+ * on Windows). Returns an error message, or null.
+ */
+function runPrettier(files) {
+  const result = spawnSync(
+    process.execPath,
+    [require.resolve('prettier/bin/prettier.cjs'), '--write', ...files],
+    { cwd: ROOT, stdio: ['ignore', 'ignore', 'inherit'] }
+  );
+  if (result.error) return `prettier did not run: ${result.error.message}`;
+  return result.status === 0 ? null : 'prettier failed';
+}
+
 /** Returns the file's text without its marked demo lines. */
 function stripMarkers(text, file) {
   const out = [];
   let block = null;
-  for (const line of text.split('\n')) {
+  for (const line of text.split(/\r?\n/)) {
     const start = /@demo (remove|uncomment)-block-start/.exec(line);
     const end = /@demo (remove|uncomment)-block-end/.exec(line);
     if (start) {
@@ -158,11 +172,8 @@ function main() {
 
   const formattable = changed.filter(rel => PRETTIER_EXT.test(rel));
   if (!DRY_RUN && formattable.length > 0) {
-    const prettier = spawnSync('npx', ['prettier', '--write', ...formattable], {
-      cwd: ROOT,
-      stdio: ['ignore', 'ignore', 'inherit'],
-    });
-    if (prettier.status !== 0) problems.push('prettier failed');
+    const prettierError = runPrettier(formattable);
+    if (prettierError) problems.push(prettierError);
   }
 
   if (problems.length > 0) {

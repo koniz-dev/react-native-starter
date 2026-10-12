@@ -118,9 +118,26 @@ describe('check-audit', () => {
     expect(lines[0]).toContain('reported (not gated)');
   });
 
+  it.each([
+    [
+      'an npm error',
+      {
+        message:
+          'request to https://registry/advisories failed, reason: ECONNREFUSED',
+        error: { summary: '', detail: '' },
+      },
+    ],
+    ['a report without results', {}],
+  ])('fails on %s instead of reporting nothing', (_case, badReport) => {
+    const { problems } = evaluate(badReport, [entry('forge')], TODAY);
+    expect(problems).toEqual([
+      expect.stringContaining('npm audit did not complete'),
+    ]);
+  });
+
   it('notes an allowlisted advisory that npm no longer reports', () => {
     const { problems, lines } = evaluate(
-      { vulnerabilities: {} },
+      { vulnerabilities: {}, metadata: { vulnerabilities: {} } },
       [entry('forge')],
       TODAY
     );

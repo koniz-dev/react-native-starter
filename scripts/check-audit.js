@@ -9,6 +9,9 @@
  *   ranges (`npm audit fix` would apply it without a major upgrade), so an
  *   upstream fix is noticed without tracking it by hand.
  *
+ * It also fails when npm audit itself fails (registry or network error), so
+ * an audit that didn't run never passes.
+ *
  * Allowlisted advisories that npm no longer reports are listed so the entry
  * can be removed. Moderate and low advisories are reported but don't fail.
  */
@@ -35,6 +38,15 @@ function fixWithinRanges(fixAvailable) {
  * fail the check.
  */
 function evaluate(report, allowlist, today) {
+  if (report.error || !report.vulnerabilities || !report.metadata) {
+    return {
+      lines: [],
+      problems: [
+        `npm audit did not complete: ${report.message ?? 'no results in its report'}`,
+      ],
+    };
+  }
+
   // One entry per advisory, with the packages npm reports it on.
   const advisories = new Map();
   for (const [name, vulnerability] of Object.entries(
@@ -109,11 +121,23 @@ function main() {
   const allowlist = JSON.parse(
     fs.readFileSync(path.join(__dirname, 'audit-allowlist.json'), 'utf8')
   ).advisories;
-  const audit = spawnSync('npm', ['audit', '--omit=dev', '--json'], {
-    cwd: ROOT,
-    encoding: 'utf8',
-    maxBuffer: 64 * 1024 * 1024,
-  });
+  // Under `npm run`, npm_execpath is npm's own script: run it with this Node,
+  // since a bare `npm` needs a shell on Windows.
+  const npmCli = process.env.npm_execpath;
+  const audit = spawnSync(
+    npmCli ? process.execPath : 'npm',
+    [...(npmCli ? [npmCli] : []), 'audit', '--omit=dev', '--json'],
+    {
+      cwd: ROOT,
+      encoding: 'utf8',
+      maxBuffer: 64 * 1024 * 1024,
+      shell: !npmCli && process.platform === 'win32',
+    }
+  );
+  if (audit.error) {
+    process.stderr.write(`npm audit did not run: ${audit.error.message}\n`);
+    process.exit(1);
+  }
   let report;
   try {
     report = JSON.parse(audit.stdout);
@@ -124,7 +148,7 @@ function main() {
 
   const today = new Date().toISOString().slice(0, 10);
   const { lines, problems } = evaluate(report, allowlist, today);
-  process.stdout.write(`${lines.join('\n')}\n`);
+  if (lines.length > 0) process.stdout.write(`${lines.join('\n')}\n`);
   if (problems.length > 0) {
     process.stderr.write(`${problems.join('\n')}\n`);
     process.exit(1);
