@@ -26,8 +26,16 @@ appId: ${APP_ID}
     id: login-password
 - inputText: emilyspass
 - hideKeyboard
-- tapOn:
-    id: login-submit
+# On iOS, hiding the keyboard can press its Go key, which already submits
+# the form; tap Sign In only if the login screen is still there (a second
+# submit while one runs is ignored by the screen).
+- runFlow:
+    when:
+      visible:
+        id: login-submit
+    commands:
+      - tapOn:
+          id: login-submit
 # iOS may offer to save the password in a sheet over the app.
 - extendedWaitUntil:
     visible: (Signed in as Emily Johnson|Save Password\?)

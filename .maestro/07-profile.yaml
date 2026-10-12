@@ -9,12 +9,14 @@ name: Profile is protected and reloads the user
     env:
       CLEAR_STATE: 'true'
 - runFlow: subflows/sign-in.yaml
+# iOS may read each Profile row as one element ("Email, emily..."), Android
+# exposes the value on its own: the patterns accept both.
 - tapOn:
     id: profile-button
 - extendedWaitUntil:
-    visible: emily.johnson@x.dummyjson.com
+    visible: (Email, )?emily\.johnson@x\.dummyjson\.com
     timeout: 20000
-- assertVisible: Emily Johnson
+- assertVisible: (Name, )?Emily Johnson
 - assertNotVisible:
     id: profile-error
 - takeScreenshot: 07-profile
@@ -26,7 +28,7 @@ name: Profile is protected and reloads the user
 - tapOn:
     id: profile-button
 - extendedWaitUntil:
-    visible: emily.johnson@x.dummyjson.com
+    visible: (Email, )?emily\.johnson@x\.dummyjson\.com
     timeout: 20000
 - tapOn:
     id: profile-logout
