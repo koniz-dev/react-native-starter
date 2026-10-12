@@ -112,6 +112,7 @@ emulator), or `w` (web), or scan the QR code with Expo Go.
 | `npm run test:coverage`                                       | Jest with an HTML coverage report in `coverage/`                                                              |
 | `npm run test:e2e:ios` / `npm run test:e2e:android`           | Maestro end-to-end flows on a simulator or emulator ([Testing](testing.md#end-to-end-flows-maestro))          |
 | `npm run docs:check`                                          | Compile the docs' TypeScript snippets and check their paths and scripts                                       |
+| `npm run doctor`                                              | Expo Doctor against the installed Expo SDK (see below)                                                        |
 | `npm run audit:check`                                         | `npm audit --omit=dev`, failing on a high or critical advisory not reviewed in `scripts/audit-allowlist.json` |
 
 <!-- @demo remove-block-start -->
@@ -122,9 +123,21 @@ emulator), or `w` (web), or scan the QR code with Expo Go.
 <!-- @demo remove-block-end -->
 
 The local gate before a commit is
-`npm run lint && npm run type-check && npm run test:ci`; CI also runs
-`npm run format:check`, `npm run docs:check`, `npm run audit:check`,
-`npx expo-doctor`, and a web export (`.github/workflows/ci.yml`).
+`npm run lint && npm run type-check && npm run test:ci`; CI
+(`.github/workflows/ci.yml`) also runs `npm run format:check`,
+`npm run docs:check`, `npm run doctor`, and a web export. CI uses only the
+versions pinned in the repository, so a commit that passes keeps passing
+when new versions of its dependencies are published.
+
+`npm run doctor` checks the installed packages against the Expo SDK in the
+lockfile (Expo Doctor with `EXPO_OFFLINE=1`), not against Expo's newest
+patch releases. To see whether newer patches for your SDK exist, run
+`npx expo install --check` when you want to update; `npx expo install --fix`
+applies them.
+
+`npm run audit:check` runs in its own workflow (`.github/workflows/audit.yml`,
+on every push and pull request and weekly), because advisories change over
+time; see [Dependency advisories](#dependency-advisories).
 
 The variant scripts use POSIX `VAR=value command` syntax (macOS, Linux, WSL).
 `npm run android` and `npm run ios` use `expo start -a` and `expo start -i`
@@ -143,13 +156,16 @@ bundles), so CI starts green. Make the review yours:
 
 1. For each entry, read the advisory (`tracking`) and check that `path` and
    `exposure` still hold for your dependencies (`npm ls <package>`).
-2. Upgrade when a fix is released, and delete the entry; `audit:check` notes
-   entries npm no longer reports.
+2. Upgrade when a fix is released, and delete the entry. `audit:check` fails
+   once npm can apply a fix within your dependency ranges, and notes entries
+   npm no longer reports.
 3. Otherwise set `owner` to your team, `reviewed` to today, `reviewBy` to
    your next review (at most a few months out), and `tracking` to your own
    issue if you track it.
 
-New advisories fail the check until you fix or review them the same way.
+New advisories fail the check until you fix or review them the same way. The
+Audit workflow fails, and CI doesn't, so a new advisory doesn't block work on
+unrelated changes; treat a red Audit run as a task.
 
 ## Where things are
 
@@ -176,7 +192,7 @@ New advisories fail the check until you fix or review them the same way.
 ## Troubleshooting
 
 - **Stale bundle or odd Metro errors:** `npm start -- --clear`.
-- **Dependency problems:** `npx expo-doctor`, then `npx expo install --check`.
+- **Dependency problems:** `npm run doctor`, then `npx expo install --check`.
   To reinstall, delete `node_modules` and run `npm ci`.
 - **"Configuration error" screen:** a required `EXPO_PUBLIC_*` value is
   missing or invalid; the screen names it. Restart Metro after editing `.env`.

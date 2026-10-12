@@ -1,5 +1,9 @@
 name: CI
 
+# Verifies the commit itself with the versions pinned in the repository (the
+# lockfile, and exact versions for the recipe libraries below), so an
+# unchanged commit doesn't start failing when a package is published.
+# Checks that change with time (npm advisories) are in audit.yml.
 on:
   push:
     branches:
@@ -42,11 +46,8 @@ jobs:
       - name: Run Jest tests
         run: npm run test:ci
 
-      - name: Expo Doctor
-        run: npx expo-doctor
-
-      - name: Audit production dependencies (reviewed allowlist)
-        run: npm run audit:check
+      - name: Expo Doctor (against the installed Expo SDK)
+        run: npm run doctor
 
       - name: Export web build
         run: npx expo export --platform web --output-dir dist
@@ -57,6 +58,6 @@ jobs:
           # The state-management recipes and the TanStack Query example need
           # their libraries to compile (not saved to package.json). This step
           # runs last because of that install.
-          npm install --no-save zustand@5 @reduxjs/toolkit@2 react-redux@9 jotai@3 @tanstack/react-query@5
+          npm install --no-save zustand@5.0.15 @reduxjs/toolkit@2.13.0 react-redux@9.3.0 jotai@3.0.1 @tanstack/react-query@5.104.2
           # @recipes remove-block-end
           npm run docs:check
