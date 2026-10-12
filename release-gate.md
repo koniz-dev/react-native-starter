@@ -43,8 +43,9 @@ evidence, and the following conditions are true:
 - Automated gates pass from the clean dependency tree: lint, formatting, type check,
   and tests. Tests cover the baseline services and failure paths, not merely static
   rendering. Dependency audit results contain no unreviewed critical or high finding;
-  an unavoidable finding needs a documented dependency path, risk decision, and a
-  tracked remediation issue.
+  an unavoidable finding needs a documented dependency path, risk decision, and
+  tracked remediation (an allowlist entry with a `reviewBy` date; the weekly
+  Audit workflow fails when the date passes or npm can apply a fix).
 - Native and visual claims have human UAT evidence for every platform advertised as
   supported. At minimum this covers install/launch, tab navigation, login/logout or
   the documented auth alternative, keyboard interaction, safe areas/system bars,
