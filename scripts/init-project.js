@@ -376,7 +376,7 @@ Coding agents: see [AGENTS.md](AGENTS.md).
 function allowlistFor(text, owner) {
   const list = JSON.parse(text);
   list.$comment =
-    'High/critical npm audit advisories (npm audit --omit=dev) reviewed and accepted until reviewBy. Checked by scripts/check-audit.js (npm run audit:check). The first entries come from the review made for the template; re-review each one by its reviewBy date; see docs/getting-started.md#dependency-advisories.';
+    'High/critical npm audit advisories (npm audit --omit=dev) reviewed and accepted until reviewBy. Checked by scripts/check-audit.js (npm run audit:check). The first entries are the review of the dependencies the project started with; re-review each one by its reviewBy date; see docs/getting-started.md#dependency-advisories.';
   for (const entry of list.advisories ?? []) {
     entry.owner = `${owner} (re-review by reviewBy)`;
   }

@@ -137,8 +137,8 @@ unchanged. To build and run the generated native project, use
 
 `npm run audit:check` fails on a high or critical advisory in the app's
 runtime dependencies unless `scripts/audit-allowlist.json` has a review of it
-whose `reviewBy` date has not passed. Its first entries are the review made
-for the template's dependency tree (build tools only, not in the app
+whose `reviewBy` date has not passed. Its first entries are the review of
+the dependencies the project started with (build tools only, not in the app
 bundles), so CI starts green. Make the review yours:
 
 1. For each entry, read the advisory (`tracking`) and check that `path` and

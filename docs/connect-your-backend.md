@@ -11,7 +11,6 @@ In `.env` for development, and in the EAS build profile (or `eas env:create`)
 for preview and production builds:
 
 ```bash
-EXPO_PUBLIC_USE_DEMO_BACKENDS=false
 EXPO_PUBLIC_API_URL=https://api.example.com
 EXPO_PUBLIC_AUTH_API_URL=https://auth.example.com
 # Optional: other first-party hosts that may receive the token

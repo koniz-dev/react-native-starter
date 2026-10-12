@@ -10,9 +10,9 @@
  *    - deletes every line from one containing `@demo remove-block-start`
  *      through the next line containing `@demo remove-block-end`;
  *    - between `@demo uncomment-block-start` and `@demo uncomment-block-end`
- *      lines, uncomments each line (drops its leading `# `) and deletes the
- *      two marker lines: for text that only applies once the demo is gone
- *      (.env.example, the e2e runner);
+ *      lines, uncomments each line (drops its leading `# ` or `// `) and
+ *      deletes the two marker lines: for text that only applies once the
+ *      demo is gone (.env.example, the e2e runner, the config's URL check);
  * 3. formats the changed files with Prettier (stripping leaves blank lines);
  * 4. fails if any `@demo` marker, import of a removed path, or mention of a
  *    deleted file is left.
@@ -89,7 +89,7 @@ function stripMarkers(text, file) {
         throw new Error(`${file}: @demo ${end[1]}-block end without start`);
       block = null;
     } else if (block === 'uncomment') {
-      out.push(line.replace(/^(\s*)# ?/, '$1'));
+      out.push(line.replace(/^(\s*)(?:#|\/\/) ?/, '$1'));
     } else if (!block && !line.includes('@demo remove-current-line')) {
       out.push(line);
     }

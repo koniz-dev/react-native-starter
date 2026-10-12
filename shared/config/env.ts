@@ -25,8 +25,10 @@ export const DEFAULT_LOG_LEVELS: Record<AppEnv, LogLevel> = {
 
 export interface AppConfig {
   appEnv: AppEnv;
+  // @demo remove-block-start
   /** True when the public demo backends fill in missing URLs. */
   useDemoBackends: boolean;
+  // @demo remove-block-end
   apiUrl: string;
   authApiUrl: string;
   /** Extra origins allowed to receive the auth token (see shared/http/api.ts). */
@@ -37,11 +39,13 @@ export interface AppConfig {
   logLevel: LogLevel;
 }
 
+// @demo remove-block-start
 /** Public demo backends, used only when EXPO_PUBLIC_USE_DEMO_BACKENDS=true. */
 export const DEMO_BACKENDS = {
-  apiUrl: 'https://jsonplaceholder.typicode.com',
-  authApiUrl: 'https://dummyjson.com',
+  EXPO_PUBLIC_API_URL: 'https://jsonplaceholder.typicode.com',
+  EXPO_PUBLIC_AUTH_API_URL: 'https://dummyjson.com',
 } as const;
+// @demo remove-block-end
 
 export type RawEnv = Record<string, string | undefined>;
 
@@ -49,7 +53,9 @@ export type RawEnv = Record<string, string | undefined>;
 export function readRawEnv(): RawEnv {
   return {
     EXPO_PUBLIC_APP_ENV: process.env.EXPO_PUBLIC_APP_ENV,
+    // @demo remove-block-start
     EXPO_PUBLIC_USE_DEMO_BACKENDS: process.env.EXPO_PUBLIC_USE_DEMO_BACKENDS,
+    // @demo remove-block-end
     EXPO_PUBLIC_API_URL: process.env.EXPO_PUBLIC_API_URL,
     EXPO_PUBLIC_AUTH_API_URL: process.env.EXPO_PUBLIC_AUTH_API_URL,
     EXPO_PUBLIC_API_TRUSTED_ORIGINS:
@@ -79,10 +85,12 @@ const schema = z.object({
       message: 'must be development, preview, or production',
     })
     .optional(),
+  // @demo remove-block-start
   EXPO_PUBLIC_USE_DEMO_BACKENDS: optionalString.refine(
     value => value === undefined || value === 'true' || value === 'false',
     { message: 'must be true or false' }
   ),
+  // @demo remove-block-end
   EXPO_PUBLIC_API_URL: urlField,
   EXPO_PUBLIC_AUTH_API_URL: urlField,
   EXPO_PUBLIC_API_TRUSTED_ORIGINS: optionalString,
@@ -134,19 +142,25 @@ export function parseEnv(raw: RawEnv, isDevBuild: boolean): ConfigResult {
   const env = parsed.data;
   const appEnv: AppEnv =
     env.EXPO_PUBLIC_APP_ENV ?? (isDevBuild ? 'development' : 'production');
+  // @demo remove-block-start
   const useDemoBackends = env.EXPO_PUBLIC_USE_DEMO_BACKENDS === 'true';
+  // @demo remove-block-end
   const issues: ConfigIssue[] = [];
 
   const requireUrl = (
-    variable: 'EXPO_PUBLIC_API_URL' | 'EXPO_PUBLIC_AUTH_API_URL',
-    demoUrl: string
+    variable: 'EXPO_PUBLIC_API_URL' | 'EXPO_PUBLIC_AUTH_API_URL'
   ): string => {
-    const value = env[variable] ?? (useDemoBackends ? demoUrl : undefined);
+    // @demo remove-block-start
+    const value =
+      env[variable] ?? (useDemoBackends ? DEMO_BACKENDS[variable] : undefined);
+    // @demo remove-block-end
+    // @demo uncomment-block-start
+    // const value = env[variable];
+    // @demo uncomment-block-end
     if (!value) {
       issues.push({
         variable,
-        message:
-          'is required (set it in .env, or set EXPO_PUBLIC_USE_DEMO_BACKENDS=true to use the public demo backends)',
+        message: 'is required (set it in .env; see .env.example)',
       });
       return '';
     }
@@ -159,11 +173,8 @@ export function parseEnv(raw: RawEnv, isDevBuild: boolean): ConfigResult {
     return value;
   };
 
-  const apiUrl = requireUrl('EXPO_PUBLIC_API_URL', DEMO_BACKENDS.apiUrl);
-  const authApiUrl = requireUrl(
-    'EXPO_PUBLIC_AUTH_API_URL',
-    DEMO_BACKENDS.authApiUrl
-  );
+  const apiUrl = requireUrl('EXPO_PUBLIC_API_URL');
+  const authApiUrl = requireUrl('EXPO_PUBLIC_AUTH_API_URL');
 
   const apiTrustedOrigins = (env.EXPO_PUBLIC_API_TRUSTED_ORIGINS ?? '')
     .split(',')
@@ -190,7 +201,9 @@ export function parseEnv(raw: RawEnv, isDevBuild: boolean): ConfigResult {
     success: true,
     config: {
       appEnv,
+      // @demo remove-block-start
       useDemoBackends,
+      // @demo remove-block-end
       apiUrl,
       authApiUrl,
       apiTrustedOrigins,

@@ -30,7 +30,7 @@ testing/                      shared helpers (import from '@/testing')
 ├── render.tsx                renderWithProviders
 ├── secureStore.ts            in-memory expo-secure-store
 └── colorScheme.ts            setColorScheme
-jest.setup.env.js             env for every test file (demo backends on)
+jest.setup.env.js             env for every test file (placeholder URLs)
 jest.setup.ts                 shared mocks, reset before each test
 ```
 
@@ -74,8 +74,9 @@ jest
 Anything else a test mocks (for example `expo-router` in a component test) is
 local to that file.
 
-`jest.setup.env.js` sets `EXPO_PUBLIC_USE_DEMO_BACKENDS=true`, so the app's
-config is valid in tests. Tests of config validation call `parseEnv()`
+`jest.setup.env.js` sets the API and auth URLs to placeholders
+(`https://api.example.com`, `https://auth.example.com`), so the app's config
+is valid in tests. Tests of config validation call `parseEnv()`
 directly. One consequence: in tests the API and the auth backend are on
 different origins, so requests through `api` never carry the token; see
 [Requests that carry the token](#requests-that-carry-the-token).
@@ -254,8 +255,8 @@ it('shows loading, then the error, and Retry loads the list', async () => {
 
 ### Requests that carry the token
 
-`jest.setup.env.js` turns the demo backends on, so in tests `api` points at
-one origin and the auth backend at another. The HTTP client sends the token
+`jest.setup.env.js` puts the API and the auth backend on different origins,
+so in tests `api` points at one origin and the auth backend at another. The HTTP client sends the token
 only to the auth backend's origin (and `EXPO_PUBLIC_API_TRUSTED_ORIGINS`), so
 requests through `api` go out without it, and a 401 there is not refreshed.
 If your API and auth backend share an origin, test the token and the 401
@@ -308,8 +309,14 @@ it('sends the stored token to an API on the auth origin', async () => {
 so untested files count as uncovered. `npm run test:ci` fails below the
 global threshold in `package.json` (`coverageThreshold`): 95% statements, 88%
 branches, 92% functions, 95% lines. The threshold was set on 2026-10-09 just
-under the measured coverage (97.3 / 90.4 / 94.4 / 97.5), and it still passes
-without the demo; raise it as coverage grows.
+under the measured coverage (97.3 / 90.4 / 94.4 / 97.5); raise it as coverage
+grows.
+
+<!-- @demo remove-block-start -->
+
+The threshold still holds after `npm run remove-demo`.
+
+<!-- @demo remove-block-end -->
 
 ## Writing good tests
 

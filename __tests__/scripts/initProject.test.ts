@@ -317,17 +317,15 @@ describe('init-project on a copy of the template', () => {
     // remove-demo ran before the identity changes, so neither undid the other.
     expect(read(dir, 'README.md')).toMatch(/^# Acme Notes\n/);
     expect(read(dir, 'README.md')).not.toMatch(/emilys|remove-block/);
-    expect(read(dir, '.env.example')).toMatch(
-      /^EXPO_PUBLIC_USE_DEMO_BACKENDS=false$/m
-    );
+    expect(read(dir, '.env.example')).toMatch(/^EXPO_PUBLIC_API_URL=$/m);
     expect(exists(dir, 'scripts/remove-demo.js')).toBe(false);
     // Nothing reads like the template any more (tests may name it).
     const starter = spawnSync(
       'git',
       [
         'grep',
-        '-i',
-        'starter',
+        '-iE',
+        "starter|demo|the template|template's",
         '--',
         '.',
         ':(exclude)__tests__',

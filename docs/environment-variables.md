@@ -3,7 +3,7 @@
 The app reads all configuration from `EXPO_PUBLIC_*` variables through one
 module, [`shared/config/env.ts`](../shared/config/env.ts). It validates them with a zod schema
 when the app starts and shows a **Configuration error** screen naming each
-missing or invalid variable, instead of silently falling back to a demo backend.
+missing or invalid variable, instead of silently falling back to a default.
 
 ## Quick start
 
@@ -22,19 +22,23 @@ With the demo, `.env.example` turns on the public demo backends
 any accounts. Without a `.env` (or with `EXPO_PUBLIC_USE_DEMO_BACKENDS` unset),
 the app starts on the configuration error screen.
 
+`EXPO_PUBLIC_USE_DEMO_BACKENDS` (`true` or `false`, default `false`): `true`
+fills a missing `EXPO_PUBLIC_API_URL` or `EXPO_PUBLIC_AUTH_API_URL` with the
+public demo backends. Leave it unset or `false` in real builds so a missing
+URL fails loudly. `npm run remove-demo` removes the switch.
+
 <!-- @demo remove-block-end -->
 
 ## Variables
 
-| Variable                          | Required                         | Default                                                      | Purpose                                                                                                                                                                                   |
-| --------------------------------- | -------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `EXPO_PUBLIC_API_URL`             | Yes, unless demo backends are on | a public demo API when demo backends are on                  | Base URL of your API (`shared/http/api.ts`). It may include a path prefix, e.g. `https://example.com/api/v1` ([details](connect-your-backend.md#1-point-the-app-at-your-servers)).        |
-| `EXPO_PUBLIC_AUTH_API_URL`        | Yes, unless demo backends are on | a public demo auth backend when demo backends are on         | Base URL of your auth backend (`shared/session/authService.ts`), optionally with a path prefix. Its origin is the only one that receives the auth token by default.                       |
-| `EXPO_PUBLIC_API_TRUSTED_ORIGINS` | No                               | none                                                         | Comma-separated extra origins allowed to receive the auth token, e.g. an API on a separate first-party host. See [API and Storage](api-and-storage.md#which-hosts-receive-the-token).     |
-| `EXPO_PUBLIC_API_TIMEOUT_MS`      | No                               | `15000`                                                      | Request timeout for every HTTP client, in milliseconds (1000–120000).                                                                                                                     |
-| `EXPO_PUBLIC_LOG_LEVEL`           | No                               | `debug` (development), `info` (preview), `warn` (production) | Minimum level the logger writes to the console: `debug`, `info`, `warn`, `error`, or `silent`. Errors reach the error reporter at every level; see [Error reporting](error-reporting.md). |
-| `EXPO_PUBLIC_USE_DEMO_BACKENDS`   | No                               | `false`                                                      | `true` fills missing URLs with the public demo backends. Leave it unset or `false` in real builds so a missing URL fails loudly.                                                          |
-| `EXPO_PUBLIC_APP_ENV`             | No                               | `development` in dev builds, else `production`               | `development`, `preview`, or `production`. Outside `development`, every URL must use `https`.                                                                                             |
+| Variable                          | Required | Default                                                      | Purpose                                                                                                                                                                                   |
+| --------------------------------- | -------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXPO_PUBLIC_API_URL`             | Yes      | none                                                         | Base URL of your API (`shared/http/api.ts`). It may include a path prefix, e.g. `https://example.com/api/v1` ([details](connect-your-backend.md#1-point-the-app-at-your-servers)).        |
+| `EXPO_PUBLIC_AUTH_API_URL`        | Yes      | none                                                         | Base URL of your auth backend (`shared/session/authService.ts`), optionally with a path prefix. Its origin is the only one that receives the auth token by default.                       |
+| `EXPO_PUBLIC_API_TRUSTED_ORIGINS` | No       | none                                                         | Comma-separated extra origins allowed to receive the auth token, e.g. an API on a separate first-party host. See [API and Storage](api-and-storage.md#which-hosts-receive-the-token).     |
+| `EXPO_PUBLIC_API_TIMEOUT_MS`      | No       | `15000`                                                      | Request timeout for every HTTP client, in milliseconds (1000–120000).                                                                                                                     |
+| `EXPO_PUBLIC_LOG_LEVEL`           | No       | `debug` (development), `info` (preview), `warn` (production) | Minimum level the logger writes to the console: `debug`, `info`, `warn`, `error`, or `silent`. Errors reach the error reporter at every level; see [Error reporting](error-reporting.md). |
+| `EXPO_PUBLIC_APP_ENV`             | No       | `development` in dev builds, else `production`               | `development`, `preview`, or `production`. Outside `development`, every URL must use `https`.                                                                                             |
 
 Validation rules:
 
@@ -46,8 +50,8 @@ Validation rules:
   the configuration error screen. Use `https` URLs for an export. To try an
   export against a local `http` backend, run it with
   `EXPO_PUBLIC_APP_ENV=development`, and don't deploy that build.
-- `EXPO_PUBLIC_APP_ENV`, `EXPO_PUBLIC_USE_DEMO_BACKENDS`, and
-  `EXPO_PUBLIC_LOG_LEVEL` accept only the values listed above.
+- `EXPO_PUBLIC_APP_ENV` and `EXPO_PUBLIC_LOG_LEVEL` accept only the values
+  listed above.
 
 ## Reading configuration in code
 
@@ -105,9 +109,10 @@ environment variables.
 
 ## Testing
 
-`jest.setup.env.js` sets `EXPO_PUBLIC_USE_DEMO_BACKENDS=true` before each test
-file, mirroring a fresh checkout with `.env.example`. Validation tests call
-`parseEnv(raw, isDevBuild)` directly with explicit values.
+`jest.setup.env.js` sets `EXPO_PUBLIC_API_URL` and `EXPO_PUBLIC_AUTH_API_URL`
+to placeholder URLs before each test file, so the config is valid in every
+test. Validation tests call `parseEnv(raw, isDevBuild)` directly with
+explicit values.
 
 ## References
 

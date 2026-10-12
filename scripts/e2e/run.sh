@@ -68,16 +68,16 @@ node "$ROOT/scripts/e2e/mock-api.js" "$MOCK_PORT" >"$OUT/mock-api.log" 2>&1 &
 PIDS+=($!)
 MOCK_API_URL="http://localhost:$MOCK_PORT"
 API_URL="${E2E_API_URL:-$MOCK_API_URL}"
+APP_ENV=(EXPO_PUBLIC_API_URL="$API_URL")
 
 # @demo remove-block-start
 # Sign-in uses the DummyJSON demo backend (network access needed) unless
 # E2E_AUTH_API_URL is set.
 AUTH_API_URL="${E2E_AUTH_API_URL:-}"
-DEMO_BACKENDS=true
+APP_ENV+=(EXPO_PUBLIC_USE_DEMO_BACKENDS=true)
 # @demo remove-block-end
 # @demo uncomment-block-start
 # AUTH_API_URL="${E2E_AUTH_API_URL:-$API_URL}"
-# DEMO_BACKENDS=false
 # @demo uncomment-block-end
 
 if [ -n "${E2E_BACKEND_CMD:-}" ]; then
@@ -91,7 +91,6 @@ if [ -n "${E2E_BACKEND_CMD:-}" ]; then
   curl -s -o /dev/null "$API_URL" || { echo "The backend at $API_URL did not start (see $OUT/backend.log)" >&2; exit 1; }
 fi
 
-APP_ENV=(EXPO_PUBLIC_USE_DEMO_BACKENDS="$DEMO_BACKENDS" EXPO_PUBLIC_API_URL="$API_URL")
 [ -n "$AUTH_API_URL" ] && APP_ENV+=(EXPO_PUBLIC_AUTH_API_URL="$AUTH_API_URL")
 (
   cd "$ROOT"

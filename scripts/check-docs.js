@@ -18,8 +18,10 @@
  * 5. every `docs/<page>.md#anchor` mentioned in source files (comments in
  *    app/, features/, shared/, scripts/, testing/, app.config.ts) exists.
  *
+ * @demo remove-block-start
  * Removing the demo removes its docs too, so a doc that still names it is
  * reported.
+ * @demo remove-block-end
  *
  * Usage: npm run docs:check [-- --keep]   (--keep leaves .docs-check/)
  */

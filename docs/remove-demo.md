@@ -30,8 +30,9 @@ npm run remove-demo
      `shared/integrations/setup.ts`, and the test assertions about them;
    - in `README.md`, `AGENTS.md`, `docs/`, and `scripts/README.md`: the
      passages about the demo, its credentials, and this page;
-   - in `.env.example`: the demo backends switch, which becomes
-     `EXPO_PUBLIC_USE_DEMO_BACKENDS=false` with a note to set your URLs;
+   - the demo backends switch (`EXPO_PUBLIC_USE_DEMO_BACKENDS`): in
+     `shared/config/env.ts` and its test, `.env.example` (which then says to
+     set your URLs), and the docs;
    - in `.maestro/` and `scripts/e2e/run.sh`: the demo flows' entries, and
      the demo sign-in backend;
 3. deletes itself: this page, `scripts/remove-demo.js`, its test, and the

@@ -1,9 +1,11 @@
 import {
   DEFAULT_API_TIMEOUT_MS,
-  DEMO_BACKENDS,
   parseEnv,
   type RawEnv,
 } from '@/shared/config/env';
+// @demo remove-block-start
+import { DEMO_BACKENDS } from '@/shared/config/env';
+// @demo remove-block-end
 
 const valid: RawEnv = {
   EXPO_PUBLIC_APP_ENV: 'production',
@@ -22,7 +24,9 @@ describe('parseEnv', () => {
       success: true,
       config: {
         appEnv: 'production',
+        // @demo remove-block-start
         useDemoBackends: false,
+        // @demo remove-block-end
         apiUrl: 'https://api.example.com',
         authApiUrl: 'https://auth.example.com',
         apiTrustedOrigins: [],
@@ -91,10 +95,16 @@ describe('parseEnv', () => {
     ]);
   });
 
-  it('reports every missing required URL when demo backends are off', () => {
+  it('reports every missing required URL', () => {
     expect(issuesOf({ EXPO_PUBLIC_APP_ENV: 'production' })).toEqual([
-      expect.objectContaining({ variable: 'EXPO_PUBLIC_API_URL' }),
-      expect.objectContaining({ variable: 'EXPO_PUBLIC_AUTH_API_URL' }),
+      {
+        variable: 'EXPO_PUBLIC_API_URL',
+        message: 'is required (set it in .env; see .env.example)',
+      },
+      {
+        variable: 'EXPO_PUBLIC_AUTH_API_URL',
+        message: 'is required (set it in .env; see .env.example)',
+      },
     ]);
   });
 
@@ -134,14 +144,15 @@ describe('parseEnv', () => {
     ).toEqual([]);
   });
 
+  // @demo remove-block-start
   it('fills missing URLs from the demo backends only when the flag is on', () => {
     const result = parseEnv({ EXPO_PUBLIC_USE_DEMO_BACKENDS: 'true' }, true);
     expect(result).toEqual({
       success: true,
       config: expect.objectContaining({
         useDemoBackends: true,
-        apiUrl: DEMO_BACKENDS.apiUrl,
-        authApiUrl: DEMO_BACKENDS.authApiUrl,
+        apiUrl: DEMO_BACKENDS.EXPO_PUBLIC_API_URL,
+        authApiUrl: DEMO_BACKENDS.EXPO_PUBLIC_AUTH_API_URL,
       }),
     });
     expect(
@@ -159,25 +170,32 @@ describe('parseEnv', () => {
     );
   });
 
+  it('rejects a demo backends switch that is not true or false', () => {
+    expect(
+      issuesOf({ ...valid, EXPO_PUBLIC_USE_DEMO_BACKENDS: 'yes' }).map(
+        issue => issue.variable
+      )
+    ).toEqual(['EXPO_PUBLIC_USE_DEMO_BACKENDS']);
+  });
+  // @demo remove-block-end
+
   it('defaults the app environment from the build type', () => {
-    const base = { EXPO_PUBLIC_USE_DEMO_BACKENDS: 'true' };
+    const base = {
+      EXPO_PUBLIC_API_URL: 'https://api.example.com',
+      EXPO_PUBLIC_AUTH_API_URL: 'https://auth.example.com',
+    };
     const dev = parseEnv(base, true);
     const release = parseEnv(base, false);
     expect(dev.success && dev.config.appEnv).toBe('development');
     expect(release.success && release.config.appEnv).toBe('production');
   });
 
-  it('rejects unknown values for enums and booleans', () => {
+  it('rejects an unknown app environment', () => {
     expect(
       issuesOf({ ...valid, EXPO_PUBLIC_APP_ENV: 'staging' }).map(
         issue => issue.variable
       )
     ).toEqual(['EXPO_PUBLIC_APP_ENV']);
-    expect(
-      issuesOf({ ...valid, EXPO_PUBLIC_USE_DEMO_BACKENDS: 'yes' }).map(
-        issue => issue.variable
-      )
-    ).toEqual(['EXPO_PUBLIC_USE_DEMO_BACKENDS']);
   });
 
   it('parses and validates trusted origins', () => {
@@ -213,8 +231,8 @@ describe('parseEnv', () => {
 
 describe('getConfig', () => {
   it('throws a ConfigError naming the variables when configuration is invalid', () => {
-    const previous = process.env.EXPO_PUBLIC_USE_DEMO_BACKENDS;
-    delete process.env.EXPO_PUBLIC_USE_DEMO_BACKENDS;
+    const previous = process.env.EXPO_PUBLIC_API_URL;
+    delete process.env.EXPO_PUBLIC_API_URL;
     try {
       jest.isolateModules(() => {
         const env = jest.requireActual<typeof import('@/shared/config/env')>(
@@ -225,7 +243,7 @@ describe('getConfig', () => {
         expect(() => env.getConfig()).toThrow(/EXPO_PUBLIC_API_URL/);
       });
     } finally {
-      process.env.EXPO_PUBLIC_USE_DEMO_BACKENDS = previous;
+      process.env.EXPO_PUBLIC_API_URL = previous;
     }
   });
 });

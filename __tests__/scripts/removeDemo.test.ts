@@ -9,12 +9,12 @@ import path from 'path';
 const ROOT = path.resolve(__dirname, '../..');
 
 /**
- * Anything that names the demo. env.ts keeps the public demo backend URLs.
- * Links to this command's doc and `npm run` mentions of it are left to
- * docs:check, which runs below.
+ * Anything that names the demo or its backends switch. Links to this
+ * command's doc and `npm run` mentions of it are left to docs:check, which
+ * runs below.
  */
 const DEMO_WORDS =
-  'demo-todos|demo-auth|demo-showcase|explore|showcase|emilys|dummyjson|jsonplaceholder';
+  'demo-todos|demo-auth|demo-showcase|explore|showcase|emilys|dummyjson|jsonplaceholder|demo.backend|use_?demo';
 const CHECKED_PATHS = [
   'README.md',
   'AGENTS.md',
@@ -27,7 +27,7 @@ const CHECKED_PATHS = [
   'features',
   'shared',
   'testing',
-  ':!shared/config/env.ts',
+  'jest.setup.env.js',
 ];
 
 /** A committed copy of the working tree, sharing this repo's node_modules. */
@@ -124,12 +124,16 @@ describe('remove-demo on a copy of the template', () => {
     expect(leftovers.status).toBe(1); // no match (128 would be a bad pathspec)
     expect(leftovers.stdout).toBe('');
 
-    // The env template turns the demo backends off.
+    // The env template has no demo backends switch; the config requires both
+    // URLs.
     const env = read(dir, '.env.example');
-    expect(env).toMatch(/^EXPO_PUBLIC_USE_DEMO_BACKENDS=false$/m);
+    expect(env).not.toMatch(/DEMO/);
     expect(env).not.toMatch(/=true$/m);
     expect(env).toMatch(/^EXPO_PUBLIC_API_URL=$/m);
     expect(env).toMatch(/^# Set both to your servers/m);
+    const config = read(dir, 'shared/config/env.ts');
+    expect(config).not.toMatch(/demo/i);
+    expect(config).toMatch(/^ {4}const value = env\[variable\];$/m);
 
     // The flows that need the demo are gone; the rest don't refer to them.
     expect(fs.readdirSync(path.join(dir, '.maestro')).sort()).toEqual([
@@ -147,7 +151,8 @@ describe('remove-demo on a copy of the template', () => {
     // The e2e runner points both URLs at the e2e mock (or E2E_* overrides),
     // and the mock lost its demo route.
     const runner = read(dir, 'scripts/e2e/run.sh');
-    expect(runner).toMatch(/^DEMO_BACKENDS=false$/m);
+    expect(runner).not.toMatch(/DEMO/);
+    expect(runner).toMatch(/^APP_ENV=\(EXPO_PUBLIC_API_URL="\$API_URL"\)$/m);
     expect(runner).toMatch(
       /^AUTH_API_URL="\$\{E2E_AUTH_API_URL:-\$API_URL\}"$/m
     );
