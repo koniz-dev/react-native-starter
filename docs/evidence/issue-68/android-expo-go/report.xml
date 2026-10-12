@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="test" tests="6" failures="0" time="353.022" timestamp="2026-10-12T17:06:26">
+    <testcase id="Cold start opens Home" name="Cold start opens Home" classname="Cold start opens Home" file=".maestro/01-cold-start.yaml" time="70.711" timestamp="2026-10-12T17:06:26" status="SUCCESS"/>
+    <testcase id="Back from Login returns Home" name="Back from Login returns Home" classname="Back from Login returns Home" file=".maestro/06-login-back.yaml" time="46.347" timestamp="2026-10-12T17:07:36" status="SUCCESS">
+      <properties>
+        <property name="tags" value="android-only"/>
+      </properties>
+    </testcase>
+    <testcase id="Tab navigation" name="Tab navigation" classname="Tab navigation" file=".maestro/02-tabs.yaml" time="31.085" timestamp="2026-10-12T17:08:23" status="SUCCESS"/>
+    <testcase id="Sign-in session survives a relaunch; logout clears it" name="Sign-in session survives a relaunch; logout clears it" classname="Sign-in session survives a relaunch; logout clears it" file=".maestro/03-auth-session.yaml" time="100.816" timestamp="2026-10-12T17:08:54" status="SUCCESS"/>
+    <testcase id="Login keyboard return keys" name="Login keyboard return keys" classname="Login keyboard return keys" file=".maestro/04-login-keyboard.yaml" time="59.914" timestamp="2026-10-12T17:10:35" status="SUCCESS"/>
+    <testcase id="Explore error state and Retry" name="Explore error state and Retry" classname="Explore error state and Retry" file=".maestro/05-explore-error-retry.yaml" time="44.074" timestamp="2026-10-12T17:11:35" status="SUCCESS"/>
+  </testsuite>
+</testsuites>

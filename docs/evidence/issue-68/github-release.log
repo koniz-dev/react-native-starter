@@ -1,0 +1,7 @@
+$ gh release view v1.1.4 --json tagName,name,isDraft,isPrerelease,publishedAt,url
+{"isDraft":false,"isPrerelease":false,"name":"v1.1.4: a commit that passes CI keeps passing","publishedAt":"2026-10-12T17:28:22Z","tagName":"v1.1.4","url":"https://github.com/koniz-dev/react-native-starter/releases/tag/v1.1.4"}
+$ gh api repos/koniz-dev/react-native-starter/releases/latest -q .tag_name
+v1.1.4
+$ git ls-remote --tags origin v1.1.4*
+6e04d401ad4f1428f7ad37f82381bfa5369664c0	refs/tags/v1.1.4
+887f634068cb2563ef4f4edc753be2169f56c014	refs/tags/v1.1.4^{}

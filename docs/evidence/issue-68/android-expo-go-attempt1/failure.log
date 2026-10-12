@@ -1,0 +1,4 @@
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-12T16:43:21.9708877Z [Failed] Cold start opens Home (5m 3s) (Assertion is false: "Session" is visible)
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-12T16:43:21.9758690Z 1/1 Flow Failed
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-12T16:48:19.5403996Z Assertion is false: "Session" is visible
+Maestro on Android emulator (expo-go)	Run the flows on an emulator	2026-10-12T16:48:19.5444080Z Assertion '"Session" is visible' failed. Check the UI hierarchy in debug artifacts to verify the element state and properties.
