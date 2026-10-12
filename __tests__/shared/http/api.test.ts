@@ -15,7 +15,7 @@ describe('api interceptors', () => {
   beforeEach(() => jest.clearAllMocks());
 
   it('injects the protected token into an outgoing request', async () => {
-    jest.mocked(secureStorage.getSecureItem).mockResolvedValue('demo-token');
+    jest.mocked(secureStorage.getSecureItem).mockResolvedValue('test-token');
     let receivedConfig: AxiosRequestConfig | undefined;
 
     await api.get(`${authBaseURL}/auth/me`, {
@@ -31,7 +31,7 @@ describe('api interceptors', () => {
       },
     });
 
-    expect(receivedConfig?.headers?.Authorization).toBe('Bearer demo-token');
+    expect(receivedConfig?.headers?.Authorization).toBe('Bearer test-token');
   });
 
   it('rejects with an ApiError carrying the server message and status', async () => {
@@ -80,23 +80,23 @@ describe('token origin allow-list', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.mocked(secureStorage.getSecureItem).mockResolvedValue('demo-token');
+    jest.mocked(secureStorage.getSecureItem).mockResolvedValue('test-token');
   });
 
   it('trusts only the auth backend origin by default', () => {
     expect([...getTrustedTokenOrigins()]).toEqual([authOrigin]);
   });
 
-  it('does not send the auth token to the separate demo API host', async () => {
+  it('does not send the auth token to the separate API host', async () => {
     expect(apiOrigin).not.toBe(authOrigin);
-    const config = await captureRequest('/todos');
+    const config = await captureRequest('/notes');
     expect(config?.headers?.Authorization).toBeUndefined();
     expect(secureStorage.getSecureItem).not.toHaveBeenCalled();
   });
 
   it('attaches the token to the auth origin, with or without the default port', async () => {
     const config = await captureRequest(`${authOrigin}:443/auth/me`);
-    expect(config?.headers?.Authorization).toBe('Bearer demo-token');
+    expect(config?.headers?.Authorization).toBe('Bearer test-token');
   });
 
   it('does not attach or read the token for another origin', async () => {
@@ -133,9 +133,9 @@ describe('token origin allow-list', () => {
 
       jest
         .mocked(isolatedSecure!.getSecureItem)
-        .mockResolvedValue('demo-token');
+        .mockResolvedValue('test-token');
       let received: AxiosRequestConfig | undefined;
-      await isolatedApi!.default.get('/todos', {
+      await isolatedApi!.default.get('/notes', {
         adapter: async config => {
           received = config;
           return {
@@ -147,7 +147,7 @@ describe('token origin allow-list', () => {
           };
         },
       });
-      expect(received?.headers?.Authorization).toBe('Bearer demo-token');
+      expect(received?.headers?.Authorization).toBe('Bearer test-token');
     } finally {
       process.env.EXPO_PUBLIC_API_TRUSTED_ORIGINS = previous;
     }

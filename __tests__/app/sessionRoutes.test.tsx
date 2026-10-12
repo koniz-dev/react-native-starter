@@ -58,8 +58,8 @@ describe('session-guarded routes', () => {
     const app = renderRouter('./app', { initialUrl: '/login' });
     await screen.findByText('Welcome Back');
 
-    fireEvent.changeText(screen.getByTestId('login-username'), 'emilys');
-    fireEvent.changeText(screen.getByTestId('login-password'), 'emilyspass');
+    fireEvent.changeText(screen.getByTestId('login-username'), 'emily');
+    fireEvent.changeText(screen.getByTestId('login-password'), 'secret-pass');
     fireEvent.press(screen.getByText('Sign In'));
 
     expect(await screen.findByText('Signed in as Emily Johnson')).toBeTruthy();

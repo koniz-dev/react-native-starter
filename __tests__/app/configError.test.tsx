@@ -1,6 +1,6 @@
 import { renderRouter, screen } from 'expo-router/testing-library';
 
-// Simulate a build without .env: no demo flag and no backend URLs.
+// Simulate a build without .env: no backend URLs.
 jest.mock('@/shared/config/env', () => {
   const actual = jest.requireActual('@/shared/config/env');
   const configResult = actual.parseEnv({}, true);

@@ -6,11 +6,15 @@
  *
  *   POST /__mode/ok      each route in ROUTES answers; others 404
  *   POST /__mode/error   every request returns 503 {"message": "Service unavailable"}
+ *   GET  /__mode         the current mode (run.sh checks it is this mock)
  *
  * The flows need no other server, so a run doesn't depend on the network.
  *
  * Add the routes your flows need to ROUTES, or point the app at your own
  * backend or mock with E2E_API_URL (docs/testing.md#your-backend-or-mock).
+ *
+ * It listens on 127.0.0.1 only. A route that throws answers 500 and the
+ * mock keeps running.
  *
  * Usage: node scripts/e2e/mock-api.js [port]   (default 9999)
  */
@@ -61,9 +65,13 @@ function send(res, status, body) {
   res.end(JSON.stringify(body));
 }
 
+/** The request's JSON body if it is an object, else {}. */
 function parseJson(text) {
   try {
-    return JSON.parse(text);
+    const value = JSON.parse(text);
+    return value && typeof value === 'object' && !Array.isArray(value)
+      ? value
+      : {};
   } catch {
     return {};
   }
@@ -75,6 +83,9 @@ http
     req.on('data', chunk => (text += chunk));
     req.on('end', () => {
       const path = (req.url ?? '/').split('?')[0];
+      if (req.method === 'GET' && path === '/__mode') {
+        return send(res, 200, { mode });
+      }
       const modeMatch = /^\/__mode\/(ok|error)$/.exec(path);
       if (req.method === 'POST' && modeMatch) {
         mode = modeMatch[1];
@@ -88,8 +99,19 @@ http
       const route = ROUTES[`${req.method} ${path}`];
       if (route === undefined) return send(res, 404, { message: 'Not found' });
       if (typeof route !== 'function') return send(res, 200, route);
-      const [status, body] = route(req, parseJson(text));
-      send(res, status, body);
+      try {
+        const [status, body] = route(req, parseJson(text));
+        send(res, status, body);
+      } catch (error) {
+        process.stdout.write(`route failed: ${error.stack}\n`);
+        send(res, 500, { message: 'Mock route failed' });
+      }
     });
   })
-  .listen(port, () => process.stdout.write(`mock API on :${port}\n`));
+  .on('error', error => {
+    process.stderr.write(`mock API: ${error.message}\n`);
+    process.exit(1);
+  })
+  .listen(port, '127.0.0.1', () =>
+    process.stdout.write(`mock API on 127.0.0.1:${port}\n`)
+  );

@@ -325,7 +325,7 @@ describe('auth client', () => {
     };
 
     await expect(
-      authService.login({ username: 'emilys', password: 'wrong' })
+      authService.login({ username: 'emily', password: 'wrong' })
     ).rejects.toMatchObject({
       name: 'ApiError',
       code: 'client',
@@ -348,7 +348,7 @@ describe('auth client', () => {
         email: 'e@example.com',
       });
     };
-    await authService.login({ username: 'emilys', password: 'emilyspass' });
+    await authService.login({ username: 'emily', password: 'secret-pass' });
     expect(authorization).toBeUndefined();
   });
 });

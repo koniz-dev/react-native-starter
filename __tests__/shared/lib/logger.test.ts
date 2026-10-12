@@ -307,7 +307,7 @@ describe('logger', () => {
           Cookie: 'session=1',
           Accept: 'application/json',
         },
-        credentials: { username: 'emilys', password: 'emilyspass' },
+        credentials: { username: 'emily', password: 'secret-pass' },
         accessToken: 'abc',
         refresh_token: 'def',
       };
@@ -319,7 +319,7 @@ describe('logger', () => {
             Cookie: '[redacted]',
             Accept: 'application/json',
           },
-          credentials: { username: 'emilys', password: '[redacted]' },
+          credentials: { username: 'emily', password: '[redacted]' },
           accessToken: '[redacted]',
           refresh_token: '[redacted]',
         });

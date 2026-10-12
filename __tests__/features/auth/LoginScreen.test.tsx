@@ -69,21 +69,21 @@ describe('<LoginScreen />', () => {
     jest.clearAllMocks();
   });
 
-  it('submits the documented demo credentials and enters the tabs route', async () => {
+  it('submits the entered credentials and enters the tabs route', async () => {
     jest.spyOn(authService, 'login').mockResolvedValue({
-      token: 'demo-token',
-      user: { id: 1, email: 'demo@example.com', name: 'Demo User' },
+      token: 'test-token',
+      user: { id: 1, email: 'user@example.com', name: 'Test User' },
     });
     const { getByTestId, getByText } = renderLogin();
 
-    fireEvent.changeText(getByTestId('login-username'), 'emilys');
-    fireEvent.changeText(getByTestId('login-password'), 'emilyspass');
+    fireEvent.changeText(getByTestId('login-username'), 'emily');
+    fireEvent.changeText(getByTestId('login-password'), 'secret-pass');
     fireEvent.press(getByText('Sign In'));
 
     await waitFor(() => {
       expect(authService.login).toHaveBeenCalledWith({
-        username: 'emilys',
-        password: 'emilyspass',
+        username: 'emily',
+        password: 'secret-pass',
       });
       expect(getByTestId('session-probe').props.children).toBe('signedIn');
     });
@@ -95,7 +95,7 @@ describe('<LoginScreen />', () => {
       .mockRejectedValue(new Error('Invalid credentials'));
     const { getByTestId, getByText } = renderLogin();
 
-    fireEvent.changeText(getByTestId('login-username'), 'emilys');
+    fireEvent.changeText(getByTestId('login-username'), 'emily');
     fireEvent.changeText(getByTestId('login-password'), 'wrong-password');
     fireEvent.press(getByText('Sign In'));
 
@@ -107,8 +107,8 @@ describe('<LoginScreen />', () => {
 
   it.each([
     ['both fields are empty', '', ''],
-    ['the password is empty', 'emilys', ''],
-    ['the username is empty', '', 'emilyspass'],
+    ['the password is empty', 'emily', ''],
+    ['the username is empty', '', 'secret-pass'],
   ])(
     'asks for both fields and does not sign in when %s',
     async (_case, username, password) => {
@@ -138,21 +138,21 @@ describe('<LoginScreen />', () => {
 
   it('submits the form from the password return key', async () => {
     jest.spyOn(authService, 'login').mockResolvedValue({
-      token: 'demo-token',
-      user: { id: 1, email: 'demo@example.com', name: 'Demo User' },
+      token: 'test-token',
+      user: { id: 1, email: 'user@example.com', name: 'Test User' },
     });
     const { getByTestId } = renderLogin();
     const password = getByTestId('login-password');
 
-    fireEvent.changeText(getByTestId('login-username'), 'emilys');
-    fireEvent.changeText(password, 'emilyspass');
+    fireEvent.changeText(getByTestId('login-username'), 'emily');
+    fireEvent.changeText(password, 'secret-pass');
     expect(password.props.returnKeyType).toBe('go');
     fireEvent(password, 'submitEditing');
 
     await waitFor(() => {
       expect(authService.login).toHaveBeenCalledWith({
-        username: 'emilys',
-        password: 'emilyspass',
+        username: 'emily',
+        password: 'secret-pass',
       });
       expect(getByTestId('session-probe').props.children).toBe('signedIn');
     });

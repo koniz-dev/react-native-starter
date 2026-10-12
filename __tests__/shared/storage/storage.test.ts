@@ -8,13 +8,13 @@ describe('storage', () => {
   afterEach(() => jest.restoreAllMocks());
 
   it('serializes and restores a value', async () => {
-    await setItem('profile', { id: 1, name: 'Demo' });
+    await setItem('profile', { id: 1, name: 'Test' });
 
     expect(AsyncStorage.setItem).toHaveBeenCalledWith(
       'profile',
-      JSON.stringify({ id: 1, name: 'Demo' })
+      JSON.stringify({ id: 1, name: 'Test' })
     );
-    await expect(getItem('profile')).resolves.toEqual({ id: 1, name: 'Demo' });
+    await expect(getItem('profile')).resolves.toEqual({ id: 1, name: 'Test' });
   });
 
   it('returns null for a missing key', async () => {

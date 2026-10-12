@@ -19,7 +19,9 @@ appId: ${APP_ID}
 # screen (the link can arrive before Expo Go is ready), and dismiss overlays:
 # iOS's "Open in “Expo Go”?" prompt (shown for a link on a fresh simulator),
 # Expo Go's developer-menu introduction and the menu itself, and
-# on slow emulators a system "isn't responding" dialog.
+# on slow emulators a system "isn't responding" dialog: for the launcher it is
+# closed (Android restarts the launcher; the app under test stays), for
+# anything else Maestro taps Wait.
 - repeat:
     times: 10
     while:
@@ -43,22 +45,34 @@ appId: ${APP_ID}
             visible: Development servers
           commands:
             - openLink: ${APP_URL}
+      - runFlow:
+          when:
+            platform: Android
+            visible: .*Launcher isn't responding
+          commands:
+            - tapOn:
+                text: Close app
+                optional: true
       - tapOn:
           text: Wait
           optional: true
       - tapOn:
           text: Continue
           optional: true
+      # Expo Go's menu has "Go home". So does the app's own error screen,
+      # next to "Try again": leave that one alone, so a crash fails fast.
       - runFlow:
           when:
             platform: Android
             visible: Go home
+            notVisible: Try again
           commands:
             - back
       - runFlow:
           when:
             platform: iOS
             visible: Go home
+            notVisible: Try again
           commands:
             - tapOn:
                 point: 50%, 8%

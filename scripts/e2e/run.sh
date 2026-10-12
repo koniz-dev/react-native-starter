@@ -65,34 +65,51 @@ set_dark_mode() {
 }
 
 node "$ROOT/scripts/e2e/mock-api.js" "$MOCK_PORT" >"$OUT/mock-api.log" 2>&1 &
-PIDS+=($!)
-MOCK_API_URL="http://localhost:$MOCK_PORT"
+MOCK_PID=$!
+PIDS+=("$MOCK_PID")
+MOCK_API_URL="http://127.0.0.1:$MOCK_PORT"
+# Ready once this mock (not another server on the port) answers /__mode.
+for _ in $(seq 1 20); do
+  curl -s "$MOCK_API_URL/__mode" | grep -q '"mode"' && break
+  kill -0 "$MOCK_PID" 2>/dev/null || break
+  sleep 0.5
+done
+kill -0 "$MOCK_PID" 2>/dev/null && curl -s "$MOCK_API_URL/__mode" | grep -q '"mode"' ||
+  { echo "The e2e mock did not start on port $MOCK_PORT (see $OUT/mock-api.log; set MOCK_PORT for another port)" >&2; exit 1; }
 API_URL="${E2E_API_URL:-$MOCK_API_URL}"
 AUTH_API_URL="${E2E_AUTH_API_URL:-$API_URL}"
 APP_ENV=(EXPO_PUBLIC_API_URL="$API_URL" EXPO_PUBLIC_AUTH_API_URL="$AUTH_API_URL")
 
 if [ -n "${E2E_BACKEND_CMD:-}" ]; then
   (cd "$ROOT" && exec bash -c "$E2E_BACKEND_CMD") >"$OUT/backend.log" 2>&1 &
-  PIDS+=($!)
-  # Ready once it answers anything over HTTP.
-  for _ in $(seq 1 30); do
-    curl -s -o /dev/null "$API_URL" && break
-    sleep 1
+  BACKEND_PID=$!
+  PIDS+=("$BACKEND_PID")
+  # Ready once both URLs answer anything over HTTP.
+  for url in "$API_URL" "$AUTH_API_URL"; do
+    for _ in $(seq 1 30); do
+      curl -s -o /dev/null "$url" && break
+      kill -0 "$BACKEND_PID" 2>/dev/null || break
+      sleep 1
+    done
+    curl -s -o /dev/null "$url" || { echo "The backend at $url did not start (see $OUT/backend.log)" >&2; exit 1; }
   done
-  curl -s -o /dev/null "$API_URL" || { echo "The backend at $API_URL did not start (see $OUT/backend.log)" >&2; exit 1; }
 fi
 
 (
   cd "$ROOT"
   env "${APP_ENV[@]}" npx expo start --port "$METRO_PORT" --clear >"$OUT/metro.log" 2>&1
 ) &
-PIDS+=($!)
+METRO_PID=$!
+PIDS+=("$METRO_PID")
 
+# Ready once Metro answers, and it is this run's Metro (still running).
 for _ in $(seq 1 90); do
   curl -s "http://localhost:$METRO_PORT/status" | grep -q running && break
+  kill -0 "$METRO_PID" 2>/dev/null || break
   sleep 2
 done
-curl -s "http://localhost:$METRO_PORT/status" | grep -q running || { echo "Metro did not start (see $OUT/metro.log)" >&2; exit 1; }
+kill -0 "$METRO_PID" 2>/dev/null && curl -s "http://localhost:$METRO_PORT/status" | grep -q running ||
+  { echo "Metro did not start on port $METRO_PORT (see $OUT/metro.log; set METRO_PORT for another port)" >&2; exit 1; }
 
 # Build the bundle once before Maestro starts its driver: on a slow machine,
 # the first bundle and the driver's startup compete for CPU.
