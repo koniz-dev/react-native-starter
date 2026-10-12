@@ -188,7 +188,7 @@ afterEach(() => {
 const signIn = () =>
   authService.login({ username: 'ada@example.com', password: 'secret' });
 
-describe('the documented AuthAdapter against a non-DummyJSON backend', () => {
+describe('the documented AuthAdapter against a backend of another shape', () => {
   it('signs in with a tokens-only response, loading the user from /me', async () => {
     await expect(signIn()).resolves.toEqual({
       token: 'access-1',

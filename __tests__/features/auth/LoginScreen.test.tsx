@@ -245,11 +245,18 @@ describe('<LoginScreen />', () => {
     });
   });
 
-  it('wraps the form in a keyboard-avoiding container', async () => {
-    const { UNSAFE_getByType } = await renderLoginReady();
+  it.each([
+    ['ios', 'padding'],
+    ['android', 'height'],
+  ] as const)(
+    'wraps the form in a keyboard-avoiding container (%s: %s)',
+    async (os, behavior) => {
+      jest.replaceProperty(Platform, 'OS', os);
+      const { UNSAFE_getByType } = await renderLoginReady();
 
-    expect(UNSAFE_getByType(KeyboardAvoidingView).props.behavior).toBe(
-      Platform.OS === 'ios' ? 'padding' : 'height'
-    );
-  });
+      expect(UNSAFE_getByType(KeyboardAvoidingView).props.behavior).toBe(
+        behavior
+      );
+    }
+  );
 });

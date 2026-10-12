@@ -32,6 +32,19 @@ describe('<HomeScreen /> session', () => {
     expect(router.push).toHaveBeenCalledWith('/login');
   });
 
+  test('names a signed-in session without a stored profile generically', async () => {
+    // An install that predates the profile: a token, the install marker, and
+    // no stored user.
+    secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
+    await setItem(STORAGE_KEYS.INSTALL_MARKER, true);
+
+    const { findByText } = renderWithProviders(<HomeScreen />, {
+      withSession: true,
+    });
+
+    expect(await findByText('Signed in as your account')).toBeTruthy();
+  });
+
   test('shows the signed-in user from the stored session', async () => {
     secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
     await setItem(STORAGE_KEYS.USER_DATA, user);

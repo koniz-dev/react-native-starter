@@ -66,7 +66,7 @@ function docFiles() {
       .readdirSync(path.join(ROOT, dir), { withFileTypes: true })
       .flatMap(entry => {
         const rel = `${dir}/${entry.name}`;
-        // docs/recipes/node_modules: the recipe libraries CI installs.
+        // Installed libraries (e.g. under docs/) are not the docs.
         if (entry.isDirectory())
           return entry.name === 'node_modules' ? [] : walk(rel);
         return entry.name.endsWith('.md') ? [rel] : [];
