@@ -415,7 +415,7 @@ ${name} is an Expo${sdk ? ` (SDK ${sdk})` : ''} and React Native app.
 ## Run it
 
 \`\`\`bash
-npm ci                 # Node 24 (.nvmrc) or 22.13+
+npm ci                 # Node 24 (.nvmrc), or 22.13+
 cp .env.example .env   # then set the backend URLs (docs/environment-variables.md)
 npm start              # then press i, a, or w, or scan the QR code with Expo Go
 \`\`\`

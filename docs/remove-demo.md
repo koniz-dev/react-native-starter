@@ -28,13 +28,14 @@ npm run remove-demo
      entry, the Login hint, Home's example links, the demo strings in
      `shared/i18n/en.ts`, the demo adapter registration in
      `shared/integrations/setup.ts`, and the test assertions about them;
-   - in `README.md`, `AGENTS.md`, `docs/`, and `scripts/README.md`: the
-     passages about the demo, its credentials, and this page;
+   - in `README.md`, `AGENTS.md`, `app/README.md`, `docs/`, and
+     `scripts/README.md`: the passages about the demo, its credentials, and
+     this page;
    - the demo backends switch (`EXPO_PUBLIC_USE_DEMO_BACKENDS`): in
      `shared/config/env.ts` and its test, `.env.example` (which then says to
      set your URLs), and the docs;
-   - in `.maestro/` and `scripts/e2e/run.sh`: the demo flows' entries, and
-     the demo sign-in backend;
+   - in `.maestro/` and `scripts/e2e/mock-api.js`: the demo flows' entries,
+     and the mock's demo routes (todos and sign-in);
 3. deletes itself: this page, `scripts/remove-demo.js`, its test, and the
    `remove-demo` npm script, since there is nothing left to remove;
 4. formats the changed files with Prettier;
@@ -62,18 +63,18 @@ the diff.
 
 ### Maestro flows
 
-| Flow                          | After removal                                     |
-| ----------------------------- | ------------------------------------------------- |
-| `01-cold-start.yaml`          | kept: a fresh start opens Home, signed out        |
-| `06-login-back.yaml`          | kept: Back from Login returns Home (Android)      |
-| `dark-mode.yaml`              | kept, without its Explore screenshot              |
-| `02-tabs.yaml`                | deleted: there is one tab                         |
-| `03-auth-session.yaml`        | deleted: signs in with the DummyJSON demo account |
-| `04-login-keyboard.yaml`      | deleted: signs in with the DummyJSON demo account |
-| `05-explore-error-retry.yaml` | deleted: the Explore tab                          |
+| Flow                          | After removal                                |
+| ----------------------------- | -------------------------------------------- |
+| `01-cold-start.yaml`          | kept: a fresh start opens Home, signed out   |
+| `06-login-back.yaml`          | kept: Back from Login returns Home (Android) |
+| `dark-mode.yaml`              | kept, without its Explore screenshot         |
+| `02-tabs.yaml`                | deleted: there is one tab                    |
+| `03-auth-session.yaml`        | deleted: signs in with the demo account      |
+| `04-login-keyboard.yaml`      | deleted: signs in with the demo account      |
+| `05-explore-error-retry.yaml` | deleted: the Explore tab                     |
 
-`subflows/sign-in.yaml` (the demo account) is deleted too, and so is the
-e2e mock's demo route (`GET /todos`). The e2e runner keeps the mock and points
+`subflows/sign-in.yaml` (the demo account) is deleted too, and so are the
+e2e mock's demo routes (`GET /todos`, `POST /auth/login`, `GET /auth/me`). The e2e runner keeps the mock and points
 both URLs at it. Add your own sign-in flows against a test account on your
 backend or mock
 ([Your backend or mock](testing.md#your-backend-or-mock)).

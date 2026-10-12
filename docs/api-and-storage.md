@@ -313,7 +313,9 @@ or [SWR](https://swr.vercel.app/) when you need any of:
 <!-- @recipes remove-block-start -->
 
 To migrate gradually, keep the `useFetch` result shape and swap the
-implementation, so screens don't change. With TanStack Query (install it and
+implementation, so screens don't change. The mapping below keeps
+`useFetch`'s behavior: no automatic retries, and `loading` (with the error
+cleared) while a retry after an error runs. With TanStack Query (install it and
 wrap the app in a `QueryClientProvider` inside `SessionProvider`):
 
 <!-- docs-check: requires @tanstack/react-query -->
@@ -331,11 +333,13 @@ export function useQueryFetch<T>(
   const query = useQuery({
     queryKey,
     queryFn: ({ signal }) => fetchFn(signal),
+    retry: false,
   });
+  const retrying = query.isError && query.isFetching;
   return {
     data: query.data ?? null,
-    loading: query.isPending,
-    error: query.error ? toApiError(query.error) : null,
+    loading: query.isPending || retrying,
+    error: query.error && !retrying ? toApiError(query.error) : null,
     refetch: async () => {
       await query.refetch();
     },

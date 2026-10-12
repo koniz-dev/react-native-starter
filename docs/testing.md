@@ -22,7 +22,8 @@ The full local gate is `npm run lint && npm run type-check && npm run test:ci`.
 __tests__/                    mirrors the source tree
 ├── app/                      full-app routing tests: guards, initial route, theme, status bar
 ├── features/
-│   └── auth/  home/          screen tests
+│   └── auth/  home/  ...     screen tests
+├── scripts/                  tests of the Node scripts (check-audit)
 └── shared/
     ├── config/  http/  session/  storage/
     ├── integrations/  lib/  ui/
@@ -308,9 +309,8 @@ it('sends the stored token to an API on the auth origin', async () => {
 `collectCoverageFrom` covers every file in `app/`, `features/`, and `shared/`,
 so untested files count as uncovered. `npm run test:ci` fails below the
 global threshold in `package.json` (`coverageThreshold`): 95% statements, 88%
-branches, 92% functions, 95% lines. The threshold was set on 2026-10-09 just
-under the measured coverage (97.3 / 90.4 / 94.4 / 97.5); raise it as coverage
-grows.
+branches, 92% functions, 95% lines, a little under the coverage the project
+starts with; raise it as coverage grows.
 
 <!-- @demo remove-block-start -->
 
@@ -399,8 +399,8 @@ Setup:
   17+ (`JAVA_HOME`).
 - **Expo Go** for SDK 57 on the device (`npx expo start` offers to install it
   on a simulator or emulator).
-- **iOS Simulator keyboard**: the login flows type with the software
-  keyboard, so turn off Simulator's **I/O > Keyboard > Connect Hardware
+- **iOS Simulator keyboard**: flows that type (such as a sign-in flow) use
+  the software keyboard, so turn off Simulator's **I/O > Keyboard > Connect Hardware
   Keyboard** (or run
   `defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool false`
   and restart the Simulator).

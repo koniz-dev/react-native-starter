@@ -13,12 +13,15 @@ for preview and production builds:
 ```bash
 EXPO_PUBLIC_API_URL=https://api.example.com
 EXPO_PUBLIC_AUTH_API_URL=https://auth.example.com
-# Optional: other first-party hosts that may receive the token
-EXPO_PUBLIC_API_TRUSTED_ORIGINS=https://files.example.com
+# The token goes only to the auth backend's origin and these: list your API
+# here when it is on another origin, or its requests go without the token.
+EXPO_PUBLIC_API_TRUSTED_ORIGINS=https://api.example.com
 ```
 
 The values are validated at startup; outside development they must be
-`https`. All variables: [Environment Variables](environment-variables.md).
+`https`. When the API and the auth backend are the same server, leave
+`EXPO_PUBLIC_API_TRUSTED_ORIGINS` empty. All variables:
+[Environment Variables](environment-variables.md).
 
 Both URLs may include a path prefix, such as
 `https://example.com/api/v1`: requests keep it, so `api.get('/notes')` goes

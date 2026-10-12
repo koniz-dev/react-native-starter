@@ -6,8 +6,9 @@ configuration; the code changes are an auth adapter and your own features.
 Start with `npm run init-project`
 ([Getting Started](getting-started.md#make-it-your-project-first)). It sets
 the first row (name, slug, scheme, bundle ID, version) along with the
-`package.json` name, README, and LICENSE holder, optionally removes the demo
-and the state-management recipes, and deletes this page: what you need
+`package.json` name, README, and LICENSE holder, removes the demo if you
+choose to and the state-management recipes unless you keep them, and
+deletes this page: what you need
 later is in [App Config](app-config.md) and the other guides.
 
 ## Checklist

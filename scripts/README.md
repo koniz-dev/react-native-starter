@@ -8,7 +8,8 @@ Project scripts, run from the project root (most through `npm run`).
 
 Turns the template into your project (`npm run init-project`, prompts for
 each value, or flags; `-- --dry-run` to preview): sets the app identity,
-optionally removes the demo, and then deletes itself. See
+removes the demo if you choose to and the recipes unless you keep them, and
+then deletes itself. See
 [`docs/getting-started.md`](../docs/getting-started.md#make-it-your-project-first).
 
 <!-- @init remove-block-end -->
@@ -39,6 +40,13 @@ passed, or that npm can now fix within the current dependency ranges. Each allow
 dependency path, exposure, owner, review date, and tracking link; see
 [Dependency advisories](../docs/getting-started.md#dependency-advisories) for
 reviewing them in your project.
+
+## `e2e/`
+
+`run.sh` runs the Maestro flows (`npm run test:e2e:ios`,
+`npm run test:e2e:android`): it starts `mock-api.js`, the local API the flows
+use, and Metro, runs the flows, and stops both. See
+[End-to-end flows](../docs/testing.md#end-to-end-flows-maestro).
 
 <!-- @init remove-block-start -->
 

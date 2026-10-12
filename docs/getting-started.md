@@ -13,13 +13,17 @@ npm run init-project
 
 It asks for your app name, slug, URL scheme, bundle / package ID, and LICENSE
 holder (or takes them as flags: `npm run init-project -- --help` lists them),
-and whether to remove the demo. Then it:
+whether to remove the demo, and whether to keep the state-management recipes.
+Then it:
 
 - sets the identity in `app.config.ts`, `package.json`, `package-lock.json`,
-  `README.md`, `LICENSE`, and the docs' examples, and resets the version to
-  `1.0.0`;
+  `LICENSE`, and the docs' examples, and resets the version to `1.0.0`;
+- replaces `README.md` with a short README for your app;
+- makes you the owner of the advisory review in `scripts/audit-allowlist.json`;
 - removes the demo if you chose to;
-- deletes itself.
+- removes the state-management recipes (`docs/recipes/`) unless you keep
+  them (`--keep-recipes`);
+- deletes the template's onboarding page and itself.
 
 `npm run init-project -- --dry-run` lists every change first. It refuses to
 run on uncommitted changes or a second time unless you pass `--force`.
@@ -30,7 +34,8 @@ you (icons, colors, backend, providers).
 
 ## Prerequisites
 
-- Node.js 24 (the version in `.nvmrc`) or 22.13+, and npm.
+- Node.js 24.21.0 (the version in `.nvmrc`; any 24.3+ or 22.13+ works, but
+  not 23), and npm.
 - To run on a device: [Expo Go](https://expo.dev/go) for SDK 57.
 - For simulators: Xcode (iOS Simulator, macOS only) or Android Studio (an
   Android emulator). Building the native iOS app yourself needs Xcode 26.4+,
@@ -126,9 +131,10 @@ emulator), or `w` (web), or scan the QR code with Expo Go.
 The local gate before a commit is
 `npm run lint && npm run type-check && npm run test:ci`; CI
 (`.github/workflows/ci.yml`) also runs `npm run format:check`,
-`npm run docs:check`, `npm run doctor`, and a web export. CI uses only the
-versions pinned in the repository, so a commit that passes keeps passing
-when new versions of its dependencies are published.
+`npm run docs:check`, `npm run doctor`, and a web export. CI uses what the
+repository pins (the lockfiles, the Node version in `.nvmrc`, the runner
+image, and actions by commit), so a commit that passes keeps passing when new
+versions of its dependencies are published.
 
 `npm run doctor` checks the installed packages against the Expo SDK in the
 lockfile (Expo Doctor with `EXPO_OFFLINE=1`), not against Expo's newest
@@ -137,15 +143,17 @@ patch releases. To see whether newer patches for your SDK exist, run
 applies them.
 
 `npm run audit:check` runs in its own workflow (`.github/workflows/audit.yml`,
-on every push and pull request and weekly), because advisories change over
-time; see [Dependency advisories](#dependency-advisories).
+on pushes to `main`, on pull requests, and weekly), because advisories
+change over time; see [Dependency advisories](#dependency-advisories).
 
 The variant scripts use POSIX `VAR=value command` syntax (macOS, Linux, WSL).
 `npm run android` and `npm run ios` use `expo start -a` and `expo start -i`
 because `expo prebuild` rewrites the long forms (`--android`, `--ios`) to
 `expo run:*`. With the short forms, a prebuild leaves `package.json`
 unchanged. To build and run the generated native project, use
-`npx expo run:android` or `npx expo run:ios`.
+`npx expo run:android` or `npx expo run:ios` for the development variant,
+and the `build:preview:*` / `build:production:*` scripts for the others
+([App Config](app-config.md#build-variants)).
 
 ## Dependency advisories
 
@@ -153,7 +161,7 @@ unchanged. To build and run the generated native project, use
 runtime dependencies unless `scripts/audit-allowlist.json` has a review of it
 whose `reviewBy` date has not passed. Its first entries are the review of
 the dependencies the project started with (build tools only, not in the app
-bundles), so CI starts green. Make the review yours:
+bundles), so the Audit workflow starts green. Make the review yours:
 
 1. For each entry, read the advisory (`tracking`) and check that `path` and
    `exposure` still hold for your dependencies (`npm ls <package>`).

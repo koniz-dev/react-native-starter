@@ -36,7 +36,7 @@ function sameDeps(a: DependencyList, b: DependencyList): boolean {
 /**
  * @example
  * const { data, loading, error, refetch } = useFetch(
- *   signal => postsApi.list({ signal }),
+ *   signal => postsApi.list(signal),
  *   [userId]
  * );
  */
