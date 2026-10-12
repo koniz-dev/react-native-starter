@@ -1,7 +1,7 @@
 name: CI
 
-# Verifies the commit itself with the versions pinned in the repository (the
-# lockfile, and exact versions for the recipe libraries below), so an
+# Verifies the commit itself with what the repository pins: lockfiles, the
+# Node version in .nvmrc, the runner image, and actions by commit. An
 # unchanged commit doesn't start failing when a package is published.
 # Checks that change with time (npm advisories) are in audit.yml.
 on:
@@ -13,20 +13,25 @@ on:
 permissions:
   contents: read
 
+# A newer push to a pull request replaces its older run; every push to main
+# keeps its own result.
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   verify:
     name: Verify
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -56,8 +61,13 @@ jobs:
         run: |
           # @recipes remove-block-start
           # The state-management recipes and the TanStack Query example need
-          # their libraries to compile (not saved to package.json). This step
-          # runs last because of that install.
-          npm install --no-save zustand@5.0.15 @reduxjs/toolkit@2.13.0 react-redux@9.3.0 jotai@3.0.1 @tanstack/react-query@5.104.2
+          # their libraries to compile. They are pinned, with their own
+          # dependencies, in docs/recipes/package-lock.json (not the app's
+          # package.json) and linked into node_modules for tsc.
+          npm ci --prefix docs/recipes --legacy-peer-deps --ignore-scripts --no-audit --no-fund
+          for pkg in $(node -p "Object.keys(require('./docs/recipes/package.json').dependencies).join(' ')"); do
+            mkdir -p "node_modules/$(dirname "$pkg")"
+            ln -sfn "$PWD/docs/recipes/node_modules/$pkg" "node_modules/$pkg"
+          done
           # @recipes remove-block-end
           npm run docs:check

@@ -66,7 +66,9 @@ function docFiles() {
       .readdirSync(path.join(ROOT, dir), { withFileTypes: true })
       .flatMap(entry => {
         const rel = `${dir}/${entry.name}`;
-        if (entry.isDirectory()) return walk(rel);
+        // docs/recipes/node_modules: the recipe libraries CI installs.
+        if (entry.isDirectory())
+          return entry.name === 'node_modules' ? [] : walk(rel);
         return entry.name.endsWith('.md') ? [rel] : [];
       });
   const docs = walk('docs');
@@ -249,6 +251,8 @@ function main() {
         extends: '../tsconfig.json',
         compilerOptions: { noEmit: true },
         include: ['./*.ts', './*.tsx', '../expo-env.d.ts'],
+        // The project's exclude list names this folder.
+        exclude: [],
       },
       null,
       2

@@ -68,3 +68,13 @@ write it so the check skips it:
 A snippet that uses code from another snippet declares it, for example
 `declare const postsApi: ...` (see
 [Connect Your Backend](connect-your-backend.md#3-add-endpoints-for-a-feature)).
+
+<!-- @recipes remove-block-start -->
+
+The recipe snippets need their libraries, which the app doesn't install.
+They are pinned in `docs/recipes/package.json` and its lockfile; CI installs
+and links them before `docs:check`. Locally, `docs:check` skips those
+snippets with a note unless you run the same two steps as the "Check docs"
+step in `.github/workflows/ci.yml`.
+
+<!-- @recipes remove-block-end -->

@@ -322,7 +322,7 @@ describe('init-project on a copy of the template', () => {
       '@tanstack/react-query'
     );
     expect(read(dir, '.github/workflows/ci.yml')).not.toContain(
-      'npm install --no-save'
+      'npm ci --prefix docs/recipes'
     );
     // The project owns the inherited advisory review.
     for (const entry of JSON.parse(read(dir, 'scripts/audit-allowlist.json'))
@@ -372,7 +372,7 @@ describe('init-project on a copy of the template', () => {
       '@tanstack/react-query'
     );
     expect(read(dir, '.github/workflows/ci.yml')).toContain(
-      'npm install --no-save'
+      'npm ci --prefix docs/recipes'
     );
     const markers = spawnSync('git', ['grep', '-n', '@recipes'], {
       cwd: dir,

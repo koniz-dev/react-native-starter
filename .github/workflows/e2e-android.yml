@@ -20,32 +20,34 @@ permissions:
 jobs:
   e2e-android:
     name: Maestro on Android emulator (${{ inputs.app }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 90
     env:
       MAESTRO_VERSION: '2.11.0'
       MAESTRO_SHA256: '5384593cb4e7a106489e75a821d157dd43f4e438df6bc308b72e82c685e1283a'
+      # Expo Go for the project's SDK; update both on an SDK upgrade.
+      EXPO_GO_VERSION: '57.0.9'
+      EXPO_GO_SHA256: '14c18828a3d04e43922245920bd941b978fd1c7a5aec88a0188032f0bb4972ce'
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .nvmrc
           cache: npm
 
       - name: Set up Java 17 (Maestro)
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
         with:
           distribution: temurin
           java-version: '17'
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Configure the app (.env.example)
-        run: cp .env.example .env
 
       - name: Install the Maestro CLI (release zip, checksum verified)
         run: |
@@ -54,15 +56,16 @@ jobs:
           unzip -q maestro.zip -d "$HOME"
           echo "$HOME/maestro/bin" >> "$GITHUB_PATH"
 
-      - name: Download Expo Go for the project's SDK
+      - name: Download Expo Go (pinned, checksum verified)
         if: inputs.app == 'expo-go'
         run: |
-          # The installed expo package's major is the SDK (e.g. 57 -> 57.0.0).
-          sdk="$(node -p "require('expo/package.json').version.split('.')[0]").0.0"
-          url=$(curl -fsSL https://api.expo.dev/v2/versions/latest \
-            | SDK="$sdk" node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const j=JSON.parse(s);const d=j.data??j;process.stdout.write(d.sdkVersions[process.env.SDK].androidClientUrl)})")
-          echo "Expo Go for SDK $sdk: $url"
-          curl -fsSL -o app.apk "$url"
+          sdk="$(node -p "require('expo/package.json').version.split('.')[0]")"
+          if [ "${EXPO_GO_VERSION%%.*}" != "$sdk" ]; then
+            echo "EXPO_GO_VERSION ${EXPO_GO_VERSION} is not for SDK ${sdk}: update it and EXPO_GO_SHA256" >&2
+            exit 1
+          fi
+          curl -fsSL -o app.apk "https://github.com/expo/expo-go-releases/releases/download/Expo-Go-${EXPO_GO_VERSION}/Expo-Go-${EXPO_GO_VERSION}.apk"
+          echo "${EXPO_GO_SHA256}  app.apk" | sha256sum -c -
 
       # A debug build without a dev client: it loads the bundle from Metro on
       # localhost:8081 (adb reverse) and opens with its own URL scheme.
@@ -82,7 +85,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Run the flows on an emulator
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
           api-level: 34
           arch: x86_64
@@ -94,8 +97,9 @@ jobs:
 
       - name: Upload Maestro results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
+          retention-days: 14
           name: e2e-android-${{ inputs.app }}-results
           path: e2e-results/android
           if-no-files-found: ignore
