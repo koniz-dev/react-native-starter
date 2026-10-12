@@ -13,7 +13,7 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config';
 
 // ---------------------------------------------------------------------------
-// Replace these placeholders with your app's identity.
+// The app's identity: name, IDs, URL scheme, version (docs/app-config.md).
 // ---------------------------------------------------------------------------
 export const APP = {
   /** Display name shown under the app icon. */

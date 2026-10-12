@@ -36,7 +36,7 @@ describe('init-project input', () => {
     ['scheme', 'acmenotes'],
     ['scheme', 'acme-notes.app'],
     ['bundleId', 'com.acme.notes'],
-    ['bundleId', 'io.acme.notes_app'],
+    ['bundleId', 'io.acme.notesApp2'],
     ['name', 'Acme Notes'],
     ['name', "Bob's Ghi Chú"],
     ['owner', 'Acme Inc.'],
@@ -57,6 +57,17 @@ describe('init-project input', () => {
     ['bundleId', 'com.1acme.notes'],
     ['bundleId', 'com.acme.'],
     ['bundleId', 'com.example.notes'],
+    ['bundleId', 'com.example'],
+    // iOS bundle IDs can't contain _; Android rejects Java keywords.
+    ['bundleId', 'io.acme.notes_app'],
+    ['bundleId', 'com.acme.new'],
+    ['bundleId', 'com.class.notes'],
+    // Schemes that belong to Expo Go, the web, or the OS.
+    ['scheme', 'exp'],
+    ['scheme', 'exps'],
+    ['scheme', 'https'],
+    ['scheme', 'http'],
+    ['scheme', 'file'],
     ['name', ''],
     ['name', ' Acme'],
     ['name', 'Acme | Notes'],
@@ -187,6 +198,77 @@ describe('init-project on a copy of the template', () => {
       /--bundle-id is required/
     );
     expect(gitStatus(dir)).toBe('');
+  });
+
+  it('names the empty app name as the problem', () => {
+    const dir = copy();
+    const result = run(dir, ['--name', '', '--bundle-id', 'com.acme.x']);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toMatch(/the app name is required/);
+  });
+
+  it('writes $ in the name and owner literally', () => {
+    const dir = copy();
+    const result = run(dir, [
+      '--name',
+      'Cash$&App',
+      '--slug',
+      'cash-app',
+      '--bundle-id',
+      'com.acme.cash',
+      '--owner',
+      "Acme $' Inc $`",
+      '--keep-demo',
+      '--keep-recipes',
+    ]);
+    expect(result.stderr).toBe('');
+    expect(result.status).toBe(0);
+    const license = read(dir, 'LICENSE');
+    expect(license).toMatch(/^Copyright \(c\) \d{4} Acme \$' Inc \$`$/m);
+    expect(license.match(/MIT License/g)).toHaveLength(1);
+    const appConfig = read(dir, 'docs/app-config.md');
+    expect(appConfig).toContain('`Cash$&App (Dev)`');
+    expect(appConfig).toContain('`Cash$&App`');
+    expect(appConfig).not.toMatch(/RN Starter/);
+  });
+
+  it('on --force, changes the old scheme only where it is the scheme', () => {
+    const dir = copy();
+    // The production scheme becomes "swipe", a word testing.md also uses.
+    const first = run(dir, [
+      '--name',
+      'Swipe',
+      '--bundle-id',
+      'com.acme.swipe',
+      '--owner',
+      'Acme',
+      '--keep-demo',
+      '--keep-recipes',
+    ]);
+    expect(first.status).toBe(0);
+    const testingDoc = read(dir, 'docs/testing.md');
+    const swipeMentions = testingDoc.match(/`swipe`/g)?.length ?? 0;
+    fs.writeFileSync(
+      path.join(dir, 'scripts/init-project.js'),
+      read(ROOT, 'scripts/init-project.js')
+    );
+    const second = run(dir, [
+      '--name',
+      'Glide',
+      '--bundle-id',
+      'com.acme.glide',
+      '--owner',
+      'Acme',
+      '--keep-demo',
+      '--keep-recipes',
+      '--force',
+    ]);
+    expect(second.status).toBe(0);
+    expect(read(dir, 'docs/testing.md').match(/`swipe`/g)?.length ?? 0).toBe(
+      swipeMentions
+    );
+    expect(read(dir, 'docs/app-config.md')).toContain('`glide`');
+    expect(read(dir, 'docs/app-config.md')).toContain('`glide-dev`');
   });
 
   it('refuses a dirty working tree unless --force', () => {

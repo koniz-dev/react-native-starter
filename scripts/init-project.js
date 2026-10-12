@@ -31,7 +31,7 @@
 const { spawnSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
-const readline = require('readline/promises');
+const readline = require('readline');
 
 const ROOT = path.resolve(__dirname, '..');
 const PLACEHOLDER_BUNDLE_PREFIX = 'com.example.';
@@ -105,6 +105,34 @@ function parseArgs(argv) {
   return args;
 }
 
+/** Java keywords and literals: Android rejects them as package segments. */
+const JAVA_RESERVED = new Set(
+  (
+    'abstract assert boolean break byte case catch char class const continue ' +
+    'default do double else enum extends false final finally float for goto ' +
+    'if implements import instanceof int interface long native new null ' +
+    'package private protected public return short static strictfp super ' +
+    'switch synchronized this throw throws transient true try void volatile while'
+  ).split(' ')
+);
+
+/** URL schemes the app must not claim: Expo Go's, the web's, the OS's. */
+const RESERVED_SCHEMES = new Set([
+  'exp',
+  'exps',
+  'expo',
+  'http',
+  'https',
+  'file',
+  'content',
+  'data',
+  'javascript',
+  'mailto',
+  'tel',
+  'sms',
+  'intent',
+]);
+
 /** Each validator returns an error message, or null when the value is valid. */
 const validators = {
   name(value) {
@@ -123,18 +151,25 @@ const validators = {
       : `slug "${value}" must be lowercase letters and digits separated by single dashes (e.g. acme-notes)`;
   },
   scheme(value) {
-    return /^[a-z][a-z0-9+.-]*$/.test(value ?? '')
-      ? null
-      : `scheme "${value}" must start with a lowercase letter and use only a-z, 0-9, +, ., - (e.g. acmenotes)`;
+    if (!/^[a-z][a-z0-9+.-]*$/.test(value ?? '')) {
+      return `scheme "${value}" must start with a lowercase letter and use only a-z, 0-9, +, ., - (e.g. acmenotes)`;
+    }
+    if (RESERVED_SCHEMES.has(value)) {
+      return `scheme "${value}" belongs to Expo Go, the web, or the OS; pick one for your app (e.g. acmenotes)`;
+    }
+    return null;
   },
   bundleId(value) {
-    if (
-      !/^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+$/.test(value ?? '')
-    ) {
-      return `bundle ID "${value}" must be reverse-DNS: two or more dot-separated parts, each starting with a letter and using only letters, digits, and _ (e.g. com.acme.notes)`;
+    // Letters and digits only: iOS doesn't allow _, Android doesn't allow -.
+    if (!/^[a-zA-Z][a-zA-Z0-9]*(\.[a-zA-Z][a-zA-Z0-9]*)+$/.test(value ?? '')) {
+      return `bundle ID "${value}" must be reverse-DNS: two or more dot-separated parts, each starting with a letter and using only letters and digits (e.g. com.acme.notes)`;
     }
-    if (value.startsWith(PLACEHOLDER_BUNDLE_PREFIX)) {
+    if (`${value}.`.startsWith(PLACEHOLDER_BUNDLE_PREFIX)) {
       return `bundle ID "${value}" uses the com.example placeholder; use a domain you own`;
+    }
+    const keyword = value.split('.').find(part => JAVA_RESERVED.has(part));
+    if (keyword) {
+      return `bundle ID "${value}": "${keyword}" is a Java keyword, which Android doesn't allow as a part`;
     }
     return null;
   },
@@ -154,6 +189,20 @@ function slugify(name) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
+}
+
+/**
+ * Runs the project's Prettier with this Node (not `npx`, which needs a shell
+ * on Windows). Returns an error message, or null.
+ */
+function runPrettier(files) {
+  const result = spawnSync(
+    process.execPath,
+    [require.resolve('prettier/bin/prettier.cjs'), '--write', ...files],
+    { cwd: ROOT, stdio: ['ignore', 'ignore', 'inherit'] }
+  );
+  if (result.error) return `prettier did not run: ${result.error.message}`;
+  return result.status === 0 ? null : 'prettier failed';
 }
 
 function gitUserName() {
@@ -177,9 +226,22 @@ async function collectInput(args) {
   const rl = interactive
     ? readline.createInterface({ input: process.stdin, output: process.stdout })
     : null;
+  // Read answers line by line from one iterator: rl.question() drops the
+  // rest of a paste that holds several answers.
+  const lines = rl?.[Symbol.asyncIterator]();
+  const question = async prompt => {
+    process.stdout.write(prompt);
+    const next = await lines.next();
+    if (next.done) throw new Error('input ended before all answers were given');
+    return next.value;
+  };
 
   const ask = async (key, label, fallback) => {
-    if (given[key] !== undefined) return given[key];
+    if (given[key] !== undefined) {
+      const error = validators[key](given[key]);
+      if (error) throw new Error(error);
+      return given[key];
+    }
     if (!rl) {
       if (fallback) return fallback;
       throw new Error(
@@ -188,7 +250,7 @@ async function collectInput(args) {
     }
     for (;;) {
       const answer = (
-        await rl.question(fallback ? `${label} (${fallback}): ` : `${label}: `)
+        await question(fallback ? `${label} (${fallback}): ` : `${label}: `)
       ).trim();
       const value = answer || fallback;
       const error = validators[key](value);
@@ -223,7 +285,7 @@ async function collectInput(args) {
     let removeDemo = demoPresent && args.flags.has('--remove-demo');
     if (demoPresent && !removeDemo && !args.flags.has('--keep-demo') && rl) {
       const answer = (
-        await rl.question('Remove the demo features? (y/N): ')
+        await question('Remove the demo features? (y/N): ')
       ).trim();
       removeDemo = /^y(es)?$/i.test(answer);
     }
@@ -233,7 +295,7 @@ async function collectInput(args) {
     let removeRecipes = recipesPresent && !args.flags.has('--keep-recipes');
     if (removeRecipes && !args.flags.has('--remove-recipes') && rl) {
       const answer = (
-        await rl.question(
+        await question(
           'Keep the state-management recipes (Zustand, Redux, Jotai, Context)? (y/N): '
         )
       ).trim();
@@ -305,7 +367,10 @@ function replaceAppBlock(text, input, current) {
         `${before}${tsString(values[key])}${after}`
     );
   }
-  return out.replace(`e.g. ${current.scheme}://.`, `e.g. ${input.scheme}://.`);
+  return out.replace(
+    `e.g. ${current.scheme}://.`,
+    () => `e.g. ${input.scheme}://.`
+  );
 }
 
 /**
@@ -435,7 +500,7 @@ function planChanges(input) {
     `copyright holder -> ${new Date().getFullYear()} ${input.owner}`,
     read('LICENSE').replace(
       /^Copyright \(c\) .*$/m,
-      `Copyright (c) ${new Date().getFullYear()} ${input.owner}`
+      () => `Copyright (c) ${new Date().getFullYear()} ${input.owner}`
     )
   );
 
@@ -446,27 +511,34 @@ function planChanges(input) {
     [current.bundleId]: input.bundleId,
     [`${current.scheme}-dev`]: `${input.scheme}-dev`,
     [`${current.scheme}-preview`]: `${input.scheme}-preview`,
-    [current.scheme]: input.scheme,
   };
-  const replaceIds = text =>
+  // The bare scheme is a common word (e.g. `swipe`), so it is replaced only as
+  // a URL (`scheme://`) or, with `bareScheme`, in App Config's variant table.
+  const replaceIds = (text, { bareScheme = false } = {}) =>
     text.replace(
       /`([^`\s]+)`|(?<==)(\S+?)(?=:\/\/|"|$)/gm,
       (match, code, assigned) => {
         const value = code ?? assigned;
+        const isUrl = value.endsWith('://') || assigned !== undefined;
         const base = value.replace(/:\/\/$/, '');
-        if (!(base in ids)) return match;
-        const replaced = value.replace(base, ids[base]);
+        const target = Object.hasOwn(ids, base)
+          ? ids[base]
+          : base === current.scheme && (isUrl || bareScheme)
+            ? input.scheme
+            : undefined;
+        if (target === undefined) return match;
+        const replaced = target + value.slice(base.length);
         return code !== undefined ? `\`${replaced}\`` : replaced;
       }
     );
   const nameCells = text =>
     text
-      .replace(`\`${current.name} (Dev)\``, `\`${md(input.name)} (Dev)\``)
+      .replace(`\`${current.name} (Dev)\``, () => `\`${md(input.name)} (Dev)\``)
       .replace(
         `\`${current.name} (Preview)\``,
-        `\`${md(input.name)} (Preview)\``
+        () => `\`${md(input.name)} (Preview)\``
       )
-      .replace(`\`${current.name}\``, `\`${md(input.name)}\``);
+      .replace(`\`${current.name}\``, () => `\`${md(input.name)}\``);
 
   if (exists('README.md')) {
     write('README.md', 'the README for the app', appReadme(input.name));
@@ -480,7 +552,8 @@ function planChanges(input) {
   }
 
   const identity = {
-    'docs/app-config.md': text => nameCells(replaceIds(text)),
+    'docs/app-config.md': text =>
+      nameCells(replaceIds(text, { bareScheme: true })),
     'docs/testing.md': replaceIds,
     '.github/workflows/e2e-android.yml': replaceIds,
   };
@@ -579,6 +652,9 @@ Prompts for every value that is not given (in a terminal).
   --force               run on uncommitted changes or a second time
   --help                show this help`;
 
+/** Set once files may have changed, so a failure says how to undo it. */
+let started = false;
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.flags.has('--help')) {
@@ -606,6 +682,7 @@ async function main() {
   const demoPresent = exists(REMOVE_DEMO);
 
   log(dryRun ? 'Dry run: nothing is changed.' : 'Initializing the project...');
+  started = !dryRun;
   if (input.removeDemo) {
     log('  run remove-demo:');
     runRemoveDemo(dryRun);
@@ -641,11 +718,8 @@ async function main() {
         change.action === 'write' && /\.(ts|tsx|js|json|md)$/.test(change.file)
     )
     .map(change => change.file);
-  const prettier = spawnSync('npx', ['prettier', '--write', ...formattable], {
-    cwd: ROOT,
-    stdio: ['ignore', 'ignore', 'inherit'],
-  });
-  if (prettier.status !== 0) throw new Error('prettier failed');
+  const prettierError = runPrettier(formattable);
+  if (prettierError) throw new Error(prettierError);
 
   const steps = [
     ...(input.removeDemo
@@ -667,6 +741,13 @@ async function main() {
 if (require.main === module) {
   main().catch(error => {
     process.stderr.write(`init-project: ${error.message}\n`);
+    if (started) {
+      process.stderr.write(
+        'Some files may already be changed. Restore your last commit with\n' +
+          '  git checkout -- . && git clean -fd\n' +
+          'then fix the problem above and run init-project again.\n'
+      );
+    }
     process.exit(1);
   });
 }
