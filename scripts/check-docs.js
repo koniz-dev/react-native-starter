@@ -7,8 +7,9 @@
  *    such as '@/shared/...' resolve to the real code). Blocks declare their
  *    own placeholders, e.g. `declare function loadRefreshToken(): ...`;
  *    A block preceded by `<!-- docs-check: requires pkg-a pkg-b -->` needs
- *    packages the project doesn't install (recipes); it is compiled when they
- *    are present (CI installs them) and skipped, with a note, otherwise;
+ *    packages the project doesn't install (a library a page shows how to
+ *    adopt); it is compiled when they are present (CI can install them) and
+ *    skipped, with a note, otherwise;
  * 2. every ```json block parses;
  * 3. every `npm run <script>` names a script in package.json;
  * 4. every relative Markdown link points to an existing file (and heading,
