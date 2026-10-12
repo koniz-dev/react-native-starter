@@ -38,11 +38,11 @@ you (icons, colors, backend, providers).
 
 ## Platforms
 
-| Platform | Runs in                                                                                 | Notes                                                                                                                        |
-| -------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Android  | Expo Go, and native builds (`npm run prebuild:preview` or another variant, then Gradle) | The [Maestro flows](testing.md#end-to-end-flows-maestro) run on an emulator; a release build needs `https` backend URLs      |
-| iOS      | Expo Go on the iOS Simulator, and native builds (EAS Build or Xcode 26.4+)              | See below for native builds                                                                                                  |
-| Web      | A static export (`npx expo export --platform web`)                                      | The sign-in token is kept in memory, so a reload signs out ([Connect Your Backend](connect-your-backend.md#sessions-on-web)) |
+| Platform | Runs in                                                                                       | Notes                                                                                                                        |
+| -------- | --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Android  | Expo Go, and native builds (`npm run prebuild:preview`, then `npm run build:preview:android`) | The [Maestro flows](testing.md#end-to-end-flows-maestro) run on an emulator; a release build needs `https` backend URLs      |
+| iOS      | Expo Go on the iOS Simulator, and native builds (EAS Build or Xcode 26.4+)                    | See below for native builds                                                                                                  |
+| Web      | A static export (`npx expo export --platform web`)                                            | The sign-in token is kept in memory, so a reload signs out ([Connect Your Backend](connect-your-backend.md#sessions-on-web)) |
 
 <!-- @init remove-block-start -->
 
@@ -56,8 +56,7 @@ Native iOS builds were not part of that verification.
 **Native iOS builds:** with EAS Build
 (`eas build --platform ios --profile preview`, with your Expo and Apple
 accounts; the profiles are in `eas.json`), or locally with Xcode 26.4+:
-`npm run prebuild:preview`, then `npx expo run:ios` or open
-`ios/*.xcworkspace` in Xcode. See
+`npm run prebuild:preview`, then `npm run build:preview:ios`. See
 [App Config](app-config.md#build-variants).
 
 Expo SDK 57 (React Native 0.86, React 19.2). Not included: a production
@@ -97,23 +96,24 @@ emulator), or `w` (web), or scan the QR code with Expo Go.
 
 ## Scripts
 
-| Script                                                        | What it does                                                                                                  |
-| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `npm start`                                                   | Metro for the development variant                                                                             |
-| `npm run ios` / `npm run android` / `npm run web`             | Metro and open that platform                                                                                  |
-| `npm run start:preview`, `npm run start:production`           | Metro for another variant (production without dev mode); see [App Config](app-config.md#build-variants)       |
-| `npm run prebuild:development` (or `:preview`, `:production`) | Generate the native `ios/` and `android/` projects for a variant (gitignored)                                 |
-| `npm run config:print`                                        | Print the resolved app config (`APP_VARIANT=preview npm run config:print` for another variant)                |
-| `npm run lint` / `npm run lint:fix`                           | ESLint, failing on any warning                                                                                |
-| `npm run format` / `npm run format:check`                     | Prettier                                                                                                      |
-| `npm run type-check`                                          | `tsc --noEmit`                                                                                                |
-| `npm test`                                                    | Jest in watch mode                                                                                            |
-| `npm run test:ci`                                             | Jest once, with coverage and its threshold                                                                    |
-| `npm run test:coverage`                                       | Jest with an HTML coverage report in `coverage/`                                                              |
-| `npm run test:e2e:ios` / `npm run test:e2e:android`           | Maestro end-to-end flows on a simulator or emulator ([Testing](testing.md#end-to-end-flows-maestro))          |
-| `npm run docs:check`                                          | Compile the docs' TypeScript snippets and check their paths and scripts                                       |
-| `npm run doctor`                                              | Expo Doctor against the installed Expo SDK (see below)                                                        |
-| `npm run audit:check`                                         | `npm audit --omit=dev`, failing on a high or critical advisory not reviewed in `scripts/audit-allowlist.json` |
+| Script                                                            | What it does                                                                                                  |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `npm start`                                                       | Metro for the development variant                                                                             |
+| `npm run ios` / `npm run android` / `npm run web`                 | Metro and open that platform                                                                                  |
+| `npm run start:preview`, `npm run start:production`               | Metro for another variant (production without dev mode); see [App Config](app-config.md#build-variants)       |
+| `npm run prebuild:development` (or `:preview`, `:production`)     | Generate the native `ios/` and `android/` projects for a variant (gitignored)                                 |
+| `npm run build:preview:android` (or `:ios`, `build:production:*`) | Build and run a release build of that variant on a device or emulator, after its prebuild                     |
+| `npm run config:print`                                            | Print the resolved app config (`APP_VARIANT=preview npm run config:print` for another variant)                |
+| `npm run lint` / `npm run lint:fix`                               | ESLint, failing on any warning                                                                                |
+| `npm run format` / `npm run format:check`                         | Prettier                                                                                                      |
+| `npm run type-check`                                              | `tsc --noEmit`                                                                                                |
+| `npm test`                                                        | Jest in watch mode                                                                                            |
+| `npm run test:ci`                                                 | Jest once, with coverage and its threshold                                                                    |
+| `npm run test:coverage`                                           | Jest with an HTML coverage report in `coverage/`                                                              |
+| `npm run test:e2e:ios` / `npm run test:e2e:android`               | Maestro end-to-end flows on a simulator or emulator ([Testing](testing.md#end-to-end-flows-maestro))          |
+| `npm run docs:check`                                              | Compile the docs' TypeScript snippets and check their paths and scripts                                       |
+| `npm run doctor`                                                  | Expo Doctor against the installed Expo SDK (see below)                                                        |
+| `npm run audit:check`                                             | `npm audit --omit=dev`, failing on a high or critical advisory not reviewed in `scripts/audit-allowlist.json` |
 
 <!-- @demo remove-block-start -->
 

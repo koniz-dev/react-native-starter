@@ -29,8 +29,16 @@ own name, bundle ID, and scheme, so all three install side by side:
 - `npm start` runs the development variant; `npm run start:preview` and
   `npm run start:production` run the others.
 - `npm run prebuild:preview` (and the other variants) generates the native
-  projects; build them with Xcode / Android Studio or
-  `npx expo run:ios` / `npx expo run:android`.
+  projects for that variant.
+- To build a preview or production app on your machine, run
+  `npm run build:preview:android` or `npm run build:preview:ios` (and
+  `build:production:*`) after its prebuild. They set `APP_VARIANT` and
+  `EXPO_PUBLIC_APP_ENV` for the whole build: the native build evaluates
+  `app.config.ts` again (for `expo-constants`) and bundles the JavaScript, so
+  a plain `npx expo run:*`, Xcode, or Gradle build without them embeds the
+  development config and runs as `development` (debug) or `production`
+  (release). Building from Xcode or Android Studio, start it from a shell
+  that exports both variables.
 - `eas.json` has matching `development`, `preview`, and `production` build
   profiles for [EAS Build](https://docs.expo.dev/build/introduction/), which
   needs your own Expo account; nothing else in the project does.

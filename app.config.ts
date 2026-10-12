@@ -47,7 +47,7 @@ type Variant = keyof typeof VARIANTS;
 
 function getVariant(): Variant {
   const value = process.env.APP_VARIANT ?? 'development';
-  if (!(value in VARIANTS)) {
+  if (!Object.hasOwn(VARIANTS, value)) {
     throw new Error(
       `APP_VARIANT must be one of ${Object.keys(VARIANTS).join(', ')} (got "${value}")`
     );
