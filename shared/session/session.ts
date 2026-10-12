@@ -5,6 +5,7 @@
  * use it without importing the auth service (which is itself built on the
  * HTTP client).
  */
+import { toApiError } from '@/shared/http/apiError';
 import {
   getItem,
   removeItem,
@@ -13,8 +14,25 @@ import {
 } from '@/shared/storage/storage';
 import { getTokenStore } from './tokenStore';
 
+let sessionGeneration = 0;
+
+/**
+ * A number that changes whenever a session starts or ends. Work that began
+ * in one session (such as a token refresh) compares it before storing
+ * anything, so a sign-out isn't undone by a refresh that finishes later.
+ */
+export function getSessionGeneration(): number {
+  return sessionGeneration;
+}
+
+/** Marks the start of a new session (sign-in). */
+export function startNewSession(): void {
+  sessionGeneration += 1;
+}
+
 /** Removes the stored token (token store) and profile (AsyncStorage). */
 export async function clearStoredSession(): Promise<void> {
+  sessionGeneration += 1;
   await getTokenStore().clear();
   await removeItem(STORAGE_KEYS.USER_DATA);
 }
@@ -81,9 +99,11 @@ export function getUnauthorizedHandler(): UnauthorizedHandler {
 
 /**
  * Optional token refresh. It should obtain a new access token (for example
- * with a refresh token), store it with getTokenStore().set(), and return it; return
- * null when the session can't be refreshed. The HTTP client retries the
- * failed request once with the new token. No refresh handler is set by
+ * with a refresh token), store it with getTokenStore().set(), and return it;
+ * return null when the session can't be refreshed. If it throws, a network,
+ * timeout, or server error keeps the session (the request fails with that
+ * error); any other error counts as "can't refresh". The HTTP client retries
+ * the failed request once with the new token. No refresh handler is set by
  * default, so a 401 goes straight to the unauthorized handler.
  */
 export type RefreshTokenHandler = () => Promise<string | null>;
@@ -97,17 +117,28 @@ export function setRefreshTokenHandler(
   refreshTokenHandler = handler;
 }
 
+/** Refresh failures that say nothing about the session: try again later. */
+const TRANSIENT_CODES = new Set(['network', 'timeout', 'server', 'canceled']);
+
 /**
  * Runs the refresh handler, sharing one in-flight refresh between concurrent
- * 401s. Resolves to the new token, or null if there is no handler or the
- * refresh failed.
+ * 401s. Resolves to the new token, or null if there is no handler, the
+ * session can't be refreshed, or the session ended while refreshing. Rejects
+ * with an ApiError when the refresh failed for a transient reason (network,
+ * timeout, 5xx), so the caller keeps the session.
  */
 export async function refreshAccessToken(): Promise<string | null> {
   if (!refreshTokenHandler) return null;
+  const generation = sessionGeneration;
   refreshInFlight ??= refreshTokenHandler()
-    .catch(() => null)
+    .catch((error: unknown) => {
+      const apiError = toApiError(error);
+      if (TRANSIENT_CODES.has(apiError.code)) throw apiError;
+      return null;
+    })
     .finally(() => {
       refreshInFlight = null;
     });
-  return refreshInFlight;
+  const token = await refreshInFlight;
+  return generation === sessionGeneration ? token : null;
 }

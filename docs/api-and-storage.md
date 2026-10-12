@@ -84,8 +84,11 @@ default ports ignored) is trusted:
   example your API on a separate first-party domain.
 
 Requests to any other origin, including absolute URLs passed to `api`, go out
-without the `Authorization` header. `getTrustedTokenOrigins()` returns the
-set.
+without the `Authorization` header. A URL whose host part contains a
+backslash, whitespace, or a control character is never trusted, because
+browsers and Android read such URLs differently from the check. If you call
+another API through `api` with its own `Authorization` header, its 401s
+don't touch the session. `getTrustedTokenOrigins()` returns the set.
 
 <!-- @demo remove-block-start -->
 
@@ -106,19 +109,31 @@ the setting to revisit.
 
 ## Expired sessions (401)
 
-When a request that carried the token gets a 401:
+When a request that carried the stored token gets a 401:
 
-1. If a refresh handler is registered (an AuthAdapter's `refresh`), it runs
+1. If the stored token changed while the request was in flight (another
+   request refreshed it, or the user signed in again), the request is retried
+   once with the current token; nothing is refreshed or cleared. If the user
+   signed out meanwhile, the request just fails.
+2. If a refresh handler is registered (an AuthAdapter's `refresh`), it runs
    once; concurrent 401s share one refresh. With a new token, the request is
-   retried once.
-2. Otherwise, or if the refresh fails or the retry gets another 401, the
-   unauthorized handler runs. The default clears the stored token and
-   profile and emits session-expired; `SessionProvider` listens, so the route
-   guards send the user to Home, signed out.
-3. The request still rejects with an `ApiError` with `code: 'unauthorized'`.
+   retried once. If the refresh fails offline, times out, or gets a 5xx, the
+   session is kept and the request rejects with that error.
+3. Otherwise, or if the refresh returns null or is rejected, or the retry
+   gets another 401, the unauthorized handler runs. The default clears the
+   stored token and profile and emits session-expired; `SessionProvider`
+   listens, so the route guards send the user to Home, signed out.
+4. The request still rejects with an `ApiError` with `code: 'unauthorized'`.
 
-A 401 on the auth backend's `public` client (a wrong password) or on a
-request sent without a token does not touch the session.
+A 401 on the auth backend's `public` client (a wrong password), on a request
+sent without the stored token, or on a request to an untrusted origin does
+not touch the session. A refresh that finishes after the user signed out is
+discarded.
+
+An `ApiError` never holds the request's headers or body: its `cause` is a
+summary (method, URL without the query string, axios's error code), so
+logging or reporting it can't leak the token or a password. Request-failure
+log lines also leave out the query string.
 
 To react differently, replace the unauthorized handler, and subscribe
 anywhere to session expiry:

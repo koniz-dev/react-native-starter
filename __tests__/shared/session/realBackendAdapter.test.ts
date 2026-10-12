@@ -66,6 +66,8 @@ function fakeBackend() {
     validAccess: new Set<string>(),
     validRefresh: new Set<string>(),
     down: false,
+    /** Only the refresh endpoint is unreachable (a flaky network). */
+    refreshDown: false,
     /** Replaces the next success body, for a backend of another shape. */
     nextBody: undefined as unknown,
   };
@@ -146,6 +148,9 @@ function fakeBackend() {
         : respond(config, 401, failure('token_expired', 'Token expired'));
     }
     if (method === 'POST' && url === '/sessions/refresh') {
+      if (state.refreshDown) {
+        throw new AxiosError('Network Error', 'ERR_NETWORK', config);
+      }
       if (!state.validRefresh.delete(refresh_token ?? '')) {
         return respond(config, 401, failure('invalid_refresh', 'Revoked'));
       }
@@ -280,6 +285,25 @@ describe('the documented AuthAdapter against a non-DummyJSON backend', () => {
     });
     expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
     expect(secureStore.has(REFRESH_KEY)).toBe(false);
+  });
+
+  it('keeps the session and the refresh token when the refresh fails offline', async () => {
+    await signIn();
+    backend.state.validAccess.clear();
+    backend.state.refreshDown = true;
+
+    await expect(authService.fetchProfile()).rejects.toMatchObject({
+      code: 'network',
+    });
+    expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('access-1');
+    expect(secureStore.get(REFRESH_KEY)).toBe('refresh-1');
+
+    // Back online, the next request refreshes and succeeds.
+    backend.state.refreshDown = false;
+    await expect(authService.fetchProfile()).resolves.toMatchObject({
+      email: expect.any(String),
+    });
+    expect(secureStore.get(REFRESH_KEY)).toBe('refresh-2');
   });
 
   it('revokes the refresh token on logout, with the access token still sent', async () => {

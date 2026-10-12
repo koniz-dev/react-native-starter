@@ -45,16 +45,21 @@ export async function saveSettings(
   reported.
 - **Redaction.** Context objects are copied before they are written or
   reported:
-  - always: `Authorization`, `Cookie`, `Set-Cookie`, `password`, `secret`,
-    `token`, `accessToken`, `refreshToken`, `idToken`, `apiKey` values become
-    `[redacted]`;
+  - always: values whose key names a secret, matched anywhere in the key and
+    in any case: `Authorization`, `Cookie`, any key containing `password`,
+    `passcode`, `secret`, `token`, `apiKey`, `jwt`, `sessionId`, or
+    `privateKey`, and keys starting with `auth` or `otp` (so `newPassword`,
+    `x-auth-token`, and `client_secret` too) become `[redacted]`, also inside
+    arrays;
   - outside development: `data` and `body` values (response bodies) become
     `[redacted]`, and an `Error` is reduced to its name, message, `code`, and
     `status`.
 
   The `Error` passed to `captureException` is the original object, so the
-  provider gets its stack. If your errors carry sensitive fields, strip them in
-  the adapter (or the provider's `beforeSend`).
+  provider gets its stack. An `ApiError` from the HTTP clients carries no
+  headers or request body (its `cause` is a summary without the query
+  string). If your own errors carry sensitive fields, strip them in the
+  adapter (or the provider's `beforeSend`).
 
 - **No `console` in app code.** ESLint `no-console` is an error everywhere
   except `shared/lib/logger.ts` and the default reporter.

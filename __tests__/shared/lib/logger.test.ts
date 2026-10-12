@@ -379,6 +379,40 @@ describe('logger', () => {
       );
     });
 
+    it.each([
+      'authToken',
+      'x-auth-token',
+      'X-Auth-Token',
+      'client_secret',
+      'newPassword',
+      'currentPassword',
+      'passcode',
+      'otp',
+      'jwt',
+      'sessionId',
+      'session_id',
+      'privateKey',
+    ])('redacts keys that name a secret: %s', key => {
+      expect(redact({ [key]: 'value', label: 'ok' }, true)).toEqual({
+        [key]: '[redacted]',
+        label: 'ok',
+      });
+    });
+
+    it('redacts secrets inside arrays', () => {
+      expect(redact({ items: [{ token: 'x', id: 1 }] }, true)).toEqual({
+        items: [{ token: '[redacted]', id: 1 }],
+      });
+    });
+
+    it('logs an object referenced twice in full, not as circular', () => {
+      const shared = { id: 1 };
+      expect(redact({ a: shared, b: shared }, true)).toEqual({
+        a: { id: 1 },
+        b: { id: 1 },
+      });
+    });
+
     it('handles circular and deeply nested values', () => {
       const circular: Record<string, unknown> = { name: 'loop' };
       circular.self = circular;

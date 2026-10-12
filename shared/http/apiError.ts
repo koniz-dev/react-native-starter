@@ -1,7 +1,7 @@
 /**
  * The single error type every HTTP client in the app rejects with.
  */
-import axios from 'axios';
+import axios, { type AxiosError } from 'axios';
 
 export type ApiErrorCode =
   /** No response: offline, DNS failure, connection refused, CORS. */
@@ -67,9 +67,35 @@ function codeForStatus(status: number): ApiErrorCode {
 }
 
 /**
+ * What an ApiError keeps of the axios error it replaces: no headers (the
+ * Authorization token) and no request body (a password), since errors reach
+ * logs and the error reporter. The URL loses its query string and fragment.
+ */
+export interface RequestSummary {
+  name: string;
+  message: string;
+  code?: string;
+  method?: string;
+  url?: string;
+}
+
+function summarize(error: AxiosError): RequestSummary {
+  return {
+    name: error.name,
+    message: error.message,
+    ...(error.code && { code: error.code }),
+    ...(error.config?.method && {
+      method: error.config.method.toUpperCase(),
+    }),
+    ...(error.config?.url && { url: error.config.url.split(/[?#]/)[0] }),
+  };
+}
+
+/**
  * Converts anything thrown by a request into an ApiError. The message prefers
  * the server's own message (e.g. "Invalid credentials") over axios's generic
- * "Request failed with status code 400".
+ * "Request failed with status code 400". For axios errors, `cause` is a
+ * RequestSummary, not the axios error.
  */
 export function toApiError(error: unknown): ApiError {
   if (error instanceof ApiError) {
@@ -77,23 +103,24 @@ export function toApiError(error: unknown): ApiError {
   }
 
   if (axios.isAxiosError(error)) {
+    const cause = summarize(error);
     if (axios.isCancel(error) || error.code === 'ERR_CANCELED') {
       return new ApiError('The request was canceled', {
         code: 'canceled',
-        cause: error,
+        cause,
       });
     }
     if (error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT') {
       return new ApiError('The request timed out', {
         code: 'timeout',
-        cause: error,
+        cause,
       });
     }
     const response = error.response;
     if (!response) {
       return new ApiError('Network error: check your connection', {
         code: 'network',
-        cause: error,
+        cause,
       });
     }
     return new ApiError(
@@ -104,7 +131,7 @@ export function toApiError(error: unknown): ApiError {
         code: codeForStatus(response.status),
         status: response.status,
         data: response.data,
-        cause: error,
+        cause,
       }
     );
   }

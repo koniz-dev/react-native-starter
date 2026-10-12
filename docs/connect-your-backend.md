@@ -87,6 +87,7 @@ less useful error.
 // features/auth/myBackendAdapter.ts
 import { Platform } from 'react-native';
 import { z } from 'zod';
+import { toApiError } from '@/shared/http/apiError';
 import type { AuthAdapter } from '@/shared/session/authService';
 import {
   createMemoryTokenStore,
@@ -167,6 +168,7 @@ export const myBackendAuthAdapter: AuthAdapter = {
     unwrap(UserSchema, (await authenticated.get('/me')).data),
 
   // Optional: a new access token on a 401, or null to sign the user out.
+  // Throwing a network, timeout, or server error keeps the session.
   refresh: async ({ public: http }) => {
     const refreshToken = await refreshTokens.get();
     if (!refreshToken) return null;
@@ -183,9 +185,14 @@ export const myBackendAuthAdapter: AuthAdapter = {
       await refreshTokens.set(tokens.refresh_token);
       return tokens.access_token;
     } catch (error) {
-      // The user is signed out next, so drop the rejected refresh token.
-      await refreshTokens.clear();
-      throw error;
+      const apiError = toApiError(error);
+      if (apiError.code === 'client' || apiError.code === 'unauthorized') {
+        // Rejected: the user is signed out next, so drop the refresh token.
+        await refreshTokens.clear();
+        return null;
+      }
+      // Offline, timed out, or a server error: keep it and try again later.
+      throw apiError;
     }
   },
 
@@ -253,7 +260,14 @@ it sends the stored token, and there is none until `login` returns.
   token's.
 - **Rotation.** If your backend issues a new refresh token on every refresh,
   store it in `refresh`, as the example does. The HTTP client shares one
-  refresh between concurrent 401s, so a rotated token is used only once.
+  refresh between concurrent 401s, and a 401 for a request sent with an older
+  access token is retried with the current one instead of refreshing again,
+  so a rotated token is used only once.
+- **Failures.** Return `null` (or throw a 4xx) when the backend rejects the
+  refresh token: the user is signed out. Throw anything else (the request
+  failed offline, timed out, or got a 5xx) and the session is kept; the
+  original request fails with that error. A refresh that finishes after the
+  user signed out is discarded.
 - **Revocation.** Revoke and delete it in `logout`. Delete it before the
   request, so a failed request doesn't leave it on the device.
 

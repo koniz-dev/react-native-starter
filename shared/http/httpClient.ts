@@ -7,11 +7,13 @@
  * - the auth token is attached only for trusted origins (see
  *   getTrustedTokenOrigins);
  * - every failure rejects with an ApiError (shared/http/apiError.ts);
- * - a 401 on an authenticated request tries the optional token refresh once,
- *   then runs the unauthorized handler (default: clear the session and emit
- *   session-expired; see shared/session/session.ts);
- * - failures are logged through the logger without bodies or headers, at the
- *   level from requestFailureLogLevel.
+ * - a 401 on a request that carried the stored token tries the optional
+ *   token refresh once, then runs the unauthorized handler (default: clear
+ *   the session and emit session-expired; see shared/session/session.ts). A
+ *   401 for a token that is no longer the stored one is retried with the
+ *   current token instead; a 401 on any other request is just an error;
+ * - failures are logged through the logger without bodies, headers, or query
+ *   strings, at the level from requestFailureLogLevel.
  */
 import axios, {
   type AxiosError,
@@ -62,15 +64,33 @@ export interface HttpClientOptions {
   withCredentials?: boolean;
 }
 
+/** No backslash, whitespace, or control character (code points 0–32, 127). */
+function isPlainAuthority(authority: string): boolean {
+  for (const char of authority) {
+    const code = char.charCodeAt(0);
+    if (char === '\\' || code <= 0x20 || code === 0x7f) return false;
+  }
+  return true;
+}
+
 /**
  * Returns the normalized origin (`scheme://host[:port]`, lowercase, default
  * ports dropped) of an absolute URL, or null if the URL is not absolute.
  * Parsed by hand because React Native's URL implementation is incomplete.
+ *
+ * Fails closed: a URL whose authority contains a backslash, whitespace, or a
+ * control character returns null, because browsers and Android's OkHttp
+ * read those differently (`https://evil\\@auth.example.com` goes to `evil`),
+ * so it can't be trusted with the token.
  */
 export function getOrigin(url: string): string | null {
-  const match = /^([a-z][a-z0-9+.-]*):\/\/([^/?#@]+@)?([^/?#]+)/i.exec(url);
-  const [, rawScheme, , rawHost] = match ?? [];
-  if (!rawScheme || !rawHost) {
+  const match = /^([a-z][a-z0-9+.-]*):\/\/([^/?#]*)/i.exec(url);
+  const [, rawScheme, authority] = match ?? [];
+  if (!rawScheme || !authority || !isPlainAuthority(authority)) {
+    return null;
+  }
+  const rawHost = authority.slice(authority.lastIndexOf('@') + 1);
+  if (!rawHost) {
     return null;
   }
   const scheme = rawScheme.toLowerCase();
@@ -101,13 +121,21 @@ export function getTrustedTokenOrigins(): ReadonlySet<string> {
 }
 
 type RetriableConfig = InternalAxiosRequestConfig & {
-  /** Set after one refresh-and-retry, so a second 401 is not retried. */
-  _retriedAfterRefresh?: boolean;
+  /** The stored token this client attached, if any. */
+  _sentToken?: string;
+  /** The token to attach on a retry instead of the stored one. */
+  _retryToken?: string;
+  /** The token the refresh returned for this request's retry. */
+  _refreshedToken?: string;
+  /** Set after one retry, so a second 401 is not retried. */
+  _retried?: boolean;
 };
 
+/** `METHOD path` for logs, without the query string or fragment. */
 function describe(config: InternalAxiosRequestConfig | undefined): string {
   if (!config) return 'request';
-  return `${(config.method ?? 'get').toUpperCase()} ${config.url ?? ''}`;
+  const path = (config.url ?? '').split(/[?#]/)[0];
+  return `${(config.method ?? 'get').toUpperCase()} ${path}`;
 }
 
 export function createHttpClient(options: HttpClientOptions): AxiosInstance {
@@ -121,6 +149,8 @@ export function createHttpClient(options: HttpClientOptions): AxiosInstance {
     // axios's default timeout is 0 (none); 0 here means "not set by caller".
     config.timeout ||= getConfig().apiTimeoutMs;
 
+    const retriable = config as RetriableConfig;
+    retriable._sentToken = undefined;
     if (!options.authenticated) {
       return config;
     }
@@ -128,34 +158,16 @@ export function createHttpClient(options: HttpClientOptions): AxiosInstance {
     if (!origin || !getTrustedTokenOrigins().has(origin)) {
       return config;
     }
-    const token = await getTokenStore().get();
+    const token = retriable._retryToken ?? (await getTokenStore().get());
+    retriable._retryToken = undefined;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      retriable._sentToken = token;
     }
     return config;
   });
 
-  client.interceptors.response.use(undefined, async (error: AxiosError) => {
-    const config = error.config as RetriableConfig | undefined;
-    const sentToken = Boolean(config?.headers?.Authorization);
-
-    if (
-      options.authenticated &&
-      config &&
-      sentToken &&
-      error.response?.status === 401
-    ) {
-      if (!config._retriedAfterRefresh) {
-        const newToken = await refreshAccessToken();
-        if (newToken) {
-          config._retriedAfterRefresh = true;
-          config.headers.Authorization = `Bearer ${newToken}`;
-          return client.request(config);
-        }
-      }
-      await getUnauthorizedHandler()();
-    }
-
+  const fail = (error: unknown, config?: InternalAxiosRequestConfig) => {
     const apiError = toApiError(error);
     logger[requestFailureLogLevel(apiError.code)](
       `API ${describe(config)} failed: ${apiError.code}${
@@ -163,6 +175,47 @@ export function createHttpClient(options: HttpClientOptions): AxiosInstance {
       }`
     );
     return Promise.reject(apiError);
+  };
+
+  client.interceptors.response.use(undefined, async (error: AxiosError) => {
+    const config = error.config as RetriableConfig | undefined;
+    const sentToken = config?._sentToken;
+    if (!config || !sentToken || error.response?.status !== 401) {
+      return fail(error, config);
+    }
+
+    // Only the current session's token can be refreshed or ended. If the
+    // stored token changed meanwhile (another refresh, a new sign-in), retry
+    // with it; if it's gone (signed out), there is no session to end.
+    const current = await getTokenStore().get();
+    const currentSession =
+      current === sentToken || sentToken === config._refreshedToken;
+    if (!currentSession) {
+      if (current && !config._retried) {
+        config._retried = true;
+        return client.request(config);
+      }
+      return fail(error, config);
+    }
+
+    if (!config._retried) {
+      let newToken: string | null;
+      try {
+        newToken = await refreshAccessToken();
+      } catch (refreshError) {
+        // Offline, timed out, or the server failed: the session may still be
+        // valid, so keep it and report this request as failed.
+        return fail(refreshError, config);
+      }
+      if (newToken) {
+        config._retried = true;
+        config._retryToken = newToken;
+        config._refreshedToken = newToken;
+        return client.request(config);
+      }
+    }
+    await getUnauthorizedHandler()();
+    return fail(error, config);
   });
 
   return client;

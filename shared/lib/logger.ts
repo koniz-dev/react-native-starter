@@ -47,8 +47,13 @@ const LEVEL_ORDER: Record<LogLevel, number> = {
 };
 
 const REDACTED = '[redacted]';
+/**
+ * Keys whose values are secrets, matched anywhere in the key and in any case
+ * (`newPassword`, `x-auth-token`, `client_secret`, ...). It errs on the side
+ * of redacting.
+ */
 const SECRET_KEY =
-  /^(authorization|proxy-authorization|cookie|set-cookie|password|secret|token|access_?token|refresh_?token|id_?token|api_?key|x-api-key)$/i;
+  /authoriz|authenticat|^auth|[-_]auth|cookie|pass(word|code|phrase)|passwd|^pwd$|secret|token|api[-_]?key|^otp|jwt|session[-_]?id|private[-_]?key/i;
 const BODY_KEY = /^(data|body)$/i;
 const MAX_DEPTH = 5;
 
@@ -59,14 +64,23 @@ const MAX_DEPTH = 5;
  * development, since an Error's own fields may hold request data).
  */
 export function redact(value: unknown, development: boolean): unknown {
-  const seen = new WeakSet<object>();
+  // The objects on the path from the root: only those make a cycle, so an
+  // object referenced twice elsewhere is still logged in full.
+  const ancestors = new WeakSet<object>();
 
   const walk = (current: unknown, depth: number): unknown => {
     if (current === null || typeof current !== 'object') return current;
-    if (seen.has(current)) return '[circular]';
+    if (ancestors.has(current)) return '[circular]';
     if (depth >= MAX_DEPTH) return '[truncated]';
-    seen.add(current);
+    ancestors.add(current);
+    try {
+      return walkObject(current, depth);
+    } finally {
+      ancestors.delete(current);
+    }
+  };
 
+  const walkObject = (current: object, depth: number): unknown => {
     if (current instanceof Error) {
       const { code, status } = current as Error & {
         code?: unknown;

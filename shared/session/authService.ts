@@ -14,7 +14,12 @@ import { toApiError } from '@/shared/http/apiError';
 import { createHttpClient } from '@/shared/http/httpClient';
 import { logger } from '@/shared/lib/logger';
 import { getItem, setItem, STORAGE_KEYS } from '@/shared/storage/storage';
-import { clearStoredSession, setRefreshTokenHandler } from './session';
+import {
+  clearStoredSession,
+  getSessionGeneration,
+  setRefreshTokenHandler,
+  startNewSession,
+} from './session';
 import { getTokenStore } from './tokenStore';
 
 export interface LoginCredentials {
@@ -108,7 +113,10 @@ export function setAuthAdapter(next: AuthAdapter | null): void {
   setRefreshTokenHandler(
     refresh
       ? async () => {
+          const generation = getSessionGeneration();
           const token = await refresh(clients);
+          // Signed out (or in again) meanwhile: don't bring the old session back.
+          if (generation !== getSessionGeneration()) return null;
           if (token) await getTokenStore().set(token);
           return token;
         }
@@ -131,6 +139,7 @@ export const authService = {
     }
     const user = adapter.normalizeUser(result.user);
 
+    startNewSession();
     await getTokenStore().set(result.token);
     await setItem(STORAGE_KEYS.USER_DATA, user);
     return { token: result.token, user };
