@@ -149,16 +149,15 @@ describe('remove-demo on a copy of the template', () => {
     ]);
     expect(read(dir, '.maestro/config.yaml')).not.toMatch(/Tab navigation/);
     // The e2e runner points both URLs at the e2e mock (or E2E_* overrides),
-    // and the mock lost its demo route.
+    // and the mock lost its demo routes and account.
     const runner = read(dir, 'scripts/e2e/run.sh');
     expect(runner).not.toMatch(/DEMO/);
-    expect(runner).toMatch(/^APP_ENV=\(EXPO_PUBLIC_API_URL="\$API_URL"\)$/m);
     expect(runner).toMatch(
       /^AUTH_API_URL="\$\{E2E_AUTH_API_URL:-\$API_URL\}"$/m
     );
-    expect(read(dir, 'scripts/e2e/mock-api.js')).toMatch(
-      /const ROUTES = \{\};/
-    );
+    const mock = read(dir, 'scripts/e2e/mock-api.js');
+    expect(mock).toMatch(/const ROUTES = \{\};/);
+    expect(mock).not.toMatch(/auth|DEMO_/);
 
     // The command removed itself.
     for (const file of [

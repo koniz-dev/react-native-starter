@@ -351,8 +351,8 @@ The demo adds flows that need it; `npm run remove-demo` deletes them with it:
 | `04-login-keyboard.yaml`      | the username's return key moves to the password; the password's submits   |
 | `05-explore-error-retry.yaml` | Explore shows the API error, then Retry loads the list (local mock API)   |
 
-They sign in with the DummyJSON demo account (`subflows/sign-in.yaml`), so
-they need network access, and `dark-mode.yaml` also screenshots Explore.
+They sign in with the demo account (`subflows/sign-in.yaml`), which the e2e
+mock serves, and `dark-mode.yaml` also screenshots Explore.
 
 <!-- @demo remove-block-end -->
 
@@ -364,8 +364,9 @@ npm run test:e2e:android   # emulator or device on adb
 ```
 
 `scripts/e2e/run.sh` starts Metro and, by default, points
-`EXPO_PUBLIC_API_URL` at the e2e mock API (`scripts/e2e/mock-api.js`, on
-port 9999). On Android it sets up `adb reverse` for Metro and for every
+`EXPO_PUBLIC_API_URL` and `EXPO_PUBLIC_AUTH_API_URL` at the e2e mock API
+(`scripts/e2e/mock-api.js`, on port 9999), so a run needs no other server
+and no network access. On Android it sets up `adb reverse` for Metro and for every
 `localhost` URL it uses. It runs the numbered flows, then switches the device
 to dark mode for `dark-mode.yaml` and back. Results, screenshots, and a JUnit
 report go to `e2e-results/<platform>/` (gitignored).
@@ -379,8 +380,8 @@ signed-in flows that load real data, use your own backend or mock.
 
 <!-- @demo remove-block-start -->
 
-The demo's Explore flow uses its `GET /todos` route, which `remove-demo`
-deletes with the flow.
+The demo's flows use its `GET /todos`, `POST /auth/login`, and
+`GET /auth/me` routes, which `remove-demo` deletes with the flows.
 
 <!-- @demo remove-block-end -->
 
@@ -430,13 +431,6 @@ as above.
 | `E2E_API_URL`      | the e2e mock  | `EXPO_PUBLIC_API_URL` for the run                                                                                 |
 | `E2E_AUTH_API_URL` | `E2E_API_URL` | `EXPO_PUBLIC_AUTH_API_URL` for the run                                                                            |
 | `E2E_BACKEND_CMD`  | none          | a command that starts your backend or mock; the runner waits until `E2E_API_URL` answers, and stops it at the end |
-
-<!-- @demo remove-block-start -->
-
-While the demo is in place, `E2E_AUTH_API_URL` defaults to the DummyJSON demo
-backend instead, for the demo's sign-in flows.
-
-<!-- @demo remove-block-end -->
 
 For example, with a mock backend in `scripts/` (see
 [Where code goes](conventions.md#where-code-goes)) that listens on port 4000:

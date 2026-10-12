@@ -57,9 +57,11 @@ jobs:
       - name: Download Expo Go for the project's SDK
         if: inputs.app == 'expo-go'
         run: |
+          # The installed expo package's major is the SDK (e.g. 57 -> 57.0.0).
+          sdk="$(node -p "require('expo/package.json').version.split('.')[0]").0.0"
           url=$(curl -fsSL https://api.expo.dev/v2/versions/latest \
-            | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const j=JSON.parse(s);const d=j.data??j;process.stdout.write(d.sdkVersions['57.0.0'].androidClientUrl)})")
-          echo "Expo Go: $url"
+            | SDK="$sdk" node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const j=JSON.parse(s);const d=j.data??j;process.stdout.write(d.sdkVersions[process.env.SDK].androidClientUrl)})")
+          echo "Expo Go for SDK $sdk: $url"
           curl -fsSL -o app.apk "$url"
 
       # A debug build without a dev client: it loads the bundle from Metro on

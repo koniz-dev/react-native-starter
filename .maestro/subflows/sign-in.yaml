@@ -1,4 +1,4 @@
-# From Home, signed out: signs in with the demo account (DummyJSON).
+# From Home, signed out: signs in with the demo account (served by the e2e mock).
 appId: ${APP_ID}
 ---
 - waitForAnimationToEnd
