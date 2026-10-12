@@ -1,0 +1,5 @@
+  const requireUrl = (
+    variable: 'EXPO_PUBLIC_API_URL' | 'EXPO_PUBLIC_AUTH_API_URL'
+  ): string => {
+    const value = env[variable];
+    if (!value) {

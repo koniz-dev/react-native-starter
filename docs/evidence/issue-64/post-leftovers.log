@@ -1,0 +1,7 @@
+$ git grep -n -i -E "demo|jsonplaceholder|dummyjson|template|starter|koniz" -- . ":(exclude)__tests__" ":(exclude)package-lock.json"
+.gitignore:33:# local env files (.env.example is the committed template)
+docs/environment-variables.md:82:and `.env*.local` out of git; `.env.example` is the committed template. Restart
+shared/i18n/index.ts:23:  template: string,
+shared/i18n/index.ts:26:  if (!params) return template;
+shared/i18n/index.ts:27:  return template.replace(/\{(\w+)\}/g, (match, name: string) =>
+exit 0

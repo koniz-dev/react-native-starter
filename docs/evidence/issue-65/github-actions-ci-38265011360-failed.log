@@ -1,0 +1,28 @@
+Verify	Expo Doctor	﻿2026-10-12T14:45:01.9113336Z ##[group]Run npx expo-doctor
+Verify	Expo Doctor	2026-10-12T14:45:01.9113700Z ^[[36;1mnpx expo-doctor^[[0m
+Verify	Expo Doctor	2026-10-12T14:45:01.9177805Z shell: /usr/bin/bash -e {0}
+Verify	Expo Doctor	2026-10-12T14:45:01.9178184Z ##[endgroup]
+Verify	Expo Doctor	2026-10-12T14:45:03.2782742Z Running 21 checks on your project...
+Verify	Expo Doctor	2026-10-12T14:45:06.6169170Z 20/21 checks passed. 1 checks failed. Possible issues detected:
+Verify	Expo Doctor	2026-10-12T14:45:06.6169867Z Use the --verbose flag to see more details about passed checks.
+Verify	Expo Doctor	2026-10-12T14:45:06.6170182Z 
+Verify	Expo Doctor	2026-10-12T14:45:06.6172131Z ✖ Check that packages match versions required by installed Expo SDK
+Verify	Expo Doctor	2026-10-12T14:45:06.6172691Z 
+Verify	Expo Doctor	2026-10-12T14:45:06.6172929Z 🔧 Patch version mismatches
+Verify	Expo Doctor	2026-10-12T14:45:06.6173520Z package             expected  found    
+Verify	Expo Doctor	2026-10-12T14:45:06.6173921Z expo                ~57.0.28  57.0.27  
+Verify	Expo Doctor	2026-10-12T14:45:06.6174293Z expo-router         ~57.0.26  57.0.25  
+Verify	Expo Doctor	2026-10-12T14:45:06.6174795Z expo-splash-screen  ~57.0.10  57.0.9   
+Verify	Expo Doctor	2026-10-12T14:45:06.6175282Z jest-expo           ~57.0.6   57.0.5   
+Verify	Expo Doctor	2026-10-12T14:45:06.6175484Z 
+Verify	Expo Doctor	2026-10-12T14:45:06.6175750Z Changelogs:
+Verify	Expo Doctor	2026-10-12T14:45:06.6177400Z - expo-router → https://github.com/expo/expo/blob/sdk-57/packages/expo-router/CHANGELOG.md
+Verify	Expo Doctor	2026-10-12T14:45:06.6178517Z - expo-splash-screen → https://github.com/expo/expo/blob/sdk-57/packages/expo-splash-screen/CHANGELOG.md
+Verify	Expo Doctor	2026-10-12T14:45:06.6179041Z 
+Verify	Expo Doctor	2026-10-12T14:45:06.6179172Z 4 packages out of date.
+Verify	Expo Doctor	2026-10-12T14:45:06.6179447Z Advice:
+Verify	Expo Doctor	2026-10-12T14:45:06.6179907Z Use 'npx expo install --check' to review and upgrade your dependencies.
+Verify	Expo Doctor	2026-10-12T14:45:06.6181286Z To ignore specific packages, add them to "expo.install.exclude" in package.json. Learn more: https://expo.fyi/dependency-validation
+Verify	Expo Doctor	2026-10-12T14:45:06.6182751Z 1 check failed, indicating possible issues with the project.
+Verify	Expo Doctor	2026-10-12T14:45:06.6183260Z 
+Verify	Expo Doctor	2026-10-12T14:45:06.6482864Z ##[error]Process completed with exit code 1.

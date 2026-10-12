@@ -1,0 +1,17 @@
+commit be229099bab3d6dfb316e7bf2486d47ea153f80c
+Author: koniz-dev <kietna.work@gmail.com>
+Date:   Mon Oct 12 21:48:45 2026 +0700
+
+    chore: apply Expo SDK 57 patch releases
+    
+    expo 57.0.28, expo-router 57.0.26, expo-splash-screen 57.0.10, and
+    jest-expo 57.0.6 (npx expo install --fix), so expo-doctor passes again.
+    The other lockfile changes are their own dependencies.
+    
+    Refs koniz-dev/react-native-starter#65
+    
+    Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+ package-lock.json | 579 +++++++++++++++++++++++++++---------------------------
+ package.json      |   8 +-
+ 2 files changed, 295 insertions(+), 292 deletions(-)

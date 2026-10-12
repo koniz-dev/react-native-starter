@@ -1,0 +1,20 @@
+# Copy to .env and adjust. See docs/environment-variables.md.
+
+# Your API and auth backends (docs/connect-your-backend.md); must be https
+# outside development.
+# Set both to your servers, for example https://api.example.com and
+# https://auth.example.com. While one is empty, the app opens on the
+# configuration error screen, which names it.
+EXPO_PUBLIC_API_URL=
+EXPO_PUBLIC_AUTH_API_URL=
+
+# Origins (comma-separated) that may receive the auth token besides the auth
+# backend itself, e.g. your API on a separate first-party domain.
+EXPO_PUBLIC_API_TRUSTED_ORIGINS=
+
+# Request timeout in milliseconds (1000-120000). Defaults to 15000.
+# EXPO_PUBLIC_API_TIMEOUT_MS=15000
+
+# Minimum console log level: debug, info, warn, error, or silent.
+# Default: debug in development, info in preview, warn in production.
+# Errors reach the error reporter at every level (docs/error-reporting.md).

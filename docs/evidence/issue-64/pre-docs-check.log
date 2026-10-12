@@ -1,0 +1,7 @@
+Checked 19 files: 39 TypeScript snippets compiled with tsc.
+Skipped docs/api-and-storage.md:306: needs @tanstack/react-query (not installed).
+Skipped docs/recipes/state-management.md:42: needs zustand (not installed).
+Skipped docs/recipes/state-management.md:95: needs @reduxjs/toolkit, react-redux (not installed).
+Skipped docs/recipes/state-management.md:170: needs jotai (not installed).
+No problems.
+exit 0
