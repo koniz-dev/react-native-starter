@@ -34,7 +34,7 @@ export function NotFoundScreen() {
         </Text>
         <Button
           mode="contained"
-          onPress={() => router.replace('/')}
+          onPress={() => router.dismissTo('/')}
           testID="not-found-home"
         >
           {t('notFound.goHome')}

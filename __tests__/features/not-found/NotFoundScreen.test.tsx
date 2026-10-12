@@ -12,5 +12,9 @@ describe('unknown routes', () => {
     fireEvent.press(screen.getByTestId('not-found-home'));
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     expect(app.getPathname()).toBe('/');
+    // Back to the Home the stack is anchored on, not a second one on top.
+    expect(
+      screen.getAllByTestId('session-status', { includeHiddenElements: true })
+    ).toHaveLength(1);
   });
 });
