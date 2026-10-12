@@ -1,3 +1,4 @@
+import { ApiError } from '@/shared/http/apiError';
 import React from 'react';
 import { KeyboardAvoidingView, Platform, Text } from 'react-native';
 import { fireEvent, waitFor } from '@testing-library/react-native';
@@ -69,6 +70,48 @@ describe('<LoginScreen />', () => {
     jest.clearAllMocks();
   });
 
+  it('submits once when the keyboard and the button both fire', async () => {
+    let finish!: () => void;
+    const login = jest.spyOn(authService, 'login').mockImplementation(
+      () =>
+        new Promise(resolve => {
+          finish = () =>
+            resolve({
+              token: 'test-token',
+              user: { id: 1, email: 'user@example.com', name: 'Test User' },
+            });
+        })
+    );
+    const { getByTestId, getByText } = renderLogin();
+    fireEvent.changeText(getByTestId('login-username'), 'emily');
+    fireEvent.changeText(getByTestId('login-password'), 'secret-pass');
+
+    fireEvent(getByTestId('login-password'), 'submitEditing');
+    fireEvent(getByTestId('login-password'), 'submitEditing');
+    fireEvent.press(getByText('Sign In'));
+    finish();
+
+    await waitFor(() =>
+      expect(getByTestId('session-probe').props.children).toBe('signedIn')
+    );
+    expect(login).toHaveBeenCalledTimes(1);
+  });
+
+  it('labels the fields for screen readers and turns off autocorrect', () => {
+    const { getByTestId } = renderLogin();
+    for (const [id, label, type] of [
+      ['login-username', 'Username', 'username'],
+      ['login-password', 'Password', 'password'],
+    ] as const) {
+      expect(getByTestId(id).props).toMatchObject({
+        accessibilityLabel: label,
+        autoCorrect: false,
+        spellCheck: false,
+        textContentType: type,
+      });
+    }
+  });
+
   it('submits the entered credentials and enters the tabs route', async () => {
     jest.spyOn(authService, 'login').mockResolvedValue({
       token: 'test-token',
@@ -89,10 +132,14 @@ describe('<LoginScreen />', () => {
     });
   });
 
-  it('keeps the user on the login screen and shows a clear request error', async () => {
-    jest
-      .spyOn(authService, 'login')
-      .mockRejectedValue(new Error('Invalid credentials'));
+  it('keeps the user on the login screen and shows the server message for a rejected sign-in', async () => {
+    jest.spyOn(authService, 'login').mockRejectedValue(
+      new ApiError('Request failed with status code 401', {
+        code: 'unauthorized',
+        status: 401,
+        data: { message: 'Invalid credentials' },
+      })
+    );
     const { getByTestId, getByText } = renderLogin();
 
     fireEvent.changeText(getByTestId('login-username'), 'emily');
@@ -104,6 +151,32 @@ describe('<LoginScreen />', () => {
     });
     expect(getByTestId('session-probe').props.children).toBe('signedOut');
   });
+
+  it.each([
+    [
+      'a network error',
+      new ApiError('Network Error', { code: 'network' }),
+      'No connection. Check your network and try again.',
+    ],
+    [
+      'a developer error (no AuthAdapter)',
+      new Error('Sign-in is not configured: register an AuthAdapter'),
+      'Login failed. Please try again.',
+    ],
+  ])(
+    'shows a translated message, not developer text, for %s',
+    async (_case, failure, shown) => {
+      jest.spyOn(authService, 'login').mockRejectedValue(failure);
+      const { getByTestId, getByText, queryByText } = renderLogin();
+
+      fireEvent.changeText(getByTestId('login-username'), 'emily');
+      fireEvent.changeText(getByTestId('login-password'), 'secret-pass');
+      fireEvent.press(getByText('Sign In'));
+
+      await waitFor(() => expect(getByText(shown)).toBeTruthy());
+      expect(queryByText(/register an AuthAdapter|Network Error/)).toBeNull();
+    }
+  );
 
   it.each([
     ['both fields are empty', '', ''],

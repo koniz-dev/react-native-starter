@@ -66,9 +66,12 @@ Paper's component docs:
 
 Edit `palette` in `shared/ui/theme.ts`. Keep each `on*` color readable on its
 pair: `__tests__/shared/ui/theme.test.ts` checks WCAG AA contrast (4.5:1) for
-the brand pairs, `primary` on the background, and `inversePrimary` on the
-inverse surface, in both modes. Cards and surfaces keep MD3's neutral
-elevation tints; the
+the brand pairs, `primary` on the background and on every elevation level
+(cards, dialogs, menus), `onSurfaceVariant`, and `inversePrimary` on the
+inverse surface, in both modes. The palette also sets the neutral roles
+(`surfaceVariant`, `outline`, `secondary`), and the elevation tints are mixed
+from `surface` and `primary`, so no color is left from Paper's purple
+baseline. The
 [Material theme builder](https://material-foundation.github.io/material-theme-builder/)
 can generate a full set of MD3 roles from one brand color.
 
@@ -131,6 +134,16 @@ Screens wrap their content in `SafeAreaView` from
 `react-native-safe-area-context`. A screen under a navigation header excludes
 the top edge (`edges={['bottom', 'left', 'right']}`).
 See [Expo: safe areas](https://docs.expo.dev/develop/user-interface/safe-areas/).
+
+## Web
+
+`public/index.html` is the web page's template. It paints the theme's
+background (light and, with `prefers-color-scheme: dark`, dark) before the
+app renders, so a dark-mode page doesn't flash white; keep its two colors
+equal to `background` in `palette` (a theme test checks them). Screens set
+the tab's title with `DocumentTitle`. Build the site with
+`npm run export:web`, which uses the production variant (name and
+environment) and writes `dist/`.
 
 ## Checking dark mode
 

@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import { MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
 import { darkTheme, getTheme, lightTheme } from '@/shared/ui/theme';
 
@@ -47,9 +49,39 @@ describe.each([
     ['onSurface', 'surface'],
     ['primary', 'background'],
     ['inversePrimary', 'inverseSurface'],
+    ['onSurfaceVariant', 'surfaceVariant'],
+    ['onSurfaceVariant', 'background'],
+    ['onSecondary', 'secondary'],
   ] as const)('%s on %s meets WCAG AA contrast (4.5:1)', (fg, bg) => {
     expect(contrast(colors[fg], colors[bg])).toBeGreaterThanOrEqual(4.5);
   });
+
+  // Cards, dialogs, and menus sit on the elevation levels; text buttons and
+  // labels on them use primary or onSurface.
+  it.each(['level1', 'level2', 'level3', 'level4', 'level5'] as const)(
+    'primary and onSurface on elevation %s meet WCAG AA',
+    level => {
+      const surface = colors.elevation[level];
+      expect(contrast(colors.primary, surface)).toBeGreaterThanOrEqual(4.5);
+      expect(contrast(colors.onSurface, surface)).toBeGreaterThanOrEqual(4.5);
+    }
+  );
+
+  it('replaces the MD3 baseline purple in the neutral and elevation roles', () => {
+    expect(colors.surfaceVariant).not.toBe(baseline.colors.surfaceVariant);
+    expect(colors.outline).not.toBe(baseline.colors.outline);
+    expect(colors.elevation.level1).not.toBe(baseline.colors.elevation.level1);
+  });
+});
+
+it("public/index.html paints the theme's backgrounds before the app renders", () => {
+  const html = fs.readFileSync(
+    path.join(__dirname, '../../../public/index.html'),
+    'utf8'
+  );
+  const [light, dark] = html.split('prefers-color-scheme: dark');
+  expect(light).toContain(`background-color: ${lightTheme.colors.background}`);
+  expect(dark).toContain(`background-color: ${darkTheme.colors.background}`);
 });
 
 it('getTheme falls back to light for an unknown scheme', () => {

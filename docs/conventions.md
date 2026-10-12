@@ -63,7 +63,13 @@ the navigator for its folder. The root layout:
 - shows `(auth)` only while signed out and `(app)` only while signed in
   (`Stack.Protected`), so deep links into a guarded group land on Home;
 - anchors the stack on `(tabs)` (`unstable_settings.initialRouteName`), so
-  Back from a deep-linked screen returns to Home.
+  Back from a deep-linked screen returns to Home;
+- shows `app/+not-found.tsx` for a URL no route matches (an outdated deep
+  link, a mistyped web address), with a way Home.
+
+The root stack hides headers. `(app)` and `(auth)` show their own, with a
+back button. Add your app's tabs as files in `app/(tabs)/`, next to Home's
+`index.tsx`.
 
 Navigate with `router.push('/settings')`, `router.replace`, or `<Link>` from
 `expo-router`. Route groups export a route-level error boundary
@@ -107,6 +113,23 @@ Move its strings to `shared/i18n/en.ts` and read them with `t()` (the keys
 are typed), add its tests under
 `__tests__/features/<name>/`, and its endpoints in `api/` (see
 [Connect Your Backend](connect-your-backend.md#3-add-endpoints-for-a-feature)).
+
+What the shipped screens do, so a new one fits in:
+
+- **Header:** a screen directly under the root stack has none. For one with
+  a back button, render
+  `<Stack.Screen options={{ headerShown: true, title: t('…') }} />` from
+  `expo-router` in the screen, and give its `SafeAreaView`
+  `edges={['bottom', 'left', 'right']}` (the header covers the top); or put
+  the screen in a group whose layout shows a header, like `(app)`.
+- **Title:** mark the screen's title `accessibilityRole="header"`, and set
+  the browser tab's title with `<DocumentTitle title={t('…')} />` from
+  `@/shared/ui/DocumentTitle`.
+- **Errors:** show a failed request with `errorMessage(error)` from
+  `@/shared/http/errorMessage`: translated text, or the server's own message
+  for a 4xx, never axios's or a developer message.
+- **Width:** cap content on tablets and the web (`maxWidth: 720`, or `480`
+  for a form, with `width: '100%'` and `alignSelf: 'center'`).
 
 ### A tab that needs sign-in
 

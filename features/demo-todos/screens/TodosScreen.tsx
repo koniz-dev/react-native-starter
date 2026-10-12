@@ -10,6 +10,8 @@ import { useFetch } from '@/shared/lib/useFetch';
 import { LoadingScreen } from '@/shared/ui/LoadingScreen';
 import type { Todo } from '../types';
 import { t } from '@/shared/i18n';
+import { errorMessage } from '@/shared/http/errorMessage';
+import { DocumentTitle } from '@/shared/ui/DocumentTitle';
 
 export function TodosScreen() {
   const theme = useTheme();
@@ -41,9 +43,14 @@ export function TodosScreen() {
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
+      <DocumentTitle title={t('tabs.explore')} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
-          <Text variant="headlineMedium" style={styles.title}>
+          <Text
+            variant="headlineMedium"
+            style={styles.title}
+            accessibilityRole="header"
+          >
             {t('explore.title')}
           </Text>
           <Text
@@ -85,7 +92,7 @@ export function TodosScreen() {
                 variant="bodyMedium"
                 style={{ color: theme.colors.onErrorContainer }}
               >
-                {error.message}
+                {errorMessage(error)}
               </Text>
             </Card.Content>
           </Card>
@@ -150,6 +157,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
+    width: '100%',
+    maxWidth: 720,
+    alignSelf: 'center',
     padding: 16,
   },
   header: {

@@ -32,61 +32,80 @@ export function ShowcaseScreen() {
       />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
-          <Text variant="headlineMedium" style={styles.title}>
-            React Native Paper
+          <Text
+            variant="headlineMedium"
+            style={styles.title}
+            accessibilityRole="header"
+          >
+            {t('showcase.heading')}
           </Text>
           <Text
             variant="bodyMedium"
             style={{ color: theme.colors.onSurfaceVariant }}
           >
-            Material Design 3 Components
+            {t('showcase.subheading')}
           </Text>
         </View>
 
         {/* Text Variants */}
         <View style={styles.section}>
           <Text variant="titleMedium" style={styles.sectionTitle}>
-            Text Variants
+            {t('showcase.textVariants')}
           </Text>
-          <Text variant="headlineSmall">Headline Small</Text>
-          <Text variant="titleLarge">Title Large</Text>
-          <Text variant="bodyLarge">Body Large</Text>
-          <Text variant="bodyMedium">Body Medium</Text>
+          <Text variant="headlineSmall">{t('showcase.headlineSmall')}</Text>
+          <Text variant="titleLarge">{t('showcase.titleLarge')}</Text>
+          <Text variant="bodyLarge">{t('showcase.bodyLarge')}</Text>
+          <Text variant="bodyMedium">{t('showcase.bodyMedium')}</Text>
         </View>
 
         {/* Buttons */}
         <View style={styles.section}>
           <Text variant="titleMedium" style={styles.sectionTitle}>
-            Buttons
+            {t('showcase.buttons')}
           </Text>
           <View style={styles.buttonRow}>
-            <Button mode="contained" onPress={notify('Contained pressed')}>
-              Contained
-            </Button>
-            <Button mode="outlined" onPress={notify('Outlined pressed')}>
-              Outlined
-            </Button>
-            <Button mode="text" onPress={notify('Text pressed')}>
-              Text
-            </Button>
+            {(['contained', 'outlined', 'text'] as const).map(mode => {
+              const label = t(`showcase.button.${mode}`);
+              return (
+                <Button
+                  key={mode}
+                  mode={mode}
+                  onPress={notify(t('showcase.pressed', { name: label }))}
+                >
+                  {label}
+                </Button>
+              );
+            })}
           </View>
         </View>
 
         {/* Card */}
         <View style={styles.section}>
           <Text variant="titleMedium" style={styles.sectionTitle}>
-            Card
+            {t('showcase.card')}
           </Text>
           <Card>
             <Card.Content>
-              <Text variant="titleLarge">Card Title</Text>
+              <Text variant="titleLarge">{t('showcase.cardTitle')}</Text>
               <Text variant="bodyMedium" style={styles.cardText}>
-                This is a card component from React Native Paper.
+                {t('showcase.cardBody')}
               </Text>
             </Card.Content>
             <Card.Actions>
-              <Button onPress={notify('Card: Cancel pressed')}>Cancel</Button>
-              <Button onPress={notify('Card: Ok pressed')}>Ok</Button>
+              <Button
+                onPress={notify(
+                  t('showcase.cardPressed', { name: t('showcase.cancel') })
+                )}
+              >
+                {t('showcase.cancel')}
+              </Button>
+              <Button
+                onPress={notify(
+                  t('showcase.cardPressed', { name: t('showcase.ok') })
+                )}
+              >
+                {t('showcase.ok')}
+              </Button>
             </Card.Actions>
           </Card>
         </View>
@@ -94,7 +113,7 @@ export function ShowcaseScreen() {
         {/* Surface */}
         <View style={styles.section}>
           <Text variant="titleMedium" style={styles.sectionTitle}>
-            Surface
+            {t('showcase.surface')}
           </Text>
           <Surface
             style={[
@@ -104,7 +123,7 @@ export function ShowcaseScreen() {
             elevation={2}
           >
             <Text variant="bodyMedium" style={styles.surfaceText}>
-              Surface component with elevation
+              {t('showcase.surfaceBody')}
             </Text>
           </Surface>
         </View>
@@ -112,18 +131,17 @@ export function ShowcaseScreen() {
         {/* Snackbar Example */}
         <View style={styles.section}>
           <Text variant="titleMedium" style={styles.sectionTitle}>
-            Snackbar (Toast)
+            {t('showcase.snackbar')}
           </Text>
           <Text variant="bodyMedium" style={styles.snackbarDescription}>
-            React Native Paper includes a Snackbar component for showing
-            toast-like messages. No additional libraries needed!
+            {t('showcase.snackbarBody')}
           </Text>
           <Button
             mode="contained"
-            onPress={notify('This is a snackbar message!')}
+            onPress={notify(t('showcase.snackbarMessage'))}
             style={styles.snackbarButton}
           >
-            Show Snackbar
+            {t('showcase.snackbarButton')}
           </Button>
         </View>
       </ScrollView>

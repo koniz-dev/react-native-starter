@@ -42,6 +42,16 @@ describe('session-guarded routes', () => {
     expect(screen.queryByText('emily@example.com')).toBeNull();
   });
 
+  it('offers a way back from Login, even when it was opened directly', async () => {
+    const app = renderRouter('./app', { initialUrl: '/login' });
+    await screen.findByText('Welcome Back');
+
+    fireEvent.press(screen.getByTestId('auth-back'));
+
+    expect(await screen.findByText('Not signed in')).toBeTruthy();
+    expect(app.getPathname()).toBe('/');
+  });
+
   it('keeps signed-in users out of the login screen', async () => {
     await storeSession();
     const app = renderRouter('./app', { initialUrl: '/login' });
@@ -141,7 +151,7 @@ describe('session-guarded routes', () => {
 
     expect(
       await screen.findByText(
-        'Could not refresh your profile: Network error: check your connection'
+        'Could not refresh your profile: No connection. Check your network and try again.'
       )
     ).toBeTruthy();
     expect(app.getPathname()).toBe('/profile');

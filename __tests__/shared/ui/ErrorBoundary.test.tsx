@@ -95,6 +95,22 @@ describe('error boundaries', () => {
       );
     });
 
+    it('shows users the translated message, not the error text, outside development', async () => {
+      const dev = __DEV__;
+      Object.assign(globalThis, { __DEV__: false });
+      try {
+        renderRouter(
+          { appDir: './app', overrides: { '(tabs)/boom': Bomb } },
+          { initialUrl: '/boom' }
+        );
+        expect(await screen.findByText('Something went wrong')).toBeTruthy();
+        expect(screen.getByText('An unexpected error occurred')).toBeTruthy();
+        expect(screen.queryByText('Boom from a screen')).toBeNull();
+      } finally {
+        Object.assign(globalThis, { __DEV__: dev });
+      }
+    });
+
     it('the app boundary sits inside the theme provider and reports with the component stack', async () => {
       mockSessionProviderThrows = true;
       renderRouter('./app', { initialUrl: '/' });

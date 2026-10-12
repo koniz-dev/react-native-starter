@@ -25,6 +25,7 @@ export default function ProtectedLayout() {
         return {
           headerLeft: () => (
             <Appbar.BackAction
+              accessibilityLabel={t('common.back')}
               onPress={() => navigation.goBack()}
               style={styles.back}
               testID="protected-back"

@@ -61,7 +61,9 @@ describe('<TodosScreen /> (Explore)', () => {
 
     await act(async () => requests[0]?.reject(serverError(requests[0].config)));
     expect(await screen.findByText('Error')).toBeTruthy();
-    expect(screen.getByText('Service unavailable')).toBeTruthy();
+    expect(
+      screen.getByText('The server had a problem. Please try again later.')
+    ).toBeTruthy();
     expect(screen.queryByText(/^Todos \(/)).toBeNull();
 
     // With no data yet, retrying shows the full-screen loading state again.

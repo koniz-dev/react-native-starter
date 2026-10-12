@@ -16,6 +16,7 @@
     "build:preview:ios": "APP_VARIANT=preview EXPO_PUBLIC_APP_ENV=preview expo run:ios --configuration Release",
     "build:production:android": "APP_VARIANT=production EXPO_PUBLIC_APP_ENV=production expo run:android --variant release",
     "build:production:ios": "APP_VARIANT=production EXPO_PUBLIC_APP_ENV=production expo run:ios --configuration Release",
+    "export:web": "APP_VARIANT=production EXPO_PUBLIC_APP_ENV=production expo export --platform web",
     "config:print": "expo config --type public",
     "init-project": "node scripts/init-project.js",
     "remove-demo": "node scripts/remove-demo.js",

@@ -42,7 +42,7 @@ you (icons, colors, backend, providers).
 | -------- | --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | Android  | Expo Go, and native builds (`npm run prebuild:preview`, then `npm run build:preview:android`) | The [Maestro flows](testing.md#end-to-end-flows-maestro) run on an emulator; a release build needs `https` backend URLs      |
 | iOS      | Expo Go on the iOS Simulator, and native builds (EAS Build or Xcode 26.4+)                    | See below for native builds                                                                                                  |
-| Web      | A static export (`npx expo export --platform web`)                                            | The sign-in token is kept in memory, so a reload signs out ([Connect Your Backend](connect-your-backend.md#sessions-on-web)) |
+| Web      | A static export (`npm run export:web`, into `dist/`)                                          | The sign-in token is kept in memory, so a reload signs out ([Connect Your Backend](connect-your-backend.md#sessions-on-web)) |
 
 <!-- @init remove-block-start -->
 
@@ -103,6 +103,7 @@ emulator), or `w` (web), or scan the QR code with Expo Go.
 | `npm run start:preview`, `npm run start:production`               | Metro for another variant (production without dev mode); see [App Config](app-config.md#build-variants)       |
 | `npm run prebuild:development` (or `:preview`, `:production`)     | Generate the native `ios/` and `android/` projects for a variant (gitignored)                                 |
 | `npm run build:preview:android` (or `:ios`, `build:production:*`) | Build and run a release build of that variant on a device or emulator, after its prebuild                     |
+| `npm run export:web`                                              | Export the web app (production variant) to `dist/`                                                            |
 | `npm run config:print`                                            | Print the resolved app config (`APP_VARIANT=preview npm run config:print` for another variant)                |
 | `npm run lint` / `npm run lint:fix`                               | ESLint, failing on any warning                                                                                |
 | `npm run format` / `npm run format:check`                         | Prettier                                                                                                      |

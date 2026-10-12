@@ -13,7 +13,7 @@ name: Explore error state and Retry
 - tapOn:
     id: tab-explore
 - extendedWaitUntil:
-    visible: Service unavailable
+    visible: The server had a problem.*
     timeout: 30000
 - assertVisible: Error
 - takeScreenshot: 05-explore-error
@@ -26,7 +26,7 @@ name: Explore error state and Retry
     visible: Todos (10)
     timeout: 30000
 - assertVisible: e2e todo 1
-- assertNotVisible: Service unavailable
+- assertNotVisible: The server had a problem.*
 - takeScreenshot: 05-explore-after-retry
 - tapOn:
     id: tab-home

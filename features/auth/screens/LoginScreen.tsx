@@ -12,15 +12,19 @@ import {
   Text,
   TextInput,
   Button,
+  HelperText,
   useTheme,
-  Snackbar,
 } from 'react-native-paper';
 import { useSession } from '@/shared/session/SessionProvider';
+import { errorMessage } from '@/shared/http/errorMessage';
+import { toApiError } from '@/shared/http/apiError';
+import { logger } from '@/shared/lib/logger';
 // @demo remove-block-start
 // eslint-disable-next-line no-restricted-imports -- the demo is removable (npm run remove-demo)
 import { DemoCredentialsHint } from '@/features/demo-auth/DemoCredentialsHint';
 // @demo remove-block-end
 import { t } from '@/shared/i18n';
+import { DocumentTitle } from '@/shared/ui/DocumentTitle';
 
 export function LoginScreen() {
   const theme = useTheme();
@@ -28,7 +32,8 @@ export function LoginScreen() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  // Which fields the last "fill in all fields" error was about.
+  const [missing, setMissing] = useState({ username: false, password: false });
   const passwordRef = useRef<NativeTextInput>(null);
   const { signIn } = useSession();
   // Set synchronously, so a second "Go" before the re-render is ignored.
@@ -36,13 +41,15 @@ export function LoginScreen() {
 
   const handleLogin = async () => {
     if (submittingRef.current) return;
-    if (!username.trim() || !password.trim()) {
+    const empty = { username: !username.trim(), password: !password.trim() };
+    if (empty.username || empty.password) {
+      setMissing(empty);
       setError(t('login.error.emptyFields'));
-      setSnackbarVisible(true);
       return;
     }
 
     submittingRef.current = true;
+    setMissing({ username: false, password: false });
     setLoading(true);
     setError(null);
 
@@ -51,10 +58,12 @@ export function LoginScreen() {
       // (signed-out only) is removed and the app returns to Home.
       await signIn({ username, password });
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : t('login.error.generic');
-      setError(errorMessage);
-      setSnackbarVisible(true);
+      // Not a server answer (e.g. no AuthAdapter registered): the user sees a
+      // generic message, the developer the reason.
+      if (toApiError(err).code === 'unknown') {
+        logger.error('Sign-in failed', err);
+      }
+      setError(errorMessage(err, 'login.error.generic'));
     } finally {
       submittingRef.current = false;
       setLoading(false);
@@ -66,8 +75,10 @@ export function LoginScreen() {
 
   return (
     <SafeAreaView
+      edges={['bottom', 'left', 'right']}
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
+      <DocumentTitle title={t('login.headerTitle')} />
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -76,29 +87,38 @@ export function LoginScreen() {
           contentContainerStyle={styles.content}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.header}>
-            <Text variant="headlineMedium" style={styles.title}>
-              {t('login.title')}
-            </Text>
-            <Text
-              variant="bodyMedium"
-              style={{ color: theme.colors.onSurfaceVariant }}
-            >
-              {t('login.subtitle')}
-            </Text>
-          </View>
+          <View style={styles.body}>
+            <View style={styles.header}>
+              <Text
+                variant="headlineMedium"
+                style={styles.title}
+                accessibilityRole="header"
+              >
+                {t('login.title')}
+              </Text>
+              <Text
+                variant="bodyMedium"
+                style={{ color: theme.colors.onSurfaceVariant }}
+              >
+                {t('login.subtitle')}
+              </Text>
+            </View>
 
-          <View style={styles.form}>
             <TextInput
               label={t('login.username')}
+              accessibilityLabel={t('login.username')}
               value={username}
               onChangeText={setUsername}
               mode="outlined"
               autoCapitalize="none"
+              autoCorrect={false}
+              spellCheck={false}
               autoComplete="username"
+              textContentType="username"
               returnKeyType="next"
               submitBehavior="submit"
               onSubmitEditing={() => passwordRef.current?.focus()}
+              error={missing.username}
               style={styles.input}
               testID="login-username"
             />
@@ -106,17 +126,32 @@ export function LoginScreen() {
             <TextInput
               ref={passwordRef}
               label={t('login.password')}
+              accessibilityLabel={t('login.password')}
               value={password}
               onChangeText={setPassword}
               mode="outlined"
               secureTextEntry
               autoCapitalize="none"
+              autoCorrect={false}
+              spellCheck={false}
               autoComplete="password"
+              textContentType="password"
               returnKeyType="go"
               onSubmitEditing={submit}
+              error={missing.password}
               style={styles.input}
               testID="login-password"
             />
+
+            {/* Under the fields, so the keyboard doesn't hide it. */}
+            <HelperText
+              type="error"
+              visible={error !== null}
+              accessibilityLiveRegion="polite"
+              testID="login-error"
+            >
+              {error ?? ''}
+            </HelperText>
 
             <Button
               mode="contained"
@@ -135,18 +170,6 @@ export function LoginScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-
-      <Snackbar
-        visible={snackbarVisible}
-        onDismiss={() => setSnackbarVisible(false)}
-        duration={4000}
-        action={{
-          label: t('common.dismiss'),
-          onPress: () => setSnackbarVisible(false),
-        }}
-      >
-        {error || t('common.unknownError')}
-      </Snackbar>
     </SafeAreaView>
   );
 }
@@ -160,6 +183,12 @@ const styles = StyleSheet.create({
     padding: 24,
     justifyContent: 'center',
   },
+  // A form reads best narrow: centered and capped on tablets and the web.
+  body: {
+    width: '100%',
+    maxWidth: 480,
+    alignSelf: 'center',
+  },
   header: {
     marginBottom: 32,
     alignItems: 'center',
@@ -168,11 +197,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     fontWeight: 'bold',
   },
-  form: {
-    width: '100%',
-  },
   input: {
-    marginBottom: 16,
+    marginBottom: 8,
   },
   button: {
     marginTop: 8,

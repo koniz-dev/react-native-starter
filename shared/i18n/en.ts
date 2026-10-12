@@ -13,7 +13,6 @@ export const en = {
   // Home
   'home.title': 'Welcome',
   'home.session.title': 'Session',
-  'home.session.checking': 'Checking session…',
   'home.session.signedIn': 'Signed in as {name}',
   'home.session.signedInFallbackName': 'your account',
   'home.session.signedOut': 'Not signed in',
@@ -28,6 +27,31 @@ export const en = {
   'home.examples.showcase': 'Component showcase',
   'home.examples.showcaseDescription': 'React Native Paper under the app theme',
   'showcase.title': 'Component showcase',
+  'showcase.heading': 'React Native Paper',
+  'showcase.subheading': 'Material Design 3 Components',
+  'showcase.textVariants': 'Text Variants',
+  'showcase.headlineSmall': 'Headline Small',
+  'showcase.titleLarge': 'Title Large',
+  'showcase.bodyLarge': 'Body Large',
+  'showcase.bodyMedium': 'Body Medium',
+  'showcase.buttons': 'Buttons',
+  'showcase.button.contained': 'Contained',
+  'showcase.button.outlined': 'Outlined',
+  'showcase.button.text': 'Text',
+  'showcase.pressed': '{name} pressed',
+  'showcase.card': 'Card',
+  'showcase.cardTitle': 'Card Title',
+  'showcase.cardBody': 'This is a card component from React Native Paper.',
+  'showcase.cancel': 'Cancel',
+  'showcase.ok': 'Ok',
+  'showcase.cardPressed': 'Card: {name} pressed',
+  'showcase.surface': 'Surface',
+  'showcase.surfaceBody': 'Surface component with elevation',
+  'showcase.snackbar': 'Snackbar (Toast)',
+  'showcase.snackbarBody':
+    'React Native Paper includes a Snackbar component for showing toast-like messages. No additional libraries needed!',
+  'showcase.snackbarButton': 'Show Snackbar',
+  'showcase.snackbarMessage': 'This is a snackbar message!',
   // @demo remove-block-end
 
   // Profile (protected example screen)
@@ -39,6 +63,7 @@ export const en = {
   'profile.refreshFailed': 'Could not refresh your profile: {message}',
 
   // Login
+  'login.headerTitle': 'Sign in',
   'login.title': 'Welcome Back',
   'login.subtitle': 'Sign in to continue',
   'login.username': 'Username',
@@ -63,9 +88,20 @@ export const en = {
   'explore.todoMeta': 'User ID: {userId} • ID: {id}',
   // @demo remove-block-end
 
+  // Not found (app/+not-found.tsx)
+  'notFound.title': 'Page not found',
+  'notFound.message': "This link doesn't lead to a screen in the app.",
+  'notFound.goHome': 'Go to Home',
+
   // Common
   'common.dismiss': 'Dismiss',
-  'common.unknownError': 'An error occurred',
+  'common.unknownError': 'Something went wrong. Please try again.',
+  'common.back': 'Back',
+
+  // Errors shown for failed requests (shared/http/errorMessage.ts)
+  'errors.network': 'No connection. Check your network and try again.',
+  'errors.timeout': 'The server took too long to answer. Please try again.',
+  'errors.server': 'The server had a problem. Please try again later.',
 
   // Error boundary
   'errorBoundary.title': 'Something went wrong',

@@ -118,6 +118,7 @@ export function ErrorFallback({
           <Text
             variant="titleLarge"
             style={[styles.title, { color: theme.colors.onErrorContainer }]}
+            accessibilityRole="header"
           >
             {t('errorBoundary.title')}
           </Text>
@@ -125,7 +126,9 @@ export function ErrorFallback({
             variant="bodyMedium"
             style={[styles.message, { color: theme.colors.onErrorContainer }]}
           >
-            {error.message || t('errorBoundary.fallbackMessage')}
+            {/* A render error's message is for developers: shown in
+                development only; users get the translated text. */}
+            {(__DEV__ && error.message) || t('errorBoundary.fallbackMessage')}
           </Text>
           {__DEV__ && error.stack ? (
             <ScrollView style={styles.stackScroll}>

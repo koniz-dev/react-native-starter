@@ -9,10 +9,14 @@
 import { MD3DarkTheme, MD3LightTheme, type MD3Theme } from 'react-native-paper';
 import { DarkTheme, DefaultTheme, type Theme } from 'expo-router';
 
-/** Brand colors per mode, merged over Paper's MD3 baseline. */
+/**
+ * Brand colors per mode, merged over Paper's MD3 baseline. The neutral roles
+ * (surfaceVariant, outline, secondary) replace the baseline's purple, and
+ * the elevation tints are computed from `primary` below.
+ */
 const palette = {
   light: {
-    primary: '#0a7ea4',
+    primary: '#07709a',
     onPrimary: '#ffffff',
     primaryContainer: '#c2e8ff',
     onPrimaryContainer: '#001e2c',
@@ -24,6 +28,12 @@ const palette = {
     surface: '#ffffff',
     onBackground: '#11181c',
     onSurface: '#11181c',
+    surfaceVariant: '#dce3e9',
+    onSurfaceVariant: '#40484c',
+    outline: '#70787d',
+    outlineVariant: '#c0c8cd',
+    secondary: '#4e616c',
+    onSecondary: '#ffffff',
   },
   dark: {
     primary: '#78d1f5',
@@ -37,17 +47,53 @@ const palette = {
     surface: '#151718',
     onBackground: '#ecedee',
     onSurface: '#ecedee',
+    surfaceVariant: '#40484c',
+    onSurfaceVariant: '#c0c8cd',
+    outline: '#8a9297',
+    outlineVariant: '#40484c',
+    secondary: '#b5cad6',
+    onSecondary: '#1f333c',
   },
 } as const;
 
+/** `from` moved `amount` (0–1) of the way to `to`; both `#rrggbb`. */
+function mix(from: string, to: string, amount: number): string {
+  const channels = (color: string) =>
+    [1, 3, 5].map(i => parseInt(color.slice(i, i + 2), 16));
+  const target = channels(to);
+  return `#${channels(from)
+    .map((channel, i) =>
+      Math.round(channel + ((target[i] ?? channel) - channel) * amount)
+        .toString(16)
+        .padStart(2, '0')
+    )
+    .join('')}`;
+}
+
+/** MD3 elevation: the surface tinted with primary (5, 8, 11, 12, 14 %). */
+function elevationFor(colors: { surface: string; primary: string }) {
+  const [level1, level2, level3, level4, level5] = [
+    0.05, 0.08, 0.11, 0.12, 0.14,
+  ].map(amount => mix(colors.surface, colors.primary, amount));
+  return { level0: 'transparent', level1, level2, level3, level4, level5 };
+}
+
 export const lightTheme: MD3Theme = {
   ...MD3LightTheme,
-  colors: { ...MD3LightTheme.colors, ...palette.light },
+  colors: {
+    ...MD3LightTheme.colors,
+    ...palette.light,
+    elevation: elevationFor(palette.light),
+  } as MD3Theme['colors'],
 };
 
 export const darkTheme: MD3Theme = {
   ...MD3DarkTheme,
-  colors: { ...MD3DarkTheme.colors, ...palette.dark },
+  colors: {
+    ...MD3DarkTheme.colors,
+    ...palette.dark,
+    elevation: elevationFor(palette.dark),
+  } as MD3Theme['colors'],
 };
 
 /** The Paper theme for a color scheme (light when the scheme is unknown). */

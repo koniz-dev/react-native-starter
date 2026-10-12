@@ -4,6 +4,7 @@ import { Button, Card, Text, useTheme } from 'react-native-paper';
 import { router } from 'expo-router';
 import { useSession } from '@/shared/session/SessionProvider';
 import { t } from '@/shared/i18n';
+import { DocumentTitle } from '@/shared/ui/DocumentTitle';
 // @demo remove-block-start
 // eslint-disable-next-line no-restricted-imports -- the demo is removable (npm run remove-demo)
 import { ExampleLinks } from '@/features/demo-showcase/components/ExampleLinks';
@@ -18,8 +19,13 @@ export function HomeScreen() {
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
+      <DocumentTitle title={t('tabs.home')} />
       <ScrollView contentContainerStyle={styles.content}>
-        <Text variant="headlineMedium" style={styles.title}>
+        <Text
+          variant="headlineMedium"
+          style={styles.title}
+          accessibilityRole="header"
+        >
           {t('home.title')}
         </Text>
 
@@ -31,15 +37,15 @@ export function HomeScreen() {
               style={[styles.status, { color: theme.colors.onSurfaceVariant }]}
               testID="session-status"
             >
-              {session.status === 'loading'
-                ? t('home.session.checking')
-                : session.status === 'signedIn'
-                  ? t('home.session.signedIn', {
-                      name:
-                        session.user?.name ??
-                        t('home.session.signedInFallbackName'),
-                    })
-                  : t('home.session.signedOut')}
+              {/* Never 'loading' here: the root layout renders nothing
+                  until the stored session has been read. */}
+              {session.status === 'signedIn'
+                ? t('home.session.signedIn', {
+                    name:
+                      session.user?.name ??
+                      t('home.session.signedInFallbackName'),
+                  })
+                : t('home.session.signedOut')}
             </Text>
           </Card.Content>
           <Card.Actions>
@@ -64,7 +70,6 @@ export function HomeScreen() {
               <Button
                 mode="contained"
                 onPress={() => router.push('/login')}
-                disabled={session.status === 'loading'}
                 testID="sign-in-button"
               >
                 {t('home.session.signIn')}
@@ -86,6 +91,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
+    width: '100%',
+    maxWidth: 720,
+    alignSelf: 'center',
     padding: 16,
   },
   title: {
@@ -98,8 +106,11 @@ const styles = StyleSheet.create({
   status: {
     marginTop: 4,
   },
+  // Wraps at large text sizes instead of overflowing the card.
   actions: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-end',
     gap: 8,
   },
 });

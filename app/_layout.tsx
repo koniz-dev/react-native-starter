@@ -89,6 +89,10 @@ function RootNavigator() {
       <Stack.Protected guard={signedIn}>
         <Stack.Screen name="(app)" />
       </Stack.Protected>
+      <Stack.Screen
+        name="+not-found"
+        options={{ title: t('notFound.title') }}
+      />
     </Stack>
   );
 }

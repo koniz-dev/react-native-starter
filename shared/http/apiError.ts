@@ -46,7 +46,7 @@ export class ApiError extends Error {
  * field, or the `message` of an envelope such as
  * `{ "error": { "code": "invalid_credentials", "message": "..." } }`.
  */
-function serverMessage(data: unknown): string | undefined {
+export function serverMessage(data: unknown): string | undefined {
   if (data && typeof data === 'object') {
     const body = data as { message?: unknown; error?: unknown };
     if (typeof body.message === 'string' && body.message) return body.message;
