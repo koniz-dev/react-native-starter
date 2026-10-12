@@ -38,9 +38,10 @@ template does not update them.
 
 Do **not** open a public issue for a vulnerability. Use GitHub's private
 vulnerability reporting: the repository's **Security** tab, then **Report a
-vulnerability**. The security policy for the account's repositories,
-[`SECURITY.md` in `koniz-dev/.github`](https://github.com/koniz-dev/.github/blob/main/SECURITY.md),
-describes this; it is kept there so that "Use this template" doesn't copy it.
+vulnerability**. Private vulnerability reporting is enabled on the
+repository, so the button is there without a `SECURITY.md`. There is
+deliberately no `SECURITY.md` on `main` (a template copy would inherit it) and
+no separate `.github` repository; this page is the policy.
 
 - **Acknowledgement:** within 3 days.
 - **Assessment:** within 7 days. This checks whether the code reaches the
