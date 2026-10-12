@@ -28,6 +28,7 @@ import {
   onSessionExpired,
 } from '@/shared/session/session';
 import { getErrorReporter } from '@/shared/integrations/errorReporter';
+import { logger } from '@/shared/lib/logger';
 
 export type SessionUser = AuthResponse['user'];
 
@@ -40,7 +41,10 @@ export interface SessionContextValue {
   session: Session;
   /** Signs in; rejects with the API error (e.g. wrong credentials). */
   signIn(credentials: LoginCredentials): Promise<void>;
-  /** Signs out: the adapter's logout (if any), then clears the stored session. */
+  /**
+   * Signs out: the adapter's logout (if any), then clears the stored session.
+   * Never rejects (a failure is logged); repeated calls share one sign-out.
+   */
   signOut(): Promise<void>;
   /**
    * Reloads the user from the auth backend. Rejects with the API error; a 401
@@ -88,7 +92,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     isMountedRef.current = true;
-    readStoredSession().then(restored => {
+    // readStoredSession never rejects: a failure restores "signed out".
+    void readStoredSession().then(restored => {
       if (!changedRef.current && isMountedRef.current) {
         setSession(restored);
       }
@@ -120,9 +125,19 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     [update]
   );
 
-  const signOut = useCallback(async () => {
-    await authService.logout();
-    update(SIGNED_OUT);
+  // One sign-out at a time: repeated taps share it. It never rejects: if
+  // clearing storage fails, the error is reported and the app still shows
+  // the user signed out.
+  const signOutRef = useRef<Promise<void> | null>(null);
+  const signOut = useCallback(() => {
+    signOutRef.current ??= authService
+      .logout()
+      .catch(error => logger.error('Signing out failed', error))
+      .finally(() => {
+        signOutRef.current = null;
+        update(SIGNED_OUT);
+      });
+    return signOutRef.current;
   }, [update]);
 
   const refreshUser = useCallback(async () => {

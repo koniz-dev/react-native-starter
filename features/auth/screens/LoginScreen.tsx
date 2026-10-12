@@ -17,6 +17,7 @@ import {
 } from 'react-native-paper';
 import { useSession } from '@/shared/session/SessionProvider';
 // @demo remove-block-start
+// eslint-disable-next-line no-restricted-imports -- the demo is removable (npm run remove-demo)
 import { DemoCredentialsHint } from '@/features/demo-auth/DemoCredentialsHint';
 // @demo remove-block-end
 import { t } from '@/shared/i18n';
@@ -30,14 +31,18 @@ export function LoginScreen() {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const passwordRef = useRef<NativeTextInput>(null);
   const { signIn } = useSession();
+  // Set synchronously, so a second "Go" before the re-render is ignored.
+  const submittingRef = useRef(false);
 
   const handleLogin = async () => {
-    if (!username || !password) {
+    if (submittingRef.current) return;
+    if (!username.trim() || !password.trim()) {
       setError(t('login.error.emptyFields'));
       setSnackbarVisible(true);
       return;
     }
 
+    submittingRef.current = true;
     setLoading(true);
     setError(null);
 
@@ -51,8 +56,12 @@ export function LoginScreen() {
       setError(errorMessage);
       setSnackbarVisible(true);
     } finally {
+      submittingRef.current = false;
       setLoading(false);
     }
+  };
+  const submit = () => {
+    void handleLogin();
   };
 
   return (
@@ -104,14 +113,14 @@ export function LoginScreen() {
               autoCapitalize="none"
               autoComplete="password"
               returnKeyType="go"
-              onSubmitEditing={handleLogin}
+              onSubmitEditing={submit}
               style={styles.input}
               testID="login-password"
             />
 
             <Button
               mode="contained"
-              onPress={handleLogin}
+              onPress={submit}
               loading={loading}
               disabled={loading}
               style={styles.button}

@@ -1,3 +1,4 @@
+import type * as EnvModule from '@/shared/config/env';
 import {
   DEFAULT_API_TIMEOUT_MS,
   parseEnv,
@@ -235,9 +236,7 @@ describe('getConfig', () => {
     delete process.env.EXPO_PUBLIC_API_URL;
     try {
       jest.isolateModules(() => {
-        const env = jest.requireActual<typeof import('@/shared/config/env')>(
-          '@/shared/config/env'
-        );
+        const env = jest.requireActual<typeof EnvModule>('@/shared/config/env');
         expect(env.configResult.success).toBe(false);
         expect(() => env.getConfig()).toThrow(env.ConfigError);
         expect(() => env.getConfig()).toThrow(/EXPO_PUBLIC_API_URL/);

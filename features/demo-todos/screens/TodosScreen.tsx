@@ -58,7 +58,7 @@ export function TodosScreen() {
         <View style={styles.buttonContainer}>
           <Button
             mode="contained"
-            onPress={refetch}
+            onPress={() => void refetch()}
             disabled={loading}
             icon="refresh"
           >

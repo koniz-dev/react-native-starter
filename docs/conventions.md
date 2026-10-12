@@ -188,20 +188,27 @@ are lint errors in app code. Run it with `node`, or through an npm script.
 
 - **Names:** components and screens in PascalCase files (`LoginScreen.tsx`),
   hooks `useThing.ts`, other modules camelCase (`tokenStore.ts`).
-- **Exports:** named exports; only `app/` route files use default exports.
+- **Exports:** named exports; only `app/` route files use default exports
+  (a default export in `features/` or `shared/` is a lint error).
 - **Imports:** `@/` for anything outside the current feature, relative within
-  it. `import type` for types.
+  it. `import type` for types (lint error otherwise). `shared/` doesn't import
+  `features/` or `app/` (except `shared/integrations/setup.ts`), and a
+  feature doesn't import another feature (both lint errors).
 - **Types:** TypeScript strict with `noUncheckedIndexedAccess`; no `any`
   (lint error). Validate data at the edges with zod: config, and API payloads
   in adapters and `api/` modules (examples in
   [Connect Your Backend](connect-your-backend.md#2-sign-in-write-an-authadapter)).
 - **Styles:** `StyleSheet.create` at the bottom of the file; colors from the
-  theme, never literals (both are lint errors).
+  theme, never literals: a color literal in a style or in a color prop such
+  as an icon's `color` is a lint error, and so is an unused style.
 - **Text:** user-facing strings through `t()`.
 - **Logging:** `logger` from `@/shared/lib/logger`, never `console` (lint
   error); see [Error Reporting](error-reporting.md).
 - **Errors:** catch async errors where you can show something, and pass the
-  rest to `logger.error`. Boundaries catch render errors.
+  rest to `logger.error`. Boundaries catch render errors. A promise that is
+  neither awaited nor handled, or an async function passed where a callback
+  returns nothing (such as `onPress`), is a lint error: handle it, or mark a
+  promise that can't reject with `void`.
 - **Comments:** say why, not what; keep doc comments on exported APIs.
 
 ## Commits

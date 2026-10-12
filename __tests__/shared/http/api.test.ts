@@ -1,7 +1,8 @@
+import type * as ApiModule from '@/shared/http/api';
 import { AxiosError, AxiosHeaders, type AxiosRequestConfig } from 'axios';
 import { ApiError } from '@/shared/http/apiError';
 
-import api, { getOrigin, getTrustedTokenOrigins } from '@/shared/http/api';
+import { api, getOrigin, getTrustedTokenOrigins } from '@/shared/http/api';
 import { getConfig } from '@/shared/config/env';
 
 const authBaseURL = getConfig().authApiUrl;
@@ -120,7 +121,7 @@ describe('token origin allow-list', () => {
     const previous = process.env.EXPO_PUBLIC_API_TRUSTED_ORIGINS;
     process.env.EXPO_PUBLIC_API_TRUSTED_ORIGINS = ` ${apiOrigin.toUpperCase()}:443 , ,https://cdn.example.com `;
     try {
-      let isolatedApi: typeof import('@/shared/http/api') | undefined;
+      let isolatedApi: typeof ApiModule | undefined;
       let isolatedSecure: typeof secureStorage | undefined;
       jest.isolateModules(() => {
         isolatedSecure = jest.requireMock('@/shared/storage/secureStorage');
@@ -135,7 +136,7 @@ describe('token origin allow-list', () => {
         .mocked(isolatedSecure!.getSecureItem)
         .mockResolvedValue('test-token');
       let received: AxiosRequestConfig | undefined;
-      await isolatedApi!.default.get('/notes', {
+      await isolatedApi!.api.get('/notes', {
         adapter: async config => {
           received = config;
           return {

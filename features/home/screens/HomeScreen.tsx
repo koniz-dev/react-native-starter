@@ -5,6 +5,7 @@ import { router } from 'expo-router';
 import { useSession } from '@/shared/session/SessionProvider';
 import { t } from '@/shared/i18n';
 // @demo remove-block-start
+// eslint-disable-next-line no-restricted-imports -- the demo is removable (npm run remove-demo)
 import { ExampleLinks } from '@/features/demo-showcase/components/ExampleLinks';
 // @demo remove-block-end
 
@@ -46,7 +47,7 @@ export function HomeScreen() {
               <View style={styles.actions}>
                 <Button
                   mode="outlined"
-                  onPress={signOut}
+                  onPress={() => void signOut()}
                   testID="logout-button"
                 >
                   {t('home.session.logOut')}

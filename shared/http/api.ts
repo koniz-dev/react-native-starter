@@ -12,5 +12,3 @@ export const api = createHttpClient({
   getBaseURL: () => getConfig().apiUrl,
   authenticated: true,
 });
-
-export default api;

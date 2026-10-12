@@ -57,6 +57,9 @@ module.exports = [
       // Maestro flow scripts run in Maestro's JavaScript engine (http, env globals).
       '.maestro/**',
       'e2e-results/**',
+      'web-build/**',
+      // Written by `npm run docs:check -- --keep`.
+      '.docs-check/**',
     ],
   },
 
@@ -88,6 +91,82 @@ module.exports = [
     rules: {
       ...asErrors(typescript.configs.recommended.rules),
       '@typescript-eslint/explicit-module-boundary-types': 'off',
+      // `import type` for types (AGENTS.md: Imports).
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        { fixStyle: 'inline-type-imports' },
+      ],
+      // Async errors are handled, not dropped (AGENTS.md: Errors). These need
+      // type information, hence parserOptions.project above.
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/no-misused-promises': 'error',
+    },
+  },
+
+  // Named exports only; route files in app/ export their screen as default
+  // (AGENTS.md: Exports).
+  {
+    files: ['features/**/*.{ts,tsx}', 'shared/**/*.{ts,tsx}', 'testing/**'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'ExportDefaultDeclaration',
+          message:
+            'Use a named export; only route files in app/ export a default.',
+        },
+        {
+          selector: "ExportSpecifier[exported.name='default']",
+          message:
+            'Use a named export; only route files in app/ export a default.',
+        },
+        {
+          // Colors come from the theme, also on props such as an icon's color.
+          selector:
+            'JSXAttribute[name.name=/^(color|backgroundColor|tintColor|placeholderTextColor|underlineColor|selectionColor)$/] > Literal',
+          message:
+            'Use a color from the Paper theme (useTheme()), not a literal.',
+        },
+      ],
+    },
+  },
+
+  // Dependency direction (AGENTS.md: Project structure): shared/ never
+  // imports a feature (except the composition root), and a feature doesn't
+  // import another feature.
+  {
+    files: ['shared/**/*.{ts,tsx}'],
+    ignores: ['shared/integrations/setup.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/features/**', '@/app/**'],
+              message:
+                'shared/ must not import features or routes; register them in shared/integrations/setup.ts.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['features/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              regex: '^@/(app/|features/)',
+              message:
+                "A feature doesn't import another feature or a route; move shared code to shared/.",
+            },
+          ],
+        },
+      ],
     },
   },
 

@@ -52,7 +52,9 @@ Details: [Conventions](docs/conventions.md#project-structure).
   to `logger.error`. Route groups have error boundaries.
 - **Comments:** say why, not what; keep doc comments on exported APIs.
 
-Lint enforces most of these as errors. Details:
+Lint enforces the exports, imports (including the dependency direction),
+types, colors, logging, and unhandled promises as errors; names, style
+placement, and `t()` are by review. Details:
 [Conventions](docs/conventions.md#code-style),
 [UI and Theming](docs/ui-and-theming.md).
 

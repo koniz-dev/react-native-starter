@@ -74,7 +74,7 @@ export function ProfileScreen() {
       />
       <Button
         mode="outlined"
-        onPress={signOut}
+        onPress={() => void signOut()}
         style={styles.button}
         testID="profile-logout"
       >
