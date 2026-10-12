@@ -394,10 +394,11 @@ The demo's flows use its `GET /todos`, `POST /auth/login`, and
 
 <!-- @demo remove-block-end -->
 
-On iOS, Back from Login is the left-edge swipe, which Maestro's `swipe` does
-not trigger, so `run.sh` skips the `android-only` flow there. Check the edge
-swipe by hand on the Simulator, or with an XCUITest UI test, which can drive
-it.
+`06-login-back.yaml` checks Android's system Back. iOS has no Back button;
+its left-edge swipe isn't triggered by Maestro's `swipe`, so `run.sh` skips
+the `android-only` flow there. Login's own back button (`auth-back`, both
+platforms) is covered by the Jest routing tests. Check the edge swipe by
+hand on the Simulator, or with an XCUITest UI test, which can drive it.
 
 Setup:
 
