@@ -1,0 +1,16 @@
+$ gh release view v1.1.7 --json tagName,name,isDraft,isPrerelease,publishedAt,url
+{"isDraft":false,"isPrerelease":false,"name":"v1.1.7: fixes from the deep audit","publishedAt":"2026-10-12T20:06:31Z","tagName":"v1.1.7","url":"https://github.com/koniz-dev/react-native-starter/releases/tag/v1.1.7"}
+$ gh api repos/koniz-dev/react-native-starter/releases/latest -q .tag_name
+v1.1.7
+$ git ls-remote --tags origin v1.1.5* v1.1.6* v1.1.7*
+22bc62795e47e057facfeb1b5ad1b9cf07ca3b0c	refs/tags/v1.1.5
+72fb94a76c82e0b31472110aeaae244caf50c057	refs/tags/v1.1.5^{}
+e58c4a837fd09e0e3fd85ebf9802df177f7c0a13	refs/tags/v1.1.6
+369ab5c3f6e272495b14569d579b926b01e9355f	refs/tags/v1.1.6^{}
+23ff6cb26eef7a2a5b9f5a0987453b8d9c64a679	refs/tags/v1.1.7
+d52709d6025799b03359dcd0d564b6914bb1d306	refs/tags/v1.1.7^{}
+$ gh release list --limit 4
+v1.1.7: fixes from the deep audit	Latest	v1.1.7	2026-10-12T20:06:31Z
+v1.1.4: a commit that passes CI keeps passing		v1.1.4	2026-10-12T17:28:22Z
+v1.1.3: the demo's backends go with the demo; Expo SDK 57 patches		v1.1.3	2026-10-12T15:51:42Z
+v1.1.2: a clean template copy		v1.1.2	2026-10-11T16:17:32Z

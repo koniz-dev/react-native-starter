@@ -1,0 +1,10 @@
+$ npm ci --prefix docs/recipes ... && link && npm run docs:check   (as ci.yml)
+
+added 14 packages in 654ms
+
+> react-native-starter@1.0.0 docs:check
+> node scripts/check-docs.js
+
+Checked 19 files: 43 TypeScript snippets compiled with tsc.
+No problems.
+exit 0

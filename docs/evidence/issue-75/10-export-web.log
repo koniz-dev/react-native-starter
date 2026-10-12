@@ -1,0 +1,5 @@
+$ npm run export:web -- --clear --output-dir <scratch>/i78-web
+metadata.json (49B)
+
+Exported: /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/i78-web
+exit 0

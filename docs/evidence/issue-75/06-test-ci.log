@@ -1,0 +1,560 @@
+PASS __tests__/shared/lib/logger.test.ts
+PASS __tests__/shared/session/authService.test.ts (11.923 s)
+PASS __tests__/shared/http/httpClient.test.ts (15.593 s)
+PASS __tests__/shared/session/realBackendAdapter.test.ts (15.615 s)
+  ● Console
+
+    console.info
+      API POST /sessions failed: client (422)
+
+      at info (shared/lib/logger.ts:146:40)
+
+    console.info
+      API POST /sessions/refresh failed: unauthorized (401)
+
+      at info (shared/lib/logger.ts:146:40)
+
+    console.info
+      API GET /me failed: unauthorized (401)
+
+      at info (shared/lib/logger.ts:146:40)
+
+    console.warn
+      API POST /sessions/refresh failed: network
+
+      143 |     const args = [message, ...details.filter(item => item !== undefined)];
+      144 |     if (level === 'error') console.error(...args);
+    > 145 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      146 |     else if (level === 'info') console.info(...args);
+      147 |     else console.debug(...args);
+      148 |   };
+
+      at warn (shared/lib/logger.ts:145:40)
+      at Object.write [as warn] (shared/lib/logger.ts:156:33)
+      at fail (shared/http/httpClient.ts:172:50)
+      at fail (shared/http/httpClient.ts:184:14)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12
+      at apply (shared/http/httpClient.ts:219:4)
+      at Axios.request (node_modules/axios/dist/browser/axios.cjs:5245:14)
+
+    console.warn
+      API GET /me failed: network
+
+      143 |     const args = [message, ...details.filter(item => item !== undefined)];
+      144 |     if (level === 'error') console.error(...args);
+    > 145 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      146 |     else if (level === 'info') console.info(...args);
+      147 |     else console.debug(...args);
+      148 |   };
+
+      at warn (shared/lib/logger.ts:145:40)
+      at Object.write [as warn] (shared/lib/logger.ts:156:33)
+      at fail (shared/http/httpClient.ts:172:50)
+      at fail (shared/http/httpClient.ts:208:16)
+          at Generator.throw (<anonymous>)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/@babel/runtime/helpers/asyncToGenerator.js:20:9)
+
+    console.warn
+      API DELETE /sessions failed: network
+
+      143 |     const args = [message, ...details.filter(item => item !== undefined)];
+      144 |     if (level === 'error') console.error(...args);
+    > 145 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      146 |     else if (level === 'info') console.info(...args);
+      147 |     else console.debug(...args);
+      148 |   };
+
+      at warn (shared/lib/logger.ts:145:40)
+      at Object.write [as warn] (shared/lib/logger.ts:156:33)
+      at fail (shared/http/httpClient.ts:172:50)
+      at fail (shared/http/httpClient.ts:184:14)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12
+      at apply (shared/http/httpClient.ts:219:4)
+      at Axios.request (node_modules/axios/dist/browser/axios.cjs:5245:14)
+
+    console.warn
+      Signing out on the auth backend failed { error: 'Network error: check your connection' }
+
+      143 |     const args = [message, ...details.filter(item => item !== undefined)];
+      144 |     if (level === 'error') console.error(...args);
+    > 145 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      146 |     else if (level === 'info') console.info(...args);
+      147 |     else console.debug(...args);
+      148 |   };
+
+      at warn (shared/lib/logger.ts:145:40)
+      at Object.write [as warn] (shared/lib/logger.ts:156:33)
+      at Object.warn (shared/session/authService.ts:157:14)
+          at Generator.throw (<anonymous>)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/@babel/runtime/helpers/asyncToGenerator.js:20:9)
+
+PASS __tests__/shared/config/env.test.ts
+PASS __tests__/shared/lib/useFetch.test.tsx
+PASS __tests__/shared/http/tokenSafety.test.ts
+PASS __tests__/features/auth/LoginScreen.test.tsx
+PASS __tests__/shared/ui/ErrorBoundary.test.tsx
+  ● Console
+
+    console.debug
+      [analytics] screen /boom
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /boom
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /boom
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /boom
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /boom
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /boom
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /boom
+
+      at debug (shared/lib/logger.ts:147:18)
+
+PASS __tests__/shared/http/api.test.ts
+  ● Console
+
+    console.info
+      API request failed: server (503)
+
+      at info (shared/lib/logger.ts:146:40)
+
+PASS __tests__/features/home/HomeScreen.test.tsx
+PASS __tests__/shared/session/tokenStore.test.tsx
+  ● Console
+
+    console.debug
+      [analytics] screen /login
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /login
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+PASS __tests__/scripts/checkAudit.test.ts
+PASS __tests__/app/sessionRoutes.test.tsx (21.031 s)
+  ● Console
+
+    console.debug
+      [analytics] screen /profile
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /profile
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /profile
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /login
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /login
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /login
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /profile
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /profile
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /profile
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /profile
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /profile
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /profile
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+PASS __tests__/shared/integrations/seams.test.ts
+PASS __tests__/app/appConfig.test.ts
+PASS __tests__/shared/storage/storage.test.ts
+PASS __tests__/shared/ui/theme.test.ts
+PASS __tests__/features/demo-auth/dummyJsonAdapter.test.ts
+PASS __tests__/features/demo-todos/TodosScreen.test.tsx
+  ● Console
+
+    console.info
+      API GET /todos failed: server (503)
+
+      at info (shared/lib/logger.ts:146:40)
+
+PASS __tests__/scripts/initProject.test.ts (23.401 s)
+PASS __tests__/shared/integrations/i18n.test.tsx
+  ● Console
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /login
+
+      at debug (shared/lib/logger.ts:147:18)
+
+PASS __tests__/features/auth/ProfileScreen.test.tsx
+PASS __tests__/shared/http/errorMessage.test.ts
+PASS __tests__/app/tabBarTheme.test.tsx
+  ● Console
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+PASS __tests__/app/configError.test.tsx
+  ● Console
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+PASS __tests__/shared/ui/LoadingScreen.test.tsx
+PASS __tests__/app/initialRoute.test.tsx
+  ● Console
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /login
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /login
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+PASS __tests__/features/demo-auth/DemoCredentialsHint.test.tsx
+PASS __tests__/shared/integrations/screenTracking.test.tsx
+PASS __tests__/app/statusBar.test.tsx
+  ● Console
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+PASS __tests__/features/not-found/NotFoundScreen.test.tsx
+  ● Console
+
+    console.debug
+      [analytics] screen /no-such-screen
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+PASS __tests__/features/demo-showcase/ShowcaseScreen.test.tsx
+PASS __tests__/app/splashScreen.test.tsx
+  ● Console
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+    console.debug
+      [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+PASS __tests__/scripts/removeDemo.test.ts (12.905 s)
+-----------------------------------|---------|----------|---------|---------|-------------------
+File                               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-----------------------------------|---------|----------|---------|---------|-------------------
+All files                          |   98.02 |    94.17 |   96.49 |   98.04 |                   
+ app                               |     100 |      100 |   57.14 |     100 |                   
+  +not-found.tsx                   |       0 |        0 |       0 |       0 |                   
+  _layout.tsx                      |     100 |      100 |   57.14 |     100 |                   
+  showcase.tsx                     |       0 |        0 |       0 |       0 |                   
+ app/(app)                         |    87.5 |       75 |     100 |     100 |                   
+  _layout.tsx                      |    87.5 |       75 |     100 |     100 | 24                
+  profile.tsx                      |       0 |        0 |       0 |       0 |                   
+ app/(auth)                        |     100 |       50 |     100 |     100 |                   
+  _layout.tsx                      |     100 |       50 |     100 |     100 | 26                
+  login.tsx                        |       0 |        0 |       0 |       0 |                   
+ app/(tabs)                        |     100 |      100 |     100 |     100 |                   
+  _layout.tsx                      |     100 |      100 |     100 |     100 |                   
+  explore.tsx                      |       0 |        0 |       0 |       0 |                   
+  index.tsx                        |       0 |        0 |       0 |       0 |                   
+ features/auth/screens             |     100 |    96.15 |     100 |     100 |                   
+  LoginScreen.tsx                  |     100 |      100 |     100 |     100 |                   
+  ProfileScreen.tsx                |     100 |    92.85 |     100 |     100 | 41                
+ features/demo-auth                |     100 |    91.66 |     100 |     100 |                   
+  DemoCredentialsHint.tsx          |     100 |      100 |     100 |     100 |                   
+  dummyJsonAdapter.ts              |     100 |       90 |     100 |     100 | 31                
+ features/demo-showcase/components |     100 |      100 |     100 |     100 |                   
+  ExampleLinks.tsx                 |     100 |      100 |     100 |     100 |                   
+ features/demo-showcase/screens    |   81.81 |      100 |   66.66 |   77.77 |                   
+  ShowcaseScreen.tsx               |   81.81 |      100 |   66.66 |   77.77 | 151-155           
+ features/demo-todos               |       0 |        0 |       0 |       0 |                   
+  types.ts                         |       0 |        0 |       0 |       0 |                   
+ features/demo-todos/api           |   85.71 |       50 |     100 |   85.71 |                   
+  todosApi.ts                      |   85.71 |       50 |     100 |   85.71 | 24                
+ features/demo-todos/screens       |     100 |    95.83 |     100 |     100 |                   
+  TodosScreen.tsx                  |     100 |    95.83 |     100 |     100 | 72                
+ features/home/screens             |     100 |      100 |     100 |     100 |                   
+  HomeScreen.tsx                   |     100 |      100 |     100 |     100 |                   
+ features/not-found/screens        |     100 |      100 |     100 |     100 |                   
+  NotFoundScreen.tsx               |     100 |      100 |     100 |     100 |                   
+ shared/config                     |     100 |    97.95 |     100 |     100 |                   
+  env.ts                           |     100 |    97.95 |     100 |     100 | 136               
+  featureFlags.ts                  |     100 |      100 |     100 |     100 |                   
+ shared/http                       |   98.34 |    95.83 |     100 |   98.23 |                   
+  api.ts                           |     100 |      100 |     100 |     100 |                   
+  apiError.ts                      |   97.43 |    96.07 |     100 |   96.96 | 66                
+  errorMessage.ts                  |     100 |      100 |     100 |     100 |                   
+  httpClient.ts                    |   98.63 |       95 |     100 |   98.59 | 94                
+ shared/i18n                       |     100 |    83.33 |     100 |     100 |                   
+  en.ts                            |     100 |      100 |     100 |     100 |                   
+  index.ts                         |     100 |    83.33 |     100 |     100 | 38                
+ shared/integrations               |   95.91 |       75 |   96.55 |   95.34 |                   
+  analytics.ts                     |     100 |     87.5 |     100 |     100 | 25                
+  errorReporter.ts                 |   81.81 |       40 |   83.33 |   77.77 | 41,57             
+  featureFlags.ts                  |     100 |      100 |     100 |     100 |                   
+  pushNotifications.ts             |     100 |      100 |     100 |     100 |                   
+  seam.ts                          |     100 |      100 |     100 |     100 |                   
+  setup.ts                         |     100 |      100 |     100 |     100 |                   
+  updates.ts                       |     100 |      100 |     100 |     100 |                   
+  useScreenTracking.ts             |     100 |      100 |     100 |     100 |                   
+ shared/lib                        |     100 |    98.46 |     100 |     100 |                   
+  logger.ts                        |     100 |    98.07 |     100 |     100 | 126               
+  useFetch.ts                      |     100 |      100 |     100 |     100 |                   
+ shared/session                    |   97.93 |    94.44 |   96.22 |   97.82 |                   
+  SessionProvider.tsx              |   96.22 |    86.36 |   93.75 |   96.07 | 135,166           
+  authService.ts                   |    97.5 |      100 |   91.66 |   97.36 | 82                
+  session.ts                       |     100 |      100 |     100 |     100 |                   
+  tokenStore.ts                    |     100 |      100 |     100 |     100 |                   
+ shared/storage                    |      92 |       80 |     100 |      92 |                   
+  secureStorage.ts                 |      80 |       75 |     100 |      80 | 18,26             
+  storage.ts                       |     100 |      100 |     100 |     100 |                   
+ shared/ui                         |      98 |    90.47 |     100 |   97.87 |                   
+  ConfigErrorScreen.tsx            |     100 |      100 |     100 |     100 |                   
+  DocumentTitle.tsx                |     100 |      100 |     100 |     100 |                   
+  ErrorBoundary.tsx                |   96.15 |     92.3 |     100 |   95.83 | 26                
+  LoadingScreen.tsx                |     100 |      100 |     100 |     100 |                   
+  theme.ts                         |     100 |    83.33 |     100 |     100 | 66                
+-----------------------------------|---------|----------|---------|---------|-------------------
+
+Test Suites: 35 passed, 35 total
+Tests:       376 passed, 376 total
+Snapshots:   0 total
+Time:        31.938 s
+Ran all test suites.
+exit 0

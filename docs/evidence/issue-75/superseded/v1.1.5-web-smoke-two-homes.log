@@ -1,0 +1,19 @@
+$ npm run export:web (tag v1.1.5, production variant, .env from .env.example); npx serve -s dist -l 5076
+$ node web-smoke.js web http://localhost:5076  (Chrome 154, headless)
+1. Home
+  title: "Home"
+  screenshot web-01-home.png
+2. /login, then Back returns Home
+  at /login title: "Sign in"
+  browser back at /
+  header back at /
+2b. An unknown URL shows the not-found screen, which leads Home
+  screenshot web-00-not-found.png
+WEB SMOKE FAILED: locator.waitFor: Error: strict mode violation: getByText('Not signed in') resolved to 2 elements:
+    1) <div dir="auto" data-testid="session-status" class="css-146c3p1 r-fdjqy7 r-14gqq1x">Not signed in</div> aka getByTestId('session-status').first()
+    2) <div dir="auto" data-testid="session-status" class="css-146c3p1 r-fdjqy7 r-14gqq1x">Not signed in</div> aka getByTestId('session-status').nth(1)
+
+Call log:
+[2m  - waiting for getByText('Not signed in') to be visible[22m
+
+exit 1

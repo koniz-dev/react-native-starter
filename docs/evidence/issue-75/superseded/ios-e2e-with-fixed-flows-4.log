@@ -1,0 +1,42 @@
+Bundling for ios...
+
+Waiting for flows to complete...
+[Passed] Cold start opens Home (42s)
+[Passed] Tab navigation (31s)
+[Passed] Sign-in session survives a relaunch; logout clears it (2m 4s)
+[Passed] Explore error state and Retry (34s)
+[Passed] Login keyboard return keys (55s)
+[Passed] Profile is protected and reloads the user (1m 20s)
+
+6/6 Flows Passed in 6m 6s
+
+Running on iPhone 16 Plus - iOS 18.6 - E0ACAF33-2846-4E2E-B304-D2322BC2F008
+ > Flow Dark mode screenshots
+Run subflows/open-app.yaml...
+  Run flow when ${CLEAR_STATE == 'true'} is true...
+  Run flow when false is true... SKIPPED
+  Launch app "${APP_ID}"... COMPLETED
+  Open ${APP_URL}... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)...
+    Assert that (Optional) id: tab-home is visible... COMPLETED
+    Run flow when Platform is IOS and "Open in .*" is visible...
+    Run flow when Platform is IOS and "Open in .*" is visible... SKIPPED
+    Run flow when "Development servers" is visible...
+    Run flow when "Development servers" is visible... SKIPPED
+    Run flow when Platform is ANDROID and ".*Launcher isn't responding" is visible...
+    Run flow when Platform is ANDROID and ".*Launcher isn't responding" is visible... SKIPPED
+    Tap on (Optional) "Wait"... WARNED
+    Tap on (Optional) "Continue"... WARNED
+    Run flow when Platform is ANDROID and "Go home" is visible and "Try again" is not visible...
+    Run flow when Platform is ANDROID and "Go home" is visible and "Try again" is not visible... SKIPPED
+    Run flow when Platform is IOS and "Go home" is visible and "Try again" is not visible...
+    Run flow when Platform is IOS and "Go home" is visible and "Try again" is not visible... SKIPPED
+    Wait for animation to end... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)... COMPLETED
+  Assert that "Session" is visible... COMPLETED
+Run subflows/open-app.yaml... COMPLETED
+Take screenshot dark-home... COMPLETED
+Tap on id: tab-explore... COMPLETED
+Assert that "API Example" is visible... COMPLETED
+Take screenshot dark-explore... COMPLETED
+Tap on id: tab-home... COMPLETED
