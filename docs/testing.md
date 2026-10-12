@@ -307,10 +307,18 @@ it('sends the stored token to an API on the auth origin', async () => {
 ## Coverage
 
 `collectCoverageFrom` covers every file in `app/`, `features/`, and `shared/`,
-so untested files count as uncovered. `npm run test:ci` fails below the
-global threshold in `package.json` (`coverageThreshold`): 95% statements, 88%
-branches, 92% functions, 95% lines, a little under the coverage the project
-starts with; raise it as coverage grows.
+so untested files count as uncovered. `npm run test:ci` fails below either
+threshold in `package.json` (`coverageThreshold`):
+
+- each folder as a whole (`./app/`, `./features/`, `./shared/`): 95%
+  statements and lines, and branch and function levels a little under what
+  the project starts with;
+- each file on its own: at least 70% statements and lines and 50%
+  functions, so a new module without tests fails even when the totals are
+  high.
+
+Raise them as coverage grows. (A `global` threshold would apply only to files
+no other entry matches, which here is none, so there isn't one.)
 
 <!-- @demo remove-block-start -->
 
@@ -344,12 +352,13 @@ on a simulator or emulator. No account is needed.
 
 The demo adds flows that need it; `npm run remove-demo` deletes them with it:
 
-| Flow                          | Checks                                                                    |
-| ----------------------------- | ------------------------------------------------------------------------- |
-| `02-tabs.yaml`                | the tab bar switches between Home and Explore                             |
-| `03-auth-session.yaml`        | sign in, relaunch (still signed in), log out, relaunch (still signed out) |
-| `04-login-keyboard.yaml`      | the username's return key moves to the password; the password's submits   |
-| `05-explore-error-retry.yaml` | Explore shows the API error, then Retry loads the list (local mock API)   |
+| Flow                          | Checks                                                                                      |
+| ----------------------------- | ------------------------------------------------------------------------------------------- |
+| `02-tabs.yaml`                | the tab bar switches between Home and Explore                                               |
+| `03-auth-session.yaml`        | sign in, relaunch (still signed in), log out, relaunch (still signed out)                   |
+| `04-login-keyboard.yaml`      | the username's return key moves to the password; the password's submits                     |
+| `05-explore-error-retry.yaml` | Explore shows the API error, then Retry loads the list (local mock API)                     |
+| `07-profile.yaml`             | View profile opens the protected screen, which reloads the user; Back, then Log out from it |
 
 They sign in with the demo account (`subflows/sign-in.yaml`), which the e2e
 mock serves, and `dark-mode.yaml` also screenshots Explore.

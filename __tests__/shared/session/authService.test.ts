@@ -11,6 +11,7 @@ import {
 import { logger } from '@/shared/lib/logger';
 import { refreshAccessToken } from '@/shared/session/session';
 import * as storage from '@/shared/storage/storage';
+import { secureStore } from '@/testing';
 
 const user = { id: 7, email: 'ada@example.com', name: 'Ada Lovelace' };
 
@@ -121,11 +122,16 @@ describe('authService with an adapter', () => {
   });
 
   it("calls the adapter's logout while the token is still stored, then clears the session", async () => {
-    jest.mocked(SecureStore.getItemAsync).mockResolvedValue('fake-token');
+    // The stateful store: a deleted token reads back as null.
+    secureStore.set('auth_token', 'fake-token');
     let tokenDuringLogout: string | null = 'unset';
+    let deletesBeforeLogout = -1;
     const logout = jest.fn(async () => {
+      // Recorded here and asserted below: authService.logout catches what
+      // this callback throws, so an expect() here could never fail the test.
       tokenDuringLogout = await SecureStore.getItemAsync('auth_token');
-      expect(SecureStore.deleteItemAsync).not.toHaveBeenCalled();
+      deletesBeforeLogout = jest.mocked(SecureStore.deleteItemAsync).mock.calls
+        .length;
     });
     setAuthAdapter(fakeAdapter({ logout }));
 
@@ -133,6 +139,8 @@ describe('authService with an adapter', () => {
 
     expect(logout).toHaveBeenCalledWith(authClients);
     expect(tokenDuringLogout).toBe('fake-token');
+    expect(deletesBeforeLogout).toBe(0);
+    expect(secureStore.has('auth_token')).toBe(false);
     expect(SecureStore.deleteItemAsync).toHaveBeenCalledWith('auth_token');
     expect(storage.removeItem).toHaveBeenCalledWith('user_data');
   });

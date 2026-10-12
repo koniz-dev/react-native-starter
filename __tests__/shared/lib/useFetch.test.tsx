@@ -10,6 +10,7 @@ import {
 import {
   AxiosError,
   AxiosHeaders,
+  CanceledError,
   type InternalAxiosRequestConfig,
 } from 'axios';
 import { ApiError } from '@/shared/http/apiError';
@@ -173,6 +174,39 @@ describe('useFetch', () => {
 
     expect(result.current.data).toBe('two');
     expect(result.current.loading).toBe(false);
+  });
+
+  it('ignores an older request that fails after the newer one succeeded', async () => {
+    const { fetchFn, calls } = controlledFetch<string>();
+    const { rerender, result } = renderHook(
+      ({ id }: { id: number }) => useFetch(fetchFn, [id]),
+      { initialProps: { id: 1 } }
+    );
+    rerender({ id: 2 });
+
+    await act(async () => calls[1]?.resolve('two'));
+    // The aborted request rejects, as axios does with a CanceledError.
+    await act(async () => calls[0]?.reject(new CanceledError()));
+
+    expect(result.current).toMatchObject({
+      data: 'two',
+      error: null,
+      loading: false,
+    });
+  });
+
+  it("doesn't end the newer request's loading when an older one settles", async () => {
+    const { fetchFn, calls } = controlledFetch<string>();
+    const { rerender, result } = renderHook(
+      ({ id }: { id: number }) => useFetch(fetchFn, [id]),
+      { initialProps: { id: 1 } }
+    );
+    rerender({ id: 2 });
+
+    await act(async () => calls[0]?.resolve('one'));
+
+    expect(result.current.loading).toBe(true);
+    expect(result.current.data).toBeNull();
   });
 
   it('refetch aborts a request in flight and uses the newest fetchFn', async () => {

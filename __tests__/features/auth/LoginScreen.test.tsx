@@ -49,6 +49,7 @@ import { LoginScreen } from '@/features/auth/screens/LoginScreen';
 import { renderWithProviders } from '@/testing';
 import { useSession } from '@/shared/session/SessionProvider';
 import { authService } from '@/shared/session/authService';
+import { logger } from '@/shared/lib/logger';
 
 /** Shows the provider's session status so tests can see sign-in take effect. */
 function SessionProbe() {
@@ -64,6 +65,15 @@ const renderLogin = () =>
     </>,
     { withSession: true }
   );
+
+/** Renders and waits until the provider has read the (empty) stored session. */
+async function renderLoginReady() {
+  const view = renderLogin();
+  await waitFor(() =>
+    expect(view.getByTestId('session-probe').props.children).toBe('signedOut')
+  );
+  return view;
+}
 
 describe('<LoginScreen />', () => {
   beforeEach(() => {
@@ -97,8 +107,8 @@ describe('<LoginScreen />', () => {
     expect(login).toHaveBeenCalledTimes(1);
   });
 
-  it('labels the fields for screen readers and turns off autocorrect', () => {
-    const { getByTestId } = renderLogin();
+  it('labels the fields for screen readers and turns off autocorrect', async () => {
+    const { getByTestId } = await renderLoginReady();
     for (const [id, label, type] of [
       ['login-username', 'Username', 'username'],
       ['login-password', 'Password', 'password'],
@@ -166,6 +176,7 @@ describe('<LoginScreen />', () => {
   ])(
     'shows a translated message, not developer text, for %s',
     async (_case, failure, shown) => {
+      const logged = jest.spyOn(logger, 'error').mockImplementation(() => {});
       jest.spyOn(authService, 'login').mockRejectedValue(failure);
       const { getByTestId, getByText, queryByText } = renderLogin();
 
@@ -175,6 +186,9 @@ describe('<LoginScreen />', () => {
 
       await waitFor(() => expect(getByText(shown)).toBeTruthy());
       expect(queryByText(/register an AuthAdapter|Network Error/)).toBeNull();
+      // A developer error is logged with its reason; a request error isn't.
+      expect(logged).toHaveBeenCalledTimes(failure instanceof ApiError ? 0 : 1);
+      logged.mockRestore();
     }
   );
 
@@ -198,8 +212,8 @@ describe('<LoginScreen />', () => {
     }
   );
 
-  it('moves from username to password with the next key', () => {
-    const { getByTestId } = renderLogin();
+  it('moves from username to password with the next key', async () => {
+    const { getByTestId } = await renderLoginReady();
     const username = getByTestId('login-username');
 
     expect(username.props.returnKeyType).toBe('next');
@@ -231,8 +245,8 @@ describe('<LoginScreen />', () => {
     });
   });
 
-  it('wraps the form in a keyboard-avoiding container', () => {
-    const { UNSAFE_getByType } = renderLogin();
+  it('wraps the form in a keyboard-avoiding container', async () => {
+    const { UNSAFE_getByType } = await renderLoginReady();
 
     expect(UNSAFE_getByType(KeyboardAvoidingView).props.behavior).toBe(
       Platform.OS === 'ios' ? 'padding' : 'height'

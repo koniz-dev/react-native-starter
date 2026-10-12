@@ -108,6 +108,16 @@ describe('createHttpClient', () => {
     expect(seen?.baseURL).toBe(getConfig().authApiUrl);
   });
 
+  it("keeps a request's own timeout", async () => {
+    let seen: InternalAxiosRequestConfig | undefined;
+    const client = authenticatedClient(async config => {
+      seen = config;
+      return response(config, 200);
+    });
+    await client.get('/slow', { timeout: 500 });
+    expect(seen?.timeout).toBe(500);
+  });
+
   it.each([
     ['/api/v1', '/me'],
     ['/api/v1/', '/me'],

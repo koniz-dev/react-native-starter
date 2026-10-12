@@ -1,5 +1,6 @@
-# Run with the device in dark mode (scripts/e2e/run.sh switches it): the tab
-# bar and status bar follow the dark theme. Screenshots only.
+# Run with the device in dark mode (scripts/e2e/run.sh switches it): opens
+# the app and takes screenshots to review. The dark colors themselves (tab
+# bar, status bar, screens) are checked by the Jest theme tests.
 appId: ${APP_ID}
 name: Dark mode screenshots
 tags:

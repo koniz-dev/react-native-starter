@@ -42,6 +42,7 @@ const DEMO_PATHS = [
   '.maestro/03-auth-session.yaml',
   '.maestro/04-login-keyboard.yaml',
   '.maestro/05-explore-error-retry.yaml',
+  '.maestro/07-profile.yaml',
   '.maestro/subflows/sign-in.yaml',
   // This command: with the demo gone, it has nothing left to remove.
   'docs/remove-demo.md',

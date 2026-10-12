@@ -12,6 +12,7 @@ executionOrder:
     - Sign-in session survives a relaunch; logout clears it
     - Login keyboard return keys
     - Explore error state and Retry
+    - Profile is protected and reloads the user
     # @demo remove-block-end
 excludeTags:
   - dark

@@ -1,7 +1,10 @@
+import fs from 'fs';
+import path from 'path';
 import type * as EnvModule from '@/shared/config/env';
 import {
   DEFAULT_API_TIMEOUT_MS,
   parseEnv,
+  readRawEnv,
   type RawEnv,
 } from '@/shared/config/env';
 // @demo remove-block-start
@@ -227,6 +230,36 @@ describe('parseEnv', () => {
         message: expect.stringContaining('https outside development'),
       }),
     ]);
+  });
+});
+
+describe('readRawEnv', () => {
+  // Expo inlines each process.env.EXPO_PUBLIC_* by its full name, so a typo
+  // there silently drops the setting.
+  it('reads every variable by its own name', () => {
+    const keys = Object.keys(readRawEnv());
+    const saved = Object.fromEntries(keys.map(key => [key, process.env[key]]));
+    try {
+      for (const key of keys) process.env[key] = `value-of-${key}`;
+      const raw = readRawEnv();
+      for (const key of keys) expect(raw[key]).toBe(`value-of-${key}`);
+    } finally {
+      for (const key of keys) {
+        if (saved[key] === undefined) delete process.env[key];
+        else process.env[key] = saved[key];
+      }
+    }
+  });
+
+  it('reads exactly the variables .env.example documents', () => {
+    const example = fs.readFileSync(
+      path.join(__dirname, '../../../.env.example'),
+      'utf8'
+    );
+    const documented = [...example.matchAll(/^#? ?(EXPO_PUBLIC_[A-Z_]+)=/gm)]
+      .map(match => match[1])
+      .sort();
+    expect(Object.keys(readRawEnv()).sort()).toEqual(documented);
   });
 });
 

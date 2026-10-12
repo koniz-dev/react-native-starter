@@ -72,6 +72,7 @@ the diff.
 | `03-auth-session.yaml`        | deleted: signs in with the demo account      |
 | `04-login-keyboard.yaml`      | deleted: signs in with the demo account      |
 | `05-explore-error-retry.yaml` | deleted: the Explore tab                     |
+| `07-profile.yaml`             | deleted: signs in with the demo account      |
 
 `subflows/sign-in.yaml` (the demo account) is deleted too, and so are the
 e2e mock's demo routes (`GET /todos`, `POST /auth/login`, `GET /auth/me`). The e2e runner keeps the mock and points

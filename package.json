@@ -98,11 +98,28 @@
       "!**/*.d.ts"
     ],
     "coverageThreshold": {
-      "global": {
+      "./app/": {
         "statements": 95,
-        "branches": 88,
-        "functions": 92,
+        "branches": 85,
+        "functions": 80,
         "lines": 95
+      },
+      "./features/": {
+        "statements": 95,
+        "branches": 85,
+        "functions": 90,
+        "lines": 95
+      },
+      "./shared/": {
+        "statements": 95,
+        "branches": 90,
+        "functions": 95,
+        "lines": 95
+      },
+      "./{app,features,shared}/**/*.{ts,tsx}": {
+        "statements": 70,
+        "functions": 50,
+        "lines": 70
       }
     },
     "transformIgnorePatterns": [

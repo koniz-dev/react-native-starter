@@ -11,6 +11,8 @@ import {
   STORAGE_KEYS,
 } from '@/shared/storage/storage';
 import { secureStore } from '@/testing';
+import { configureIntegrations } from '@/shared/integrations/setup';
+import { errorReporterSeam } from '@/shared/integrations/errorReporter';
 
 const user = { id: 1, email: 'emily@example.com', name: 'Emily Johnson' };
 
@@ -40,6 +42,42 @@ describe('session-guarded routes', () => {
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     expect(app.getPathname()).toBe('/');
     expect(screen.queryByText('emily@example.com')).toBeNull();
+  });
+
+  it('shows the user the profile screen reloaded from the backend', async () => {
+    await storeSession();
+    jest.spyOn(authService, 'fetchProfile').mockResolvedValue({
+      ...user,
+      email: 'emily.new@example.com',
+    });
+    renderRouter('./app', { initialUrl: '/profile' });
+
+    expect(await screen.findByText('emily.new@example.com')).toBeTruthy();
+    expect(screen.queryByText('emily@example.com')).toBeNull();
+  });
+
+  it('ties error reports to the signed-in user, and unties them on sign-out', async () => {
+    configureIntegrations();
+    const reporter = {
+      captureException: jest.fn(),
+      captureMessage: jest.fn(),
+      setUser: jest.fn(),
+    };
+    errorReporterSeam.set(reporter);
+    try {
+      await storeSession();
+      renderRouter('./app', { initialUrl: '/' });
+      expect(
+        await screen.findByText('Signed in as Emily Johnson')
+      ).toBeTruthy();
+      expect(reporter.setUser).toHaveBeenLastCalledWith({ id: '1' });
+
+      fireEvent.press(screen.getByTestId('logout-button'));
+      expect(await screen.findByText('Not signed in')).toBeTruthy();
+      expect(reporter.setUser).toHaveBeenLastCalledWith(null);
+    } finally {
+      errorReporterSeam.reset();
+    }
   });
 
   it('offers a way back from Login, even when it was opened directly', async () => {

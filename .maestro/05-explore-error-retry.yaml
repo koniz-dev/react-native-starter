@@ -1,6 +1,12 @@
 # Explore against the local mock API: an error state, then Retry loads the list.
 appId: ${APP_ID}
 name: Explore error state and Retry
+# Even if a step fails, leave the mock answering for the flows that follow.
+onFlowComplete:
+  - runScript:
+      file: scripts/set-api-mode.js
+      env:
+        MODE: ok
 ---
 - runScript:
     file: scripts/set-api-mode.js

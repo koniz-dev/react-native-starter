@@ -1,0 +1,36 @@
+# Signed in, "View profile" opens the protected Profile screen, which reloads
+# the user from the auth backend (the e2e mock's GET /auth/me). Its back
+# button returns Home; Log out on it signs out and leaves the protected group.
+appId: ${APP_ID}
+name: Profile is protected and reloads the user
+---
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'true'
+- runFlow: subflows/sign-in.yaml
+- tapOn:
+    id: profile-button
+- extendedWaitUntil:
+    visible: emily.johnson@x.dummyjson.com
+    timeout: 20000
+- assertVisible: Emily Johnson
+- assertNotVisible:
+    id: profile-error
+- takeScreenshot: 07-profile
+- tapOn:
+    id: protected-back
+- extendedWaitUntil:
+    visible: Signed in as Emily Johnson
+    timeout: 10000
+- tapOn:
+    id: profile-button
+- extendedWaitUntil:
+    visible: emily.johnson@x.dummyjson.com
+    timeout: 20000
+- tapOn:
+    id: profile-logout
+- extendedWaitUntil:
+    visible: Not signed in
+    timeout: 10000
+- takeScreenshot: 07-signed-out
