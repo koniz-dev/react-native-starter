@@ -1,0 +1,280 @@
+PASS __tests__/shared/session/authService.test.ts
+  authService with an adapter
+    ✓ signs in through the adapter and stores the token and normalized user (9 ms)
+    ✓ rejects a response without a token and stores nothing (4 ms)
+    ✓ rejects an incomplete user and stores nothing (2 ms)
+    ✓ passes on a failed login and stores nothing (2 ms)
+    ✓ does not sign in when protected storage is unavailable (1 ms)
+    ✓ reads and deletes only the token through protected storage (1 ms)
+    ✓ calls the adapter's logout while the token is still stored, then clears the session (1 ms)
+    ✓ logs a failed adapter logout and signs out anyway (5 ms)
+    ✓ reloads the user with fetchUser when the adapter has it (2 ms)
+    ✓ returns the stored user when the adapter cannot fetch one (1 ms)
+    ✓ uses the adapter's refresh as the HTTP client's refresh handler and stores the new token (1 ms)
+  without an adapter
+    ✓ reports that sign-in is not configured (2 ms)
+  auth backend clients
+    ✓ neither store nor send cookies
+    ✓ send the login request with withCredentials disabled (4 ms)
+
+PASS __tests__/shared/http/tokenSafety.test.ts
+  token safety
+    ✓ ignores a 401 from an untrusted origin that got its own Authorization header (17 ms)
+    ✓ treats "https://evil.example\\@auth.example.com/x" as untrusted (8 ms)
+    ✓ treats "https://evil.example\\.auth.example.com/x" as untrusted (2 ms)
+    ✓ treats "https://auth.exa\tmple.com/x" as untrusted (2 ms)
+    ✓ treats "https://auth.example.com\n/x" as untrusted (1 ms)
+    ✓ treats "https://auth.example.com /x" as untrusted (1 ms)
+    ✓ keeps the session when the refresh fails with a network error (4 ms)
+    ✓ keeps the session when the refresh fails with a timeout error (1 ms)
+    ✓ keeps the session when the refresh fails with a server error (1 ms)
+    ✓ retries with the current token, without refreshing, when the 401 was for an older one (3 ms)
+    ✓ does not end a newer session for a 401 sent with a token that is gone (1 ms)
+    ✓ retries with the token the refresh returned (2 ms)
+    ✓ does not store a refreshed token after the user signed out (1 ms)
+  request failure logs
+    ✓ leave out the query string and fragment (4 ms)
+  ApiError cause
+    ✓ keeps no headers or request body (3 ms)
+
+PASS __tests__/shared/http/httpClient.test.ts
+  createHttpClient
+    ✓ applies the configured timeout and base URL (9 ms)
+    ✓ keeps a request's own timeout (10 ms)
+    ✓ keeps a base URL path (/api/v1 + /me) and still attaches the token (3 ms)
+    ✓ keeps a base URL path (/api/v1/ + /me) and still attaches the token (2 ms)
+    ✓ keeps a base URL path (/api/v1 + me) and still attaches the token (5 ms)
+    ✓ does not send the token to another origin that shares the path (2 ms)
+    ✓ maps a timeout to code "timeout" (5 ms)
+    ✓ maps a request without a response to code "network" (1 ms)
+    ✓ maps an aborted request to code "canceled" (2 ms)
+    ✓ clears the session and emits session-expired on a 401 with no refresh handler (3 ms)
+    ✓ refreshes once and retries the request with the new token (3 ms)
+    ✓ clears the session when the refresh handler fails (1 ms)
+    ✓ does not refresh twice when the retried request is rejected again (2 ms)
+    ✓ shares one refresh between concurrent 401s (3 ms)
+    ✓ leaves the session alone for a 401 on a request sent without a token (2 ms)
+    ✓ runs a custom unauthorized handler instead of the default (2 ms)
+  auth client
+    ✓ rejects wrong credentials with the server message and keeps any session (2 ms)
+    ✓ never sends a token to the auth backend (1 ms)
+  toApiError
+    ✓ maps HTTP 401 to unauthorized (1 ms)
+    ✓ maps HTTP 403 to client
+    ✓ maps HTTP 404 to client
+    ✓ maps HTTP 422 to client (1 ms)
+    ✓ maps HTTP 500 to server
+    ✓ maps HTTP 503 to server
+    ✓ prefers the server message, then axios, for HTTP errors (1 ms)
+    ✓ reads the message of an error envelope
+    ✓ wraps non-axios errors as unknown and returns ApiErrors unchanged (1 ms)
+
+PASS __tests__/shared/lib/logger.test.ts
+  logger
+    levels
+      ✓ writes only messages at or above the minimum level (1 ms)
+      ✓ writes every level in development (1 ms)
+      ✓ writes nothing to the console when silent (1 ms)
+      ✓ reads the settings on every call
+      ✓ uses the configured level from shared/config/env.ts (1 ms)
+    failed requests
+      ✓ a client failure is written with console.info in development (5 ms)
+      ✓ a server failure is written with console.info in development (2 ms)
+      ✓ a unauthorized failure is written with console.info in development (1 ms)
+      ✓ a network failure is written with console.warn in development (2 ms)
+      ✓ a timeout failure is written with console.warn in development (2 ms)
+      ✓ a unknown failure is written with console.warn in development (1 ms)
+      ✓ a canceled failure is written with console.debug in development (2 ms)
+      ✓ a client failure is shown in development: true, preview: true, production: false
+      ✓ a server failure is shown in development: true, preview: true, production: false (1 ms)
+      ✓ a unauthorized failure is shown in development: true, preview: true, production: false
+      ✓ a network failure is shown in development: true, preview: true, production: true (7 ms)
+      ✓ a timeout failure is shown in development: true, preview: true, production: true
+      ✓ a unknown failure is shown in development: true, preview: true, production: true (1 ms)
+      ✓ a canceled failure is shown in development: true, preview: false, production: false
+    forwarding to the error reporter in production
+      ✓ reports an Error with the message and redacted context (1 ms)
+      ✓ reports a message when there is no Error
+      ✓ reports a thrown non-Error value as a message with the value (1 ms)
+      ✓ does not forward warnings
+      ✓ also forwards in development (1 ms)
+      ✓ setErrorReporter registers a provider
+      ✓ keeps working when the reporter throws (1 ms)
+      ✓ the default reporter writes one console line
+    redaction
+      ✓ always redacts auth headers, cookies, tokens, and passwords (1 ms)
+      ✓ redacts response bodies outside development only
+      ✓ reduces Errors to name, message, code, and status outside development (1 ms)
+      ✓ prints a redacted Error summary in production and the Error in development
+      ✓ redacts keys that name a secret: authToken
+      ✓ redacts keys that name a secret: x-auth-token
+      ✓ redacts keys that name a secret: X-Auth-Token (1 ms)
+      ✓ redacts keys that name a secret: client_secret
+      ✓ redacts keys that name a secret: newPassword
+      ✓ redacts keys that name a secret: currentPassword (1 ms)
+      ✓ redacts keys that name a secret: passcode
+      ✓ redacts keys that name a secret: otp
+      ✓ redacts keys that name a secret: jwt (1 ms)
+      ✓ redacts keys that name a secret: sessionId
+      ✓ redacts keys that name a secret: session_id
+      ✓ redacts keys that name a secret: privateKey (1 ms)
+      ✓ redacts secrets inside arrays
+      ✓ logs an object referenced twice in full, not as circular (1 ms)
+      ✓ handles circular and deeply nested values
+      ✓ redacts what the logger writes outside development
+
+  console.debug
+    [analytics] screen /login
+
+      at debug (shared/lib/logger.ts:147:18)
+
+  console.info
+    API POST /sessions failed: client (422)
+
+      at info (shared/lib/logger.ts:146:40)
+
+  console.info
+    API POST /sessions/refresh failed: unauthorized (401)
+
+      at info (shared/lib/logger.ts:146:40)
+
+  console.info
+    API GET /me failed: unauthorized (401)
+
+      at info (shared/lib/logger.ts:146:40)
+
+  console.warn
+    API POST /sessions/refresh failed: network
+
+      143 |     const args = [message, ...details.filter(item => item !== undefined)];
+      144 |     if (level === 'error') console.error(...args);
+    > 145 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      146 |     else if (level === 'info') console.info(...args);
+      147 |     else console.debug(...args);
+      148 |   };
+
+      at warn (shared/lib/logger.ts:145:40)
+      at Object.write [as warn] (shared/lib/logger.ts:156:33)
+      at fail (shared/http/httpClient.ts:172:50)
+      at fail (shared/http/httpClient.ts:184:14)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12
+      at apply (shared/http/httpClient.ts:219:4)
+      at Axios.request (node_modules/axios/dist/browser/axios.cjs:5245:14)
+
+  console.warn
+    API GET /me failed: network
+
+      143 |     const args = [message, ...details.filter(item => item !== undefined)];
+      144 |     if (level === 'error') console.error(...args);
+    > 145 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      146 |     else if (level === 'info') console.info(...args);
+      147 |     else console.debug(...args);
+      148 |   };
+
+      at warn (shared/lib/logger.ts:145:40)
+      at Object.write [as warn] (shared/lib/logger.ts:156:33)
+      at fail (shared/http/httpClient.ts:172:50)
+      at fail (shared/http/httpClient.ts:208:16)
+          at Generator.throw (<anonymous>)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/@babel/runtime/helpers/asyncToGenerator.js:20:9)
+
+  console.warn
+    API DELETE /sessions failed: network
+
+      143 |     const args = [message, ...details.filter(item => item !== undefined)];
+      144 |     if (level === 'error') console.error(...args);
+    > 145 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      146 |     else if (level === 'info') console.info(...args);
+      147 |     else console.debug(...args);
+      148 |   };
+
+      at warn (shared/lib/logger.ts:145:40)
+      at Object.write [as warn] (shared/lib/logger.ts:156:33)
+      at fail (shared/http/httpClient.ts:172:50)
+      at fail (shared/http/httpClient.ts:184:14)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12
+      at apply (shared/http/httpClient.ts:219:4)
+      at Axios.request (node_modules/axios/dist/browser/axios.cjs:5245:14)
+
+  console.warn
+    Signing out on the auth backend failed { error: 'Network error: check your connection' }
+
+      143 |     const args = [message, ...details.filter(item => item !== undefined)];
+      144 |     if (level === 'error') console.error(...args);
+    > 145 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      146 |     else if (level === 'info') console.info(...args);
+      147 |     else console.debug(...args);
+      148 |   };
+
+      at warn (shared/lib/logger.ts:145:40)
+      at Object.write [as warn] (shared/lib/logger.ts:156:33)
+      at Object.warn (shared/session/authService.ts:157:14)
+          at Generator.throw (<anonymous>)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/@babel/runtime/helpers/asyncToGenerator.js:20:9)
+
+PASS __tests__/shared/session/realBackendAdapter.test.ts
+  the documented AuthAdapter against a backend of another shape
+    ✓ signs in with a tokens-only response, loading the user from /me (11 ms)
+    ✓ shows the envelope's message for a wrong password and stores nothing (28 ms)
+    ✓ rejects a login response without the envelope with a readable message and stores nothing (2 ms)
+    ✓ rejects a login response without a refresh token with a readable message and stores nothing (1 ms)
+    ✓ rejects a user payload without the required fields (3 ms)
+    ✓ refreshes on a 401 with rotation, keeping only the newest refresh token (6 ms)
+    ✓ signs out and drops the refresh token when the refresh is rejected (4 ms)
+    ✓ keeps the session and the refresh token when the refresh fails offline (8 ms)
+    ✓ revokes the refresh token on logout, with the access token still sent (3 ms)
+    ✓ signs out locally when the backend is unreachable on logout (5 ms)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+  console.debug
+    [analytics] screen /login
+
+      at debug (shared/lib/logger.ts:147:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+PASS __tests__/shared/session/tokenStore.test.tsx
+  secure token store (iOS / Android)
+    ✓ stores, reads, and clears the token in SecureStore (8 ms)
+    ✓ refuses to store a token when secure storage is unavailable (3 ms)
+  memory token store (web)
+    ✓ keeps the token in memory only (1 ms)
+    ✓ does not share the token between instances (a reload starts empty) (1 ms)
+  platform selection
+    ✓ web uses a persistent store: false
+    ✓ ios uses a persistent store: true
+    ✓ android uses a persistent store: true
+    ✓ the default store follows Platform.OS (38 ms)
+    ✓ setTokenStore replaces the store and null restores the default (1 ms)
+  auth flow with the web token store
+    ✓ signs in, shows the session, logs out, and a reload returns to signed out (1470 ms)
+
+Test Suites: 6 passed, 6 total
+Tests:       123 passed, 123 total
+Snapshots:   0 total
+Time:        4.036 s
+Ran all test suites matching /__tests__\/shared\/http\/tokenSafety.test.ts|__tests__\/shared\/http\/httpClient.test.ts|__tests__\/shared\/session|__tests__\/shared\/lib\/logger.test.ts/i.

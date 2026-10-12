@@ -1,0 +1,14 @@
+MUTANT KILLED: shared/lib/useFetch.ts: '    } catch (caught) {\n      if (isCurrent()) {' -> '    } catch (caught) {\n      if (true) {' | Tests:       1 failed, 41 passed, 42 total
+MUTANT KILLED: shared/lib/useFetch.ts: '      if (isCurrent()) setLoading(false);' -> '      setLoading(false);' | Tests:       1 failed, 41 passed, 42 total
+MUTANT KILLED: shared/config/env.ts: '    EXPO_PUBLIC_API_TIMEOUT_MS: process.env.EXPO_PUBLIC_API_TIMEOUT_MS,' -> '    EXPO_PUBLIC_API_TIMEOUT_MS: process.env.EXPO_PUBLIC_API_TIMEOUT_MSX,' | Tests:       1 failed, 16 passed, 17 total
+MUTANT KILLED: shared/config/env.ts: '    EXPO_PUBLIC_LOG_LEVEL: process.env.EXPO_PUBLIC_LOG_LEVEL,' -> '    EXPO_PUBLIC_LOG_LEVEL: process.env.EXPO_PUBLIC_LOG_LEVELX,' | Tests:       1 failed, 16 passed, 17 total
+MUTANT KILLED: shared/config/env.ts: '    EXPO_PUBLIC_APP_ENV: process.env.EXPO_PUBLIC_APP_ENV,' -> '    EXPO_PUBLIC_APP_ENV: process.env.EXPO_PUBLIC_APP_ENVX,' | Tests:       1 failed, 16 passed, 17 total
+MUTANT KILLED: shared/session/authService.ts: '    try {\n      await adapter.logout?.(clients);' -> '    await clearStoredSession();\n    try {\n      await adapter.logout?.(clients);' | Tests:       1 failed, 13 passed, 14 total
+MUTANT KILLED: app/_layout.tsx: "    if (session.status !== 'loading') {\n      SplashScreen.hideAsync()" -> "    if (session.status === 'loading' && signedIn) {\n      SplashScreen.hideAsync()" | Tests:       2 failed, 2 total
+MUTANT KILLED: app/_layout.tsx: "    if (session.status !== 'loading') {\n      SplashScreen.hideAsync()" -> '    if (true) {\n      SplashScreen.hideAsync()' | Tests:       2 failed, 2 total
+MUTANT KILLED: app/_layout.tsx: '    if (!configResult.success) {\n      SplashScreen.hideAsync()' -> '    if (false) {\n      SplashScreen.hideAsync()' | Tests:       1 failed, 1 total
+MUTANT KILLED: shared/session/SessionProvider.tsx: "current.status === 'signedIn' ? { status: 'signedIn', user } : current" -> 'current' | Tests:       1 failed, 14 skipped, 15 total
+MUTANT KILLED: shared/session/SessionProvider.tsx: '      getErrorReporter().setUser(userId ? { id: userId } : null);' -> '      void userId;' | Tests:       1 failed, 14 skipped, 15 total
+MUTANT KILLED: shared/http/httpClient.ts: '    config.timeout ||= getConfig().apiTimeoutMs;' -> '    config.timeout = getConfig().apiTimeoutMs;' | Tests:       1 failed, 26 passed, 27 total
+MUTANT KILLED: shared/lib/logger.ts: '      return current.map(item => walk(item, depth + 1));' -> '      return current;' | Tests:       1 failed, 46 passed, 47 total
+MUTANT KILLED: features/auth/screens/ProfileScreen.tsx: "if (active && apiError.code !== 'unauthorized') {" -> 'if (active) {' | Tests:       1 failed, 1 passed, 2 total

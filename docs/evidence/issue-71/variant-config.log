@@ -1,0 +1,13 @@
+# node_modules/expo-constants/scripts/getAppConfig.js (run by the native build), per APP_VARIANT as the build:* scripts set it
+unset       RN Starter (Dev) | rnstarter-dev | com.example.rnstarter.dev | development
+preview     RN Starter (Preview) | rnstarter-preview | com.example.rnstarter.preview | preview
+production  RN Starter | rnstarter | com.example.rnstarter | production
+
+$ grep build: package.json
+    "build:preview:android": "APP_VARIANT=preview EXPO_PUBLIC_APP_ENV=preview expo run:android --variant release",
+    "build:preview:ios": "APP_VARIANT=preview EXPO_PUBLIC_APP_ENV=preview expo run:ios --configuration Release",
+    "build:production:android": "APP_VARIANT=production EXPO_PUBLIC_APP_ENV=production expo run:android --variant release",
+    "build:production:ios": "APP_VARIANT=production EXPO_PUBLIC_APP_ENV=production expo run:ios --configuration Release",
+
+$ APP_VARIANT=toString npx expo config --type public
+APP_VARIANT must be one of development, preview, production (got "toString")

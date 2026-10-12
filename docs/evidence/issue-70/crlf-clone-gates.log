@@ -1,0 +1,22 @@
+$ git clone -c core.autocrlf=true <repo> (HEAD below); node_modules linked
+97dc5d6 fix: e2e mock and runner check what they run; no demo wording left in tests
+true
+files with CRLF:        4
+$ npm run format:check
+Checking formatting...
+All matched files use Prettier code style!
+exit 0
+$ npm run lint
+exit 0
+$ npm run type-check
+exit 0
+$ npm run docs:check
+Skipped docs/recipes/state-management.md:170: needs jotai (not installed).
+No problems.
+exit 0
+$ npm run test:ci
+Time:        30.484 s
+Ran all test suites.
+exit 0
+$ bash -n scripts/e2e/run.sh
+exit 0

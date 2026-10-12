@@ -1,0 +1,69 @@
+PASS __tests__/shared/config/env.test.ts
+  parseEnv
+    ✓ accepts a complete production configuration (7 ms)
+    ✓ accepts base URLs with a path prefix (1 ms)
+    ✓ parses and validates the API timeout (3 ms)
+    ✓ defaults the log level per environment and accepts an override (1 ms)
+    ✓ reports every missing required URL (1 ms)
+    ✓ treats an empty value (KEY=) as missing (1 ms)
+    ✓ rejects a URL that is not absolute http(s)
+    ✓ rejects http outside development and allows it in development (6 ms)
+    ✓ fills missing URLs from the demo backends only when the flag is on
+    ✓ prefers explicit URLs over the demo backends (1 ms)
+    ✓ rejects a demo backends switch that is not true or false
+    ✓ defaults the app environment from the build type
+    ✓ rejects an unknown app environment (1 ms)
+    ✓ parses and validates trusted origins
+  readRawEnv
+    ✓ reads every variable by its own name
+    ✓ reads exactly the variables .env.example documents (1 ms)
+  getConfig
+    ✓ throws a ConfigError naming the variables when configuration is invalid (39 ms)
+
+PASS __tests__/shared/lib/useFetch.test.tsx
+  useFetch
+    ✓ loads data, exposes a typed ApiError, and refetches (87 ms)
+    ✓ maps HTTP failures to ApiError codes (53 ms)
+    ✓ aborts the request on unmount and ignores its result (2 ms)
+    ✓ aborts the previous request when deps change (3 ms)
+    ✓ goes back to loading without the old error on a deps change and on refetch (5 ms)
+    ✓ keeps the latest response when an older one arrives later (2 ms)
+    ✓ ignores an older request that fails after the newer one succeeded (2 ms)
+    ✓ doesn't end the newer request's loading when an older one settles (2 ms)
+    ✓ refetch aborts a request in flight and uses the newest fetchFn (2 ms)
+    ✓ keeps working when its effect is cleaned up and run again (141 ms)
+
+PASS __tests__/features/auth/ProfileScreen.test.tsx
+  <ProfileScreen />
+    ✓ shows placeholders until a profile is known (148 ms)
+    ✓ shows nothing for a 401: the session ends and the guard leaves (25 ms)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+PASS __tests__/app/configError.test.tsx
+  startup with invalid configuration
+    ✓ shows the configuration error screen instead of the app (944 ms)
+
+  console.debug
+    [analytics] screen /
+
+      at debug (shared/lib/logger.ts:147:18)
+
+PASS __tests__/app/splashScreen.test.tsx
+  the native splash screen
+    ✓ stays up while the stored session is read, then hides once (292 ms)
+    ✓ hides for a restored session too (50 ms)
+
+Test Suites: 5 passed, 5 total
+Tests:       32 passed, 32 total
+Snapshots:   0 total
+Time:        3.286 s, estimated 4 s
+Ran all test suites matching /__tests__\/shared\/lib\/useFetch.test.tsx|__tests__\/shared\/config|__tests__\/app\/splashScreen.test.tsx|__tests__\/app\/configError.test.tsx|__tests__\/features\/auth\/ProfileScreen.test.tsx/i.

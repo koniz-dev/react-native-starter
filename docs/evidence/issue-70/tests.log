@@ -1,0 +1,74 @@
+PASS __tests__/scripts/checkAudit.test.ts
+  check-audit
+    ✓ fails on a high advisory that is not reviewed (6 ms)
+    ✓ passes an allowlisted advisory without a fix in range
+    ✓ fails once npm can fix an allowlisted advisory within the ranges (1 ms)
+    ✓ fails when an allowlist review has expired (1 ms)
+    ✓ reports moderate advisories without failing
+    ✓ fails on an npm error instead of reporting nothing (1 ms)
+    ✓ fails on a report without results instead of reporting nothing
+    ✓ notes an allowlisted advisory that npm no longer reports (1 ms)
+
+PASS __tests__/scripts/removeDemo.test.ts (9.641 s)
+  remove-demo on a copy of the template
+    ✓ lists the changes on --dry-run and changes nothing (580 ms)
+    ✓ leaves no mention of the demo in the code, docs, config, or flows (6614 ms)
+    ✓ fails when a doc still names a deleted file (1622 ms)
+
+PASS __tests__/scripts/initProject.test.ts (14.158 s)
+  init-project input
+    ✓ accepts slug "acme-notes" (5 ms)
+    ✓ accepts slug "notes2"
+    ✓ accepts scheme "acmenotes" (1 ms)
+    ✓ accepts scheme "acme-notes.app"
+    ✓ accepts bundleId "com.acme.notes" (1 ms)
+    ✓ accepts bundleId "io.acme.notesApp2"
+    ✓ accepts name "Acme Notes" (1 ms)
+    ✓ accepts name "Bob's Ghi Chú"
+    ✓ accepts owner "Acme Inc."
+    ✓ rejects slug "Acme-Notes" (1 ms)
+    ✓ rejects slug "acme_notes"
+    ✓ rejects slug "-acme"
+    ✓ rejects slug "acme--notes" (1 ms)
+    ✓ rejects scheme "AcmeNotes"
+    ✓ rejects scheme "1acme"
+    ✓ rejects scheme "acme notes"
+    ✓ rejects bundleId "acme"
+    ✓ rejects bundleId "com.acme-corp.notes"
+    ✓ rejects bundleId "com.1acme.notes"
+    ✓ rejects bundleId "com.acme."
+    ✓ rejects bundleId "com.example.notes"
+    ✓ rejects bundleId "com.example"
+    ✓ rejects bundleId "io.acme.notes_app"
+    ✓ rejects bundleId "com.acme.new" (1 ms)
+    ✓ rejects bundleId "com.class.notes"
+    ✓ rejects scheme "exp"
+    ✓ rejects scheme "exps"
+    ✓ rejects scheme "https"
+    ✓ rejects scheme "http"
+    ✓ rejects scheme "file"
+    ✓ rejects name "" (1 ms)
+    ✓ rejects name " Acme"
+    ✓ rejects name "Acme | Notes"
+    ✓ rejects name "Acme
+Notes"
+    ✓ rejects owner ""
+    ✓ parses flags and options (1 ms)
+    ✓ rejects unknown arguments, missing values, and conflicting flags (22 ms)
+    ✓ derives a slug and quotes strings the way Prettier does (4 ms)
+  init-project on a copy of the template
+    ✓ lists the changes on --dry-run and changes nothing (716 ms)
+    ✓ refuses invalid input without a terminal (716 ms)
+    ✓ names the empty app name as the problem (574 ms)
+    ✓ writes $ in the name and owner literally (1238 ms)
+    ✓ on --force, changes the old scheme only where it is the scheme (1804 ms)
+    ✓ refuses a dirty working tree unless --force (539 ms)
+    ✓ sets the identity and deletes itself (3772 ms)
+    ✓ keeps the recipes with --keep-recipes, without their markers (1159 ms)
+    ✓ removes the demo with --remove-demo and refuses a second run (2333 ms)
+
+Test Suites: 3 passed, 3 total
+Tests:       58 passed, 58 total
+Snapshots:   0 total
+Time:        14.467 s, estimated 18 s
+Ran all test suites matching /__tests__\/scripts/i.
