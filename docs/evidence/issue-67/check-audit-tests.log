@@ -1,0 +1,14 @@
+PASS __tests__/scripts/checkAudit.test.ts
+  check-audit
+    ✓ fails on a high advisory that is not reviewed (4 ms)
+    ✓ passes an allowlisted advisory without a fix in range (1 ms)
+    ✓ fails once npm can fix an allowlisted advisory within the ranges (1 ms)
+    ✓ fails when an allowlist review has expired (1 ms)
+    ✓ reports moderate advisories without failing
+    ✓ notes an allowlisted advisory that npm no longer reports (1 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       6 passed, 6 total
+Snapshots:   0 total
+Time:        0.695 s, estimated 1 s
+Ran all test suites matching /__tests__\/scripts\/checkAudit.test.ts/i.

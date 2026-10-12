@@ -1,0 +1,190 @@
+Audit production dependencies	Set up job	﻿2026-10-12T16:07:21.0414976Z Current runner version: '2.337.0'
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0443718Z ##[group]Runner Image Provisioner
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0444685Z Hosted Compute Agent
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0445316Z Version: 20261002.596
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0445944Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0446754Z Build Date: 2026-10-02T22:28:27Z
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0447438Z Worker ID: {61eab0aa-71c3-4548-be24-baa6bc133933}
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0448212Z Region: eastus2
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0449211Z Cloud: Azure
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0449768Z ##[endgroup]
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0451386Z ##[group]Operating System
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0452054Z Ubuntu
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0452678Z 24.04.5
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0453212Z LTS
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0453745Z ##[endgroup]
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0454454Z ##[group]Runner Image
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0455066Z Image: ubuntu-24.04
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0455664Z Version: 20261004.327.1
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0456834Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0459529Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0460571Z ##[endgroup]
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0461757Z ##[group]GITHUB_TOKEN Permissions
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0463854Z Contents: read
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0464485Z Metadata: read
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0465189Z ##[endgroup]
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0467357Z Secret source: Actions
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0468688Z Cache mode: write
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0469727Z Prepare workflow directory
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0813740Z Prepare all required actions
+Audit production dependencies	Set up job	2026-10-12T16:07:21.0863598Z Getting action download info
+Audit production dependencies	Set up job	2026-10-12T16:07:21.3099179Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+Audit production dependencies	Set up job	2026-10-12T16:07:21.3991000Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+Audit production dependencies	Set up job	2026-10-12T16:07:21.5961145Z Complete job name: Audit production dependencies
+Audit production dependencies	Check out repository	﻿2026-10-12T16:07:21.6819288Z ##[group]Run actions/checkout@v4
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.6820264Z with:
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.6820777Z   repository: koniz-dev/react-native-starter
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.6824558Z   token: ***
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.6825009Z   ssh-strict: true
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.6825465Z   ssh-user: git
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.6825916Z   persist-credentials: true
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.6826413Z   clean: true
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.6826866Z   sparse-checkout-cone-mode: true
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.6827393Z   fetch-depth: 1
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.6827833Z   fetch-tags: false
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.6828289Z   show-progress: true
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.6828943Z   lfs: false
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.6829377Z   submodules: false
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.6829846Z   set-safe-directory: true
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.6830362Z   allow-unsafe-pr-checkout: false
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.6831155Z ##[endgroup]
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.7824217Z Syncing repository: koniz-dev/react-native-starter
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.7827073Z ##[group]Getting Git version info
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.7828676Z Working directory is '/home/runner/work/react-native-starter/react-native-starter'
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.7830830Z [command]/usr/bin/git version
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.7909521Z git version 2.55.0
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.7932984Z ##[endgroup]
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.7948766Z Temporarily overriding HOME='/home/runner/work/_temp/ca44058c-4ed9-4e23-a1df-74dcf60a4f19' before making global git config changes
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.7951213Z Adding repository directory to the temporary git global config as a safe directory
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.7955241Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/react-native-starter/react-native-starter
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8007150Z Deleting the contents of '/home/runner/work/react-native-starter/react-native-starter'
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8015874Z ##[group]Initializing the repository
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8025086Z [command]/usr/bin/git init /home/runner/work/react-native-starter/react-native-starter
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8129663Z hint: Using 'master' as the name for the initial branch. This default branch name
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8131902Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8143705Z hint: to use in all of your new repositories, which will suppress this warning,
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8149591Z hint: call:
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8150337Z hint:
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8151444Z hint: 	git config --global init.defaultBranch <name>
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8152458Z hint:
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8153410Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8154820Z hint: 'development'. The just-created branch can be renamed via this command:
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8156096Z hint:
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8156770Z hint: 	git branch -m <name>
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8157557Z hint:
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8158862Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8161008Z Initialized empty Git repository in /home/runner/work/react-native-starter/react-native-starter/.git/
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8164256Z [command]/usr/bin/git remote add origin https://github.com/koniz-dev/react-native-starter
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8199359Z ##[endgroup]
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8200492Z ##[group]Disabling automatic garbage collection
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8205686Z [command]/usr/bin/git config --local gc.auto 0
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8238657Z ##[endgroup]
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8240244Z ##[group]Setting up auth
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8246666Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8278845Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8647936Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8686389Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8930597Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.8967270Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.9191635Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.9233395Z ##[endgroup]
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.9243262Z ##[group]Fetching the repository
+Audit production dependencies	Check out repository	2026-10-12T16:07:21.9244949Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +887f634068cb2563ef4f4edc753be2169f56c014:refs/remotes/origin/main
+Audit production dependencies	Check out repository	2026-10-12T16:07:22.2240059Z From https://github.com/koniz-dev/react-native-starter
+Audit production dependencies	Check out repository	2026-10-12T16:07:22.2241067Z  * [new ref]         887f634068cb2563ef4f4edc753be2169f56c014 -> origin/main
+Audit production dependencies	Check out repository	2026-10-12T16:07:22.2245128Z ##[endgroup]
+Audit production dependencies	Check out repository	2026-10-12T16:07:22.2246336Z ##[group]Determining the checkout info
+Audit production dependencies	Check out repository	2026-10-12T16:07:22.2248124Z ##[endgroup]
+Audit production dependencies	Check out repository	2026-10-12T16:07:22.2254431Z [command]/usr/bin/git sparse-checkout disable
+Audit production dependencies	Check out repository	2026-10-12T16:07:22.2310659Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Audit production dependencies	Check out repository	2026-10-12T16:07:22.2344272Z ##[group]Checking out the ref
+Audit production dependencies	Check out repository	2026-10-12T16:07:22.2383826Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Audit production dependencies	Check out repository	2026-10-12T16:07:22.2537812Z Switched to a new branch 'main'
+Audit production dependencies	Check out repository	2026-10-12T16:07:22.2544115Z branch 'main' set up to track 'origin/main'.
+Audit production dependencies	Check out repository	2026-10-12T16:07:22.2547922Z ##[endgroup]
+Audit production dependencies	Check out repository	2026-10-12T16:07:22.2590453Z [command]/usr/bin/git log -1 --format=%H
+Audit production dependencies	Check out repository	2026-10-12T16:07:22.2616635Z 887f634068cb2563ef4f4edc753be2169f56c014
+Audit production dependencies	Set up Node.js	﻿2026-10-12T16:07:22.2905357Z ##[group]Run actions/setup-node@v4
+Audit production dependencies	Set up Node.js	2026-10-12T16:07:22.2905973Z with:
+Audit production dependencies	Set up Node.js	2026-10-12T16:07:22.2906412Z   node-version-file: .nvmrc
+Audit production dependencies	Set up Node.js	2026-10-12T16:07:22.2906923Z   cache: npm
+Audit production dependencies	Set up Node.js	2026-10-12T16:07:22.2907355Z   always-auth: false
+Audit production dependencies	Set up Node.js	2026-10-12T16:07:22.2908026Z   check-latest: false
+Audit production dependencies	Set up Node.js	2026-10-12T16:07:22.2911994Z   token: ***
+Audit production dependencies	Set up Node.js	2026-10-12T16:07:22.2912452Z ##[endgroup]
+Audit production dependencies	Set up Node.js	2026-10-12T16:07:22.4274923Z Resolved .nvmrc as 24
+Audit production dependencies	Set up Node.js	2026-10-12T16:07:22.4330757Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/x64
+Audit production dependencies	Set up Node.js	2026-10-12T16:07:22.4334041Z (node:2318) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Audit production dependencies	Set up Node.js	2026-10-12T16:07:22.4336262Z (Use `node --trace-deprecation ...` to show where the warning was created)
+Audit production dependencies	Set up Node.js	2026-10-12T16:07:22.4338167Z ##[group]Environment details
+Audit production dependencies	Set up Node.js	2026-10-12T16:07:22.8181925Z node: v24.21.0
+Audit production dependencies	Set up Node.js	2026-10-12T16:07:22.8183070Z npm: 11.19.0
+Audit production dependencies	Set up Node.js	2026-10-12T16:07:22.8183757Z yarn: 1.22.22
+Audit production dependencies	Set up Node.js	2026-10-12T16:07:22.8185259Z ##[endgroup]
+Audit production dependencies	Set up Node.js	2026-10-12T16:07:22.8204981Z [command]/opt/hostedtoolcache/node/24.21.0/x64/bin/npm config get cache
+Audit production dependencies	Set up Node.js	2026-10-12T16:07:22.9354871Z /home/runner/.npm
+Audit production dependencies	Set up Node.js	2026-10-12T16:07:23.0327964Z npm cache is not found
+Audit production dependencies	Install dependencies	﻿2026-10-12T16:07:23.0545282Z ##[group]Run npm ci
+Audit production dependencies	Install dependencies	2026-10-12T16:07:23.0545702Z ^[[36;1mnpm ci^[[0m
+Audit production dependencies	Install dependencies	2026-10-12T16:07:23.0810284Z shell: /usr/bin/bash -e {0}
+Audit production dependencies	Install dependencies	2026-10-12T16:07:23.0810731Z ##[endgroup]
+Audit production dependencies	Install dependencies	2026-10-12T16:07:27.3627278Z npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+Audit production dependencies	Install dependencies	2026-10-12T16:07:28.1137386Z npm warn deprecated domexception@4.0.0: Use your platform's native DOMException instead
+Audit production dependencies	Install dependencies	2026-10-12T16:07:28.4278989Z npm warn deprecated abab@2.0.6: Use your platform's native atob() and btoa() methods instead
+Audit production dependencies	Install dependencies	2026-10-12T16:07:29.1887174Z npm warn deprecated uuid@7.0.3: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+Audit production dependencies	Install dependencies	2026-10-12T16:07:29.9909880Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Audit production dependencies	Install dependencies	2026-10-12T16:07:30.2950676Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Audit production dependencies	Install dependencies	2026-10-12T16:07:30.2952771Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Audit production dependencies	Install dependencies	2026-10-12T16:07:30.7089205Z npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Audit production dependencies	Install dependencies	2026-10-12T16:07:38.1060602Z npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+Audit production dependencies	Install dependencies	2026-10-12T16:07:48.3406883Z 
+Audit production dependencies	Install dependencies	2026-10-12T16:07:48.3408027Z added 1067 packages, and audited 1068 packages in 25s
+Audit production dependencies	Install dependencies	2026-10-12T16:07:48.3409642Z 
+Audit production dependencies	Install dependencies	2026-10-12T16:07:48.3424691Z 180 packages are looking for funding
+Audit production dependencies	Install dependencies	2026-10-12T16:07:48.3425990Z   run `npm fund` for details
+Audit production dependencies	Install dependencies	2026-10-12T16:07:48.5150932Z 
+Audit production dependencies	Install dependencies	2026-10-12T16:07:48.5152142Z 65 vulnerabilities (16 moderate, 49 high)
+Audit production dependencies	Install dependencies	2026-10-12T16:07:48.5152628Z 
+Audit production dependencies	Install dependencies	2026-10-12T16:07:48.5153120Z To address all issues (including breaking changes), run:
+Audit production dependencies	Install dependencies	2026-10-12T16:07:48.5153786Z   npm audit fix --force
+Audit production dependencies	Install dependencies	2026-10-12T16:07:48.5154099Z 
+Audit production dependencies	Install dependencies	2026-10-12T16:07:48.5154348Z Run `npm audit` for details.
+Audit production dependencies	Check advisories (reviewed allowlist)	﻿2026-10-12T16:07:48.5965532Z ##[group]Run npm run audit:check
+Audit production dependencies	Check advisories (reviewed allowlist)	2026-10-12T16:07:48.5965899Z ^[[36;1mnpm run audit:check^[[0m
+Audit production dependencies	Check advisories (reviewed allowlist)	2026-10-12T16:07:48.6034901Z shell: /usr/bin/bash -e {0}
+Audit production dependencies	Check advisories (reviewed allowlist)	2026-10-12T16:07:48.6035183Z ##[endgroup]
+Audit production dependencies	Check advisories (reviewed allowlist)	2026-10-12T16:07:48.7073320Z 
+Audit production dependencies	Check advisories (reviewed allowlist)	2026-10-12T16:07:48.7073729Z > react-native-starter@1.0.0 audit:check
+Audit production dependencies	Check advisories (reviewed allowlist)	2026-10-12T16:07:48.7074179Z > node scripts/check-audit.js
+Audit production dependencies	Check advisories (reviewed allowlist)	2026-10-12T16:07:48.7074398Z 
+Audit production dependencies	Check advisories (reviewed allowlist)	2026-10-12T16:07:50.6226165Z high     braces GHSA-vfj7-8cjw-p6xm: allowlisted until 2027-01-09 (https://github.com/advisories/GHSA-vfj7-8cjw-p6xm)
+Audit production dependencies	Check advisories (reviewed allowlist)	2026-10-12T16:07:50.6227352Z high     node-forge GHSA-86w9-cpqp-85rv: allowlisted until 2027-01-09 (https://github.com/advisories/GHSA-86w9-cpqp-85rv)
+Audit production dependencies	Check advisories (reviewed allowlist)	2026-10-12T16:07:50.6228240Z moderate decode-uri-component GHSA-vcc3-ghjq-m6fr: reported (not gated)
+Audit production dependencies	Check advisories (reviewed allowlist)	2026-10-12T16:07:50.6229577Z moderate sprintf-js GHSA-hp3w-g68c-fv3c: reported (not gated)
+Audit production dependencies	Check advisories (reviewed allowlist)	2026-10-12T16:07:50.6230650Z moderate uuid GHSA-w5hq-g745-h8pq: reported (not gated)
+Audit production dependencies	Check advisories (reviewed allowlist)	2026-10-12T16:07:50.6232423Z npm audit --omit=dev: 5 advisories (records: 0 critical, 45 high, 16 moderate, 0 low).
+Audit production dependencies	Check advisories (reviewed allowlist)	2026-10-12T16:07:50.6233545Z No unreviewed high or critical advisories.
+Audit production dependencies	Post Set up Node.js	﻿2026-10-12T16:07:50.6423285Z Post job cleanup.
+Audit production dependencies	Post Set up Node.js	2026-10-12T16:07:50.7616136Z (node:2415) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Audit production dependencies	Post Set up Node.js	2026-10-12T16:07:50.7617793Z (Use `node --trace-deprecation ...` to show where the warning was created)
+Audit production dependencies	Post Set up Node.js	2026-10-12T16:07:50.7862313Z [command]/usr/bin/tar --posix -cf cache.tzst --exclude cache.tzst -P -C /home/runner/work/react-native-starter/react-native-starter --files-from manifest.txt --use-compress-program zstdmt
+Audit production dependencies	Post Set up Node.js	2026-10-12T16:07:51.3554295Z (node:2415) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+Audit production dependencies	Post Set up Node.js	2026-10-12T16:07:52.3433430Z Sent 16983157 of 151200885 (11.2%), 16.2 MBs/sec
+Audit production dependencies	Post Set up Node.js	2026-10-12T16:07:52.8702405Z Sent 151200885 of 151200885 (100.0%), 94.4 MBs/sec
+Audit production dependencies	Post Set up Node.js	2026-10-12T16:07:52.9894974Z Cache saved with the key: node-cache-Linux-x64-npm-a54d250a39ca052c93be872a412e09d0d5e5440380934f2d31a3b7d556642933
+Audit production dependencies	Post Check out repository	﻿2026-10-12T16:07:53.0103242Z Post job cleanup.
+Audit production dependencies	Post Check out repository	2026-10-12T16:07:53.0970216Z [command]/usr/bin/git version
+Audit production dependencies	Post Check out repository	2026-10-12T16:07:53.1018836Z git version 2.55.0
+Audit production dependencies	Post Check out repository	2026-10-12T16:07:53.1065195Z Temporarily overriding HOME='/home/runner/work/_temp/b7ace414-a71c-489d-bbea-2c3ab6a31e80' before making global git config changes
+Audit production dependencies	Post Check out repository	2026-10-12T16:07:53.1066575Z Adding repository directory to the temporary git global config as a safe directory
+Audit production dependencies	Post Check out repository	2026-10-12T16:07:53.1072533Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/react-native-starter/react-native-starter
+Audit production dependencies	Post Check out repository	2026-10-12T16:07:53.1117446Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Audit production dependencies	Post Check out repository	2026-10-12T16:07:53.1154823Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Audit production dependencies	Post Check out repository	2026-10-12T16:07:53.1417368Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Audit production dependencies	Post Check out repository	2026-10-12T16:07:53.1448146Z http.https://github.com/.extraheader
+Audit production dependencies	Post Check out repository	2026-10-12T16:07:53.1462592Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+Audit production dependencies	Post Check out repository	2026-10-12T16:07:53.1543910Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Audit production dependencies	Post Check out repository	2026-10-12T16:07:53.1841440Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Audit production dependencies	Post Check out repository	2026-10-12T16:07:53.1889929Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Audit production dependencies	Complete job	﻿2026-10-12T16:07:53.2320367Z Cleaning up orphan processes
+Audit production dependencies	Complete job	2026-10-12T16:07:53.2686159Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
