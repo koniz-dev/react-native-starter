@@ -4,6 +4,6 @@ CodeQL alerts after the analysis of e4742f2:
 
 Repository settings (2026-10-13):
   vulnerability alerts: HTTP/2.0 204 No Content
-  actions: 
-  code scanning default setup: 
-  rulesets: 
+  actions: {"enabled": true, "allowed_actions": "all", "sha_pinning_required": true}
+  code scanning default setup: {"state": "configured", "languages": ["actions", "javascript", "javascript-typescript", "typescript"], "query_suite": "default"}
+  ruleset: {"name": "main", "enforcement": "active", "bypass_actors": [{"actor_id": 5, "actor_type": "RepositoryRole", "bypass_mode": "always"}], "rules": ["deletion", "non_fast_forward", "required_status_checks"], "required_checks": [[{"context": "Verify"}]]}
