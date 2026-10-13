@@ -6,7 +6,7 @@ import path from 'path';
 interface AllowlistEntry {
   id: string;
   package: string;
-  reviewBy: string;
+  reviewBy?: string;
   tracking: string;
 }
 
@@ -106,6 +106,33 @@ describe('check-audit', () => {
     expect(problems).toEqual([
       expect.stringContaining('review expired on 2026-10-11'),
     ]);
+  });
+
+  it.each([undefined, '2027-1-9', '2027/01/09', 'Jan 9 2027', '2027-02-30'])(
+    'fails when an allowlist entry has reviewBy %j, not a YYYY-MM-DD date',
+    reviewBy => {
+      const { problems } = evaluate(
+        report('forge', 'high'),
+        [{ ...entry('forge'), reviewBy }],
+        TODAY
+      );
+      expect(problems).toEqual([
+        'scripts/audit-allowlist.json advisories[0]: "reviewBy" must be a date (YYYY-MM-DD)',
+      ]);
+    }
+  );
+
+  it('fails when an allowlist entry has no id, package, or tracking link', () => {
+    const { problems } = evaluate(
+      report('forge', 'high'),
+      [{ ...entry('forge'), id: '', package: ' ', tracking: undefined! }],
+      TODAY
+    );
+    expect(problems).toEqual(
+      ['id', 'package', 'tracking'].map(
+        key => `scripts/audit-allowlist.json advisories[0]: "${key}" is missing`
+      )
+    );
   });
 
   it('reports moderate advisories without failing', () => {

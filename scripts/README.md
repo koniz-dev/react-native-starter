@@ -36,7 +36,9 @@ path they mention. See [`docs/README.md`](../docs/README.md).
 `npm run audit:check` (the Audit workflow, `.github/workflows/audit.yml`):
 runs `npm audit --omit=dev` and fails on any high or critical advisory that
 is not reviewed in `audit-allowlist.json`, whose review date (`reviewBy`) has
-passed, or that npm can now fix within the current dependency ranges. Each allowlist entry records the
+passed, or that npm can now fix within the current dependency ranges. It
+also fails on an allowlist entry without an id, package, tracking link, or a
+YYYY-MM-DD `reviewBy`, which would otherwise never expire. Each allowlist entry records the
 dependency path, exposure, owner, review date, and tracking link; see
 [Dependency advisories](../docs/getting-started.md#dependency-advisories) for
 reviewing them in your project.

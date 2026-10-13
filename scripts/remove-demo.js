@@ -2,9 +2,11 @@
 /**
  * Removes the demo code (see docs/remove-demo.md):
  *
- * 1. deletes the demo folders, routes, and Maestro flows listed in
- *    DEMO_PATHS, and then this script, its doc, its test, and its npm script;
- * 2. edits the remaining source, docs, and config files (MARKED_DIRS and
+ * 1. works out every change below and checks the result (step 4) before it
+ *    changes anything, so a problem leaves the project as it was;
+ * 2. deletes the demo folders, routes, and Maestro flows listed in
+ *    DEMO_PATHS, and then this script, its doc, its test, and its npm script,
+ *    and edits the remaining source, docs, and config files (MARKED_DIRS and
  *    MARKED_FILES):
  *    - deletes a line containing `@demo remove-current-line`;
  *    - deletes every line from one containing `@demo remove-block-start`
@@ -14,8 +16,8 @@
  *      deletes the two marker lines: for text that only applies once the
  *      demo is gone (.env.example, the e2e runner, the config's URL check);
  * 3. formats the changed files with Prettier (stripping leaves blank lines);
- * 4. fails if any `@demo` marker, import of a removed path, or mention of a
- *    deleted file is left.
+ * 4. fails, before step 2, if a marker is malformed or any `@demo` marker,
+ *    import of a removed path, or mention of a deleted file would be left.
  *
  * Usage: npm run remove-demo [-- --dry-run]
  * (--no-summary skips the closing message, for a caller that prints its own.)
@@ -117,37 +119,31 @@ function main() {
   const log = message => process.stdout.write(`${message}\n`);
   log(DRY_RUN ? 'Dry run: nothing is changed.' : 'Removing the demo...');
 
+  // First work out every change and check the result, without touching a
+  // file, so a problem (such as a malformed marker) leaves the project as
+  // it was and this script still there to run again.
   const isDeleted = rel =>
     DEMO_PATHS.some(demo => rel === demo || rel.startsWith(`${demo}/`));
-  for (const rel of DEMO_PATHS) {
-    const full = path.join(ROOT, rel);
-    if (!fs.existsSync(full)) continue;
-    log(`  delete ${rel}`);
-    if (!DRY_RUN) fs.rmSync(full, { recursive: true });
-  }
-  const testsDir = path.join(ROOT, '__tests__/scripts');
-  if (
-    !DRY_RUN &&
-    fs.existsSync(testsDir) &&
-    fs.readdirSync(testsDir).length === 0
-  )
-    fs.rmdirSync(testsDir);
+  const deletions = DEMO_PATHS.filter(rel =>
+    fs.existsSync(path.join(ROOT, rel))
+  );
 
   const problems = [];
-  const changed = [];
+  const edits = [];
   const files = [
     ...MARKED_DIRS.flatMap(markedFiles),
     ...MARKED_FILES.filter(file => fs.existsSync(path.join(ROOT, file))),
   ].filter(rel => !isDeleted(rel));
   for (const rel of files) {
-    const full = path.join(ROOT, rel);
-    const text = fs.readFileSync(full, 'utf8');
-    const stripped = stripMarkers(text, rel);
-    if (stripped !== text) {
-      log(`  strip ${rel}`);
-      changed.push(rel);
-      if (!DRY_RUN) fs.writeFileSync(full, stripped);
+    const text = fs.readFileSync(path.join(ROOT, rel), 'utf8');
+    let stripped;
+    try {
+      stripped = stripMarkers(text, rel);
+    } catch (error) {
+      problems.push(error.message);
+      continue;
     }
+    if (stripped !== text) edits.push({ rel, text: stripped });
     if (stripped.includes('@demo')) {
       problems.push(`${rel}: unhandled @demo marker`);
     }
@@ -162,6 +158,30 @@ function main() {
     }
   }
 
+  if (problems.length > 0) {
+    process.stderr.write(
+      `${problems.join('\n')}\nNothing was changed. Fix the above, then run it again.\n`
+    );
+    process.exit(1);
+  }
+
+  for (const rel of deletions) {
+    log(`  delete ${rel}`);
+    if (!DRY_RUN) fs.rmSync(path.join(ROOT, rel), { recursive: true });
+  }
+  const testsDir = path.join(ROOT, '__tests__/scripts');
+  if (
+    !DRY_RUN &&
+    fs.existsSync(testsDir) &&
+    fs.readdirSync(testsDir).length === 0
+  )
+    fs.rmdirSync(testsDir);
+
+  for (const { rel, text } of edits) {
+    log(`  strip ${rel}`);
+    if (!DRY_RUN) fs.writeFileSync(path.join(ROOT, rel), text);
+  }
+
   const pkgFile = path.join(ROOT, 'package.json');
   const pkg = JSON.parse(fs.readFileSync(pkgFile, 'utf8'));
   if (pkg.scripts?.['remove-demo']) {
@@ -171,16 +191,17 @@ function main() {
       fs.writeFileSync(pkgFile, `${JSON.stringify(pkg, null, 2)}\n`);
   }
 
-  const formattable = changed.filter(rel => PRETTIER_EXT.test(rel));
+  const formattable = edits
+    .map(edit => edit.rel)
+    .filter(rel => PRETTIER_EXT.test(rel));
   if (!DRY_RUN && formattable.length > 0) {
     const prettierError = runPrettier(formattable);
-    if (prettierError) problems.push(prettierError);
+    if (prettierError) {
+      process.stderr.write(`${prettierError}\n`);
+      process.exit(1);
+    }
   }
 
-  if (problems.length > 0) {
-    process.stderr.write(`${problems.join('\n')}\n`);
-    process.exit(1);
-  }
   if (!SUMMARY) return;
   log(
     DRY_RUN

@@ -35,6 +35,16 @@ const readline = require('readline');
 
 const ROOT = path.resolve(__dirname, '..');
 const PLACEHOLDER_BUNDLE_PREFIX = 'com.example.';
+/**
+ * The template's identity, as shipped. A run with --force after the APP block
+ * was edited by hand still replaces these where they appear as examples.
+ */
+const TEMPLATE_APP = {
+  name: 'RN Starter',
+  slug: 'react-native-starter',
+  scheme: 'rnstarter',
+  bundleId: 'com.example.rnstarter',
+};
 const VERSION = '1.0.0';
 /** Deleted by remove-demo itself, so its absence means the demo is gone. */
 const REMOVE_DEMO = 'scripts/remove-demo.js';
@@ -90,7 +100,12 @@ function parseArgs(argv) {
       args.flags.add(arg);
     } else if (OPTIONS.has(key)) {
       const value = inline ?? argv[(i += 1)];
-      if (value === undefined) throw new Error(`${key} needs a value`);
+      // `--name --remove-demo` is a missing value, not the name "--remove-demo".
+      if (
+        value === undefined ||
+        (inline === undefined && value.startsWith('--'))
+      )
+        throw new Error(`${key} needs a value`);
       args.options[key.slice(2)] = value;
     } else {
       throw new Error(`unknown argument: ${arg}`);
@@ -146,9 +161,21 @@ const validators = {
     return null;
   },
   slug(value) {
-    return /^[a-z0-9]+(-[a-z0-9]+)*$/.test(value ?? '') && value.length <= 214
-      ? null
-      : `slug "${value}" must be lowercase letters and digits separated by single dashes (e.g. acme-notes)`;
+    if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(value ?? '') || value.length > 214) {
+      return `slug "${value}" must be lowercase letters and digits separated by single dashes (e.g. acme-notes)`;
+    }
+    // npm (and Expo Doctor) reject a package named after one of its own
+    // dependencies.
+    const { dependencies = {}, devDependencies = {} } = JSON.parse(
+      read('package.json')
+    );
+    if (
+      Object.hasOwn(dependencies, value) ||
+      Object.hasOwn(devDependencies, value)
+    ) {
+      return `slug "${value}" is the name of a dependency; pick another (e.g. ${value}-app)`;
+    }
+    return null;
   },
   scheme(value) {
     if (!/^[a-z][a-z0-9+.-]*$/.test(value ?? '')) {
@@ -367,10 +394,10 @@ function replaceAppBlock(text, input, current) {
         `${before}${tsString(values[key])}${after}`
     );
   }
-  return out.replace(
-    `e.g. ${current.scheme}://.`,
-    () => `e.g. ${input.scheme}://.`
-  );
+  for (const scheme of new Set([current.scheme, TEMPLATE_APP.scheme])) {
+    out = out.replace(`e.g. ${scheme}://.`, () => `e.g. ${input.scheme}://.`);
+  }
+  return out;
 }
 
 /**
@@ -505,13 +532,19 @@ function planChanges(input) {
   );
 
   // Identity examples: the variant table, the dev scheme, the e2e workflow.
-  const ids = {
-    [`${current.bundleId}.dev`]: `${input.bundleId}.dev`,
-    [`${current.bundleId}.preview`]: `${input.bundleId}.preview`,
-    [current.bundleId]: input.bundleId,
-    [`${current.scheme}-dev`]: `${input.scheme}-dev`,
-    [`${current.scheme}-preview`]: `${input.scheme}-preview`,
-  };
+  // They show the current APP values, or the template's if the APP block was
+  // edited by hand before a run with --force.
+  const previous = [current, TEMPLATE_APP];
+  const ids = Object.fromEntries(
+    previous.flatMap(app => [
+      [`${app.bundleId}.dev`, `${input.bundleId}.dev`],
+      [`${app.bundleId}.preview`, `${input.bundleId}.preview`],
+      [app.bundleId, input.bundleId],
+      [`${app.scheme}-dev`, `${input.scheme}-dev`],
+      [`${app.scheme}-preview`, `${input.scheme}-preview`],
+    ])
+  );
+  const schemes = new Set(previous.map(app => app.scheme));
   // The bare scheme is a common word (e.g. `swipe`), so it is replaced only as
   // a URL (`scheme://`) or, with `bareScheme`, in App Config's variant table.
   const replaceIds = (text, { bareScheme = false } = {}) =>
@@ -523,7 +556,7 @@ function planChanges(input) {
         const base = value.replace(/:\/\/$/, '');
         const target = Object.hasOwn(ids, base)
           ? ids[base]
-          : base === current.scheme && (isUrl || bareScheme)
+          : schemes.has(base) && (isUrl || bareScheme)
             ? input.scheme
             : undefined;
         if (target === undefined) return match;
@@ -532,13 +565,17 @@ function planChanges(input) {
       }
     );
   const nameCells = text =>
-    text
-      .replace(`\`${current.name} (Dev)\``, () => `\`${md(input.name)} (Dev)\``)
-      .replace(
-        `\`${current.name} (Preview)\``,
-        () => `\`${md(input.name)} (Preview)\``
-      )
-      .replace(`\`${current.name}\``, () => `\`${md(input.name)}\``);
+    previous.reduce(
+      (out, app) =>
+        out
+          .replace(`\`${app.name} (Dev)\``, () => `\`${md(input.name)} (Dev)\``)
+          .replace(
+            `\`${app.name} (Preview)\``,
+            () => `\`${md(input.name)} (Preview)\``
+          )
+          .replace(`\`${app.name}\``, () => `\`${md(input.name)}\``),
+      text
+    );
 
   if (exists('README.md')) {
     write('README.md', 'the README for the app', appReadme(input.name));
@@ -652,8 +689,13 @@ Prompts for every value that is not given (in a terminal).
   --force               run on uncommitted changes or a second time
   --help                show this help`;
 
-/** Set once files may have changed, so a failure says how to undo it. */
+/**
+ * Set once files may have changed, so a failure says how to undo it; `dirty`
+ * when the run started on uncommitted changes (--force), which a blanket
+ * restore would discard.
+ */
 let started = false;
+let dirty = false;
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
@@ -678,6 +720,7 @@ async function main() {
     );
   }
 
+  dirty = Boolean(status);
   const input = await collectInput(args);
   const demoPresent = exists(REMOVE_DEMO);
 
@@ -743,9 +786,13 @@ if (require.main === module) {
     process.stderr.write(`init-project: ${error.message}\n`);
     if (started) {
       process.stderr.write(
-        'Some files may already be changed. Restore your last commit with\n' +
-          '  git checkout -- . && git clean -fd\n' +
-          'then fix the problem above and run init-project again.\n'
+        dirty
+          ? 'Some files may already be changed. Your uncommitted changes are mixed\n' +
+              'in, so review `git status` and `git diff` and restore what init-project\n' +
+              'changed by hand, then fix the problem above and run it again.\n'
+          : 'Some files may already be changed. Restore your last commit with\n' +
+              '  git checkout -- . && git clean -fd\n' +
+              'then fix the problem above and run init-project again.\n'
       );
     }
     process.exit(1);

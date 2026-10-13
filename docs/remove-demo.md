@@ -39,8 +39,10 @@ npm run remove-demo
 3. deletes itself: this page, `scripts/remove-demo.js`, its test, and the
    `remove-demo` npm script, since there is nothing left to remove;
 4. formats the changed files with Prettier;
-5. fails if a `@demo` marker, an import of a removed demo, or a doc or flow
-   that names a deleted file is left.
+5. checks the result before it changes any file: if a `@demo` marker is
+   malformed (a block without its end) or would be left, or an import of a
+   removed demo or a doc or flow that names a deleted file would remain, it
+   names the file and changes nothing.
 
 It is meant to run once on a fresh project; commit first so you can review
 the diff.

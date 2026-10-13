@@ -198,5 +198,21 @@ describe('remove-demo on a copy of the template', () => {
     expect(result.stderr).toContain(
       'docs/conventions.md: still mentions features/demo-todos'
     );
+    expect(gitStatus(dir)).toBe('');
+  }, 60000);
+
+  it('changes nothing when a marker is malformed, and says so without a stack trace', () => {
+    const dir = copy();
+    fs.appendFileSync(
+      path.join(dir, 'README.md'),
+      '\n<!-- @demo remove-block-start -->\nnote\n'
+    );
+    commit(dir, 'unterminated marker');
+    const result = run(dir);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe(
+      'README.md: unterminated @demo block\nNothing was changed. Fix the above, then run it again.\n'
+    );
+    expect(gitStatus(dir)).toBe('');
   }, 60000);
 });

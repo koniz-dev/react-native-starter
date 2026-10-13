@@ -170,7 +170,8 @@ bundles), so the Audit workflow starts green. Make the review yours:
    npm no longer reports.
 3. Otherwise set `owner` to your team, `reviewed` to today, `reviewBy` to
    your next review (at most a few months out), and `tracking` to your own
-   issue if you track it.
+   issue if you track it. An entry without an `id`, `package`, `tracking`,
+   or a `reviewBy` date written YYYY-MM-DD fails the check.
 
 New advisories fail the check until you fix or review them the same way. The
 Audit workflow fails, and CI doesn't, so a new advisory doesn't block work on

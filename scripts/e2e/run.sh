@@ -52,7 +52,8 @@ kill_tree() {
 }
 cleanup() {
   set_dark_mode no || true
-  for pid in "${PIDS[@]}"; do kill_tree "$pid"; done
+  # (An empty array is "unbound" to macOS's bash 3.2 under set -u.)
+  for pid in ${PIDS[@]+"${PIDS[@]}"}; do kill_tree "$pid"; done
 }
 trap cleanup EXIT
 
@@ -63,6 +64,16 @@ set_dark_mode() {
     xcrun simctl ui booted appearance "$([ "$1" = yes ] && echo dark || echo light)"
   fi
 }
+
+# A server already on either port (your own `npm start`, an earlier run) would
+# answer the readiness checks below in place of this run's, without the e2e
+# URLs: stop here instead.
+for port in "$METRO_PORT" "$MOCK_PORT"; do
+  if curl -s -o /dev/null --max-time 2 "http://localhost:$port/"; then
+    echo "Port $port is already in use; stop that server, or set METRO_PORT/MOCK_PORT for other ports" >&2
+    exit 1
+  fi
+done
 
 node "$ROOT/scripts/e2e/mock-api.js" "$MOCK_PORT" >"$OUT/mock-api.log" 2>&1 &
 MOCK_PID=$!

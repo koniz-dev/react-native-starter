@@ -4,7 +4,8 @@
  * (npm run audit:check; .github/workflows/audit.yml runs it). It fails when:
  *
  * - a high or critical advisory is not in the allowlist;
- * - an allowlisted entry is past its reviewBy date;
+ * - an allowlisted entry is past its reviewBy date, or is missing its id,
+ *   package, tracking link, or a YYYY-MM-DD reviewBy date;
  * - npm can now fix an allowlisted advisory within the current dependency
  *   ranges (`npm audit fix` would apply it without a major upgrade), so an
  *   upstream fix is noticed without tracking it by hand.
@@ -30,6 +31,35 @@ function fixWithinRanges(fixAvailable) {
       fixAvailable !== null &&
       !fixAvailable.isSemVerMajor)
   );
+}
+
+/** A real calendar date written YYYY-MM-DD. */
+function isDate(value) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return false;
+  }
+  const date = new Date(`${value}T00:00:00Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().startsWith(value);
+}
+
+/**
+ * Problems with the allowlist entries themselves: an entry that can't be
+ * matched or never expires would hide an advisory for good.
+ */
+function checkEntries(allowlist) {
+  if (!Array.isArray(allowlist)) {
+    return ['scripts/audit-allowlist.json: "advisories" must be a list'];
+  }
+  return allowlist.flatMap((entry, index) => {
+    const name = `scripts/audit-allowlist.json advisories[${index}]`;
+    const problems = ['id', 'package', 'tracking']
+      .filter(key => typeof entry?.[key] !== 'string' || !entry[key].trim())
+      .map(key => `${name}: "${key}" is missing`);
+    if (!isDate(entry?.reviewBy)) {
+      problems.push(`${name}: "reviewBy" must be a date (YYYY-MM-DD)`);
+    }
+    return problems;
+  });
 }
 
 /**
@@ -68,6 +98,9 @@ function evaluate(report, allowlist, today) {
       advisories.set(id, entry);
     }
   }
+
+  const entryProblems = checkEntries(allowlist);
+  if (entryProblems.length > 0) return { lines: [], problems: entryProblems };
 
   const allowed = new Map(allowlist.map(entry => [entry.id, entry]));
   const problems = [];

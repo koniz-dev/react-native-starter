@@ -2,7 +2,7 @@
 /**
  * Checks the docs against the code (npm run docs:check):
  *
- * 1. every ```ts / ```tsx block compiles: each block becomes a module in
+ * 1. every ```ts / ```tsx block compiles (indented ones too, as in a list): each block becomes a module in
  *    .docs-check/ and `tsc` type-checks them all against the repo (imports
  *    such as '@/shared/...' resolve to the real code). Blocks declare their
  *    own placeholders, e.g. `declare function loadRefreshToken(): ...`;
@@ -16,7 +16,7 @@
  *    for #anchors), and every repo path in inline code exists. Paths with
  *    placeholders (<name>, *, {a,b}, ...) are not checked.
  *
- * 5. every `docs/<page>.md#anchor` mentioned in source files (comments in
+ * 5. every `docs/<page>.md#anchor` (or `docs/<folder>/<page>.md`) mentioned in source files (comments in
  *    app/, features/, shared/, scripts/, testing/, app.config.ts) exists.
  *
  * @demo remove-block-start
@@ -44,6 +44,8 @@ const PATH_ROOTS = [
   'testing/',
   'assets/',
   '.github/',
+  '.maestro/',
+  'public/',
 ];
 const ROOT_FILES = new Set([
   'app.config.ts',
@@ -59,6 +61,11 @@ const ROOT_FILES = new Set([
   'AGENTS.md',
   'CLAUDE.md',
   'index.ts',
+  'metro.config.js',
+  'babel.config.js',
+  'jest.config.js',
+  'app.json',
+  'LICENSE',
 ]);
 
 function docFiles() {
@@ -133,7 +140,8 @@ function main() {
     let requires = [];
     lines.forEach((line, index) => {
       const lineNo = index + 1;
-      const fenceMatch = /^```(\w*)/.exec(line);
+      // Fences may be indented (inside a list item).
+      const fenceMatch = /^(\s*)```(\w*)/.exec(line);
       if (fenceMatch) {
         if (fence) {
           const body = fence.body.join('\n');
@@ -157,7 +165,13 @@ function main() {
           }
           fence = null;
         } else {
-          fence = { lang: fenceMatch[1], line: lineNo, body: [], requires };
+          fence = {
+            lang: fenceMatch[2],
+            indent: fenceMatch[1].length,
+            line: lineNo,
+            body: [],
+            requires,
+          };
           requires = [];
         }
         return;
@@ -167,7 +181,7 @@ function main() {
         requires = requiresMatch[1].split(/\s+/);
         return;
       }
-      if (fence) fence.body.push(line);
+      if (fence) fence.body.push(line.slice(fence.indent));
 
       for (const m of line.matchAll(/npm run ([\w:-]+)/g)) {
         if (!scripts.includes(m[1])) {
@@ -231,7 +245,7 @@ function main() {
   ].flatMap(sourceFiles)) {
     const lines = fs.readFileSync(path.join(ROOT, file), 'utf8').split(/\r?\n/);
     lines.forEach((line, index) => {
-      for (const m of line.matchAll(/docs\/([\w-]+\.md)(#[\w-]+)?/g)) {
+      for (const m of line.matchAll(/docs\/([\w/-]+\.md)(#[\w-]+)?/g)) {
         const doc = `docs/${m[1]}`;
         if (!fs.existsSync(path.join(ROOT, doc))) {
           report(file, index + 1, `refers to missing ${doc}`);

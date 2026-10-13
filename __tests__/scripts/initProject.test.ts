@@ -73,6 +73,9 @@ describe('init-project input', () => {
     ['name', 'Acme | Notes'],
     ['name', 'Acme\nNotes'],
     ['owner', ''],
+    // npm and Expo Doctor reject a package named after its own dependency.
+    ['slug', 'react'],
+    ['slug', 'expo'],
   ])('rejects %s %p', (key, value) => {
     expect(init.validators[key]!(value)).toEqual(expect.any(String));
   });
@@ -92,6 +95,9 @@ describe('init-project input', () => {
   it('rejects unknown arguments, missing values, and conflicting flags', () => {
     expect(() => init.parseArgs(['--colour'])).toThrow(/unknown argument/);
     expect(() => init.parseArgs(['--name'])).toThrow(/needs a value/);
+    expect(() => init.parseArgs(['--name', '--remove-demo'])).toThrow(
+      /--name needs a value/
+    );
     expect(() => init.parseArgs(['--remove-demo', '--keep-demo'])).toThrow(
       /not both/
     );
@@ -271,6 +277,51 @@ describe('init-project on a copy of the template', () => {
     expect(read(dir, 'docs/app-config.md')).toContain('`glide-dev`');
   });
 
+  it('on --force after the APP block was edited, replaces the template identity too', () => {
+    const dir = copy();
+    // The adopter followed app.config.ts's header and edited APP by hand.
+    const config = read(dir, 'app.config.ts')
+      .replace("name: 'RN Starter'", "name: 'Acme Notes'")
+      .replace("slug: 'react-native-starter'", "slug: 'acme-notes'")
+      .replace("scheme: 'rnstarter'", "scheme: 'acmenotes'")
+      .replace(
+        "bundleId: 'com.example.rnstarter'",
+        "bundleId: 'com.acme.notes'"
+      );
+    fs.writeFileSync(path.join(dir, 'app.config.ts'), config);
+    execFileSync('git', ['commit', '-qam', 'edit APP'], {
+      cwd: dir,
+      env: {
+        ...process.env,
+        GIT_AUTHOR_NAME: 't',
+        GIT_AUTHOR_EMAIL: 't@example.com',
+        GIT_COMMITTER_NAME: 't',
+        GIT_COMMITTER_EMAIL: 't@example.com',
+      },
+    });
+
+    const result = run(dir, [...IDENTITY, '--keep-demo', '--force']);
+    expect(result.stderr).toBe('');
+    expect(result.status).toBe(0);
+    const leftovers = spawnSync(
+      'git',
+      [
+        'grep',
+        '-nE',
+        'RN Starter|rnstarter',
+        '--',
+        '.',
+        ':(exclude)__tests__',
+        ':(exclude)scripts/init-project.js',
+      ],
+      { cwd: dir, encoding: 'utf8' }
+    );
+    expect(leftovers.stdout).toBe('');
+    expect(read(dir, '.github/workflows/e2e-android.yml')).toContain(
+      'com.acme.notes.dev'
+    );
+  });
+
   it('refuses a dirty working tree unless --force', () => {
     const dir = copy();
     fs.appendFileSync(path.join(dir, 'README.md'), '\nlocal change\n');
@@ -381,6 +432,26 @@ describe('init-project on a copy of the template', () => {
     expect(markers.status).toBe(1);
     expect(markers.stdout).toBe('');
   }, 60000);
+
+  (HAS_DEMO ? it : it.skip)(
+    'after a failure on uncommitted changes, never suggests discarding them',
+    () => {
+      const dir = copy();
+      fs.appendFileSync(
+        path.join(dir, 'docs/conventions.md'),
+        // Split, so remove-demo doesn't read this test as a marker.
+        `\n<!-- @${'demo'} remove-block-start -->\nunterminated\n`
+      );
+      fs.writeFileSync(path.join(dir, 'NOTES.md'), 'my notes\n');
+      const result = run(dir, [...IDENTITY, '--remove-demo', '--force']);
+      expect(result.status).toBe(1);
+      expect(result.stderr).toContain(
+        'docs/conventions.md: unterminated @' + 'demo block'
+      );
+      expect(result.stderr).not.toMatch(/git (checkout|clean)/);
+      expect(read(dir, 'NOTES.md')).toBe('my notes\n');
+    }
+  );
 
   it('removes the demo with --remove-demo and refuses a second run', () => {
     const dir = copy();
