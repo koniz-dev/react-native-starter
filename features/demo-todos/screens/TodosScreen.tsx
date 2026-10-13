@@ -33,7 +33,7 @@ export function TodosScreen() {
 
   const errorText =
     error && !loading
-      ? `${t('explore.errorTitle')}. ${errorMessage(error)}`
+      ? t('explore.errorAnnouncement', { message: errorMessage(error) })
       : null;
   useAnnouncement(errorText);
   useEffect(() => {
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
   },
   todoTitle: {
     flex: 1,
-    marginRight: 8,
+    marginEnd: 8,
   },
   completedTodo: {
     textDecorationLine: 'line-through',

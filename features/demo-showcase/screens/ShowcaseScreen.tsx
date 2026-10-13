@@ -11,6 +11,7 @@ import {
 } from 'react-native-paper';
 import { Stack } from 'expo-router';
 import { t } from '@/shared/i18n';
+import { DocumentTitle } from '@/shared/ui/DocumentTitle';
 
 /**
  * Demo: a tour of React Native Paper components under the app theme. Opened
@@ -30,6 +31,7 @@ export function ShowcaseScreen() {
       <Stack.Screen
         options={{ headerShown: true, title: t('showcase.title') }}
       />
+      <DocumentTitle title={t('showcase.title')} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
           <Text

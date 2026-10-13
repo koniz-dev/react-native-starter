@@ -7,6 +7,7 @@ jest.mock('expo-router', () => {
 import * as SecureStore from 'expo-secure-store';
 import { router } from 'expo-router';
 import { HomeScreen } from '@/features/home/screens/HomeScreen';
+import { DocumentTitle } from '@/shared/ui/DocumentTitle';
 import { getItem, setItem, STORAGE_KEYS } from '@/shared/storage/storage';
 import { defaultUnauthorizedHandler } from '@/shared/session/session';
 import { renderWithProviders, secureStore } from '@/testing';
@@ -107,20 +108,34 @@ describe('<HomeScreen /> session', () => {
   });
 });
 
+describe('<HomeScreen /> titles', () => {
+  test('marks the heading and names the browser tab', async () => {
+    const view = renderWithProviders(<HomeScreen />, { withSession: true });
+    await view.findByText('Not signed in');
+    expect(view.getByRole('header', { name: 'Welcome' })).toBeTruthy();
+    expect(view.UNSAFE_getByType(DocumentTitle).props.title).toBe('Home');
+  });
+});
+
 // @demo remove-block-start
 describe('<HomeScreen /> examples', () => {
   test.each([
     ['Todos (API example)', '/explore'],
     ['Component showcase', '/showcase'],
   ])('"%s" opens %s', async (title, route) => {
-    const { findByText, getByText } = renderWithProviders(<HomeScreen />, {
-      withSession: true,
-    });
+    const { findByText, getByText, getByRole } = renderWithProviders(
+      <HomeScreen />,
+      { withSession: true }
+    );
     await findByText('Not signed in');
 
     fireEvent.press(getByText(title));
 
     expect(router.navigate).toHaveBeenCalledWith(route);
+    // A screen reader announces it as something to press.
+    expect(
+      getByRole('button', { name: new RegExp(title.replace(/[()]/g, '.')) })
+    ).toBeTruthy();
   });
 });
 // @demo remove-block-end

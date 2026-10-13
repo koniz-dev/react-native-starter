@@ -39,6 +39,6 @@ export default function AuthLayout() {
 
 const styles = StyleSheet.create({
   back: {
-    marginLeft: -8,
+    marginStart: -8,
   },
 });

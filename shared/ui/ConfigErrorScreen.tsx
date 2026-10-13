@@ -65,8 +65,8 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   issue: {
-    borderLeftWidth: 4,
-    paddingLeft: 12,
+    borderStartWidth: 4,
+    paddingStart: 12,
     paddingVertical: 8,
     marginBottom: 12,
   },

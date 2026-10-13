@@ -1,9 +1,18 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react-native';
 import { ShowcaseScreen } from '@/features/demo-showcase/screens/ShowcaseScreen';
 import { renderWithProviders } from '@/testing';
+import { DocumentTitle } from '@/shared/ui/DocumentTitle';
 
 // The screen sets its header through <Stack.Screen>, which needs a navigator.
-jest.mock('expo-router', () => ({ Stack: { Screen: () => null } }));
+const mockScreenOptions = jest.fn();
+jest.mock('expo-router', () => ({
+  Stack: {
+    Screen: ({ options }: { options: unknown }) => {
+      mockScreenOptions(options);
+      return null;
+    },
+  },
+}));
 
 describe('<ShowcaseScreen />', () => {
   it.each([
@@ -18,6 +27,17 @@ describe('<ShowcaseScreen />', () => {
     fireEvent.press(screen.getByText(button));
 
     expect(await screen.findByText(message)).toBeTruthy();
+  });
+
+  it('shows a header with a back button, and titles the browser tab', () => {
+    renderWithProviders(<ShowcaseScreen />);
+    expect(mockScreenOptions).toHaveBeenCalledWith({
+      headerShown: true,
+      title: 'Component showcase',
+    });
+    expect(screen.UNSAFE_getByType(DocumentTitle).props.title).toBe(
+      'Component showcase'
+    );
   });
 
   it('closes the snackbar with Dismiss', async () => {

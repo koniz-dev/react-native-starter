@@ -61,6 +61,7 @@ export const en = {
   'profile.name': 'Name',
   'profile.email': 'Email',
   'profile.refreshFailed': 'Could not refresh your profile: {message}',
+  'profile.refreshing': 'Refreshing your profile',
 
   // Login
   'login.headerTitle': 'Sign in',
@@ -83,6 +84,7 @@ export const en = {
   'explore.reload': 'Reload',
   'explore.retrying': 'Loading...',
   'explore.errorTitle': 'Error',
+  'explore.errorAnnouncement': 'Error. {message}',
   'explore.listTitle': 'Todos ({count})',
   'explore.empty': 'No todos found',
   'explore.done': '✓ Done',

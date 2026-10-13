@@ -12,6 +12,7 @@ import { useSession } from '@/shared/session/SessionProvider';
 import { toApiError } from '@/shared/http/apiError';
 import { errorMessage } from '@/shared/http/errorMessage';
 import { t } from '@/shared/i18n';
+import { logger } from '@/shared/lib/logger';
 import { DocumentTitle } from '@/shared/ui/DocumentTitle';
 import { useAnnouncement } from '@/shared/ui/useAnnouncement';
 
@@ -35,6 +36,11 @@ export function ProfileScreen() {
     refreshUser()
       .catch(err => {
         const apiError = toApiError(err);
+        // Not a server answer (e.g. a profile that fails validation): the
+        // user sees a generic message, the developer the reason.
+        if (apiError.code === 'unknown') {
+          logger.error('Refreshing the profile failed', err);
+        }
         // A 401 signs out; the guard navigates away, so there is nothing to show.
         if (active && apiError.code !== 'unauthorized') {
           setError(errorMessage(apiError));
@@ -62,6 +68,7 @@ export function ProfileScreen() {
         {refreshing && (
           <ActivityIndicator
             style={styles.status}
+            accessibilityLabel={t('profile.refreshing')}
             testID="profile-refreshing"
           />
         )}

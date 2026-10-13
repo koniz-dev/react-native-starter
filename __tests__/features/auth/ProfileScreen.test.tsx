@@ -1,8 +1,9 @@
 import { AccessibilityInfo } from 'react-native';
-import { waitFor } from '@testing-library/react-native';
+import { act, waitFor } from '@testing-library/react-native';
 import { ProfileScreen } from '@/features/auth/screens/ProfileScreen';
 import { ApiError } from '@/shared/http/apiError';
 import { authService } from '@/shared/session/authService';
+import { logger } from '@/shared/lib/logger';
 import { setItem, STORAGE_KEYS } from '@/shared/storage/storage';
 import { renderWithProviders, secureStore } from '@/testing';
 
@@ -63,6 +64,43 @@ describe('<ProfileScreen />', () => {
     await findByTestId('profile-logout');
     await waitForRefresh(queryByTestId);
     expect(queryByTestId('profile-error')).toBeNull();
+  });
+
+  it('shows a labeled indicator while reloading', async () => {
+    await signInWithoutProfile();
+    const pending: (() => void)[] = [];
+    jest
+      .spyOn(authService, 'fetchProfile')
+      .mockImplementation(
+        () => new Promise(resolve => pending.push(() => resolve(null)))
+      );
+    const { findByLabelText, queryByTestId } = renderWithProviders(
+      <ProfileScreen />,
+      { withSession: true }
+    );
+
+    expect(await findByLabelText('Refreshing your profile')).toBeTruthy();
+    await act(async () => pending.forEach(finish => finish()));
+    await waitForRefresh(queryByTestId);
+  });
+
+  it('logs a reload that failed for a reason other than the server', async () => {
+    await signInWithoutProfile();
+    const logged = jest.spyOn(logger, 'error').mockImplementation(() => {});
+    const failure = new Error('The profile did not match the schema');
+    jest.spyOn(authService, 'fetchProfile').mockRejectedValue(failure);
+
+    const { findByTestId } = renderWithProviders(<ProfileScreen />, {
+      withSession: true,
+    });
+
+    expect(await findByTestId('profile-error')).toHaveTextContent(
+      /Something went wrong/
+    );
+    expect(logged).toHaveBeenCalledWith(
+      'Refreshing the profile failed',
+      failure
+    );
   });
 });
 

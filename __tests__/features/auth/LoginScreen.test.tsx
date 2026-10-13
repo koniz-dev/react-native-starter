@@ -30,11 +30,24 @@ jest.mock('react-native-paper', () => {
       children,
       onPress,
       testID,
+      disabled,
+      loading,
     }: {
       children: React.ReactNode;
       onPress: () => void;
       testID?: string;
-    }) => React.createElement(ReactNative.Text, { onPress, testID }, children),
+      disabled?: boolean;
+      loading?: boolean;
+    }) =>
+      React.createElement(
+        ReactNative.Text,
+        {
+          onPress,
+          testID,
+          accessibilityState: { disabled: !!disabled, busy: !!loading },
+        },
+        children
+      ),
   };
 });
 
@@ -100,6 +113,93 @@ describe('<LoginScreen />', () => {
     expect(login).toHaveBeenCalledTimes(1);
   });
 
+  it('can sign in again after a failed attempt', async () => {
+    const login = jest
+      .spyOn(authService, 'login')
+      .mockRejectedValueOnce(
+        new ApiError('Request failed', {
+          code: 'unauthorized',
+          status: 401,
+          data: { message: 'Invalid credentials' },
+        })
+      )
+      .mockResolvedValueOnce({
+        token: 'test-token',
+        user: { id: 1, email: 'user@example.com', name: 'Test User' },
+      });
+    const { getByTestId, getByText, findByText } = renderLogin();
+    fireEvent.changeText(getByTestId('login-username'), 'emily');
+    fireEvent.changeText(getByTestId('login-password'), 'wrong');
+    fireEvent.press(getByText('Sign In'));
+    expect(await findByText('Invalid credentials')).toBeTruthy();
+
+    fireEvent.changeText(getByTestId('login-password'), 'right');
+    fireEvent.press(getByText('Sign In'));
+
+    await waitFor(() =>
+      expect(getByTestId('session-probe').props.children).toBe('signedIn')
+    );
+    expect(login).toHaveBeenCalledTimes(2);
+  });
+
+  it('shows the button busy and disabled, and clears the last error, while signing in', async () => {
+    let finish!: () => void;
+    jest.spyOn(authService, 'login').mockImplementation(
+      () =>
+        new Promise(resolve => {
+          finish = () =>
+            resolve({
+              token: 'test-token',
+              user: { id: 1, email: 'user@example.com', name: 'Test User' },
+            });
+        })
+    );
+    const { getByTestId, findByText, queryByText } = renderLogin();
+    const submit = getByTestId('login-submit');
+    expect(submit.props.accessibilityState).toEqual({
+      disabled: false,
+      busy: false,
+    });
+    fireEvent.press(submit);
+    expect(await findByText('Please fill in all fields')).toBeTruthy();
+
+    fireEvent.changeText(getByTestId('login-username'), 'emily');
+    fireEvent.changeText(getByTestId('login-password'), 'secret-pass');
+    fireEvent.press(submit);
+
+    await waitFor(() =>
+      expect(getByTestId('login-submit').props.accessibilityState).toEqual({
+        disabled: true,
+        busy: true,
+      })
+    );
+    expect(queryByText('Please fill in all fields')).toBeNull();
+    finish();
+    await waitFor(() =>
+      expect(getByTestId('session-probe').props.children).toBe('signedIn')
+    );
+  });
+
+  it('marks only the field that is empty', async () => {
+    const { getByTestId, getByText, findByText } = renderLogin();
+    fireEvent.changeText(getByTestId('login-username'), 'emily');
+    fireEvent.press(getByText('Sign In'));
+
+    expect(await findByText('Please fill in all fields')).toBeTruthy();
+    expect(getByTestId('login-username').props.error).toBe(false);
+    expect(getByTestId('login-password').props.error).toBe(true);
+  });
+
+  it('masks the password and titles the screen for screen readers', async () => {
+    const { getByTestId, getByRole } = await renderLoginReady();
+    expect(getByTestId('login-password').props).toMatchObject({
+      secureTextEntry: true,
+      autoComplete: 'password',
+    });
+    expect(getByTestId('login-username').props.autoComplete).toBe('username');
+    expect(getByRole('header', { name: 'Welcome Back' })).toBeTruthy();
+  });
+
   it('labels the fields for screen readers and turns off autocorrect', async () => {
     const { getByTestId } = await renderLoginReady();
     for (const [id, label, type] of [
@@ -157,8 +257,9 @@ describe('<LoginScreen />', () => {
 
   it.each([
     ['ios', 1],
-    // Android reads the error's live region itself.
+    // Android and the web read the error's live region themselves.
     ['android', 0],
+    ['web', 0],
   ] as const)(
     'announces a failed sign-in to the screen reader (%s)',
     async (os, announcements) => {

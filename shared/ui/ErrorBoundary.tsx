@@ -144,7 +144,8 @@ function ErrorFallback({
             </ScrollView>
           ) : null}
         </Card.Content>
-        <Card.Actions>
+        {/* Wraps at large text sizes instead of running off the card. */}
+        <Card.Actions style={styles.actions} testID="error-actions">
           <Button mode="outlined" onPress={onGoHome} testID="error-go-home">
             {t('errorBoundary.goHome')}
           </Button>
@@ -169,6 +170,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
+  },
+  actions: {
+    flexWrap: 'wrap',
+    justifyContent: 'flex-end',
+    gap: 8,
   },
   card: {
     width: '100%',

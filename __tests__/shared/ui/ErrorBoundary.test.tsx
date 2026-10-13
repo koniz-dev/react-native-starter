@@ -81,6 +81,10 @@ describe('error boundaries', () => {
 
       expect(await screen.findByText('Something went wrong')).toBeTruthy();
       expect(screen.getByText('Boom from a screen')).toBeTruthy();
+      // The two buttons wrap at large text sizes instead of overflowing.
+      expect(
+        StyleSheet.flatten(screen.getByTestId('error-actions').props.style)
+      ).toMatchObject({ flexWrap: 'wrap' });
       // Development also shows the stack.
       expect(screen.getByText(/^Error: Boom from a screen at /)).toBeTruthy();
       expect(backgroundOf('error-fallback')).toBe(theme.colors.background);

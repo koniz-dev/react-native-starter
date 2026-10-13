@@ -4,7 +4,7 @@ import {
   type AxiosAdapter,
   type InternalAxiosRequestConfig,
 } from 'axios';
-import { AccessibilityInfo } from 'react-native';
+import { AccessibilityInfo, StyleSheet } from 'react-native';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react-native';
 import { TodosScreen } from '@/features/demo-todos/screens/TodosScreen';
 import type { Todo } from '@/features/demo-todos/types';
@@ -85,9 +85,17 @@ describe('<TodosScreen /> (Explore)', () => {
     expect(screen.queryByText('todo 11')).toBeNull();
     expect(screen.getAllByText('✓ Done')).toHaveLength(1);
     expect(screen.getByText('User ID: 1 • ID: 2')).toBeTruthy();
+    // Done todos are struck through; open ones aren't.
+    const decoration = (text: string) =>
+      StyleSheet.flatten(screen.getByText(text).props.style).textDecorationLine;
+    expect(decoration('todo 1')).toBe('line-through');
+    expect(decoration('todo 2')).toBeUndefined();
+    expect(screen.getByRole('header', { name: 'API Example' })).toBeTruthy();
+    expect(screen.UNSAFE_getByType(DocumentTitle).props.title).toBe('Explore');
   });
 
-  it('announces the error from a live region', async () => {
+  it('announces the error from a live region, and leaves server errors unlogged', async () => {
+    const logged = jest.spyOn(logger, 'error');
     const announce = jest.spyOn(AccessibilityInfo, 'announceForAccessibility');
     const requests = controlledApi();
     renderWithProviders(<TodosScreen />);
@@ -101,6 +109,8 @@ describe('<TodosScreen /> (Explore)', () => {
     expect(announce).toHaveBeenCalledWith(
       'Error. The server had a problem. Please try again later.'
     );
+    // The server answered: the request log has it; not a developer error.
+    expect(logged).not.toHaveBeenCalled();
   });
 
   it('keeps the list on screen while it reloads', async () => {

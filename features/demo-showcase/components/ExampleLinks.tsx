@@ -12,6 +12,7 @@ export function ExampleLinks() {
         description={t('home.examples.todosDescription')}
         left={props => <List.Icon {...props} icon="format-list-checks" />}
         onPress={() => router.navigate('/explore')}
+        accessibilityRole="button"
         testID="example-todos"
       />
       <List.Item
@@ -19,6 +20,7 @@ export function ExampleLinks() {
         description={t('home.examples.showcaseDescription')}
         left={props => <List.Icon {...props} icon="palette" />}
         onPress={() => router.navigate('/showcase')}
+        accessibilityRole="button"
         testID="example-showcase"
       />
     </List.Section>

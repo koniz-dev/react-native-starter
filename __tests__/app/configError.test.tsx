@@ -26,6 +26,11 @@ describe('startup with invalid configuration', () => {
     expect(await screen.findByText('Configuration error')).toBeTruthy();
     expect(screen.getByText('EXPO_PUBLIC_API_URL')).toBeTruthy();
     expect(screen.getByText('EXPO_PUBLIC_AUTH_API_URL')).toBeTruthy();
+    // What is wrong with each, not only its name.
+    expect(screen.getAllByText(/is required/)).toHaveLength(2);
+    expect(
+      screen.getByRole('header', { name: 'Configuration error' })
+    ).toBeTruthy();
     expect(screen.queryByText('Session')).toBeNull();
     // Otherwise the splash would cover the error screen.
     expect(SplashScreen.hideAsync).toHaveBeenCalled();
