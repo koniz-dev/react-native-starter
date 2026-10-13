@@ -10,7 +10,7 @@ import { DocumentTitle } from '@/shared/ui/DocumentTitle';
 import { ExampleLinks } from '@/features/demo-showcase/components/ExampleLinks';
 // @demo remove-block-end
 
-/** Home: the session card and links to the examples. */
+/** Home: the session card, with sign-in, profile, and sign-out. */
 export function HomeScreen() {
   const theme = useTheme();
   const { session, signOut } = useSession();

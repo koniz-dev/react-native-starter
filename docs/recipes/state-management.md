@@ -24,9 +24,8 @@ Where the pieces go:
 
 ```
 features/favorites/
-  store.ts                 the store (one of the recipes below)
-  ResetFavoritesOnSignOut.tsx
-app/_layout.tsx            <SessionProvider> <ResetFavoritesOnSignOut /> <RootNavigator /> </SessionProvider>
+  store.ts(x)              the store and the sign-out reset (one recipe below)
+app/_layout.tsx            mounts the reset (or the recipe's provider) inside <SessionProvider>
 ```
 
 ## Zustand
@@ -93,7 +92,7 @@ npx expo install @reduxjs/toolkit react-redux
 <!-- docs-check: requires @reduxjs/toolkit react-redux -->
 
 ```tsx
-// features/favorites/store.ts
+// features/favorites/store.tsx (it renders the Provider)
 import { useEffect, type ReactNode } from 'react';
 import {
   configureStore,

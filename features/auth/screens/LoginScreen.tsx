@@ -57,7 +57,7 @@ export function LoginScreen() {
 
     try {
       // Signing in flips the route guards in app/_layout.tsx: this screen
-      // (signed-out only) is removed and the app returns to Home.
+      // (signed-out only) is removed, back to the screen that opened it.
       await signIn({ username, password });
     } catch (err) {
       // Not a server answer (e.g. no AuthAdapter registered): the user sees a

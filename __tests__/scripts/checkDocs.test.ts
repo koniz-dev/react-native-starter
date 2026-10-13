@@ -34,6 +34,11 @@ describe('check-docs on a copy of the project', () => {
       '\nSee `.maestro/no-such-flow.yaml` and `public/nope.html`.\n'
     );
     append('shared/lib/logger.ts', '\n// See docs/recipes/no-such.md.\n');
+    // A snippet that compiles but breaks the lint rules where it says it goes.
+    append(
+      'docs/conventions.md',
+      '\n```ts\n// features/notes/api/notesApi.ts\nconst notes = 1;\nexport default notes;\n```\n'
+    );
 
     const result = spawnSync(process.execPath, ['scripts/check-docs.js'], {
       cwd: dir,
@@ -47,6 +52,9 @@ describe('check-docs on a copy of the project', () => {
     expect(result.stderr).toContain('path does not exist: public/nope.html');
     expect(result.stderr).toContain(
       'refers to missing docs/recipes/no-such.md'
+    );
+    expect(result.stderr).toMatch(
+      /docs\/conventions\.md:\d+: Use a named export.*\(no-restricted-syntax\)/
     );
   }, 120000);
 });

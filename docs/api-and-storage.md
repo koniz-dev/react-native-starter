@@ -41,7 +41,8 @@ export const paymentsApi = createHttpClient({
 
 Every client rejects with `ApiError` (`shared/http/apiError.ts`), an `Error`
 subclass. Its `message` is for developers and logs: it can be axios's text
-("Network Error"), a developer error, or a server's 5xx body. To show an
+("Request failed with status code 404"), a developer error, or a server's
+5xx body. To show an
 error, use `errorMessage(error)` (`shared/http/errorMessage.ts`): the
 server's own `message` (or `error`) field for a 4xx, so a failed login shows
 "Invalid credentials", and translated text (`errors.*` in
@@ -302,6 +303,9 @@ export function UserName({ userId }: { userId: number }) {
   return <Text>{data?.name}</Text>;
 }
 ```
+
+A real screen also announces the error and logs one whose `code` is
+`unknown`, as the worked example in Connect Your Backend does.
 
 `LoadingScreen` (`shared/ui/LoadingScreen.tsx`) is a centered progress
 indicator with an optional message. A whole list screen, with loading, an

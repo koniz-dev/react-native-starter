@@ -10,6 +10,9 @@
  *    packages the project doesn't install (a library a page shows how to
  *    adopt); it is compiled when they are present (CI can install them) and
  *    skipped, with a note, otherwise;
+ *    each block also passes ESLint with the project's config, as the file
+ *    its first line names (`// features/x/y.ts`), or else as a test (if it
+ *    reads like one), a route, or a module in a feature (lintSnippets);
  * 2. every ```json block parses;
  * 3. every `npm run <script>` names a script in package.json;
  * 4. every relative Markdown link points to an existing file (and heading,
@@ -113,6 +116,66 @@ function isPlaceholder(value) {
   return /[<>*{}|…]|\.\.\./.test(value);
 }
 
+/**
+ * Lints each snippet with the project's ESLint config, as the file its first
+ * line names (`// features/posts/api/postsApi.ts`), or else as a file in a
+ * feature, so a copied snippet passes `npm run lint` too. Type-aware rules
+ * are off (the file doesn't exist), and so is formatting.
+ */
+function lintSnippets(snippets) {
+  const files = snippets.map(snippet => {
+    const named =
+      /^\/\/ ((?:[\w.()[\]-]+\/)*[\w.()[\]-]+\.(?:tsx?|jsx?))\b/.exec(
+        snippet.body
+      );
+    // Unnamed: a test if it reads like one, a route if it is one line
+    // re-exporting a screen, else a module in a feature.
+    const folder = /\b(describe|it|test|expect)\(|\bjest\b/.test(snippet.body)
+      ? '__tests__/example'
+      : /^export \{ \w+ as default \}/m.test(snippet.body)
+        ? 'app/example'
+        : 'features/example';
+    return [
+      path.join(ROOT, named ? named[1] : `${folder}/${snippet.name}`),
+      snippet.body,
+    ];
+  });
+  const script = `
+    const { ESLint } = require('eslint');
+    const files = JSON.parse(require('fs').readFileSync(0, 'utf8'));
+    const eslint = new ESLint({
+      overrideConfig: [{
+        files: ['**/*.{ts,tsx}'],
+        languageOptions: { parserOptions: { project: null } },
+        rules: {
+          '@typescript-eslint/no-floating-promises': 'off',
+          '@typescript-eslint/no-misused-promises': 'off',
+          'prettier/prettier': 'off',
+        },
+      }],
+    });
+    (async () => {
+      const out = [];
+      for (const [filePath, code] of files) {
+        const [result] = await eslint.lintText(code, { filePath });
+        out.push(result ? result.messages : []);
+      }
+      process.stdout.write(JSON.stringify(out));
+    })();`;
+  const run = spawnSync(process.execPath, ['-e', script], {
+    cwd: ROOT,
+    input: JSON.stringify(files),
+    encoding: 'utf8',
+  });
+  if (run.status !== 0) return [`eslint did not run: ${run.stderr}`];
+  return JSON.parse(run.stdout).flatMap((messages, i) =>
+    messages.map(
+      m =>
+        `${snippets[i].file}:${snippets[i].line + m.line}: ${m.message}${m.ruleId ? ` (${m.ruleId})` : ''}`
+    )
+  );
+}
+
 function main() {
   const scripts = Object.keys(
     JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).scripts
@@ -152,7 +215,13 @@ function main() {
           } else if (fence.lang === 'ts' || fence.lang === 'tsx') {
             const name = `${file.replace(/[/.]/g, '_')}_L${fence.line}.${fence.lang}`;
             fs.writeFileSync(path.join(OUT, name), `${body}\nexport {};\n`);
-            snippets.push({ name, file, line: fence.line });
+            snippets.push({
+              name,
+              file,
+              line: fence.line,
+              body,
+              lang: fence.lang,
+            });
           } else if (fence.lang === 'json') {
             try {
               JSON.parse(body);
@@ -302,6 +371,8 @@ function main() {
       : m[1];
     problems.push(`${where}: ${m[3]}`);
   }
+
+  problems.push(...lintSnippets(snippets));
 
   if (!KEEP) fs.rmSync(OUT, { recursive: true, force: true });
 

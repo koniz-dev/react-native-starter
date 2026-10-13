@@ -129,7 +129,7 @@ emulator), or `w` (web), or scan the QR code with Expo Go.
 | `npm run test:ci`                                                 | Jest once, with coverage and its threshold                                                                    |
 | `npm run test:coverage`                                           | Jest with an HTML coverage report in `coverage/`                                                              |
 | `npm run test:e2e:ios` / `npm run test:e2e:android`               | Maestro end-to-end flows on a simulator or emulator ([Testing](testing.md#end-to-end-flows-maestro))          |
-| `npm run docs:check`                                              | Compile the docs' TypeScript snippets and check their paths and scripts                                       |
+| `npm run docs:check`                                              | Compile and lint the docs' TypeScript snippets, and check their paths and scripts                             |
 | `npm run doctor`                                                  | Expo Doctor against the installed Expo SDK (see below)                                                        |
 | `npm run audit:check`                                             | `npm audit --omit=dev`, failing on a high or critical advisory not reviewed in `scripts/audit-allowlist.json` |
 

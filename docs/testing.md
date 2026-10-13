@@ -23,7 +23,7 @@ __tests__/                    mirrors the source tree
 ├── app/                      full-app routing tests: guards, initial route, theme, status bar
 ├── features/
 │   └── auth/  home/  ...     screen tests
-├── scripts/                  tests of the Node scripts (check-audit)
+├── scripts/                  tests of the Node scripts and the lint rules
 └── shared/
     ├── config/  http/  session/  storage/
     ├── integrations/  lib/  ui/
@@ -275,14 +275,13 @@ handling in one of two ways:
 
 ```ts
 // __tests__/shared/http/sameOrigin.test.ts
+import type * as Env from '@/shared/config/env';
 import { api } from '@/shared/http/api';
 import { STORAGE_KEYS } from '@/shared/storage/storage';
 import { secureStore } from '@/testing';
 
 jest.mock('@/shared/config/env', () => {
-  const actual = jest.requireActual<typeof import('@/shared/config/env')>(
-    '@/shared/config/env'
-  );
+  const actual = jest.requireActual<typeof Env>('@/shared/config/env');
   const config = actual.getConfig();
   return {
     ...actual,

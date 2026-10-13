@@ -67,7 +67,8 @@ export async function saveSettings(
   adapter (or the provider's `beforeSend`).
 
 - **No `console` in app code.** ESLint `no-console` is an error everywhere
-  except `shared/lib/logger.ts` and the default reporter.
+  except `shared/lib/logger.ts`, the default reporter, and code that doesn't
+  ship in the app (tests, `scripts/`, the Jest setup files).
 
 ### Failed requests
 
@@ -96,7 +97,7 @@ Set `EXPO_PUBLIC_LOG_LEVEL=warn` to hide the `info` lines, or call
 `shared/integrations/errorReporter.ts`:
 
 ```ts
-interface ErrorReporter {
+export interface ErrorReporter {
   captureException(error: unknown, context?: ErrorReportContext): void;
   captureMessage(
     message: string,

@@ -71,7 +71,7 @@ The root stack hides headers. `(app)` and `(auth)` show their own, with a
 back button. Add your app's tabs as files in `app/(tabs)/`, next to Home's
 `index.tsx`.
 
-Navigate with `router.push('/settings')`, `router.replace`, or `<Link>` from
+Navigate with `router.navigate('/settings')`, `router.replace`, or `<Link>` from
 `expo-router`. Route groups export a route-level error boundary
 ([Error Reporting](error-reporting.md#error-boundaries)). Typed routes
 (`experiments.typedRoutes`) are not enabled. See
@@ -149,7 +149,7 @@ mount the part that loads data only when the user is signed in:
 First add the prompt's strings to `shared/i18n/en.ts`:
 
 ```ts
-const en = {
+export const en = {
   // ...
   'notes.signedOut': 'Sign in to see your notes',
   'notes.signIn': 'Sign in',
@@ -158,6 +158,7 @@ const en = {
 
 ```tsx
 // features/notes/screens/NotesScreen.tsx
+import type { JSX } from 'react';
 import { router } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -168,7 +169,7 @@ import { LoadingScreen } from '@/shared/ui/LoadingScreen';
 // In your app: import { t } from '@/shared/i18n'; the keys above make it
 // type-check.
 declare function t(key: 'notes.signedOut' | 'notes.signIn'): string;
-declare function NotesList(): React.JSX.Element; // loads with useFetch
+declare function NotesList(): JSX.Element; // loads with useFetch
 
 export function NotesScreen() {
   const theme = useTheme();
@@ -180,7 +181,7 @@ export function NotesScreen() {
         style={[styles.prompt, { backgroundColor: theme.colors.background }]}
       >
         <Text>{t('notes.signedOut')}</Text>
-        <Button mode="contained" onPress={() => router.push('/login')}>
+        <Button mode="contained" onPress={() => router.navigate('/login')}>
           {t('notes.signIn')}
         </Button>
       </SafeAreaView>

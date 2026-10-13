@@ -28,8 +28,8 @@ preview). See [`docs/remove-demo.md`](../docs/remove-demo.md).
 
 Checks the docs against the code (`npm run docs:check`, also run in CI):
 compiles every TypeScript snippet in `README.md`, `docs/`, and the folder
-READMEs with `tsc`, and checks every `npm run` script, link, anchor, and repo
-path they mention. See [`docs/README.md`](../docs/README.md).
+READMEs with `tsc`, lints them with ESLint as the file each one names, and
+checks every `npm run` script, link, anchor, and repo path they mention. See [`docs/README.md`](../docs/README.md).
 
 ## `check-audit.js`
 

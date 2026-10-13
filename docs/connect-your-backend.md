@@ -265,8 +265,8 @@ it sends the stored token, and there is none until `login` returns.
 - **Storage.** Keep the refresh token in a store from
   `shared/session/tokenStore.ts`: `createSecureTokenStore(key)` (Keychain /
   Keystore) on native and `createMemoryTokenStore()` on web, where
-  `shared/storage/secureStorage.ts` throws. Use a key other than the access
-  token's.
+  `shared/storage/secureStorage.ts` can't store anything (`setSecureItem`
+  throws). Use a key other than the access token's.
 - **Rotation.** If your backend issues a new refresh token on every refresh,
   store it in `refresh`, as the example does. The HTTP client shares one
   refresh between concurrent 401s, and a 401 for a request sent with an older
@@ -298,6 +298,7 @@ Screens read the session with `useSession()`:
 
 ```tsx
 import { Button, Text } from 'react-native-paper';
+import { t } from '@/shared/i18n';
 import { useSession } from '@/shared/session/SessionProvider';
 
 export function AccountRow() {
@@ -306,7 +307,7 @@ export function AccountRow() {
   return (
     <>
       <Text>{session.user?.name}</Text>
-      <Button onPress={signOut}>Log out</Button>
+      <Button onPress={() => void signOut()}>{t('home.session.logOut')}</Button>
     </>
   );
 }
@@ -358,17 +359,19 @@ parse the envelope and return its content, as `unwrap` does in the sign-in
 example. When several features share it, the helper can live in
 `shared/http/`.
 
-and load them in a screen with `useFetch` (loading, a typed `ApiError`, refetch;
+Load them in a screen with `useFetch` (loading, a typed `ApiError`, refetch;
 the `signal` cancels the request when the screen goes away). This screen shows
 the loading state, then the error (in words the user can act on) with a
 Try again button, or the list:
 
 ```tsx
 // features/posts/screens/PostsScreen.tsx
+import { useEffect } from 'react';
 import { View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { errorMessage } from '@/shared/http/errorMessage';
 import { t } from '@/shared/i18n';
+import { logger } from '@/shared/lib/logger';
 import { useFetch } from '@/shared/lib/useFetch';
 import { LoadingScreen } from '@/shared/ui/LoadingScreen';
 import { useAnnouncement } from '@/shared/ui/useAnnouncement';
@@ -384,6 +387,11 @@ export function PostsScreen() {
   );
   const message = error && errorMessage(error);
   useAnnouncement(message);
+  useEffect(() => {
+    // Not a server answer (e.g. a payload that fails the schema): the user
+    // sees a generic message, the developer the reason.
+    if (error?.code === 'unknown') logger.error('Loading posts failed', error);
+  }, [error]);
 
   if (loading && !data) return <LoadingScreen />;
   return (

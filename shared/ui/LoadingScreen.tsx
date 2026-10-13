@@ -10,7 +10,7 @@ interface LoadingScreenProps {
  *
  * @example
  * ```tsx
- * <LoadingScreen message="Loading data..." />
+ * <LoadingScreen message={t('posts.loading')} /> // a key in shared/i18n/en.ts
  * ```
  */
 export function LoadingScreen({ message }: LoadingScreenProps) {

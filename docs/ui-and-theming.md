@@ -30,8 +30,15 @@ Use Paper components, and read colors from the theme instead of literals
 ```tsx
 import { StyleSheet, View } from 'react-native';
 import { Button, Text, useTheme } from 'react-native-paper';
+import { t } from '@/shared/i18n';
 
-export function Banner({ onDismiss }: { onDismiss: () => void }) {
+export function Banner({
+  message,
+  onDismiss,
+}: {
+  message: string;
+  onDismiss: () => void;
+}) {
   const theme = useTheme();
   return (
     <View
@@ -40,8 +47,8 @@ export function Banner({ onDismiss }: { onDismiss: () => void }) {
         { backgroundColor: theme.colors.primaryContainer },
       ]}
     >
-      <Text style={{ color: theme.colors.onPrimaryContainer }}>Saved</Text>
-      <Button onPress={onDismiss}>Dismiss</Button>
+      <Text style={{ color: theme.colors.onPrimaryContainer }}>{message}</Text>
+      <Button onPress={onDismiss}>{t('common.dismiss')}</Button>
     </View>
   );
 }
@@ -70,8 +77,9 @@ the brand pairs, `primary` on the background and on every elevation level
 (cards, dialogs, menus), `onSurfaceVariant`, and `inversePrimary` on the
 inverse surface, in both modes. The palette also sets the neutral roles
 (`surfaceVariant`, `outline`, `secondary`), and the elevation tints are mixed
-from `surface` and `primary`, so no color is left from Paper's purple
-baseline. The
+from `surface` and `primary`. The roles it doesn't set (`tertiary`, the
+inverse surface, `backdrop`, `error`, and the disabled colors) keep Paper's
+MD3 defaults; add them to `palette` if your brand needs them. The
 [Material theme builder](https://material-foundation.github.io/material-theme-builder/)
 can generate a full set of MD3 roles from one brand color.
 
@@ -104,11 +112,8 @@ family:
 
 ```tsx
 import { useFonts } from 'expo-font';
-import {
-  configureFonts,
-  MD3LightTheme,
-  type MD3Theme,
-} from 'react-native-paper';
+import { configureFonts, type MD3Theme } from 'react-native-paper';
+import { lightTheme } from '@/shared/ui/theme';
 
 // In app/_layout.tsx, before rendering (keep the splash screen up until loaded):
 export function useAppFonts(): boolean {
@@ -119,9 +124,9 @@ export function useAppFonts(): boolean {
   return loaded;
 }
 
-// In shared/ui/theme.ts, for both themes:
+// In shared/ui/theme.ts, for both themes (the palette stays):
 export const lightThemeWithInter: MD3Theme = {
-  ...MD3LightTheme,
+  ...lightTheme,
   fonts: configureFonts({ config: { fontFamily: 'Inter' } }),
 };
 ```

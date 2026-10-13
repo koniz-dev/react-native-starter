@@ -106,8 +106,8 @@ export function getUnauthorizedHandler(): UnauthorizedHandler {
  * Optional token refresh. It should obtain a new access token (for example
  * with a refresh token), store it with getTokenStore().set(), and return it;
  * return null when the session can't be refreshed. If it throws, a network,
- * timeout, or server error keeps the session (the request fails with that
- * error); any other error counts as "can't refresh". The HTTP client retries
+ * timeout, server, or canceled error keeps the session (the request fails
+ * with that error); any other error counts as "can't refresh". The HTTP client retries
  * the failed request once with the new token. No refresh handler is set by
  * default, so a 401 goes straight to the unauthorized handler.
  */
@@ -134,7 +134,7 @@ const TRANSIENT_CODES = new Set(['network', 'timeout', 'server', 'canceled']);
  * 401s. Resolves to the new token, or null if there is no handler, the
  * session can't be refreshed, or the session ended while refreshing. Rejects
  * with an ApiError when the refresh failed for a transient reason (network,
- * timeout, 5xx), so the caller keeps the session.
+ * timeout, 5xx, canceled), so the caller keeps the session.
  */
 export async function refreshAccessToken(): Promise<string | null> {
   if (!refreshTokenHandler) return null;

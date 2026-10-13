@@ -70,16 +70,16 @@ the diff.
 
 ### Maestro flows
 
-| Flow                          | After removal                                |
-| ----------------------------- | -------------------------------------------- |
-| `01-cold-start.yaml`          | kept: a fresh start opens Home, signed out   |
-| `06-login-back.yaml`          | kept: Back from Login returns Home (Android) |
-| `dark-mode.yaml`              | kept, without its Explore screenshot         |
-| `02-tabs.yaml`                | deleted: there is one tab                    |
-| `03-auth-session.yaml`        | deleted: signs in with the demo account      |
-| `04-login-keyboard.yaml`      | deleted: signs in with the demo account      |
-| `05-explore-error-retry.yaml` | deleted: the Explore tab                     |
-| `07-profile.yaml`             | deleted: signs in with the demo account      |
+| Flow                          | After removal                              |
+| ----------------------------- | ------------------------------------------ |
+| `01-cold-start.yaml`          | kept: a fresh start opens Home, signed out |
+| `06-login-back.yaml`          | kept: Back from Login returns Home         |
+| `dark-mode.yaml`              | kept, without its Explore screenshot       |
+| `02-tabs.yaml`                | deleted: there is one tab                  |
+| `03-auth-session.yaml`        | deleted: signs in with the demo account    |
+| `04-login-keyboard.yaml`      | deleted: signs in with the demo account    |
+| `05-explore-error-retry.yaml` | deleted: the Explore tab                   |
+| `07-profile.yaml`             | deleted: signs in with the demo account    |
 
 `subflows/sign-in.yaml` (the demo account) is deleted too, and so are the
 e2e mock's demo routes (`GET /todos`, `POST /auth/login`, `GET /auth/me`). The e2e runner keeps the mock and points
@@ -115,8 +115,10 @@ In Markdown and HTML, the markers are comments on their own lines
   `.env.example` and `shared/config/env.ts`.
 
 ```tsx
+// features/home/components/HomeExtras.tsx
 import { View } from 'react-native';
 // @demo remove-block-start
+// eslint-disable-next-line project/import-boundaries -- the demo is removable (npm run remove-demo)
 import { ExampleLinks } from '@/features/demo-showcase/components/ExampleLinks';
 // @demo remove-block-end
 

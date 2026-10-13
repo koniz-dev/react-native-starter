@@ -113,8 +113,8 @@ Before you call a change done, run:
 npm run lint && npm run type-check && npm run test:ci
 ```
 
-CI also runs `npm run format:check`, `npm run docs:check` (compiles the
-docs' snippets and checks their paths), `npm run doctor` (Expo Doctor
+CI also runs `npm run format:check`, `npm run docs:check` (compiles and lints
+the docs' snippets and checks their paths), `npm run doctor` (Expo Doctor
 against the installed SDK), and a web export; the Audit workflow runs
 `npm run audit:check`. Run `npm run docs:check` when you change
 docs; name a file that doesn't exist yet with a placeholder

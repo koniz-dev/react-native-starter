@@ -10,7 +10,7 @@ small adapters, not a rewrite. It ships no credentialed services.
 ## Quick start
 
 ```bash
-npm ci                 # Node 24 (.nvmrc), or 22.13+
+npm ci                 # Node 24 (.nvmrc); 24.3+ or 22.13+ also work
 cp .env.example .env   # then see Getting Started for the backend URLs
 npm start              # then press i, a, or w, or scan the QR code with Expo Go
 ```
