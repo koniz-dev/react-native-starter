@@ -1,0 +1,26 @@
+Commit 8c1c912: ci: current action majors, monthly pin updates, and no unused permissions
+Tests changed by the commit: __tests__/app/appConfig.test.ts 
+
+== BEFORE: code at 8c1c912^ with the tests from 8c1c912
+    ✓ APP_VARIANT=undefined (4 ms)
+    ✓ APP_VARIANT=development (1 ms)
+    ✓ APP_VARIANT=preview (1 ms)
+    ✓ APP_VARIANT=production
+    ✓ gives each variant a distinct bundle ID and scheme
+    ✓ uses APP_BUILD_NUMBER for the iOS build number and Android version code
+    ✓ rejects an unknown variant or an invalid build number (11 ms)
+    ✕ asks for no permission the app does not use (3 ms)
+    ✓ configures the splash screen with light and dark backgrounds (1 ms)
+Tests:       1 failed, 8 passed, 9 total
+
+== AFTER: code and tests at 8c1c912
+    ✓ APP_VARIANT=undefined (4 ms)
+    ✓ APP_VARIANT=development (1 ms)
+    ✓ APP_VARIANT=preview (1 ms)
+    ✓ APP_VARIANT=production (1 ms)
+    ✓ gives each variant a distinct bundle ID and scheme
+    ✓ uses APP_BUILD_NUMBER for the iOS build number and Android version code
+    ✓ rejects an unknown variant or an invalid build number (10 ms)
+    ✓ asks for no permission the app does not use (2 ms)
+    ✓ configures the splash screen with light and dark backgrounds (1 ms)
+Tests:       9 passed, 9 total

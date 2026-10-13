@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="iPhone 16 Plus - iOS 18.6 - E0ACAF33-2846-4E2E-B304-D2322BC2F008" tests="7" failures="0" time="499.361" timestamp="2026-10-13T21:18:29">
+    <testcase id="Cold start opens Home" name="Cold start opens Home" classname="Cold start opens Home" file=".maestro/01-cold-start.yaml" time="48.353" timestamp="2026-10-13T21:18:30" status="SUCCESS"/>
+    <testcase id="Back from Login returns Home" name="Back from Login returns Home" classname="Back from Login returns Home" file=".maestro/06-login-back.yaml" time="60.873" timestamp="2026-10-13T21:19:18" status="SUCCESS"/>
+    <testcase id="Tab navigation" name="Tab navigation" classname="Tab navigation" file=".maestro/02-tabs.yaml" time="38.694" timestamp="2026-10-13T21:20:19" status="SUCCESS"/>
+    <testcase id="Sign-in session survives a relaunch; logout clears it" name="Sign-in session survives a relaunch; logout clears it" classname="Sign-in session survives a relaunch; logout clears it" file=".maestro/03-auth-session.yaml" time="163.343" timestamp="2026-10-13T21:20:57" status="SUCCESS"/>
+    <testcase id="Login keyboard return keys" name="Login keyboard return keys" classname="Login keyboard return keys" file=".maestro/04-login-keyboard.yaml" time="68.271" timestamp="2026-10-13T21:23:41" status="SUCCESS"/>
+    <testcase id="Explore error state and Retry" name="Explore error state and Retry" classname="Explore error state and Retry" file=".maestro/05-explore-error-retry.yaml" time="34.944" timestamp="2026-10-13T21:24:49" status="SUCCESS"/>
+    <testcase id="Profile is protected and reloads the user" name="Profile is protected and reloads the user" classname="Profile is protected and reloads the user" file=".maestro/07-profile.yaml" time="84.82" timestamp="2026-10-13T21:25:24" status="SUCCESS"/>
+  </testsuite>
+</testsuites>

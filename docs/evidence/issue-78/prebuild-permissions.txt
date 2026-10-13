@@ -1,0 +1,16 @@
+== APP_VARIANT=production npx expo prebuild --no-install --clean
+-- android/app/src/main/AndroidManifest.xml uses-permission:
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:node="remove"/>
+  <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" tools:node="remove"/>
+  <uses-permission android:name="android.permission.VIBRATE" tools:node="remove"/>
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:node="remove"/>
+-- NSFaceIDUsageDescription in Info.plist: 0
+== APP_VARIANT=development npx expo prebuild --no-install --clean
+-- android/app/src/main/AndroidManifest.xml uses-permission:
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:node="remove"/>
+  <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+  <uses-permission android:name="android.permission.VIBRATE" tools:node="remove"/>
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:node="remove"/>
+-- NSFaceIDUsageDescription in Info.plist: 0
