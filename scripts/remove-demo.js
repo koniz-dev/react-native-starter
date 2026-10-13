@@ -4,10 +4,9 @@
  *
  * 1. works out every change below and checks the result (step 4) before it
  *    changes anything, so a problem leaves the project as it was;
- * 2. deletes the demo folders, routes, and Maestro flows listed in
- *    DEMO_PATHS, and then this script, its doc, its test, and its npm script,
- *    and edits the remaining source, docs, and config files (MARKED_DIRS and
- *    MARKED_FILES):
+ * 2. edits every source, doc, and config file in the project (any .ts, .tsx,
+ *    .js, .jsx, .md, .yml, .yaml, .sh, or .html file, and .env.example,
+ *    outside node_modules and generated folders):
  *    - deletes a line containing `@demo remove-current-line`;
  *    - deletes every line from one containing `@demo remove-block-start`
  *      through the next line containing `@demo remove-block-end`;
@@ -15,10 +14,13 @@
  *      lines, uncomments each line (drops its leading `# ` or `// `) and
  *      deletes the two marker lines: for text that only applies once the
  *      demo is gone (.env.example, the e2e runner, the config's URL check);
- * 3. formats the changed files with Prettier (stripping leaves blank lines);
+ * 3. formats the changed files with Prettier (stripping leaves blank lines),
+ *    then deletes the demo folders, routes, and Maestro flows listed in
+ *    DEMO_PATHS, this command's doc, test, and npm script, and this script
+ *    last, so it is still there if a step fails;
  * 4. fails, before step 2, if a marker is malformed or any `@demo` marker,
  *    import of a removed path, or mention of a deleted file would be left.
- *
+
  * Usage: npm run remove-demo [-- --dry-run]
  * (--no-summary skips the closing message, for a caller that prints its own.)
  */
@@ -52,29 +54,38 @@ const DEMO_PATHS = [
   'scripts/remove-demo.js',
 ];
 
-const MARKED_DIRS = [
-  'app',
-  'features',
-  'shared',
-  '__tests__',
-  'docs',
-  '.maestro',
-  'scripts',
-];
-const MARKED_FILES = ['README.md', 'AGENTS.md', '.env.example'];
-const MARKED_EXT = /\.(ts|tsx|js|jsx|md|ya?ml|sh)$/;
+/** Folders that hold no project source: installed, generated, or output. */
+const SKIPPED_DIRS = new Set([
+  'node_modules',
+  '.git',
+  '.expo',
+  'android',
+  'ios',
+  'dist',
+  'web-build',
+  'coverage',
+  'e2e-results',
+  '.docs-check',
+]);
+const MARKED_EXT = /\.(ts|tsx|js|jsx|md|ya?ml|sh|html)$|^\.env\.example$/;
 const PRETTIER_EXT = /\.(ts|tsx|js|jsx|json|md)$/;
 /** Text that names files, so it must not name a deleted one. */
 const DOC_EXT = /(\.(md|ya?ml|sh)|^\.env\.example)$/;
 
-function markedFiles(dir) {
-  const full = path.join(ROOT, dir);
-  if (!fs.existsSync(full)) return [];
-  return fs.readdirSync(full, { withFileTypes: true }).flatMap(entry => {
-    const rel = path.join(dir, entry.name);
-    if (entry.isDirectory()) return markedFiles(rel);
-    return MARKED_EXT.test(entry.name) ? [rel] : [];
-  });
+/**
+ * Every file in the project that can hold markers, as paths relative to the
+ * root with forward slashes (on Windows too, to compare with DEMO_PATHS).
+ */
+function markedFiles(dir = '') {
+  return fs
+    .readdirSync(path.join(ROOT, dir), { withFileTypes: true })
+    .flatMap(entry => {
+      const rel = dir ? `${dir}/${entry.name}` : entry.name;
+      if (entry.isDirectory()) {
+        return SKIPPED_DIRS.has(entry.name) ? [] : markedFiles(rel);
+      }
+      return MARKED_EXT.test(entry.name) ? [rel] : [];
+    });
 }
 
 /**
@@ -130,10 +141,7 @@ function main() {
 
   const problems = [];
   const edits = [];
-  const files = [
-    ...MARKED_DIRS.flatMap(markedFiles),
-    ...MARKED_FILES.filter(file => fs.existsSync(path.join(ROOT, file))),
-  ].filter(rel => !isDeleted(rel));
+  const files = markedFiles().filter(rel => !isDeleted(rel));
   for (const rel of files) {
     const text = fs.readFileSync(path.join(ROOT, rel), 'utf8');
     let stripped;
@@ -165,18 +173,9 @@ function main() {
     process.exit(1);
   }
 
-  for (const rel of deletions) {
-    log(`  delete ${rel}`);
-    if (!DRY_RUN) fs.rmSync(path.join(ROOT, rel), { recursive: true });
-  }
-  const testsDir = path.join(ROOT, '__tests__/scripts');
-  if (
-    !DRY_RUN &&
-    fs.existsSync(testsDir) &&
-    fs.readdirSync(testsDir).length === 0
-  )
-    fs.rmdirSync(testsDir);
-
+  // Write the edits first, then delete, this script last: if anything
+  // fails part way, the script is still there to restore and run again.
+  started = !DRY_RUN;
   for (const { rel, text } of edits) {
     log(`  strip ${rel}`);
     if (!DRY_RUN) fs.writeFileSync(path.join(ROOT, rel), text);
@@ -196,11 +195,24 @@ function main() {
     .filter(rel => PRETTIER_EXT.test(rel));
   if (!DRY_RUN && formattable.length > 0) {
     const prettierError = runPrettier(formattable);
-    if (prettierError) {
-      process.stderr.write(`${prettierError}\n`);
-      process.exit(1);
-    }
+    if (prettierError) throw new Error(prettierError);
   }
+
+  const self = path.relative(ROOT, __filename).split(path.sep).join('/');
+  for (const rel of [
+    ...deletions.filter(rel => rel !== self),
+    ...deletions.filter(rel => rel === self),
+  ]) {
+    log(`  delete ${rel}`);
+    if (!DRY_RUN) fs.rmSync(path.join(ROOT, rel), { recursive: true });
+  }
+  const testsDir = path.join(ROOT, '__tests__/scripts');
+  if (
+    !DRY_RUN &&
+    fs.existsSync(testsDir) &&
+    fs.readdirSync(testsDir).length === 0
+  )
+    fs.rmdirSync(testsDir);
 
   if (!SUMMARY) return;
   log(
@@ -210,4 +222,19 @@ function main() {
   );
 }
 
-main();
+/** Set once files may have changed, so a failure says how to undo it. */
+let started = false;
+
+try {
+  main();
+} catch (error) {
+  process.stderr.write(`remove-demo: ${error.message}\n`);
+  if (started) {
+    process.stderr.write(
+      'Some files may already be changed. Restore your last commit with\n' +
+        `  git -C ${JSON.stringify(ROOT)} checkout -- . && git -C ${JSON.stringify(ROOT)} clean -fd\n` +
+        'then fix the problem above and run npm run remove-demo again.\n'
+    );
+  }
+  process.exit(1);
+}

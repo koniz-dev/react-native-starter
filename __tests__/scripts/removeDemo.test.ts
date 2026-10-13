@@ -3,10 +3,8 @@
  */
 import { execFileSync, spawnSync } from 'child_process';
 import fs from 'fs';
-import os from 'os';
 import path from 'path';
-
-const ROOT = path.resolve(__dirname, '../..');
+import { copyProject } from '@/testing/projectCopy';
 
 /**
  * Anything that names the demo or its backends switch. Links to this
@@ -32,22 +30,7 @@ const CHECKED_PATHS = [
 
 /** A committed copy of the working tree, sharing this repo's node_modules. */
 function makeCopy(): string {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'remove-demo-'));
-  const files = execFileSync(
-    'git',
-    ['ls-files', '--cached', '--others', '--exclude-standard', '-z'],
-    { cwd: ROOT, encoding: 'utf8' }
-  )
-    .split('\0')
-    .filter(file => file && fs.existsSync(path.join(ROOT, file)));
-  for (const file of files) {
-    fs.mkdirSync(path.dirname(path.join(dir, file)), { recursive: true });
-    fs.copyFileSync(path.join(ROOT, file), path.join(dir, file));
-  }
-  fs.symlinkSync(
-    path.join(ROOT, 'node_modules'),
-    path.join(dir, 'node_modules')
-  );
+  const dir = copyProject('remove-demo-');
   commit(dir, 'template');
   return dir;
 }
@@ -199,6 +182,33 @@ describe('remove-demo on a copy of the template', () => {
       'docs/conventions.md: still mentions features/demo-todos'
     );
     expect(gitStatus(dir)).toBe('');
+  }, 60000);
+
+  it('removes marked blocks anywhere in the project, not only in source folders', () => {
+    const dir = copy();
+    const marked = (comment: string) =>
+      `${comment} @${'demo'} remove-block-start\n${comment} demo only\n${comment} @${'demo'} remove-block-end\n`;
+    fs.appendFileSync(path.join(dir, 'testing/render.tsx'), marked('//'));
+    fs.appendFileSync(path.join(dir, '.github/workflows/ci.yml'), marked('#'));
+    commit(dir, 'markers outside the source folders');
+
+    const result = run(dir);
+    expect(result.stderr).toBe('');
+    expect(result.status).toBe(0);
+    expect(read(dir, 'testing/render.tsx')).not.toMatch(/demo only/);
+    expect(read(dir, '.github/workflows/ci.yml')).not.toMatch(/demo only/);
+  }, 60000);
+
+  it('keeps itself and the demo, and says how to restore, when a write fails', () => {
+    const dir = copy();
+    fs.chmodSync(path.join(dir, 'shared/i18n/en.ts'), 0o444);
+    const result = run(dir);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toMatch(/^remove-demo: EACCES/);
+    expect(result.stderr).not.toMatch(/\n\s+at /);
+    expect(result.stderr).toContain('checkout -- . &&');
+    expect(exists(dir, 'scripts/remove-demo.js')).toBe(true);
+    expect(exists(dir, 'features/demo-todos')).toBe(true);
   }, 60000);
 
   it('changes nothing when a marker is malformed, and says so without a stack trace', () => {

@@ -23,6 +23,7 @@ import {
 } from '@/shared/session/authService';
 import { STORAGE_KEYS } from '@/shared/storage/storage';
 import { secureStore } from '@/testing';
+import { linkDependencies } from '@/testing/projectCopy';
 
 const ROOT = path.resolve(__dirname, '../../..');
 const DOC = path.join(ROOT, 'docs/connect-your-backend.md');
@@ -38,10 +39,7 @@ function loadDocumentedAdapter(): { myBackendAuthAdapter: AuthAdapter } {
   if (start < 0) throw new Error(`${DOC}: no "${SNIPPET_START}" snippet`);
   const code = doc.slice(start, doc.indexOf('\n```', start));
   // The compiled module needs this repo's packages (Babel helpers).
-  fs.symlinkSync(
-    path.join(ROOT, 'node_modules'),
-    path.join(snippetDir, 'node_modules')
-  );
+  linkDependencies(snippetDir);
   const file = path.join(snippetDir, 'myBackendAdapter.ts');
   fs.writeFileSync(file, code);
   // eslint-disable-next-line @typescript-eslint/no-require-imports

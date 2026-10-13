@@ -3,8 +3,8 @@
  */
 import { execFileSync, spawnSync } from 'child_process';
 import fs from 'fs';
-import os from 'os';
 import path from 'path';
+import { copyProject } from '@/testing/projectCopy';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const init = require('../../scripts/init-project.js') as {
@@ -108,6 +108,8 @@ describe('init-project input', () => {
 
   it('derives a slug and quotes strings the way Prettier does', () => {
     expect(init.slugify('Ghi Chú: Acme Notes!')).toBe('ghi-chu-acme-notes');
+    expect(init.slugify('Mom’s Recipes')).toBe('moms-recipes');
+    expect(init.slugify("Bob's App")).toBe('bobs-app');
     expect(init.tsString('Acme')).toBe("'Acme'");
     expect(init.tsString("Bob's")).toBe(`"Bob's"`);
   });
@@ -115,22 +117,7 @@ describe('init-project input', () => {
 
 /** A committed copy of the working tree, sharing this repo's node_modules. */
 function makeCopy(): string {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'init-project-'));
-  const files = execFileSync(
-    'git',
-    ['ls-files', '--cached', '--others', '--exclude-standard', '-z'],
-    { cwd: ROOT, encoding: 'utf8' }
-  )
-    .split('\0')
-    .filter(file => file && fs.existsSync(path.join(ROOT, file)));
-  for (const file of files) {
-    fs.mkdirSync(path.dirname(path.join(dir, file)), { recursive: true });
-    fs.copyFileSync(path.join(ROOT, file), path.join(dir, file));
-  }
-  fs.symlinkSync(
-    path.join(ROOT, 'node_modules'),
-    path.join(dir, 'node_modules')
-  );
+  const dir = copyProject('init-project-');
   const git = (...args: string[]) =>
     execFileSync('git', args, { cwd: dir, stdio: 'ignore' });
   git('init', '-q');
@@ -450,6 +437,34 @@ describe('init-project on a copy of the template', () => {
       );
       expect(result.stderr).not.toMatch(/git (checkout|clean)/);
       expect(read(dir, 'NOTES.md')).toBe('my notes\n');
+    }
+  );
+
+  (HAS_DEMO ? it : it.skip)(
+    'after a failure on a clean tree, prints a restore command for the project root',
+    () => {
+      const dir = copy();
+      fs.appendFileSync(
+        path.join(dir, 'docs/conventions.md'),
+        `\n<!-- @${'demo'} remove-block-start -->\nunterminated\n`
+      );
+      execFileSync('git', ['commit', '-qam', 'broken marker'], {
+        cwd: dir,
+        env: {
+          ...process.env,
+          GIT_AUTHOR_NAME: 't',
+          GIT_AUTHOR_EMAIL: 't@example.com',
+          GIT_COMMITTER_NAME: 't',
+          GIT_COMMITTER_EMAIL: 't@example.com',
+        },
+      });
+      const result = run(dir, [...IDENTITY, '--remove-demo']);
+      expect(result.status).toBe(1);
+      // -C with the root, so it works from a subdirectory too.
+      const root = JSON.stringify(fs.realpathSync(dir));
+      expect(result.stderr.replace(/\/private\/var\//g, '/var/')).toContain(
+        `git -C ${root.replace(/\/private\/var\//g, '/var/')} checkout -- .`
+      );
     }
   );
 

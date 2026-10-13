@@ -210,12 +210,16 @@ const validators = {
 
 /** "Acme Notes!" -> "acme-notes" */
 function slugify(name) {
-  return name
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+  return (
+    name
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      // Drop apostrophes: "Mom's Recipes" is moms-recipes, not mom-s-recipes.
+      .replace(/['\u2019]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+  );
 }
 
 /**
@@ -249,7 +253,8 @@ async function collectInput(args) {
     bundleId: args.options['bundle-id'],
     owner: args.options.owner,
   };
-  const interactive = process.stdin.isTTY && process.stdout.isTTY;
+  // Answers come from stdin; the output may be piped (`| tee init.log`).
+  const interactive = Boolean(process.stdin.isTTY);
   const rl = interactive
     ? readline.createInterface({ input: process.stdin, output: process.stdout })
     : null;
@@ -791,7 +796,8 @@ if (require.main === module) {
               'in, so review `git status` and `git diff` and restore what init-project\n' +
               'changed by hand, then fix the problem above and run it again.\n'
           : 'Some files may already be changed. Restore your last commit with\n' +
-              '  git checkout -- . && git clean -fd\n' +
+              // -C: npm runs scripts from the root, the shell may be elsewhere.
+              `  git -C ${JSON.stringify(ROOT)} checkout -- . && git -C ${JSON.stringify(ROOT)} clean -fd\n` +
               'then fix the problem above and run init-project again.\n'
       );
     }

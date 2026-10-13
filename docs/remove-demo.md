@@ -44,6 +44,10 @@ npm run remove-demo
    removed demo or a doc or flow that names a deleted file would remain, it
    names the file and changes nothing.
 
+It writes its edits before it deletes anything, and deletes itself last, so
+if a step fails (a read-only file, say), the script is still there: it says
+how to restore your last commit, and you can run it again.
+
 It is meant to run once on a fresh project; commit first so you can review
 the diff.
 
@@ -95,9 +99,20 @@ backend or mock
 
 If you add example code or docs you want the script to remove with the demo,
 wrap them the way `features/home/screens/HomeScreen.tsx` wraps Home's example
-links. In Markdown, the markers are HTML comments on their own lines
+links. Markers work in every `.ts`, `.tsx`, `.js`, `.jsx`, `.md`, `.yml`,
+`.yaml`, `.sh`, and `.html` file in the project, and in `.env.example`
+(not in `node_modules` or generated folders such as `android/` and `dist/`).
+In Markdown and HTML, the markers are comments on their own lines
 (`<!-- @demo remove-block-start -->`); in YAML, shell, and `.env` files,
 `#` comments.
+
+- `@demo remove-block-start` … `@demo remove-block-end`: deletes both lines
+  and everything between them.
+- `@demo remove-current-line`: deletes the line it is on.
+- `@demo uncomment-block-start` … `@demo uncomment-block-end`: for text that
+  applies only once the demo is gone. It deletes the two marker lines and
+  uncomments the lines between them (drops a leading `# ` or `// `), as in
+  `.env.example` and `shared/config/env.ts`.
 
 ```tsx
 import { View } from 'react-native';
