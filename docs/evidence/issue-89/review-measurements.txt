@@ -1,0 +1,40 @@
+$ node: query-string.parse("?q=" + "%ff".repeat(n)) (calls decode-uri-component 0.2.2 directly)
+100 tokens: 258 ms
+200 tokens: 1155 ms
+400 tokens: 4931 ms
+
+$ jest: renderRouter("./app", { initialUrl: "/?q=" + "%ff".repeat(300) }), time until Home renders
+    Home rendered in 50 ms
+  ✓ opens the deep link (1304 ms)
+
+$ Chrome on the production web export, opening /?q= + "%ff".repeat(n)
+0 malformed tokens in the URL: Home ready in 613 ms
+400 malformed tokens in the URL: Home ready in 185 ms
+800 malformed tokens in the URL: Home ready in 140 ms
+
+$ where the app parses URLs
+90:        getStateFromPath: (path, options) => {
+45:const getStateFromPath_1 = require("../fork/getStateFromPath");
+371:    const searchParams = (0, url_1.parseUrlUsingCustomBase)(path).searchParams;
+376:    for (const name of searchParams.keys()) {
+  query-string in the routing path: stringify only (getPathFromState); parse only in the unused default getStateFromPath:
+node_modules/expo-router/build/react-navigation/core/getStateFromPath.js:499:    const params = queryString.parse(query);
+node_modules/expo-router/build/react-navigation/core/getPathFromState.js:212:            const query = queryString.stringify(focusedParams, { sort: false });
+node_modules/expo-router/build/fork/getPathFromState.js:273:            const query = queryString.stringify(focusedParams, { sort: false });
+
+$ xcode calls uuid only as v4() (the advisory needs v3/v5/v6 with buf)
+node_modules/xcode/lib/pbxProject.js:90:    var id = uuid.v4()
+
+$ dependency paths (package-lock.json)
+react-native-starter@1.0.0 /Users/nguyenanhkiet/Playground/react-native-starter
+├─┬ @react-native/jest-preset@0.86.3
+│ └─┬ babel-jest@29.7.0
+│   └─┬ babel-plugin-istanbul@6.1.1
+│     └─┬ @istanbuljs/load-nyc-config@1.1.0
+│       └─┬ js-yaml@3.15.2
+│         └─┬ argparse@1.0.10
+│           └── sprintf-js@1.0.3
+└─┬ expo-splash-screen@57.0.10
+  └─┬ @expo/config-plugins@57.0.10
+    └─┬ xcode@3.0.1
+      └── uuid@7.0.3
