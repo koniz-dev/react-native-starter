@@ -1,0 +1,10 @@
+$ git diff --stat c65c808 69afacb   (device runs on c65c808: only the e2e workflow differs)
+ .github/workflows/e2e-android.yml | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+CI run 38414698545: success on 69afacb
+Audit run 38414698398: success on 69afacb
+E2E (Android, manual) run 38414725085: success on 69afacb
+E2E (Android, manual) run 38411865340 attempt 1: success on c65c808
+E2E (Android, manual) run 38411870810 attempt 2: success on c65c808
+Expo Go: 38411865340; native debug: 38411870810 (attempt 1 failed downloading the NDK; see issue-78)

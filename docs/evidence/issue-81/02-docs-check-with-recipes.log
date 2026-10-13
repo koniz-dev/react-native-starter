@@ -1,0 +1,7 @@
+HEAD 69afacb
+npm ci exit 0
+recipes npm ci exit 0
+$ npm run docs:check
+Checked 19 files: 44 TypeScript snippets compiled with tsc.
+No problems.
+exit 0

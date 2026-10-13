@@ -1,0 +1,119 @@
+Initializing the project...
+  run remove-demo:
+Removing the demo...
+  delete features/demo-auth
+  delete features/demo-todos
+  delete features/demo-showcase
+  delete app/(tabs)/explore.tsx
+  delete app/showcase.tsx
+  delete __tests__/features/demo-auth
+  delete __tests__/features/demo-todos
+  delete __tests__/features/demo-showcase
+  delete .maestro/02-tabs.yaml
+  delete .maestro/03-auth-session.yaml
+  delete .maestro/04-login-keyboard.yaml
+  delete .maestro/05-explore-error-retry.yaml
+  delete .maestro/07-profile.yaml
+  delete .maestro/subflows/sign-in.yaml
+  delete docs/remove-demo.md
+  delete __tests__/scripts/removeDemo.test.ts
+  delete scripts/remove-demo.js
+  strip app/(tabs)/_layout.tsx
+  strip app/README.md
+  strip features/auth/screens/LoginScreen.tsx
+  strip features/home/screens/HomeScreen.tsx
+  strip shared/config/env.ts
+  strip shared/i18n/en.ts
+  strip shared/integrations/setup.ts
+  strip __tests__/app/tabBarTheme.test.tsx
+  strip __tests__/features/home/HomeScreen.test.tsx
+  strip __tests__/shared/config/env.test.ts
+  strip __tests__/shared/integrations/i18n.test.tsx
+  strip docs/README.md
+  strip docs/api-and-storage.md
+  strip docs/connect-your-backend.md
+  strip docs/conventions.md
+  strip docs/environment-variables.md
+  strip docs/getting-started.md
+  strip docs/make-it-yours.md
+  strip docs/testing.md
+  strip docs/ui-and-theming.md
+  strip .maestro/config.yaml
+  strip .maestro/dark-mode.yaml
+  strip scripts/README.md
+  strip scripts/check-docs.js
+  strip scripts/e2e/mock-api.js
+  strip README.md
+  strip AGENTS.md
+  strip .env.example
+  update package.json: remove the remove-demo script
+  update app.config.ts: APP: name "RN Starter" -> "Acme Notes", slug react-native-starter -> acme-notes, scheme rnstarter -> acmenotes, bundleId com.example.rnstarter -> com.acme.notes, version 1.0.0 -> 1.0.0
+  update package.json: name -> acme-notes, version -> 1.0.0, remove the init-project script
+  update package-lock.json: name -> acme-notes, version -> 1.0.0
+  update LICENSE: copyright holder -> 2026 Acme
+  update README.md: the README for the app
+  update scripts/audit-allowlist.json: owner -> Acme
+  update docs/README.md: remove @init blocks, remove the recipe references
+  update docs/getting-started.md: remove @init blocks
+  update scripts/README.md: remove @init blocks
+  update AGENTS.md: remove the recipe references
+  update docs/api-and-storage.md: remove the recipe references
+  update .github/workflows/ci.yml: remove the recipe references
+  update docs/app-config.md: identity examples
+  update docs/testing.md: identity examples
+  update .github/workflows/e2e-android.yml: identity examples
+  delete docs/make-it-yours.md: template onboarding
+  delete docs/recipes/: state-management recipes (--keep-recipes keeps them)
+  delete scripts/init-project.js: init-project itself
+  delete __tests__/scripts/initProject.test.ts: init-project itself
+Done: this is now Acme Notes. Next:
+  1. Register your AuthAdapter in shared/integrations/setup.ts and set your
+     backend URLs in .env (docs/connect-your-backend.md).
+  2. Review the advisories in scripts/audit-allowlist.json and make them yours
+     (docs/getting-started.md#dependency-advisories).
+  3. Replace the images in assets/ and the palette in shared/ui/theme.ts
+     (docs/app-config.md, docs/ui-and-theming.md).
+  4. Run npm run lint, npm run type-check, and npm run test:ci, then commit.
+init exit 0
+$ npm run lint
+exit 0
+$ npm run type-check
+exit 0
+$ npm run format:check
+Checking formatting...
+All matched files use Prettier code style!
+exit 0
+$ npm run docs:check
+Checked 16 files: 38 TypeScript snippets compiled with tsc.
+No problems.
+exit 0
+$ npm run test:ci
+Tests:       333 passed, 333 total
+Snapshots:   0 total
+Time:        10.377 s, estimated 24 s
+Ran all test suites.
+exit 0
+$ npm run audit:check
+moderate sprintf-js GHSA-hp3w-g68c-fv3c: reported (not gated)
+moderate uuid GHSA-w5hq-g745-h8pq: reported (not gated)
+npm audit --omit=dev: 5 advisories (records: 0 critical, 45 high, 16 moderate, 0 low).
+No unreviewed high or critical advisories.
+exit 0
+$ npm run doctor
+Running 21 checks on your project...
+21/21 checks passed. No issues detected!
+exit 0
+$ EXPO_PUBLIC_API_URL=https://api.example.com EXPO_PUBLIC_AUTH_API_URL=https://auth.example.com npx expo export --platform web --clear
+
+Exported: /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/rel/dist-init
+exit 0
+leftovers:
+.gitignore:33:# local env files (.env.example is the committed template)
+app.config.ts:75: * Android permissions that Expo's template and libraries add but this app
+docs/app-config.md:69:Android permissions that Expo's template and libraries add by default
+docs/environment-variables.md:82:and `.env*.local` out of git; `.env.example` is the committed template. Restart
+docs/ui-and-theming.md:132:`public/index.html` is the web page's template. It paints the theme's
+shared/i18n/index.ts:23:  template: string,
+shared/i18n/index.ts:26:  if (!params) return template;
+shared/i18n/index.ts:27:  return template.replace(/\{(\w+)\}/g, (match, name: string) =>
+(end)
