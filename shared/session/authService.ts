@@ -140,8 +140,15 @@ export const authService = {
     const user = adapter.normalizeUser(result.user);
 
     startNewSession();
-    await getTokenStore().set(result.token);
-    await setItem(STORAGE_KEYS.USER_DATA, user);
+    try {
+      await getTokenStore().set(result.token);
+      await setItem(STORAGE_KEYS.USER_DATA, user);
+    } catch (error) {
+      // A token without a profile would restore a signed-in session with no
+      // user on the next launch: leave nothing behind.
+      await clearStoredSession().catch(() => undefined);
+      throw error;
+    }
     return { token: result.token, user };
   },
 
@@ -171,14 +178,17 @@ export const authService = {
 
   /**
    * Reloads the user from the backend when the adapter supports it (and
-   * stores it); otherwise returns the stored profile. Rejects with an
-   * ApiError; a 401 also clears the session.
+   * stores it); otherwise returns the stored profile. Resolves to null,
+   * storing nothing, if the user signed out (or in again) while it loaded.
+   * Rejects with an ApiError; a 401 also clears the session.
    */
   fetchProfile: async (): Promise<AuthUser | null> => {
     if (!adapter.fetchUser) {
       return authService.getCurrentUser();
     }
+    const generation = getSessionGeneration();
     const user = adapter.normalizeUser(await adapter.fetchUser(clients));
+    if (generation !== getSessionGeneration()) return null;
     await setItem(STORAGE_KEYS.USER_DATA, user);
     return user;
   },

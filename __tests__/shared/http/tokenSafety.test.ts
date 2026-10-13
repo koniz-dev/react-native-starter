@@ -9,14 +9,16 @@ import {
 import { inspect } from 'util';
 import { toApiError } from '@/shared/http/apiError';
 import { createHttpClient, getOrigin } from '@/shared/http/httpClient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   onSessionExpired,
   refreshAccessToken,
   setRefreshTokenHandler,
   setUnauthorizedHandler,
 } from '@/shared/session/session';
+import { getTokenStore, setTokenStore } from '@/shared/session/tokenStore';
 import { authService, setAuthAdapter } from '@/shared/session/authService';
-import { setItem, STORAGE_KEYS } from '@/shared/storage/storage';
+import { getItem, setItem, STORAGE_KEYS } from '@/shared/storage/storage';
 import { getConfig } from '@/shared/config/env';
 import { logger } from '@/shared/lib/logger';
 import { secureStore } from '@/testing';
@@ -237,6 +239,160 @@ describe('token safety', () => {
 
     await expect(refreshing).resolves.toBeNull();
     expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
+  });
+});
+
+describe('work that outlives its session', () => {
+  let expired: jest.Mock;
+  let unsubscribe: () => void;
+
+  /** Signs in through the service, as a user with the given token and id. */
+  function useAdapter(extra: Partial<Parameters<typeof setAuthAdapter>[0]>) {
+    setAuthAdapter({
+      login: async ({ username }) => ({
+        token: `token-${username}`,
+        user: { id: username, email: `${username}@x.com` },
+      }),
+      normalizeUser: raw => {
+        const user = raw as { id: string; email: string };
+        return { id: user.id, email: user.email, name: user.email };
+      },
+      ...extra,
+    });
+  }
+
+  const signInAs = (username: string) =>
+    authService.login({ username, password: 'p' });
+
+  beforeEach(() => {
+    setRefreshTokenHandler(null);
+    setUnauthorizedHandler(null);
+    setTokenStore(null);
+    expired = jest.fn();
+    unsubscribe = onSessionExpired(expired);
+  });
+
+  afterEach(() => {
+    unsubscribe();
+    setTokenStore(null);
+    setAuthAdapter(null);
+  });
+
+  it("doesn't end the next user's session when an old refresh finds nothing to refresh", async () => {
+    const finishRefresh = deferred<string>();
+    useAdapter({ refresh: () => finishRefresh.promise });
+    await signInAs('A');
+    const client = authenticatedClient(async config => {
+      throw httpError(config, 401);
+    });
+
+    const request = client.get('/me');
+    // The 401 started a refresh; meanwhile A signs out and B signs in.
+    await new Promise(resolve => setTimeout(resolve, 0));
+    await authService.logout();
+    await signInAs('B');
+    finishRefresh.resolve('token-A2');
+
+    await expect(request).rejects.toMatchObject({ code: 'unauthorized' });
+    expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('token-B');
+    expect(expired).not.toHaveBeenCalled();
+  });
+
+  it("doesn't replay an earlier user's request with the next user's token", async () => {
+    useAdapter({});
+    await signInAs('A');
+    const seen: unknown[] = [];
+    const client = authenticatedClient(async config => {
+      seen.push(config.headers.Authorization);
+      if (seen.length === 1) {
+        // A signs out (the backend revokes the token) and B signs in.
+        await authService.logout();
+        await signInAs('B');
+        throw httpError(config, 401);
+      }
+      return response(config, 200);
+    });
+
+    await expect(client.post('/orders', { item: 1 })).rejects.toMatchObject({
+      code: 'unauthorized',
+    });
+    expect(seen).toEqual(['Bearer token-A']);
+    expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('token-B');
+    expect(expired).not.toHaveBeenCalled();
+  });
+
+  it("doesn't send a retry once its session has ended", async () => {
+    useAdapter({});
+    await signInAs('A');
+    const store = getTokenStore();
+    let reads = 0;
+    setTokenStore({
+      ...store,
+      get: async () => {
+        reads += 1;
+        // The retry reads the token after the user signed out.
+        if (reads === 3) await authService.logout();
+        return store.get();
+      },
+    });
+    const seen: unknown[] = [];
+    const client = authenticatedClient(async config => {
+      seen.push(config.headers.Authorization);
+      // Another request refreshed the token while this one was in flight.
+      await store.set('token-A2');
+      throw httpError(config, 401);
+    });
+
+    await expect(client.get('/me')).rejects.toMatchObject({ code: 'canceled' });
+    expect(seen).toEqual(['Bearer token-A']);
+  });
+
+  it('sends a retry without a token as just that, not with the old header', async () => {
+    useAdapter({});
+    await signInAs('A');
+    const store = getTokenStore();
+    const reads = ['token-A', 'token-A2', null];
+    setTokenStore({ ...store, get: async () => reads.shift() ?? null });
+    const seen: unknown[] = [];
+    const client = authenticatedClient(async config => {
+      seen.push(config.headers.Authorization);
+      if (seen.length === 1) throw httpError(config, 401);
+      return response(config, 200);
+    });
+
+    await client.get('/me');
+    expect(seen).toEqual(['Bearer token-A', undefined]);
+  });
+
+  it.each([
+    ['signed out', async () => undefined, null],
+    ['signed in as someone else', () => signInAs('B'), 'B'],
+  ])(
+    "doesn't store a profile that loads after the user %s",
+    async (_, next, storedId) => {
+      const finishFetch = deferred<unknown>();
+      useAdapter({ fetchUser: () => finishFetch.promise });
+      await signInAs('A');
+
+      const loading = authService.fetchProfile();
+      await authService.logout();
+      await next();
+      finishFetch.resolve({ id: 'A', email: 'A@x.com' });
+
+      await expect(loading).resolves.toBeNull();
+      const stored = await getItem<{ id: string }>(STORAGE_KEYS.USER_DATA);
+      expect(stored?.id ?? null).toBe(storedId);
+    }
+  );
+
+  it('leaves no token behind when storing the profile at sign-in fails', async () => {
+    useAdapter({});
+    jest
+      .spyOn(AsyncStorage, 'setItem')
+      .mockRejectedValueOnce(new Error('storage full'));
+
+    await expect(signInAs('A')).rejects.toThrow('storage full');
+    expect(await authService.isAuthenticated()).toBe(false);
   });
 });
 

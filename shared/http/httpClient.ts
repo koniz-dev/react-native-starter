@@ -11,11 +11,13 @@
  *   token refresh once, then runs the unauthorized handler (default: clear
  *   the session and emit session-expired; see shared/session/session.ts). A
  *   401 for a token that is no longer the stored one is retried with the
- *   current token instead; a 401 on any other request is just an error;
+ *   current token instead; a 401 on any other request, or on a request sent
+ *   before the user signed out or in, is just an error;
  * - failures are logged through the logger without bodies, headers, or query
  *   strings, at the level from requestFailureLogLevel.
  */
 import axios, {
+  CanceledError,
   type AxiosError,
   type AxiosInstance,
   type InternalAxiosRequestConfig,
@@ -25,6 +27,7 @@ import { logger } from '@/shared/lib/logger';
 import { toApiError, type ApiErrorCode } from './apiError';
 import { getTokenStore } from '@/shared/session/tokenStore';
 import {
+  getSessionGeneration,
   getUnauthorizedHandler,
   refreshAccessToken,
 } from '@/shared/session/session';
@@ -129,6 +132,8 @@ type RetriableConfig = InternalAxiosRequestConfig & {
   _refreshedToken?: string;
   /** Set after one retry, so a second 401 is not retried. */
   _retried?: boolean;
+  /** The session generation when the request was first sent. */
+  _generation?: number;
 };
 
 /** `METHOD path` for logs, without the query string or fragment. */
@@ -150,6 +155,9 @@ export function createHttpClient(options: HttpClientOptions): AxiosInstance {
     config.timeout ||= getConfig().apiTimeoutMs;
 
     const retriable = config as RetriableConfig;
+    // A retry reuses the first attempt's headers: drop the token it carried,
+    // so a retry without one doesn't send the old one.
+    if (retriable._sentToken) delete config.headers.Authorization;
     retriable._sentToken = undefined;
     if (!options.authenticated) {
       return config;
@@ -160,6 +168,13 @@ export function createHttpClient(options: HttpClientOptions): AxiosInstance {
     }
     const token = retriable._retryToken ?? (await getTokenStore().get());
     retriable._retryToken = undefined;
+    if (!retriable._retried) {
+      retriable._generation = getSessionGeneration();
+    } else if (retriable._generation !== getSessionGeneration()) {
+      // The session this request belongs to ended before its retry was sent
+      // (signed out, or in as someone else): don't send it for the new one.
+      throw new CanceledError('The session changed; the request was not sent');
+    }
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
       retriable._sentToken = token;
@@ -183,15 +198,19 @@ export function createHttpClient(options: HttpClientOptions): AxiosInstance {
     if (!config || !sentToken || error.response?.status !== 401) {
       return fail(error, config);
     }
+    // Sent in a session that has ended since: the 401 says nothing about the
+    // current one, and the request must not run on its behalf.
+    const sameSession = () => config._generation === getSessionGeneration();
+    if (!sameSession()) return fail(error, config);
 
-    // Only the current session's token can be refreshed or ended. If the
-    // stored token changed meanwhile (another refresh, a new sign-in), retry
-    // with it; if it's gone (signed out), there is no session to end.
+    // Only the current token can be refreshed or ended. If the stored token
+    // changed meanwhile (another request refreshed it), retry with it; if
+    // it's gone, there is no session to end.
     const current = await getTokenStore().get();
     const currentSession =
       current === sentToken || sentToken === config._refreshedToken;
     if (!currentSession) {
-      if (current && !config._retried) {
+      if (current && !config._retried && sameSession()) {
         config._retried = true;
         return client.request(config);
       }
@@ -214,6 +233,8 @@ export function createHttpClient(options: HttpClientOptions): AxiosInstance {
         return client.request(config);
       }
     }
+    // The refresh found the session ended meanwhile: nothing left to end.
+    if (!sameSession()) return fail(error, config);
     await getUnauthorizedHandler()();
     return fail(error, config);
   });

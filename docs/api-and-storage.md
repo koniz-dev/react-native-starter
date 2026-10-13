@@ -111,10 +111,11 @@ the setting to revisit.
 
 When a request that carried the stored token gets a 401:
 
-1. If the stored token changed while the request was in flight (another
-   request refreshed it, or the user signed in again), the request is retried
-   once with the current token; nothing is refreshed or cleared. If the user
-   signed out meanwhile, the request just fails.
+1. If the user signed out (or out and in again) while the request was in
+   flight, the request just fails: it is not retried with the next session's
+   token, and nothing is refreshed or cleared. If another request refreshed
+   the stored token meanwhile, the request is retried once with the current
+   token.
 2. If a refresh handler is registered (an AuthAdapter's `refresh`), it runs
    once; concurrent 401s share one refresh. With a new token, the request is
    retried once. If the refresh fails offline, times out, or gets a 5xx, the
@@ -127,8 +128,9 @@ When a request that carried the stored token gets a 401:
 
 A 401 on the auth backend's `public` client (a wrong password), on a request
 sent without the stored token, or on a request to an untrusted origin does
-not touch the session. A refresh that finishes after the user signed out is
-discarded.
+not touch the session. A refresh or a profile load (`fetchProfile`) that
+finishes after the user signed out is discarded, and a retry whose session
+ended before it was sent is canceled (`code: 'canceled'`).
 
 An `ApiError` never holds the request's headers or body: its `cause` is a
 summary (method, URL without the query string, axios's error code), so
