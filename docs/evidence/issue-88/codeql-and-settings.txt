@@ -1,0 +1,9 @@
+CodeQL alerts after the analysis of e4742f2:
+  fixed: js/incomplete-sanitization scripts/init-project.js (fixed at 2026-10-13T16:52:46Z)
+  open: 0
+
+Repository settings (2026-10-13):
+  vulnerability alerts: HTTP/2.0 204 No Content
+  actions: 
+  code scanning default setup: 
+  rulesets: 

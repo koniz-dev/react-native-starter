@@ -1,0 +1,8 @@
+== BEFORE: md() from 5268598 (exported for the test)
+    ✕ derives a slug and quotes strings the way Prettier does (6 ms)
+    Expected: "a\\\\\\|b"
+    Received: "a\\\\|b"
+Tests:       1 failed, 51 skipped, 52 total
+== AFTER
+    ✓ derives a slug and quotes strings the way Prettier does (5 ms)
+Tests:       51 skipped, 1 passed, 52 total
