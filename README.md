@@ -166,9 +166,13 @@ inherit them):
   reports new advisories without blocking unrelated work.
 - **Dependabot alerts** on; **Dependabot security updates** off: npm
   dependencies follow the Expo SDK (`npx expo install`), and automatic bumps
-  could break that alignment. Dismiss an alert only with a review in
-  `scripts/audit-allowlist.json` (reason "tolerable risk", pointing to it).
-  Version updates for the action pins come from `.github/dependabot.yml`.
+  could break that alignment. Dismiss an alert only after a review: for a
+  high or critical one, an entry in `scripts/audit-allowlist.json` (reason
+  "tolerable risk", pointing to it); for a moderate or low one, an issue that
+  checks where the package runs and whether the vulnerable code is reached,
+  with evidence (as in #89), linked from the dismissal comment (280
+  characters at most). Version updates for the action pins come from
+  `.github/dependabot.yml`.
 - **CodeQL default setup** (actions, JavaScript/TypeScript): a new alert is
   a bug; open an issue for it.
 - **Actions must be pinned to a full commit SHA** (every workflow is).
