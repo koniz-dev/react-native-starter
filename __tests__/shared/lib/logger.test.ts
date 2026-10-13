@@ -319,11 +319,31 @@ describe('logger', () => {
             Cookie: '[redacted]',
             Accept: 'application/json',
           },
-          credentials: { username: 'emily', password: '[redacted]' },
+          // Anything named like credentials is redacted whole.
+          credentials: '[redacted]',
           accessToken: '[redacted]',
           refresh_token: '[redacted]',
         });
       }
+    });
+
+    it.each([
+      'credential',
+      'idCredential',
+      'pin',
+      'totp',
+      'mfaCode',
+      'refresh',
+      'code_verifier',
+      'accessKeyId',
+      'access_key',
+      'cvv',
+      'signature',
+    ])('redacts %s', key => {
+      expect(redact({ [key]: 'SECRET', pinned: true }, false)).toEqual({
+        [key]: '[redacted]',
+        pinned: true,
+      });
     });
 
     it('redacts response bodies outside development only', () => {

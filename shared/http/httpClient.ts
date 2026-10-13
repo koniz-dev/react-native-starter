@@ -235,7 +235,12 @@ export function createHttpClient(options: HttpClientOptions): AxiosInstance {
     }
     // The refresh found the session ended meanwhile: nothing left to end.
     if (!sameSession()) return fail(error, config);
-    await getUnauthorizedHandler()();
+    try {
+      await getUnauthorizedHandler()();
+    } catch (handlerError) {
+      // The request still fails with its ApiError.
+      logger.error('The unauthorized handler failed', handlerError);
+    }
     return fail(error, config);
   });
 

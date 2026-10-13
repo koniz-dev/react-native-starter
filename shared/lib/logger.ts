@@ -56,7 +56,7 @@ const REDACTED = '[redacted]';
  * of redacting.
  */
 const SECRET_KEY =
-  /authoriz|authenticat|^auth|[-_]auth|cookie|pass(word|code|phrase)|passwd|^pwd$|secret|token|api[-_]?key|^otp|jwt|session[-_]?id|private[-_]?key/i;
+  /authoriz|authenticat|^auth|[-_]auth|cookie|pass(word|code|phrase)|passwd|^pwd$|secret|token|api[-_]?key|access[-_]?key|otp|mfa|^pin$|jwt|session[-_]?id|private[-_]?key|credential|refresh|verifier|signature|cvv|cvc/i;
 const BODY_KEY = /^(data|body)$/i;
 const MAX_DEPTH = 5;
 

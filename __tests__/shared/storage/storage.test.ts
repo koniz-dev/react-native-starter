@@ -1,7 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import * as loggerModule from '@/shared/lib/logger';
-import { getItem, removeItem, setItem } from '@/shared/storage/storage';
+import {
+  getItem,
+  hasItem,
+  removeItem,
+  setItem,
+} from '@/shared/storage/storage';
 
 describe('storage', () => {
   beforeEach(() => jest.clearAllMocks());
@@ -53,14 +58,24 @@ describe('storage', () => {
       );
     });
 
-    it('getItem logs a malformed value and returns null', async () => {
-      await AsyncStorage.setItem('bad-json', '{');
+    it('getItem logs a malformed value without quoting it, and returns null', async () => {
+      await AsyncStorage.setItem('bad-json', 'tok_4111111111111111');
 
       await expect(getItem('bad-json')).resolves.toBeNull();
       expect(logError).toHaveBeenCalledWith(
         'Error retrieving bad-json',
-        expect.any(SyntaxError)
+        new Error('not valid JSON')
       );
+      expect(JSON.stringify(logError.mock.calls)).not.toContain('4111');
+    });
+
+    it('hasItem rejects instead of reporting an unreadable key as absent', async () => {
+      jest.mocked(AsyncStorage.getItem).mockRejectedValueOnce(failure);
+      await expect(hasItem('profile')).rejects.toBe(failure);
+
+      await AsyncStorage.setItem('bad-json', '{');
+      await expect(hasItem('bad-json')).resolves.toBe(true);
+      await expect(hasItem('missing')).resolves.toBe(false);
     });
 
     it('removeItem logs the error and rethrows it', async () => {

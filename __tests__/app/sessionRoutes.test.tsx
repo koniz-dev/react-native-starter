@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { act, fireEvent } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import { renderRouter, screen } from 'expo-router/testing-library';
@@ -271,6 +272,45 @@ describe('first launch after an install', () => {
     renderRouter('./app', { initialUrl: '/' });
     expect(await screen.findByText('Signed in as Emily Johnson')).toBeTruthy();
     expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('stored-token');
+  });
+
+  it('keeps the token when the store cannot be read at launch', async () => {
+    await setItem(STORAGE_KEYS.INSTALL_MARKER, true);
+    await storeSession();
+    jest
+      .mocked(AsyncStorage.getItem)
+      .mockRejectedValueOnce(new Error('database is locked'));
+
+    const first = renderRouter('./app', { initialUrl: '/' });
+    // This launch can't tell, so it starts signed out, without clearing.
+    expect(await screen.findByText('Not signed in')).toBeTruthy();
+    expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('stored-token');
+    first.unmount();
+
+    renderRouter('./app', { initialUrl: '/' });
+    expect(await screen.findByText('Signed in as Emily Johnson')).toBeTruthy();
+  });
+
+  it('restores a session whose stored profile is not valid without that profile', async () => {
+    configureIntegrations();
+    const reporter = {
+      captureException: jest.fn(),
+      captureMessage: jest.fn(),
+      setUser: jest.fn(),
+    };
+    errorReporterSeam.set(reporter);
+    try {
+      await setItem(STORAGE_KEYS.INSTALL_MARKER, true);
+      secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
+      await AsyncStorage.setItem(STORAGE_KEYS.USER_DATA, '"legacy-profile"');
+
+      renderRouter('./app', { initialUrl: '/' });
+
+      expect(await screen.findByText('Signed in as your account')).toBeTruthy();
+      expect(reporter.setUser).toHaveBeenLastCalledWith(null);
+    } finally {
+      errorReporterSeam.reset();
+    }
   });
 
   it('keeps an existing session from before the marker existed', async () => {

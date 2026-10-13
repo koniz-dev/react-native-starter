@@ -236,6 +236,7 @@ JSON serialization. It is for non-secret data; the token never goes here.
 ```ts
 import {
   getItem,
+  hasItem,
   removeItem,
   setItem,
   STORAGE_KEYS,
@@ -248,10 +249,16 @@ interface Settings {
 export async function example() {
   await setItem<Settings>('settings', { notifications: true }); // logs and rethrows on failure
   const settings = await getItem<Settings>('settings'); // null if missing, malformed, or on failure
+  const saved = await hasItem('settings'); // rejects on failure: never "missing" by mistake
   await removeItem('settings');
-  return { settings, userKey: STORAGE_KEYS.USER_DATA };
+  return { settings, saved, userKey: STORAGE_KEYS.USER_DATA };
 }
 ```
+
+Use `hasItem` when "not stored" leads to an action that a failed read must
+not trigger; the session's first-launch check uses it, so a storage error at
+launch never deletes the token. The stored profile is checked with zod when
+it is read; one that isn't a valid profile is not used.
 
 `STORAGE_KEYS` holds the keys the foundation uses (`AUTH_TOKEN`,
 `USER_DATA`, `INSTALL_MARKER`); keep your own keys in your feature. For secrets use

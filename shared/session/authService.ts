@@ -9,6 +9,7 @@
  * Until one is registered, sign-in fails with a "not configured" error.
  */
 import type { AxiosInstance } from 'axios';
+import { z } from 'zod';
 import { getConfig } from '@/shared/config/env';
 import { toApiError } from '@/shared/http/apiError';
 import { createHttpClient } from '@/shared/http/httpClient';
@@ -33,6 +34,13 @@ export interface AuthUser {
   email: string;
   name: string;
 }
+
+/** Checks a stored profile, which an older app version may have written. */
+const StoredUserSchema = z.object({
+  id: z.union([z.number(), z.string().min(1)]),
+  email: z.string(),
+  name: z.string(),
+});
 
 export interface AuthResponse {
   token: string;
@@ -173,8 +181,13 @@ export const authService = {
     return token !== null;
   },
 
-  /** The stored profile, or null. */
-  getCurrentUser: async () => getItem<AuthUser>(STORAGE_KEYS.USER_DATA),
+  /** The stored profile, or null (also when it isn't a valid profile). */
+  getCurrentUser: async (): Promise<AuthUser | null> => {
+    const result = StoredUserSchema.safeParse(
+      await getItem<unknown>(STORAGE_KEYS.USER_DATA)
+    );
+    return result.success ? result.data : null;
+  },
 
   /**
    * Reloads the user from the backend when the adapter supports it (and

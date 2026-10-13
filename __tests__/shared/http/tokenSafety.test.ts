@@ -7,7 +7,7 @@ import {
   type InternalAxiosRequestConfig,
 } from 'axios';
 import { inspect } from 'util';
-import { toApiError } from '@/shared/http/apiError';
+import { ApiError, toApiError } from '@/shared/http/apiError';
 import { createHttpClient, getOrigin } from '@/shared/http/httpClient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -296,6 +296,63 @@ describe('work that outlives its session', () => {
     await expect(request).rejects.toMatchObject({ code: 'unauthorized' });
     expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('token-B');
     expect(expired).not.toHaveBeenCalled();
+  });
+
+  it("doesn't let the next user's 401 join an earlier user's refresh", async () => {
+    const refreshes: ReturnType<typeof deferred<string>>[] = [];
+    useAdapter({
+      refresh: () => {
+        const next = deferred<string>();
+        refreshes.push(next);
+        return next.promise;
+      },
+    });
+    await signInAs('A');
+    let calls = 0;
+    const client = authenticatedClient(async config => {
+      calls += 1;
+      if (calls <= 2) throw httpError(config, 401);
+      return response(config, 200);
+    });
+
+    const first = client.get('/a').catch(() => undefined);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    await authService.logout();
+    await signInAs('B');
+    const second = client.get('/b');
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    // B's 401 started its own refresh; A's finishes and is discarded.
+    expect(refreshes).toHaveLength(2);
+    refreshes[0]?.resolve('token-A2');
+    refreshes[1]?.resolve('token-B2');
+    await first;
+
+    await expect(second).resolves.toMatchObject({ status: 200 });
+    expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('token-B2');
+    expect(expired).not.toHaveBeenCalled();
+  });
+
+  it('rejects with an ApiError and ends the session even if clearing it fails', async () => {
+    useAdapter({});
+    await signInAs('A');
+    jest
+      .spyOn(AsyncStorage, 'removeItem')
+      .mockRejectedValueOnce(new Error('disk full'));
+    const client = authenticatedClient(async config => {
+      throw httpError(config, 401);
+    });
+
+    const error = await client.get('/me').catch((e: unknown) => e);
+
+    expect(error).toBeInstanceOf(ApiError);
+    expect(error).toMatchObject({ code: 'unauthorized' });
+    expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
+    expect(expired).toHaveBeenCalledTimes(1);
+    expect(jest.mocked(logger.error)).toHaveBeenCalledWith(
+      'The unauthorized handler failed',
+      expect.any(Error)
+    );
   });
 
   it("doesn't replay an earlier user's request with the next user's token", async () => {

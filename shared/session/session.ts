@@ -7,7 +7,7 @@
  */
 import { toApiError } from '@/shared/http/apiError';
 import {
-  getItem,
+  hasItem,
   removeItem,
   setItem,
   STORAGE_KEYS,
@@ -44,11 +44,12 @@ export async function clearStoredSession(): Promise<void> {
  * install, with no install marker and no stored user in AsyncStorage, the
  * stored session is cleared before it is read; then the marker is written.
  * An existing install that predates the marker keeps its stored user, so it
- * stays signed in.
+ * stays signed in. If AsyncStorage can't be read, this rejects and clears
+ * nothing: an unreadable store is not a fresh install.
  */
 export async function clearSessionFromPreviousInstall(): Promise<void> {
-  if ((await getItem<boolean>(STORAGE_KEYS.INSTALL_MARKER)) !== null) return;
-  if ((await getItem<unknown>(STORAGE_KEYS.USER_DATA)) === null) {
+  if (await hasItem(STORAGE_KEYS.INSTALL_MARKER)) return;
+  if (!(await hasItem(STORAGE_KEYS.USER_DATA))) {
     await clearStoredSession();
   }
   await setItem(STORAGE_KEYS.INSTALL_MARKER, true);
@@ -81,8 +82,12 @@ export function emitSessionExpired(): void {
 export type UnauthorizedHandler = () => Promise<void>;
 
 export const defaultUnauthorizedHandler: UnauthorizedHandler = async () => {
-  await clearStoredSession();
-  emitSessionExpired();
+  try {
+    await clearStoredSession();
+  } finally {
+    // Even if clearing failed part way, the app must leave the session.
+    emitSessionExpired();
+  }
 };
 
 let unauthorizedHandler: UnauthorizedHandler = defaultUnauthorizedHandler;
@@ -109,7 +114,11 @@ export function getUnauthorizedHandler(): UnauthorizedHandler {
 export type RefreshTokenHandler = () => Promise<string | null>;
 
 let refreshTokenHandler: RefreshTokenHandler | null = null;
-let refreshInFlight: Promise<string | null> | null = null;
+/** The refresh in flight, and the session generation it was started in. */
+let refreshInFlight: {
+  generation: number;
+  promise: Promise<string | null>;
+} | null = null;
 
 export function setRefreshTokenHandler(
   handler: RefreshTokenHandler | null
@@ -130,15 +139,25 @@ const TRANSIENT_CODES = new Set(['network', 'timeout', 'server', 'canceled']);
 export async function refreshAccessToken(): Promise<string | null> {
   if (!refreshTokenHandler) return null;
   const generation = sessionGeneration;
-  refreshInFlight ??= refreshTokenHandler()
-    .catch((error: unknown) => {
-      const apiError = toApiError(error);
-      if (TRANSIENT_CODES.has(apiError.code)) throw apiError;
-      return null;
-    })
-    .finally(() => {
-      refreshInFlight = null;
-    });
-  const token = await refreshInFlight;
+  // Join a refresh only if it belongs to this session: one started before a
+  // sign-out (or a new sign-in) resolves null and must not speak for it.
+  let inFlight = refreshInFlight;
+  if (inFlight?.generation !== generation) {
+    const started = {
+      generation,
+      promise: refreshTokenHandler().catch((error: unknown) => {
+        const apiError = toApiError(error);
+        if (TRANSIENT_CODES.has(apiError.code)) throw apiError;
+        return null;
+      }),
+    };
+    inFlight = refreshInFlight = started;
+    void started.promise
+      .catch(() => undefined)
+      .finally(() => {
+        if (refreshInFlight === started) refreshInFlight = null;
+      });
+  }
+  const token = await inFlight.promise;
   return generation === sessionGeneration ? token : null;
 }

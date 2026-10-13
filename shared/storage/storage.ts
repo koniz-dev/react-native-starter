@@ -27,16 +27,35 @@ export async function setItem<T>(key: string, value: T): Promise<void> {
 }
 
 /**
- * Retrieve a value from AsyncStorage with JSON deserialization
+ * Retrieve a value from AsyncStorage with JSON deserialization. Resolves to
+ * null when the key is absent, the read fails, or the value isn't JSON (both
+ * logged); use hasItem where "unreadable" must not count as "absent".
  */
 export async function getItem<T>(key: string): Promise<T | null> {
+  let jsonValue: string | null;
   try {
-    const jsonValue = await AsyncStorage.getItem(key);
-    return jsonValue != null ? (JSON.parse(jsonValue) as T) : null;
+    jsonValue = await AsyncStorage.getItem(key);
   } catch (error) {
     logger.error(`Error retrieving ${key}`, error);
     return null;
   }
+  if (jsonValue == null) return null;
+  try {
+    return JSON.parse(jsonValue) as T;
+  } catch {
+    // The parser's message can quote the value (V8 does): leave it out.
+    logger.error(`Error retrieving ${key}`, new Error('not valid JSON'));
+    return null;
+  }
+}
+
+/**
+ * Whether a value is stored under `key` (valid JSON or not). Rejects when
+ * the read fails, so a caller never mistakes an unreadable store for an
+ * empty one.
+ */
+export async function hasItem(key: string): Promise<boolean> {
+  return (await AsyncStorage.getItem(key)) !== null;
 }
 
 /**
