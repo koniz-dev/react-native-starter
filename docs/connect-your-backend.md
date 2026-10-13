@@ -171,7 +171,8 @@ export const myBackendAuthAdapter: AuthAdapter = {
     unwrap(UserSchema, (await authenticated.get('/me')).data),
 
   // Optional: a new access token on a 401, or null to sign the user out.
-  // Throwing a network, timeout, or server error keeps the session.
+  // Throwing a network, timeout, server, or canceled error keeps the
+  // session; any other error signs the user out.
   refresh: async ({ public: http }) => {
     const refreshToken = await refreshTokens.get();
     if (!refreshToken) return null;
@@ -189,13 +190,16 @@ export const myBackendAuthAdapter: AuthAdapter = {
       return tokens.access_token;
     } catch (error) {
       const apiError = toApiError(error);
-      if (apiError.code === 'client' || apiError.code === 'unauthorized') {
-        // Rejected: the user is signed out next, so drop the refresh token.
-        await refreshTokens.clear();
-        return null;
+      // Offline, timed out, canceled, or a server error: the session is
+      // kept, so keep the refresh token and try again later.
+      if (
+        ['network', 'timeout', 'server', 'canceled'].includes(apiError.code)
+      ) {
+        throw apiError;
       }
-      // Offline, timed out, or a server error: keep it and try again later.
-      throw apiError;
+      // Anything else signs the user out next: drop the refresh token.
+      await refreshTokens.clear();
+      return null;
     }
   },
 
@@ -235,8 +239,10 @@ The service rejects a missing token, stores the token and the normalized
 user, and registers `refresh` (if any) as the HTTP client's refresh handler,
 which is tried once per 401 before signing out. On sign-out it calls `logout`
 (if any), then clears the stored session. Nothing in `shared/` changes.
-Until an adapter is registered, sign-in fails with "Sign-in is not
-configured".
+Until an adapter is registered, Login shows "Login failed. Please try
+again." and the reason, "Sign-in is not configured: register an AuthAdapter
+in shared/integrations/setup.ts.", goes to the log (the console in
+development, and the error reporter).
 
 ### Your backend's field names
 
@@ -266,11 +272,13 @@ it sends the stored token, and there is none until `login` returns.
   refresh between concurrent 401s, and a 401 for a request sent with an older
   access token is retried with the current one instead of refreshing again,
   so a rotated token is used only once.
-- **Failures.** Return `null` (or throw a 4xx) when the backend rejects the
-  refresh token: the user is signed out. Throw anything else (the request
-  failed offline, timed out, or got a 5xx) and the session is kept; the
-  original request fails with that error. A refresh that finishes after the
-  user signed out is discarded.
+- **Failures.** Throw an error whose `code` is `network`, `timeout`,
+  `server` (a 5xx), or `canceled`, and the session is kept; the original
+  request fails with that error. Anything else, `null` or any other error
+  (a 4xx, a response that fails validation), means the refresh token was
+  rejected: the user is signed out, so drop the refresh token first, as the
+  example does. A refresh that finishes after the user signed out is
+  discarded.
 - **Revocation.** Revoke and delete it in `logout`. Delete it before the
   request, so a failed request doesn't leave it on the device.
 
@@ -352,13 +360,18 @@ example. When several features share it, the helper can live in
 
 and load them in a screen with `useFetch` (loading, a typed `ApiError`, refetch;
 the `signal` cancels the request when the screen goes away). This screen shows
-the loading state, then the error with a Retry button, or the list:
+the loading state, then the error (in words the user can act on) with a
+Try again button, or the list:
 
 ```tsx
 // features/posts/screens/PostsScreen.tsx
+import { View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
+import { errorMessage } from '@/shared/http/errorMessage';
+import { t } from '@/shared/i18n';
 import { useFetch } from '@/shared/lib/useFetch';
 import { LoadingScreen } from '@/shared/ui/LoadingScreen';
+import { useAnnouncement } from '@/shared/ui/useAnnouncement';
 
 // From ../api/postsApi.ts above.
 declare const postsApi: {
@@ -369,16 +382,22 @@ export function PostsScreen() {
   const { data, loading, error, refetch } = useFetch(signal =>
     postsApi.list(signal)
   );
+  const message = error && errorMessage(error);
+  useAnnouncement(message);
 
-  if (loading && !data) return <LoadingScreen message="Loading posts..." />;
-  if (error)
-    return <Button onPress={refetch}>{`${error.message}. Retry`}</Button>;
+  if (loading && !data) return <LoadingScreen />;
   return (
-    <>
+    <View>
+      <View accessibilityLiveRegion="polite">
+        {message && <Text>{message}</Text>}
+      </View>
+      {error && (
+        <Button onPress={() => void refetch()}>{t('common.tryAgain')}</Button>
+      )}
       {data?.map(post => (
         <Text key={post.id}>{post.title}</Text>
       ))}
-    </>
+    </View>
   );
 }
 ```

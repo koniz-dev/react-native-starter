@@ -53,13 +53,14 @@ the diff.
   screens.
 - `npm run lint`, `npm run type-check`, `npm run test:ci`, and
   `npm run docs:check` pass, and the app starts in Expo Go.
-- Sign-in reports **"Sign-in is not configured: register an AuthAdapter in
-  shared/integrations/setup.ts."** until you register an adapter for your
-  backend; see [Connect Your Backend](connect-your-backend.md).
+- Sign-in shows "Login failed. Please try again." and logs **"Sign-in is not
+  configured: register an AuthAdapter in shared/integrations/setup.ts."**
+  until you register an adapter for your backend; see
+  [Connect Your Backend](connect-your-backend.md).
 - With `.env` copied from `.env.example`, the app opens on the configuration
   error screen until you set `EXPO_PUBLIC_API_URL` and
   `EXPO_PUBLIC_AUTH_API_URL`.
-- The docs keep a worked list screen (endpoint, loading, error with Retry)
+- The docs keep a worked list screen (endpoint, loading, error with Try again)
   in [Connect Your Backend](connect-your-backend.md#3-add-endpoints-for-a-feature)
   and its test in [Testing](testing.md#network).
 

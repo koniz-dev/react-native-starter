@@ -40,9 +40,12 @@ export const paymentsApi = createHttpClient({
 ## Errors
 
 Every client rejects with `ApiError` (`shared/http/apiError.ts`), an `Error`
-subclass, so `error.message` is always safe to show. The message prefers the
-server's own `message` (or `error`) field, so a failed login shows "Invalid
-credentials" rather than "Request failed with status code 400".
+subclass. Its `message` is for developers and logs: it can be axios's text
+("Network Error"), a developer error, or a server's 5xx body. To show an
+error, use `errorMessage(error)` (`shared/http/errorMessage.ts`): the
+server's own `message` (or `error`) field for a 4xx, so a failed login shows
+"Invalid credentials", and translated text (`errors.*` in
+`shared/i18n/en.ts`) for everything else.
 
 | `code`         | When                                                      |
 | -------------- | --------------------------------------------------------- |
@@ -277,6 +280,7 @@ and returns `{ data, loading, error, refetch }`:
 ```tsx
 import { Text } from 'react-native-paper';
 import { api } from '@/shared/http/api';
+import { errorMessage } from '@/shared/http/errorMessage';
 import { useFetch } from '@/shared/lib/useFetch';
 import { LoadingScreen } from '@/shared/ui/LoadingScreen';
 
@@ -287,15 +291,14 @@ export function UserName({ userId }: { userId: number }) {
     [userId]
   );
   if (loading && !data) return <LoadingScreen />;
-  if (error?.code === 'network') return <Text>You are offline.</Text>;
-  if (error) return <Text>{error.message}</Text>;
+  if (error) return <Text>{errorMessage(error)}</Text>;
   return <Text>{data?.name}</Text>;
 }
 ```
 
 `LoadingScreen` (`shared/ui/LoadingScreen.tsx`) is a centered progress
 indicator with an optional message. A whole list screen, with loading, an
-error with Retry, and the list, is in
+error with Try again, and the list, is in
 [Connect Your Backend](connect-your-backend.md#3-add-endpoints-for-a-feature),
 and its test in [Testing](testing.md#network).
 

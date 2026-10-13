@@ -80,7 +80,7 @@ export function useIsFavorite(id: number): boolean {
 
 To persist it, wrap the store with Zustand's `persist` middleware and a
 storage adapter over AsyncStorage
-([Zustand: persisting state](https://zustand.docs.pmnd.rs/integrations/persisting-store-data)).
+([Zustand: persisting state](https://zustand.docs.pmnd.rs/reference/integrations/persisting-store-data)).
 
 ## Redux Toolkit
 

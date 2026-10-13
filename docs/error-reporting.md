@@ -51,9 +51,13 @@ export async function saveSettings(
     `privateKey`, and keys starting with `auth` or `otp` (so `newPassword`,
     `x-auth-token`, and `client_secret` too) become `[redacted]`, also inside
     arrays;
+  - an `Error` in the context is reduced to its name, message, `code`, and
+    `status` (development adds its stack);
   - outside development: `data` and `body` values (response bodies) become
-    `[redacted]`, and an `Error` is reduced to its name, message, `code`, and
-    `status`.
+    `[redacted]`.
+
+  In development, the console line also gets the original `Error` passed to
+  `logger.error`.
 
   The `Error` passed to `captureException` is the original object, so the
   provider gets its stack. An `ApiError` from the HTTP clients carries no

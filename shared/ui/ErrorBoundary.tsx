@@ -155,7 +155,7 @@ function ErrorFallback({
             textColor={theme.colors.onError}
             testID="error-retry"
           >
-            {t('errorBoundary.retry')}
+            {t('common.tryAgain')}
           </Button>
         </Card.Actions>
       </Card>

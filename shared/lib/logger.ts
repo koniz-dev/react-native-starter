@@ -26,7 +26,10 @@ export type LogContext = Record<string, unknown>;
 export interface LoggerSettings {
   /** Minimum level written to the console. */
   minLevel: LogLevel;
-  /** Development keeps response bodies and full Error objects in logs. */
+  /**
+   * Development keeps response bodies and Error stacks in logs, and writes
+   * the original Error to the console.
+   */
   development: boolean;
 }
 

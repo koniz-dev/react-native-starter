@@ -233,24 +233,29 @@ afterEach(() => {
   api.defaults.adapter = originalAdapter;
 });
 
-it('shows loading, then the error, and Retry loads the list', async () => {
+it('shows loading, then the error, and Try again loads the list', async () => {
   const requests = holdRequests();
   renderWithProviders(<PostsScreen />);
 
-  expect(screen.getByText('Loading posts...')).toBeTruthy();
+  expect(screen.getByTestId('loading-screen')).toBeTruthy();
   await waitFor(() => expect(requests).toHaveLength(1));
   expect(requests[0]?.config.url).toBe('/posts');
 
   await act(async () => requests[0]?.reject(unavailable(requests[0].config)));
-  fireEvent.press(await screen.findByText('Service unavailable. Retry'));
+  // A 5xx shows translated text, not the server's body.
+  expect(
+    await screen.findByText('The server had a problem. Please try again later.')
+  ).toBeTruthy();
+  expect(screen.queryByText('Service unavailable')).toBeNull();
+  fireEvent.press(screen.getByText('Try again'));
 
-  expect(await screen.findByText('Loading posts...')).toBeTruthy();
+  expect(await screen.findByTestId('loading-screen')).toBeTruthy();
   await waitFor(() => expect(requests).toHaveLength(2));
   await act(async () =>
     requests[1]?.resolve(ok(requests[1].config, [{ id: 1, title: 'Hello' }]))
   );
   expect(await screen.findByText('Hello')).toBeTruthy();
-  expect(screen.queryByText(/Retry/)).toBeNull();
+  expect(screen.queryByText('Try again')).toBeNull();
 });
 ```
 
@@ -374,7 +379,7 @@ npm run test:e2e:android   # emulator or device on adb
 
 `scripts/e2e/run.sh` starts Metro and, by default, points
 `EXPO_PUBLIC_API_URL` and `EXPO_PUBLIC_AUTH_API_URL` at the e2e mock API
-(`scripts/e2e/mock-api.js`, on port 9999), so a run needs no other server
+(`scripts/e2e/mock-api.js`, on port 9999 unless `MOCK_PORT` is set), so a run needs no other server
 and no network access. On Android it sets up `adb reverse` for Metro and for every
 `localhost` URL it uses. It runs the numbered flows, then switches the device
 to dark mode for `dark-mode.yaml` and back. Results, screenshots, and a JUnit
@@ -440,6 +445,8 @@ as above.
 | `E2E_API_URL`      | the e2e mock  | `EXPO_PUBLIC_API_URL` for the run                                                                                 |
 | `E2E_AUTH_API_URL` | `E2E_API_URL` | `EXPO_PUBLIC_AUTH_API_URL` for the run                                                                            |
 | `E2E_BACKEND_CMD`  | none          | a command that starts your backend or mock; the runner waits until `E2E_API_URL` answers, and stops it at the end |
+| `METRO_PORT`       | `8081`        | the port Metro runs on; the runner stops if something already answers there                                       |
+| `MOCK_PORT`        | `9999`        | the port of the e2e mock API; the runner stops if something already answers there                                 |
 
 For example, with a mock backend in `scripts/` (see
 [Where code goes](conventions.md#where-code-goes)) that listens on port 4000:

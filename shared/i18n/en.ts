@@ -98,6 +98,7 @@ export const en = {
   'common.dismiss': 'Dismiss',
   'common.unknownError': 'Something went wrong. Please try again.',
   'common.back': 'Back',
+  'common.tryAgain': 'Try again',
 
   // Errors shown for failed requests (shared/http/errorMessage.ts)
   'errors.network': 'No connection. Check your network and try again.',
@@ -107,7 +108,6 @@ export const en = {
   // Error boundary
   'errorBoundary.title': 'Something went wrong',
   'errorBoundary.fallbackMessage': 'An unexpected error occurred',
-  'errorBoundary.retry': 'Try again',
   'errorBoundary.goHome': 'Go home',
 
   // Configuration error screen
