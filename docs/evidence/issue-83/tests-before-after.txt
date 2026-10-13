@@ -1,0 +1,76 @@
+Commit 4adf01c: fix(tooling): lint enforces import boundaries for relative paths and color literals in any form
+Tests changed by the commit: __tests__/app/appConfig.test.ts __tests__/scripts/lintRules.test.ts 
+
+== BEFORE: code at 4adf01c^ with the tests from 4adf01c
+    ✓ APP_VARIANT=undefined (7 ms)
+    ✓ APP_VARIANT=development (1 ms)
+    ✓ APP_VARIANT=preview (1 ms)
+    ✓ APP_VARIANT=production
+    ✓ gives each variant a distinct bundle ID and scheme (1 ms)
+    ✓ uses APP_BUILD_NUMBER for the iOS build number and Android version code (1 ms)
+    ✓ rejects an unknown variant or an invalid build number (11 ms)
+    ✕ declares only exempt encryption, so iOS builds need no compliance answer (2 ms)
+    ✓ asks for no permission the app does not use (2 ms)
+    ✓ configures the splash screen with light and dark backgrounds (1 ms)
+    ✕ rejects shared/ (10 ms)
+    ✕ rejects shared/, relatively (2 ms)
+    ✕ rejects shared/ to a route (1 ms)
+    ✕ rejects a feature
+    ✕ rejects a feature, relatively (1 ms)
+    ✕ rejects a feature to a route (1 ms)
+    ✕ rejects a relative path out of the module (1 ms)
+    ✕ rejects a dynamic import (2 ms)
+    ✓ allows the composition root (1 ms)
+    ✓ allows a relative path in the feature
+    ✓ allows shared/ through @/ (1 ms)
+    ✓ allows a relative path in the area
+    ✓ allows a package
+    ✓ rejects a string in features/home/X.tsx (1 ms)
+    ✕ rejects a string in app/x.tsx (1 ms)
+    ✕ rejects an expression in features/home/X.tsx
+    ✕ rejects an expression in app/x.tsx (1 ms)
+    ✕ rejects a conditional in features/home/X.tsx (1 ms)
+    ✕ rejects a conditional in app/x.tsx (1 ms)
+    ✕ rejects a template literal in features/home/X.tsx
+    ✕ rejects a template literal in app/x.tsx (1 ms)
+    ✕ rejects Paper's iconColor in features/home/X.tsx
+    ✕ rejects Paper's iconColor in app/x.tsx (1 ms)
+    ✓ allows a theme color, and still rejects default exports (1 ms)
+Tests:       18 failed, 16 passed, 34 total
+
+== AFTER: code and tests at 4adf01c
+    ✓ APP_VARIANT=undefined (7 ms)
+    ✓ APP_VARIANT=development (1 ms)
+    ✓ APP_VARIANT=preview (1 ms)
+    ✓ APP_VARIANT=production (1 ms)
+    ✓ gives each variant a distinct bundle ID and scheme (1 ms)
+    ✓ uses APP_BUILD_NUMBER for the iOS build number and Android version code
+    ✓ rejects an unknown variant or an invalid build number (14 ms)
+    ✓ declares only exempt encryption, so iOS builds need no compliance answer
+    ✓ asks for no permission the app does not use (2 ms)
+    ✓ configures the splash screen with light and dark backgrounds (1 ms)
+    ✓ rejects shared/ (7 ms)
+    ✓ rejects shared/, relatively (1 ms)
+    ✓ rejects shared/ to a route (1 ms)
+    ✓ rejects a feature
+    ✓ rejects a feature, relatively
+    ✓ rejects a feature to a route
+    ✓ rejects a relative path out of the module (1 ms)
+    ✓ rejects a dynamic import
+    ✓ allows the composition root (1 ms)
+    ✓ allows a relative path in the feature
+    ✓ allows shared/ through @/
+    ✓ allows a relative path in the area
+    ✓ allows a package
+    ✓ rejects a string in features/home/X.tsx (1 ms)
+    ✓ rejects a string in app/x.tsx
+    ✓ rejects an expression in features/home/X.tsx
+    ✓ rejects an expression in app/x.tsx (1 ms)
+    ✓ rejects a conditional in features/home/X.tsx
+    ✓ rejects a conditional in app/x.tsx
+    ✓ rejects a template literal in features/home/X.tsx (1 ms)
+    ✓ rejects a template literal in app/x.tsx
+    ✓ rejects Paper's iconColor in features/home/X.tsx
+    ✓ rejects Paper's iconColor in app/x.tsx (1 ms)
+    ✓ allows a theme color, and still rejects default exports (1 ms)
+Tests:       34 passed, 34 total

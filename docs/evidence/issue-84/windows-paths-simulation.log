@@ -1,0 +1,18 @@
+$ node winsim-paths.js scripts/remove-demo.js   (path = path.win32; fs maps path arguments only)
+exit 0
+  delete scripts/remove-demo.js
+Done. Next: register your AuthAdapter in shared/integrations/setup.ts, set your backend URLs in .env, then run npm run lint, npm run type-check, and npm run test:ci.
+remove-demo.js left: ls: scripts/remove-demo.js: No such file or directory
+features/demo-todos left: ls: features/demo-todos: No such file or directory
+files with @demo left: 0
+
+$ the same, with scripts/remove-demo.js from 4adf01c (before the fix), --dry-run
+exit 1
+Dry run: nothing is changed.
+app\(tabs)\explore.tsx: still imports a demo feature
+app\showcase.tsx: still imports a demo feature
+__tests__\features\demo-auth\DemoCredentialsHint.test.tsx: still imports a demo feature
+__tests__\features\demo-auth\dummyJsonAdapter.test.ts: still imports a demo feature
+__tests__\features\demo-showcase\ShowcaseScreen.test.tsx: still imports a demo feature
+__tests__\features\demo-todos\TodosScreen.test.tsx: still imports a demo feature
+__tests__\scripts\removeDemo.test.ts: unterminated @demo block

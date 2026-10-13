@@ -1,0 +1,228 @@
+Commit 473cea4: fix: storage failures, a throwing 401 handler, and stale refreshes can't end a session wrongly
+Tests changed by the commit: __tests__/app/sessionRoutes.test.tsx __tests__/shared/http/tokenSafety.test.ts __tests__/shared/lib/logger.test.ts __tests__/shared/storage/storage.test.ts 
+
+== BEFORE: code at 473cea4^ with the tests from 473cea4
+    ✓ serializes and restores a value (10 ms)
+    ✓ returns null for a missing key
+    ✓ removes the requested key (1 ms)
+      ✓ setItem logs the error and rethrows it (2 ms)
+      ✓ getItem logs the error and returns null
+      ✕ getItem logs a malformed value without quoting it, and returns null (5 ms)
+      ✕ hasItem rejects instead of reporting an unreadable key as absent (1 ms)
+      ✓ removeItem logs the error and rethrows it (1 ms)
+      ✓ writes only messages at or above the minimum level (122 ms)
+      ✓ writes every level in development (3 ms)
+      ✓ writes nothing to the console when silent (2 ms)
+      ✓ reads the settings on every call (1 ms)
+      ✓ uses the configured level from shared/config/env.ts
+      ✓ a client failure is written with console.info in development (25 ms)
+      ✓ a server failure is written with console.info in development (2 ms)
+      ✓ a unauthorized failure is written with console.info in development (38 ms)
+      ✓ a network failure is written with console.warn in development (4 ms)
+      ✓ a timeout failure is written with console.warn in development (22 ms)
+      ✓ a unknown failure is written with console.warn in development (3 ms)
+      ✓ a canceled failure is written with console.debug in development (2 ms)
+      ✓ a client failure is shown in development: true, preview: true, production: false (1 ms)
+      ✓ a server failure is shown in development: true, preview: true, production: false (1 ms)
+      ✓ a unauthorized failure is shown in development: true, preview: true, production: false
+      ✓ a network failure is shown in development: true, preview: true, production: true (1 ms)
+      ✓ a timeout failure is shown in development: true, preview: true, production: true
+      ✓ a unknown failure is shown in development: true, preview: true, production: true (1 ms)
+      ✓ a canceled failure is shown in development: true, preview: false, production: false
+      ✓ reports an Error with the message and redacted context (1 ms)
+      ✓ reports a message when there is no Error (1 ms)
+      ✓ reports a thrown non-Error value as a message with the value
+      ✓ does not forward warnings
+      ✓ also forwards in development
+      ✓ setErrorReporter registers a provider
+      ✓ keeps working when the reporter throws (1 ms)
+      ✓ the default reporter writes one console line (1 ms)
+      ✕ always redacts auth headers, cookies, tokens, and passwords (6 ms)
+      ✕ redacts credential (1 ms)
+      ✕ redacts idCredential
+      ✕ redacts pin
+      ✕ redacts totp (1 ms)
+      ✕ redacts mfaCode (1 ms)
+      ✕ redacts refresh (1 ms)
+      ✕ redacts code_verifier (1 ms)
+      ✕ redacts accessKeyId (1 ms)
+      ✕ redacts access_key (1 ms)
+      ✕ redacts cvv (1 ms)
+      ✕ redacts signature (1 ms)
+      ✓ redacts response bodies outside development only (1 ms)
+      ✓ reduces Errors to name, message, code, and status outside development (1 ms)
+      ✓ prints a redacted Error summary in production and the Error in development (1 ms)
+      ✓ redacts keys that name a secret: authToken (1 ms)
+      ✓ redacts keys that name a secret: x-auth-token
+      ✓ redacts keys that name a secret: X-Auth-Token
+      ✓ redacts keys that name a secret: client_secret
+      ✓ redacts keys that name a secret: newPassword (1 ms)
+      ✓ redacts keys that name a secret: currentPassword
+      ✓ redacts keys that name a secret: passcode (1 ms)
+      ✓ redacts keys that name a secret: otp
+      ✓ redacts keys that name a secret: jwt (1 ms)
+      ✓ redacts keys that name a secret: sessionId
+      ✓ redacts keys that name a secret: session_id (1 ms)
+      ✓ redacts keys that name a secret: privateKey
+      ✓ redacts secrets inside arrays (1 ms)
+      ✓ logs an object referenced twice in full, not as circular
+      ✓ handles circular and deeply nested values (1 ms)
+      ✓ redacts what the logger writes outside development
+    ✓ ignores a 401 from an untrusted origin that got its own Authorization header (27 ms)
+    ✓ treats "https://evil.example\\@auth.example.com/x" as untrusted (17 ms)
+    ✓ treats "https://evil.example\\.auth.example.com/x" as untrusted (2 ms)
+    ✓ treats "https://auth.exa\tmple.com/x" as untrusted (1 ms)
+    ✓ treats "https://auth.example.com\n/x" as untrusted (2 ms)
+    ✓ treats "https://auth.example.com /x" as untrusted (2 ms)
+    ✓ keeps the session when the refresh fails with a network error (4 ms)
+    ✓ keeps the session when the refresh fails with a timeout error (1 ms)
+    ✓ keeps the session when the refresh fails with a server error (1 ms)
+    ✓ retries with the current token, without refreshing, when the 401 was for an older one (2 ms)
+    ✓ does not end a newer session for a 401 sent with a token that is gone (2 ms)
+    ✓ retries with the token the refresh returned (2 ms)
+    ✓ does not store a refreshed token after the user signed out (1 ms)
+    ✓ doesn't end the next user's session when an old refresh finds nothing to refresh (4 ms)
+    ✕ doesn't let the next user's 401 join an earlier user's refresh (5 ms)
+    ✕ rejects with an ApiError and ends the session even if clearing it fails (2 ms)
+    ✓ doesn't replay an earlier user's request with the next user's token (2 ms)
+    ✓ doesn't send a retry once its session has ended (3 ms)
+    ✓ sends a retry without a token as just that, not with the old header (1 ms)
+    ✓ doesn't store a profile that loads after the user signed out (1 ms)
+    ✓ doesn't store a profile that loads after the user signed in as someone else (1 ms)
+    ✓ leaves no token behind when storing the profile at sign-in fails (4 ms)
+    ✓ leave out the query string and fragment (2 ms)
+    ✓ keeps no headers or request body (2 ms)
+    ✓ restores a stored session on cold start, including a deep link into the protected group (2007 ms)
+    ✓ redirects a signed-out deep link into the protected group to Home (78 ms)
+    ✓ shows the user the profile screen reloaded from the backend (142 ms)
+    ✓ ties error reports to the signed-in user, and unties them on sign-out (91 ms)
+    ✓ offers a way back from Login, even when it was opened directly (371 ms)
+    ✓ goes Home from Login when there is nothing to go back to (146 ms)
+    ✓ opens Login once for a double tap, so one Back returns Home (208 ms)
+    ✓ opens Profile once for a double tap, and loads it once (230 ms)
+    ✓ keeps signed-in users out of the login screen (69 ms)
+    ✓ signing in updates every consumer and leaves the login screen (283 ms)
+    ✓ the protected group has a back button to the screen that opened it (199 ms)
+    ✓ signing out from the protected screen returns to Home signed out (112 ms)
+    ✓ a session-expired event (API 401) signs out and leaves the protected group (131 ms)
+    ✓ opening the protected screen with an expired token signs out and returns Home (181 ms)
+    ✓ shows a non-401 refresh failure on the protected screen and stays signed in (217 ms)
+    ✓ clears a token left by a previous install and starts signed out (50 ms)
+    ✓ restores the session on later launches (the marker is set) (99 ms)
+    ✕ keeps the token when the store cannot be read at launch (70 ms)
+    ✕ restores a session whose stored profile is not valid without that profile (51 ms)
+    ✓ keeps an existing session from before the marker existed (50 ms)
+Tests:       18 failed, 92 passed, 110 total
+
+== AFTER: code and tests at 473cea4
+    ✓ serializes and restores a value (8 ms)
+    ✓ returns null for a missing key (1 ms)
+    ✓ removes the requested key (2 ms)
+      ✓ setItem logs the error and rethrows it (7 ms)
+      ✓ getItem logs the error and returns null (1 ms)
+      ✓ getItem logs a malformed value without quoting it, and returns null (2 ms)
+      ✓ hasItem rejects instead of reporting an unreadable key as absent (1 ms)
+      ✓ removeItem logs the error and rethrows it (1 ms)
+      ✓ writes only messages at or above the minimum level (9 ms)
+      ✓ writes every level in development (2 ms)
+      ✓ writes nothing to the console when silent (1 ms)
+      ✓ reads the settings on every call (1 ms)
+      ✓ uses the configured level from shared/config/env.ts (1 ms)
+      ✓ a client failure is written with console.info in development (12 ms)
+      ✓ a server failure is written with console.info in development (3 ms)
+      ✓ a unauthorized failure is written with console.info in development (3 ms)
+      ✓ a network failure is written with console.warn in development (3 ms)
+      ✓ a timeout failure is written with console.warn in development (3 ms)
+      ✓ a unknown failure is written with console.warn in development (4 ms)
+      ✓ a canceled failure is written with console.debug in development (3 ms)
+      ✓ a client failure is shown in development: true, preview: true, production: false (3 ms)
+      ✓ a server failure is shown in development: true, preview: true, production: false
+      ✓ a unauthorized failure is shown in development: true, preview: true, production: false (1 ms)
+      ✓ a network failure is shown in development: true, preview: true, production: true (1 ms)
+      ✓ a timeout failure is shown in development: true, preview: true, production: true
+      ✓ a unknown failure is shown in development: true, preview: true, production: true
+      ✓ a canceled failure is shown in development: true, preview: false, production: false (1 ms)
+      ✓ reports an Error with the message and redacted context (1 ms)
+      ✓ reports a message when there is no Error (1 ms)
+      ✓ reports a thrown non-Error value as a message with the value (1 ms)
+      ✓ does not forward warnings (1 ms)
+      ✓ also forwards in development (1 ms)
+      ✓ setErrorReporter registers a provider
+      ✓ keeps working when the reporter throws (1 ms)
+      ✓ the default reporter writes one console line (1 ms)
+      ✓ always redacts auth headers, cookies, tokens, and passwords (2 ms)
+      ✓ redacts credential (1 ms)
+      ✓ redacts idCredential
+      ✓ redacts pin (1 ms)
+      ✓ redacts totp
+      ✓ redacts mfaCode
+      ✓ redacts refresh (1 ms)
+      ✓ redacts code_verifier
+      ✓ redacts accessKeyId (1 ms)
+      ✓ redacts access_key
+      ✓ redacts cvv (1 ms)
+      ✓ redacts signature (12 ms)
+      ✓ redacts response bodies outside development only (2 ms)
+      ✓ reduces Errors to name, message, code, and status outside development (2 ms)
+      ✓ prints a redacted Error summary in production and the Error in development (1 ms)
+      ✓ redacts keys that name a secret: authToken (1 ms)
+      ✓ redacts keys that name a secret: x-auth-token (1 ms)
+      ✓ redacts keys that name a secret: X-Auth-Token (1 ms)
+      ✓ redacts keys that name a secret: client_secret
+      ✓ redacts keys that name a secret: newPassword (1 ms)
+      ✓ redacts keys that name a secret: currentPassword (1 ms)
+      ✓ redacts keys that name a secret: passcode
+      ✓ redacts keys that name a secret: otp
+      ✓ redacts keys that name a secret: jwt (1 ms)
+      ✓ redacts keys that name a secret: sessionId
+      ✓ redacts keys that name a secret: session_id
+      ✓ redacts keys that name a secret: privateKey
+      ✓ redacts secrets inside arrays (1 ms)
+      ✓ logs an object referenced twice in full, not as circular (1 ms)
+      ✓ handles circular and deeply nested values
+      ✓ redacts what the logger writes outside development
+    ✓ ignores a 401 from an untrusted origin that got its own Authorization header (16 ms)
+    ✓ treats "https://evil.example\\@auth.example.com/x" as untrusted (2 ms)
+    ✓ treats "https://evil.example\\.auth.example.com/x" as untrusted (2 ms)
+    ✓ treats "https://auth.exa\tmple.com/x" as untrusted (1 ms)
+    ✓ treats "https://auth.example.com\n/x" as untrusted (2 ms)
+    ✓ treats "https://auth.example.com /x" as untrusted (7 ms)
+    ✓ keeps the session when the refresh fails with a network error (4 ms)
+    ✓ keeps the session when the refresh fails with a timeout error (1 ms)
+    ✓ keeps the session when the refresh fails with a server error (2 ms)
+    ✓ retries with the current token, without refreshing, when the 401 was for an older one (3 ms)
+    ✓ does not end a newer session for a 401 sent with a token that is gone (2 ms)
+    ✓ retries with the token the refresh returned (3 ms)
+    ✓ does not store a refreshed token after the user signed out (1 ms)
+    ✓ doesn't end the next user's session when an old refresh finds nothing to refresh (4 ms)
+    ✓ doesn't let the next user's 401 join an earlier user's refresh (5 ms)
+    ✓ rejects with an ApiError and ends the session even if clearing it fails (4 ms)
+    ✓ doesn't replay an earlier user's request with the next user's token (2 ms)
+    ✓ doesn't send a retry once its session has ended (4 ms)
+    ✓ sends a retry without a token as just that, not with the old header (3 ms)
+    ✓ doesn't store a profile that loads after the user signed out (1 ms)
+    ✓ doesn't store a profile that loads after the user signed in as someone else (1 ms)
+    ✓ leaves no token behind when storing the profile at sign-in fails (2 ms)
+    ✓ leave out the query string and fragment (2 ms)
+    ✓ keeps no headers or request body (2 ms)
+    ✓ restores a stored session on cold start, including a deep link into the protected group (499 ms)
+    ✓ redirects a signed-out deep link into the protected group to Home (84 ms)
+    ✓ shows the user the profile screen reloaded from the backend (130 ms)
+    ✓ ties error reports to the signed-in user, and unties them on sign-out (108 ms)
+    ✓ offers a way back from Login, even when it was opened directly (160 ms)
+    ✓ goes Home from Login when there is nothing to go back to (144 ms)
+    ✓ opens Login once for a double tap, so one Back returns Home (205 ms)
+    ✓ opens Profile once for a double tap, and loads it once (250 ms)
+    ✓ keeps signed-in users out of the login screen (81 ms)
+    ✓ signing in updates every consumer and leaves the login screen (351 ms)
+    ✓ the protected group has a back button to the screen that opened it (193 ms)
+    ✓ signing out from the protected screen returns to Home signed out (147 ms)
+    ✓ a session-expired event (API 401) signs out and leaves the protected group (148 ms)
+    ✓ opening the protected screen with an expired token signs out and returns Home (165 ms)
+    ✓ shows a non-401 refresh failure on the protected screen and stays signed in (105 ms)
+    ✓ clears a token left by a previous install and starts signed out (51 ms)
+    ✓ restores the session on later launches (the marker is set) (119 ms)
+    ✓ keeps the token when the store cannot be read at launch (75 ms)
+    ✓ restores a session whose stored profile is not valid without that profile (53 ms)
+    ✓ keeps an existing session from before the marker existed (52 ms)
+Tests:       110 passed, 110 total

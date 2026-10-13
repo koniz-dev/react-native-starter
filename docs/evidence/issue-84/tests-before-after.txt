@@ -1,0 +1,189 @@
+Commit 166e270: fix(scripts): remove-demo writes before it deletes, works with Windows paths, and scans the whole project
+Tests changed by the commit: __tests__/scripts/checkDocs.test.ts __tests__/scripts/initProject.test.ts __tests__/scripts/projectCopy.test.ts __tests__/scripts/removeDemo.test.ts __tests__/shared/session/realBackendAdapter.test.ts 
+
+== BEFORE: code at 166e270^ with the tests from 166e270
+Tests:       0 total
+
+== AFTER: code and tests at 166e270
+    ✓ lists the files of a project that is not a git repository (50 ms)
+    ✓ signs in with a tokens-only response, loading the user from /me (27 ms)
+    ✓ shows the envelope's message for a wrong password and stores nothing (126 ms)
+    ✓ rejects a login response without the envelope with a readable message and stores nothing (24 ms)
+    ✓ rejects a login response without a refresh token with a readable message and stores nothing (27 ms)
+    ✓ rejects a user payload without the required fields (19 ms)
+    ✓ refreshes on a 401 with rotation, keeping only the newest refresh token (8 ms)
+    ✓ signs out and drops the refresh token when the refresh is rejected (7 ms)
+    ✓ keeps the session and the refresh token when the refresh fails offline (22 ms)
+    ✓ revokes the refresh token on logout, with the access token still sent (4 ms)
+    ✓ signs out locally when the backend is unreachable on logout (17 ms)
+    ✓ checks indented snippets, flow and public paths, and docs/ subfolder references (7392 ms)
+    ✓ lists the changes on --dry-run and changes nothing (929 ms)
+    ✓ leaves no mention of the demo in the code, docs, config, or flows (13947 ms)
+    ✓ fails when a doc still names a deleted file (1049 ms)
+    ✓ removes marked blocks anywhere in the project, not only in source folders (2824 ms)
+    ✓ keeps itself and the demo, and says how to restore, when a write fails (782 ms)
+    ✓ changes nothing when a marker is malformed, and says so without a stack trace (1206 ms)
+    ✓ accepts slug "acme-notes" (8 ms)
+    ✓ accepts slug "notes2" (1 ms)
+    ✓ accepts scheme "acmenotes" (1 ms)
+    ✓ accepts scheme "acme-notes.app" (1 ms)
+    ✓ accepts bundleId "com.acme.notes" (1 ms)
+    ✓ accepts bundleId "io.acme.notesApp2"
+    ✓ accepts name "Acme Notes" (1 ms)
+    ✓ accepts name "Bob's Ghi Chú"
+    ✓ accepts owner "Acme Inc."
+    ✓ rejects slug "Acme-Notes" (2 ms)
+    ✓ rejects slug "acme_notes"
+    ✓ rejects slug "-acme" (1 ms)
+    ✓ rejects slug "acme--notes"
+    ✓ rejects scheme "AcmeNotes"
+    ✓ rejects scheme "1acme" (1 ms)
+    ✓ rejects scheme "acme notes"
+    ✓ rejects bundleId "acme" (1 ms)
+    ✓ rejects bundleId "com.acme-corp.notes"
+    ✓ rejects bundleId "com.1acme.notes" (1 ms)
+    ✓ rejects bundleId "com.acme."
+    ✓ rejects bundleId "com.example.notes"
+    ✓ rejects bundleId "com.example"
+    ✓ rejects bundleId "io.acme.notes_app"
+    ✓ rejects bundleId "com.acme.new"
+    ✓ rejects bundleId "com.class.notes" (1 ms)
+    ✓ rejects scheme "exp"
+    ✓ rejects scheme "exps" (1 ms)
+    ✓ rejects scheme "https" (1 ms)
+    ✓ rejects scheme "http"
+    ✓ rejects scheme "file"
+    ✓ rejects name "" (1 ms)
+    ✓ rejects name " Acme"
+    ✓ rejects name "Acme | Notes"
+    ✓ rejects name "Acme
+    ✓ rejects owner ""
+    ✓ rejects slug "react" (1 ms)
+    ✓ rejects slug "expo"
+    ✓ parses flags and options (2 ms)
+    ✓ rejects unknown arguments, missing values, and conflicting flags (32 ms)
+    ✓ derives a slug and quotes strings the way Prettier does (1 ms)
+    ✓ lists the changes on --dry-run and changes nothing (1427 ms)
+    ✓ refuses invalid input without a terminal (1272 ms)
+    ✓ names the empty app name as the problem (1565 ms)
+    ✓ writes $ in the name and owner literally (2936 ms)
+    ✓ on --force, changes the old scheme only where it is the scheme (3582 ms)
+    ✓ on --force after the APP block was edited, replaces the template identity too (2351 ms)
+    ✓ refuses a dirty working tree unless --force (936 ms)
+    ✓ sets the identity and deletes itself (6176 ms)
+    ✓ keeps the recipes with --keep-recipes, without their markers (2064 ms)
+    ✓ after a failure on uncommitted changes, never suggests discarding them (975 ms)
+    ✓ after a failure on a clean tree, prints a restore command for the project root (1256 ms)
+    ✓ removes the demo with --remove-demo and refuses a second run (3276 ms)
+Tests:       70 passed, 70 total
+
+== BEFORE (rerun): scripts at 166e270^, with the tests and the test helper testing/projectCopy.ts from 166e270
+    ✓ fails on a high advisory that is not reviewed (17 ms)
+    ✓ passes an allowlisted advisory without a fix in range (5 ms)
+    ✓ fails once npm can fix an allowlisted advisory within the ranges (1 ms)
+    ✓ fails when an allowlist review has expired (3 ms)
+    ✓ fails when an allowlist entry has reviewBy undefined, not a YYYY-MM-DD date
+    ✓ fails when an allowlist entry has reviewBy "2027-1-9", not a YYYY-MM-DD date (1 ms)
+    ✓ fails when an allowlist entry has reviewBy "2027/01/09", not a YYYY-MM-DD date (1 ms)
+    ✓ fails when an allowlist entry has reviewBy "Jan 9 2027", not a YYYY-MM-DD date (1 ms)
+    ✓ fails when an allowlist entry has reviewBy "2027-02-30", not a YYYY-MM-DD date (1 ms)
+    ✓ fails when an allowlist entry has no id, package, or tracking link (1 ms)
+    ✓ reports moderate advisories without failing (1 ms)
+    ✓ fails on an npm error instead of reporting nothing
+    ✓ fails on a report without results instead of reporting nothing
+    ✓ notes an allowlisted advisory that npm no longer reports (1 ms)
+    ✓ rejects shared/ (8 ms)
+    ✓ rejects shared/, relatively
+    ✓ rejects shared/ to a route
+    ✓ rejects a feature (1 ms)
+    ✓ rejects a feature, relatively
+    ✓ rejects a feature to a route (1 ms)
+    ✓ rejects a relative path out of the module
+    ✓ rejects a dynamic import (1 ms)
+    ✓ allows the composition root
+    ✓ allows a relative path in the feature
+    ✓ allows shared/ through @/
+    ✓ allows a relative path in the area (1 ms)
+    ✓ allows a package
+    ✓ rejects a string in features/home/X.tsx (1 ms)
+    ✓ rejects a string in app/x.tsx
+    ✓ rejects an expression in features/home/X.tsx
+    ✓ rejects an expression in app/x.tsx
+    ✓ rejects a conditional in features/home/X.tsx (1 ms)
+    ✓ rejects a conditional in app/x.tsx
+    ✓ rejects a template literal in features/home/X.tsx
+    ✓ rejects a template literal in app/x.tsx (1 ms)
+    ✓ rejects Paper's iconColor in features/home/X.tsx
+    ✓ rejects Paper's iconColor in app/x.tsx
+    ✓ allows a theme color, and still rejects default exports (1 ms)
+    ✓ lists the files of a project that is not a git repository (64 ms)
+    ✓ checks indented snippets, flow and public paths, and docs/ subfolder references (7325 ms)
+    ✓ lists the changes on --dry-run and changes nothing (1060 ms)
+    ✓ leaves no mention of the demo in the code, docs, config, or flows (15100 ms)
+    ✓ fails when a doc still names a deleted file (1538 ms)
+    ✕ removes marked blocks anywhere in the project, not only in source folders (3763 ms)
+    ✕ keeps itself and the demo, and says how to restore, when a write fails (845 ms)
+    ✓ changes nothing when a marker is malformed, and says so without a stack trace (1124 ms)
+    ✓ signs in with a tokens-only response, loading the user from /me (24 ms)
+    ✓ shows the envelope's message for a wrong password and stores nothing (58 ms)
+    ✓ rejects a login response without the envelope with a readable message and stores nothing (4 ms)
+    ✓ rejects a login response without a refresh token with a readable message and stores nothing (2 ms)
+    ✓ rejects a user payload without the required fields (6 ms)
+    ✓ refreshes on a 401 with rotation, keeping only the newest refresh token (13 ms)
+    ✓ signs out and drops the refresh token when the refresh is rejected (8 ms)
+    ✓ keeps the session and the refresh token when the refresh fails offline (26 ms)
+    ✓ revokes the refresh token on logout, with the access token still sent (172 ms)
+    ✓ signs out locally when the backend is unreachable on logout (19 ms)
+    ✓ accepts slug "acme-notes" (11 ms)
+    ✓ accepts slug "notes2" (4 ms)
+    ✓ accepts scheme "acmenotes" (6 ms)
+    ✓ accepts scheme "acme-notes.app" (2 ms)
+    ✓ accepts bundleId "com.acme.notes" (3 ms)
+    ✓ accepts bundleId "io.acme.notesApp2"
+    ✓ accepts name "Acme Notes"
+    ✓ accepts name "Bob's Ghi Chú" (1 ms)
+    ✓ accepts owner "Acme Inc."
+    ✓ rejects slug "Acme-Notes" (1 ms)
+    ✓ rejects slug "acme_notes" (1 ms)
+    ✓ rejects slug "-acme"
+    ✓ rejects slug "acme--notes" (2 ms)
+    ✓ rejects scheme "AcmeNotes"
+    ✓ rejects scheme "1acme"
+    ✓ rejects scheme "acme notes"
+    ✓ rejects bundleId "acme" (1 ms)
+    ✓ rejects bundleId "com.acme-corp.notes"
+    ✓ rejects bundleId "com.1acme.notes"
+    ✓ rejects bundleId "com.acme."
+    ✓ rejects bundleId "com.example.notes" (1 ms)
+    ✓ rejects bundleId "com.example"
+    ✓ rejects bundleId "io.acme.notes_app" (1 ms)
+    ✓ rejects bundleId "com.acme.new"
+    ✓ rejects bundleId "com.class.notes"
+    ✓ rejects scheme "exp" (1 ms)
+    ✓ rejects scheme "exps"
+    ✓ rejects scheme "https"
+    ✓ rejects scheme "http"
+    ✓ rejects scheme "file" (1 ms)
+    ✓ rejects name "" (1 ms)
+    ✓ rejects name " Acme"
+    ✓ rejects name "Acme | Notes" (1 ms)
+    ✓ rejects name "Acme
+    ✓ rejects owner ""
+    ✓ rejects slug "react"
+    ✓ rejects slug "expo" (1 ms)
+    ✓ parses flags and options (1 ms)
+    ✓ rejects unknown arguments, missing values, and conflicting flags (53 ms)
+    ✕ derives a slug and quotes strings the way Prettier does (4 ms)
+    ✓ lists the changes on --dry-run and changes nothing (1260 ms)
+    ✓ refuses invalid input without a terminal (1214 ms)
+    ✓ names the empty app name as the problem (1103 ms)
+    ✓ writes $ in the name and owner literally (2879 ms)
+    ✓ on --force, changes the old scheme only where it is the scheme (3596 ms)
+    ✓ on --force after the APP block was edited, replaces the template identity too (2446 ms)
+    ✓ refuses a dirty working tree unless --force (1392 ms)
+    ✓ sets the identity and deletes itself (8002 ms)
+    ✓ keeps the recipes with --keep-recipes, without their markers (2671 ms)
+    ✓ after a failure on uncommitted changes, never suggests discarding them (1057 ms)
+    ✕ after a failure on a clean tree, prints a restore command for the project root (1134 ms)
+    ✓ removes the demo with --remove-demo and refuses a second run (3998 ms)
+Tests:       4 failed, 104 passed, 108 total

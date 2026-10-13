@@ -1,0 +1,27 @@
+M03 SURVIVED app/_layout.tsx (x1) :: "<Stack.Screen name=\"(tabs)\" options={{ title: t('tabs.home') }} />" 
+M07 killed app/(app)/_layout.tsx (x1) :: "accessibilityLabel={t('common.back')}" 
+M09 killed app/(auth)/_layout.tsx (x1) :: "accessibilityLabel={t('common.back')}" 
+M12 SURVIVED app/(tabs)/_layout.tsx (x1) :: "tabBarButtonTestID: 'tab-explore'," 
+M15 killed features/auth/screens/LoginScreen.tsx (x1) :: "    setLoading(true);\n    setError(null);" 
+M16 killed features/auth/screens/LoginScreen.tsx (x1) :: "disabled={loading}" 
+M17 killed features/auth/screens/LoginScreen.tsx (x1) :: "loading={loading}" 
+M18 killed features/auth/screens/LoginScreen.tsx (x1) :: "secureTextEntry\n" 
+M22 killed features/auth/screens/LoginScreen.tsx (x1) :: "error={missing.password}" 
+M23 killed features/auth/screens/LoginScreen.tsx (x1) :: "accessibilityRole=\"header\"" 
+M24 killed features/auth/screens/LoginScreen.tsx (x1) :: "autoComplete=\"password\"" 
+M26 killed features/auth/screens/LoginScreen.tsx (x1) :: "      submittingRef.current = false;\n" 
+M28 killed features/auth/screens/ProfileScreen.tsx (x1) :: "{refreshing && (" 
+M34 killed features/home/screens/HomeScreen.tsx (x1) :: "accessibilityRole=\"header\"" 
+M35 killed features/home/screens/HomeScreen.tsx (x1) :: "<DocumentTitle title={t('tabs.home')} />" 
+M36 killed features/not-found/screens/NotFoundScreen.tsx (x1) :: "router.dismissTo('/')" 
+M37 killed features/not-found/screens/NotFoundScreen.tsx (x1) :: "<DocumentTitle title={t('notFound.title')} /
+M42 killed features/demo-todos/screens/TodosScreen.tsx (x1) :: "if (error?.code === 'unknown')" 
+M43 killed features/demo-todos/screens/TodosScreen.tsx (x1) :: "todo.completed && styles.completedTodo" 
+M45 killed features/demo-todos/screens/TodosScreen.tsx (x1) :: "<DocumentTitle title={t('tabs.explore')} />\n 
+M46 killed features/demo-todos/screens/TodosScreen.tsx (x1) :: "accessibilityRole=\"header\"" 
+M47 killed features/demo-showcase/screens/ShowcaseScreen.tsx (x1) :: "headerShown: true" 
+M56 killed shared/ui/useAnnouncement.ts (x1) :: "Platform.OS === 'ios'" 
+M60 SURVIVED shared/ui/ConfigErrorScreen.tsx (x2) :: "{issue.message}" 
+M61 killed shared/ui/DocumentTitle.tsx (x1) :: "<title>{title}</title>" 
+
+[exited with code 0]

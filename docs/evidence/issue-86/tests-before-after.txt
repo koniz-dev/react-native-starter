@@ -1,0 +1,10 @@
+Commit 5268598: docs: snippets pass the project's lint, and other corrections from the third review
+Tests changed by the commit: __tests__/scripts/checkDocs.test.ts 
+
+== BEFORE: code at 5268598^ with the tests from 5268598
+    ✕ checks indented snippets, flow and public paths, and docs/ subfolder references (4587 ms)
+Tests:       1 failed, 1 total
+
+== AFTER: code and tests at 5268598
+    ✓ checks indented snippets, flow and public paths, and docs/ subfolder references (5901 ms)
+Tests:       1 passed, 1 total

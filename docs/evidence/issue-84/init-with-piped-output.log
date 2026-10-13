@@ -1,0 +1,11 @@
+$ expect: sh -c "node scripts/init-project.js --dry-run | tee /dev/null" (stdin a terminal, stdout a pipe)
+spawn sh -c node scripts/init-project.js --dry-run | tee /dev/null
+App name (shown under the icon): Acme Notes
+Slug (Expo project and npm package name) (acme-notes): 
+URL scheme (acmenotes): 
+Bundle / package ID (reverse-DNS, e.g. com.acme.notes): com.acme.notes
+LICENSE holder (koniz-dev): TIMEOUT
+
+$ the same with scripts/init-project.js from 4adf01c (before the fix)
+spawn sh -c node scripts/init-project.before.js --dry-run | tee /dev/null
+init-project: --name is required when not run in a terminal

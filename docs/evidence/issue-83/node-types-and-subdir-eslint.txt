@@ -1,0 +1,8 @@
+$ features/zz/probe.ts uses fs, Buffer, __dirname; npm run type-check
+features/zz/probe.ts(1,30): error TS2591: Cannot find name 'fs'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+features/zz/probe.ts(2,18): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+features/zz/probe.ts(2,43): error TS2304: Cannot find name '__dirname'.
+exit 
+
+$ cd shared/config && npx eslint env.ts
+exit 0
