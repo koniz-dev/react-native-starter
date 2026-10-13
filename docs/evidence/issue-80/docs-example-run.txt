@@ -1,0 +1,4 @@
+$ (docs examples copied into a scratch project: features/posts/api/postsApi.ts, features/posts/screens/PostsScreen.tsx from docs/connect-your-backend.md; __tests__/features/posts/PostsScreen.test.tsx from docs/testing.md)
+$ npx jest __tests__/features/posts --coverage=false
+  ✓ shows loading, then the error, and Try again loads the list (183 ms)
+Tests:       1 passed, 1 total

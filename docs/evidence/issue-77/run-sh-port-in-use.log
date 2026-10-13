@@ -1,0 +1,4 @@
+Port 18081 is already in use; stop that server, or set METRO_PORT/MOCK_PORT for other ports
+  iPhone (X) (Booted)
+exit 1
+GNU bash, version 3.2.57(1)-release (x86_64-apple-darwin24)

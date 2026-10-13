@@ -1,0 +1,148 @@
+Commit 2644584: fix(scripts): fail before changing files, and close gaps in the checks
+Tests changed by the commit: __tests__/scripts/checkAudit.test.ts __tests__/scripts/checkDocs.test.ts __tests__/scripts/initProject.test.ts __tests__/scripts/removeDemo.test.ts 
+
+== BEFORE: code at 2644584^ with the tests from 2644584
+    ✓ fails on a high advisory that is not reviewed (7 ms)
+    ✓ passes an allowlisted advisory without a fix in range (1 ms)
+    ✓ fails once npm can fix an allowlisted advisory within the ranges (2 ms)
+    ✓ fails when an allowlist review has expired
+    ✕ fails when an allowlist entry has reviewBy undefined, not a YYYY-MM-DD date (6 ms)
+    ✕ fails when an allowlist entry has reviewBy "2027-1-9", not a YYYY-MM-DD date (1 ms)
+    ✕ fails when an allowlist entry has reviewBy "2027/01/09", not a YYYY-MM-DD date (2 ms)
+    ✕ fails when an allowlist entry has reviewBy "Jan 9 2027", not a YYYY-MM-DD date (1 ms)
+    ✕ fails when an allowlist entry has reviewBy "2027-02-30", not a YYYY-MM-DD date (1 ms)
+    ✕ fails when an allowlist entry has no id, package, or tracking link (1 ms)
+    ✓ reports moderate advisories without failing
+    ✓ fails on an npm error instead of reporting nothing (1 ms)
+    ✓ fails on a report without results instead of reporting nothing
+    ✓ notes an allowlisted advisory that npm no longer reports (1 ms)
+    ✕ checks indented snippets, flow and public paths, and docs/ subfolder references (5955 ms)
+    ✓ lists the changes on --dry-run and changes nothing (1039 ms)
+    ✓ leaves no mention of the demo in the code, docs, config, or flows (14591 ms)
+    ✕ fails when a doc still names a deleted file (3230 ms)
+    ✕ changes nothing when a marker is malformed, and says so without a stack trace (1061 ms)
+    ✓ accepts slug "acme-notes" (36 ms)
+    ✓ accepts slug "notes2" (2 ms)
+    ✓ accepts scheme "acmenotes" (2 ms)
+    ✓ accepts scheme "acme-notes.app" (2 ms)
+    ✓ accepts bundleId "com.acme.notes" (1 ms)
+    ✓ accepts bundleId "io.acme.notesApp2" (2 ms)
+    ✓ accepts name "Acme Notes" (1 ms)
+    ✓ accepts name "Bob's Ghi Chú" (1 ms)
+    ✓ accepts owner "Acme Inc." (1 ms)
+    ✓ rejects slug "Acme-Notes" (1 ms)
+    ✓ rejects slug "acme_notes"
+    ✓ rejects slug "-acme"
+    ✓ rejects slug "acme--notes" (1 ms)
+    ✓ rejects scheme "AcmeNotes"
+    ✓ rejects scheme "1acme" (1 ms)
+    ✓ rejects scheme "acme notes"
+    ✓ rejects bundleId "acme"
+    ✓ rejects bundleId "com.acme-corp.notes"
+    ✓ rejects bundleId "com.1acme.notes" (1 ms)
+    ✓ rejects bundleId "com.acme."
+    ✓ rejects bundleId "com.example.notes"
+    ✓ rejects bundleId "com.example" (1 ms)
+    ✓ rejects bundleId "io.acme.notes_app"
+    ✓ rejects bundleId "com.acme.new"
+    ✓ rejects bundleId "com.class.notes"
+    ✓ rejects scheme "exp" (1 ms)
+    ✓ rejects scheme "exps"
+    ✓ rejects scheme "https"
+    ✓ rejects scheme "http"
+    ✓ rejects scheme "file" (1 ms)
+    ✓ rejects name ""
+    ✓ rejects name " Acme"
+    ✓ rejects name "Acme | Notes"
+    ✓ rejects name "Acme
+    ✓ rejects owner ""
+    ✕ rejects slug "react" (2 ms)
+    ✕ rejects slug "expo" (1 ms)
+    ✓ parses flags and options (3 ms)
+    ✕ rejects unknown arguments, missing values, and conflicting flags (20 ms)
+    ✓ derives a slug and quotes strings the way Prettier does (1 ms)
+    ✓ lists the changes on --dry-run and changes nothing (1258 ms)
+    ✓ refuses invalid input without a terminal (1129 ms)
+    ✓ names the empty app name as the problem (1160 ms)
+    ✓ writes $ in the name and owner literally (2400 ms)
+    ✓ on --force, changes the old scheme only where it is the scheme (3723 ms)
+    ✕ on --force after the APP block was edited, replaces the template identity too (2691 ms)
+    ✓ refuses a dirty working tree unless --force (1382 ms)
+    ✓ sets the identity and deletes itself (7283 ms)
+    ✓ keeps the recipes with --keep-recipes, without their markers (2132 ms)
+    ✕ after a failure on uncommitted changes, never suggests discarding them (1051 ms)
+    ✓ removes the demo with --remove-demo and refuses a second run (3876 ms)
+Tests:       14 failed, 56 passed, 70 total
+
+== AFTER: code and tests at 2644584
+    ✓ fails on a high advisory that is not reviewed (7 ms)
+    ✓ passes an allowlisted advisory without a fix in range (2 ms)
+    ✓ fails once npm can fix an allowlisted advisory within the ranges (1 ms)
+    ✓ fails when an allowlist review has expired (1 ms)
+    ✓ fails when an allowlist entry has reviewBy undefined, not a YYYY-MM-DD date
+    ✓ fails when an allowlist entry has reviewBy "2027-1-9", not a YYYY-MM-DD date (1 ms)
+    ✓ fails when an allowlist entry has reviewBy "2027/01/09", not a YYYY-MM-DD date
+    ✓ fails when an allowlist entry has reviewBy "Jan 9 2027", not a YYYY-MM-DD date
+    ✓ fails when an allowlist entry has reviewBy "2027-02-30", not a YYYY-MM-DD date (1 ms)
+    ✓ fails when an allowlist entry has no id, package, or tracking link
+    ✓ reports moderate advisories without failing (1 ms)
+    ✓ fails on an npm error instead of reporting nothing
+    ✓ fails on a report without results instead of reporting nothing
+    ✓ notes an allowlisted advisory that npm no longer reports (1 ms)
+    ✓ checks indented snippets, flow and public paths, and docs/ subfolder references (4866 ms)
+    ✓ lists the changes on --dry-run and changes nothing (904 ms)
+    ✓ leaves no mention of the demo in the code, docs, config, or flows (11766 ms)
+    ✓ fails when a doc still names a deleted file (948 ms)
+    ✓ changes nothing when a marker is malformed, and says so without a stack trace (825 ms)
+    ✓ accepts slug "acme-notes" (6 ms)
+    ✓ accepts slug "notes2"
+    ✓ accepts scheme "acmenotes" (1 ms)
+    ✓ accepts scheme "acme-notes.app"
+    ✓ accepts bundleId "com.acme.notes" (1 ms)
+    ✓ accepts bundleId "io.acme.notesApp2"
+    ✓ accepts name "Acme Notes" (1 ms)
+    ✓ accepts name "Bob's Ghi Chú"
+    ✓ accepts owner "Acme Inc."
+    ✓ rejects slug "Acme-Notes"
+    ✓ rejects slug "acme_notes" (1 ms)
+    ✓ rejects slug "-acme"
+    ✓ rejects slug "acme--notes"
+    ✓ rejects scheme "AcmeNotes"
+    ✓ rejects scheme "1acme" (1 ms)
+    ✓ rejects scheme "acme notes"
+    ✓ rejects bundleId "acme"
+    ✓ rejects bundleId "com.acme-corp.notes"
+    ✓ rejects bundleId "com.1acme.notes" (1 ms)
+    ✓ rejects bundleId "com.acme."
+    ✓ rejects bundleId "com.example.notes"
+    ✓ rejects bundleId "com.example"
+    ✓ rejects bundleId "io.acme.notes_app"
+    ✓ rejects bundleId "com.acme.new" (1 ms)
+    ✓ rejects bundleId "com.class.notes"
+    ✓ rejects scheme "exp"
+    ✓ rejects scheme "exps"
+    ✓ rejects scheme "https"
+    ✓ rejects scheme "http"
+    ✓ rejects scheme "file" (1 ms)
+    ✓ rejects name ""
+    ✓ rejects name " Acme"
+    ✓ rejects name "Acme | Notes"
+    ✓ rejects name "Acme
+    ✓ rejects owner "" (1 ms)
+    ✓ rejects slug "react"
+    ✓ rejects slug "expo"
+    ✓ parses flags and options (1 ms)
+    ✓ rejects unknown arguments, missing values, and conflicting flags (35 ms)
+    ✓ derives a slug and quotes strings the way Prettier does (1 ms)
+    ✓ lists the changes on --dry-run and changes nothing (1084 ms)
+    ✓ refuses invalid input without a terminal (1166 ms)
+    ✓ names the empty app name as the problem (987 ms)
+    ✓ writes $ in the name and owner literally (2284 ms)
+    ✓ on --force, changes the old scheme only where it is the scheme (3009 ms)
+    ✓ on --force after the APP block was edited, replaces the template identity too (2101 ms)
+    ✓ refuses a dirty working tree unless --force (894 ms)
+    ✓ sets the identity and deletes itself (6116 ms)
+    ✓ keeps the recipes with --keep-recipes, without their markers (2337 ms)
+    ✓ after a failure on uncommitted changes, never suggests discarding them (933 ms)
+    ✓ removes the demo with --remove-demo and refuses a second run (3620 ms)
+Tests:       70 passed, 70 total
