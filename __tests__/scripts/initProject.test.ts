@@ -15,6 +15,7 @@ const init = require('../../scripts/init-project.js') as {
   validators: Record<string, (value: string) => string | null>;
   slugify(name: string): string;
   tsString(value: string): string;
+  md(value: string): string;
 };
 
 const ROOT = path.resolve(__dirname, '../..');
@@ -111,6 +112,9 @@ describe('init-project input', () => {
     expect(init.slugify('Mom’s Recipes')).toBe('moms-recipes');
     expect(init.slugify("Bob's App")).toBe('bobs-app');
     expect(init.tsString('Acme')).toBe("'Acme'");
+    // Markdown table cells: both | and \ escaped, so \| can't unescape a pipe.
+    expect(init.md('a|b')).toBe('a\\|b');
+    expect(init.md('a\\|b')).toBe('a\\\\\\|b');
     expect(init.tsString("Bob's")).toBe(`"Bob's"`);
   });
 });

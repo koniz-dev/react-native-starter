@@ -480,8 +480,11 @@ function allowlistFor(text, owner) {
   return `${JSON.stringify(list, null, 2)}\n`;
 }
 
-/** Markdown table cells and inline code can't hold a raw |. */
-const md = value => value.replace(/\|/g, '\\|');
+/**
+ * Escapes text for a Markdown table cell: a raw | ends the cell, and a
+ * backslash would escape the escape.
+ */
+const md = value => value.replace(/[\\|]/g, '\\$&');
 
 /**
  * Builds the list of changes: { file, action: 'write' | 'delete', summary,
@@ -805,4 +808,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { parseArgs, validators, slugify, tsString };
+module.exports = { parseArgs, validators, slugify, tsString, md };
