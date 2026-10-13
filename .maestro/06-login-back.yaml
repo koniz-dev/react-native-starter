@@ -1,10 +1,7 @@
-# Back from Login returns Home with the system back (Android). On iOS, Back
-# is the left-edge swipe (Login has no header), which Maestro's swipe does not
-# trigger, so scripts/e2e/run.sh skips this flow there.
+# Back from Login returns Home: with Login's own back button (auth-back) on
+# every platform, and with the system Back on Android.
 appId: ${APP_ID}
 name: Back from Login returns Home
-tags:
-  - android-only
 ---
 - runFlow:
     file: subflows/open-app.yaml
@@ -29,7 +26,8 @@ tags:
     visible: Welcome Back
     timeout: 20000
 - takeScreenshot: 06-login
-- back
+- tapOn:
+    id: auth-back
 - extendedWaitUntil:
     visible: Not signed in
     timeout: 10000
@@ -37,3 +35,18 @@ tags:
     id: tab-home
 - assertNotVisible: Welcome Back
 - takeScreenshot: 06-back-home
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn:
+          id: sign-in-button
+      - extendedWaitUntil:
+          visible: Welcome Back
+          timeout: 20000
+      - back
+      - extendedWaitUntil:
+          visible: Not signed in
+          timeout: 10000
+      - assertNotVisible: Welcome Back
+      - takeScreenshot: 06-system-back-home

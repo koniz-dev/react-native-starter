@@ -11,14 +11,14 @@ export function ExampleLinks() {
         title={t('home.examples.todos')}
         description={t('home.examples.todosDescription')}
         left={props => <List.Icon {...props} icon="format-list-checks" />}
-        onPress={() => router.push('/explore')}
+        onPress={() => router.navigate('/explore')}
         testID="example-todos"
       />
       <List.Item
         title={t('home.examples.showcase')}
         description={t('home.examples.showcaseDescription')}
         left={props => <List.Icon {...props} icon="palette" />}
-        onPress={() => router.push('/showcase')}
+        onPress={() => router.navigate('/showcase')}
         testID="example-showcase"
       />
     </List.Section>

@@ -25,6 +25,7 @@ import { DemoCredentialsHint } from '@/features/demo-auth/DemoCredentialsHint';
 // @demo remove-block-end
 import { t } from '@/shared/i18n';
 import { DocumentTitle } from '@/shared/ui/DocumentTitle';
+import { useAnnouncement } from '@/shared/ui/useAnnouncement';
 
 export function LoginScreen() {
   const theme = useTheme();
@@ -38,6 +39,7 @@ export function LoginScreen() {
   const { signIn } = useSession();
   // Set synchronously, so a second "Go" before the re-render is ignored.
   const submittingRef = useRef(false);
+  useAnnouncement(error);
 
   const handleLogin = async () => {
     if (submittingRef.current) return;

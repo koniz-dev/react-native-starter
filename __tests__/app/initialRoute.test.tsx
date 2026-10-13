@@ -3,7 +3,6 @@ import { router } from 'expo-router';
 import { renderRouter, screen } from 'expo-router/testing-library';
 import { unstable_settings } from '@/app/_layout';
 
-// The login route imports the auth service, which loads both storage modules.
 describe('initial route', () => {
   test('anchors the root stack on the tabs group', () => {
     expect(unstable_settings.initialRouteName).toBe('(tabs)');

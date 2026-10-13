@@ -1,4 +1,4 @@
-import { fireEvent, screen } from '@testing-library/react-native';
+import { fireEvent, screen, waitFor } from '@testing-library/react-native';
 import { ShowcaseScreen } from '@/features/demo-showcase/screens/ShowcaseScreen';
 import { renderWithProviders } from '@/testing';
 
@@ -18,5 +18,18 @@ describe('<ShowcaseScreen />', () => {
     fireEvent.press(screen.getByText(button));
 
     expect(await screen.findByText(message)).toBeTruthy();
+  });
+
+  it('closes the snackbar with Dismiss', async () => {
+    renderWithProviders(<ShowcaseScreen />);
+    fireEvent.press(screen.getByText('Show Snackbar'));
+    expect(await screen.findByText('This is a snackbar message!')).toBeTruthy();
+
+    fireEvent.press(screen.getByText('Dismiss'));
+
+    // Well before the snackbar's own 3-second timeout.
+    await waitFor(() =>
+      expect(screen.queryByText('This is a snackbar message!')).toBeNull()
+    );
   });
 });

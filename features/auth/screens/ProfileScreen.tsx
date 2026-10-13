@@ -13,6 +13,7 @@ import { toApiError } from '@/shared/http/apiError';
 import { errorMessage } from '@/shared/http/errorMessage';
 import { t } from '@/shared/i18n';
 import { DocumentTitle } from '@/shared/ui/DocumentTitle';
+import { useAnnouncement } from '@/shared/ui/useAnnouncement';
 
 /**
  * Example protected screen: only reachable while signed in. On open it
@@ -26,6 +27,8 @@ export function ProfileScreen() {
   const [refreshing, setRefreshing] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const user = session.user;
+  const errorText = error && t('profile.refreshFailed', { message: error });
+  useAnnouncement(errorText);
 
   useEffect(() => {
     let active = true;
@@ -62,15 +65,18 @@ export function ProfileScreen() {
             testID="profile-refreshing"
           />
         )}
-        {error && (
-          <Text
-            variant="bodyMedium"
-            style={[styles.status, { color: theme.colors.error }]}
-            testID="profile-error"
-          >
-            {t('profile.refreshFailed', { message: error })}
-          </Text>
-        )}
+        {/* A live region that stays mounted, so its new text is announced. */}
+        <View accessibilityLiveRegion="polite" testID="profile-status">
+          {errorText && (
+            <Text
+              variant="bodyMedium"
+              style={[styles.status, { color: theme.colors.error }]}
+              testID="profile-error"
+            >
+              {errorText}
+            </Text>
+          )}
+        </View>
         <List.Item
           title={t('profile.name')}
           description={user?.name ?? '—'}

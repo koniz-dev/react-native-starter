@@ -4,10 +4,13 @@ import {
   type AxiosAdapter,
   type InternalAxiosRequestConfig,
 } from 'axios';
+import { AccessibilityInfo } from 'react-native';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react-native';
 import { TodosScreen } from '@/features/demo-todos/screens/TodosScreen';
 import type { Todo } from '@/features/demo-todos/types';
 import { api } from '@/shared/http/api';
+import { logger } from '@/shared/lib/logger';
+import { DocumentTitle } from '@/shared/ui/DocumentTitle';
 import { renderWithProviders } from '@/testing';
 
 const todos: Todo[] = Array.from({ length: 12 }, (_, index) => ({
@@ -48,6 +51,7 @@ function controlledApi() {
 const originalAdapter = api.defaults.adapter;
 afterEach(() => {
   api.defaults.adapter = originalAdapter;
+  jest.restoreAllMocks();
 });
 
 describe('<TodosScreen /> (Explore)', () => {
@@ -56,6 +60,7 @@ describe('<TodosScreen /> (Explore)', () => {
     renderWithProviders(<TodosScreen />);
 
     expect(screen.getByText('Loading todos...')).toBeTruthy();
+    expect(screen.UNSAFE_getByType(DocumentTitle).props.title).toBe('Explore');
     await waitFor(() => expect(requests).toHaveLength(1));
     expect(requests[0]?.config.url).toBe('/todos');
 
@@ -80,6 +85,63 @@ describe('<TodosScreen /> (Explore)', () => {
     expect(screen.queryByText('todo 11')).toBeNull();
     expect(screen.getAllByText('✓ Done')).toHaveLength(1);
     expect(screen.getByText('User ID: 1 • ID: 2')).toBeTruthy();
+  });
+
+  it('announces the error from a live region', async () => {
+    const announce = jest.spyOn(AccessibilityInfo, 'announceForAccessibility');
+    const requests = controlledApi();
+    renderWithProviders(<TodosScreen />);
+    await waitFor(() => expect(requests).toHaveLength(1));
+
+    await act(async () => requests[0]?.reject(serverError(requests[0].config)));
+
+    const status = await screen.findByTestId('explore-status');
+    expect(status.props.accessibilityLiveRegion).toBe('polite');
+    expect(status).toHaveTextContent(/The server had a problem/);
+    expect(announce).toHaveBeenCalledWith(
+      'Error. The server had a problem. Please try again later.'
+    );
+  });
+
+  it('keeps the list on screen while it reloads', async () => {
+    const requests = controlledApi();
+    renderWithProviders(<TodosScreen />);
+    await waitFor(() => expect(requests).toHaveLength(1));
+    await act(async () => requests[0]?.resolve(ok(requests[0].config, todos)));
+    expect(await screen.findByText('Todos (10)')).toBeTruthy();
+
+    fireEvent.press(screen.getByText('Reload'));
+    await waitFor(() => expect(requests).toHaveLength(2));
+    expect(screen.getByText('Loading...')).toBeDisabled();
+    expect(screen.getByText('todo 1')).toBeTruthy();
+    // A second press while loading starts nothing.
+    fireEvent.press(screen.getByText('Loading...'));
+    expect(requests).toHaveLength(2);
+
+    await act(async () =>
+      requests[1]?.resolve(ok(requests[1].config, todos.slice(5)))
+    );
+    expect(await screen.findByText('Todos (7)')).toBeTruthy();
+    expect(screen.getByText('Reload')).toBeTruthy();
+  });
+
+  it('logs a response that fails validation and shows a generic message', async () => {
+    const logged = jest.spyOn(logger, 'error').mockImplementation(() => {});
+    const requests = controlledApi();
+    renderWithProviders(<TodosScreen />);
+    await waitFor(() => expect(requests).toHaveLength(1));
+
+    await act(async () =>
+      requests[0]?.resolve(ok(requests[0].config, [{ id: 'not a todo' }]))
+    );
+
+    expect(
+      await screen.findByText('Something went wrong. Please try again.')
+    ).toBeTruthy();
+    expect(logged).toHaveBeenCalledWith(
+      'Loading todos failed',
+      expect.objectContaining({ code: 'unknown' })
+    );
   });
 
   it('shows the empty state for an empty list', async () => {

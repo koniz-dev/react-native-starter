@@ -3,7 +3,6 @@ import { renderRouter, screen } from 'expo-router/testing-library';
 import { getTabBarColors, getTheme } from '@/shared/ui/theme';
 import { setColorScheme } from '@/testing';
 
-// The login route imports the auth service, which loads both storage modules.
 type Instance = typeof screen.UNSAFE_root;
 
 function flatStyle(node: Instance) {
@@ -51,8 +50,10 @@ describe.each(['light', 'dark'] as const)('tab bar in %s mode', scheme => {
     expect(flatStyle(tabBar).borderTopColor).toBe(expected.border);
 
     expect(labelColor('Home')).toBe(expected.active);
+    expect(screen.getByLabelText('Home')).toBeTruthy();
     // @demo remove-block-start
     expect(labelColor('Explore')).toBe(expected.inactive);
+    expect(screen.getByLabelText('Explore')).toBeTruthy();
     // @demo remove-block-end
   });
 });

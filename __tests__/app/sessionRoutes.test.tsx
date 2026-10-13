@@ -90,6 +90,50 @@ describe('session-guarded routes', () => {
     expect(app.getPathname()).toBe('/');
   });
 
+  it('goes Home from Login when there is nothing to go back to', async () => {
+    renderRouter('./app', { initialUrl: '/login' });
+    await screen.findByText('Welcome Back');
+    jest.spyOn(router, 'canGoBack').mockReturnValue(false);
+    const back = jest.spyOn(router, 'back');
+    const replace = jest.spyOn(router, 'replace');
+
+    fireEvent.press(screen.getByTestId('auth-back'));
+
+    expect(replace).toHaveBeenCalledWith('/');
+    expect(back).not.toHaveBeenCalled();
+  });
+
+  it('opens Login once for a double tap, so one Back returns Home', async () => {
+    const app = renderRouter('./app', { initialUrl: '/' });
+    await screen.findByText('Not signed in');
+
+    // Both taps land before the new screen covers the button.
+    const signIn = screen.getByTestId('sign-in-button');
+    fireEvent.press(signIn);
+    fireEvent.press(signIn);
+    await screen.findByText('Welcome Back');
+    fireEvent.press(screen.getByTestId('auth-back'));
+
+    expect(await screen.findByText('Not signed in')).toBeTruthy();
+    expect(app.getPathname()).toBe('/');
+  });
+
+  it('opens Profile once for a double tap, and loads it once', async () => {
+    await storeSession();
+    const app = renderRouter('./app', { initialUrl: '/' });
+    await screen.findByText('Signed in as Emily Johnson');
+
+    const viewProfile = screen.getByTestId('profile-button');
+    fireEvent.press(viewProfile);
+    fireEvent.press(viewProfile);
+    expect(await screen.findByText('emily@example.com')).toBeTruthy();
+    expect(authService.fetchProfile).toHaveBeenCalledTimes(1);
+    fireEvent.press(screen.getByTestId('protected-back'));
+
+    expect(await screen.findByText('Signed in as Emily Johnson')).toBeTruthy();
+    expect(app.getPathname()).toBe('/');
+  });
+
   it('keeps signed-in users out of the login screen', async () => {
     await storeSession();
     const app = renderRouter('./app', { initialUrl: '/login' });

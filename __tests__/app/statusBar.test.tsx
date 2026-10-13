@@ -3,7 +3,6 @@ import { StatusBar } from 'expo-status-bar';
 import { renderRouter, screen } from 'expo-router/testing-library';
 import { setColorScheme } from '@/testing';
 
-// The login route imports the auth service, which loads both storage modules.
 describe.each([
   ['light', 'dark', 'dark-content'],
   ['dark', 'light', 'light-content'],

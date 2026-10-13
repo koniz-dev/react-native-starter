@@ -1,8 +1,3 @@
-/**
- * LoadingScreen Component
- * Simple reusable loading component with centered ActivityIndicator
- */
-import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { ActivityIndicator, Text, useTheme } from 'react-native-paper';
 

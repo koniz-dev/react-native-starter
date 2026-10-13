@@ -1,11 +1,12 @@
 import { ApiError } from '@/shared/http/apiError';
 import React from 'react';
-import { KeyboardAvoidingView, Platform, Text } from 'react-native';
+import {
+  AccessibilityInfo,
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+} from 'react-native';
 import { fireEvent, waitFor } from '@testing-library/react-native';
-
-jest.mock('expo-router', () => ({
-  router: { replace: jest.fn() },
-}));
 
 const mockFocus = jest.fn();
 
@@ -34,14 +35,6 @@ jest.mock('react-native-paper', () => {
       onPress: () => void;
       testID?: string;
     }) => React.createElement(ReactNative.Text, { onPress, testID }, children),
-    Snackbar: ({
-      children,
-      visible,
-    }: {
-      children: React.ReactNode;
-      visible: boolean;
-    }) =>
-      visible ? React.createElement(ReactNative.Text, null, children) : null,
   };
 });
 
@@ -122,7 +115,7 @@ describe('<LoginScreen />', () => {
     }
   });
 
-  it('submits the entered credentials and enters the tabs route', async () => {
+  it('submits the entered credentials and signs in', async () => {
     jest.spyOn(authService, 'login').mockResolvedValue({
       token: 'test-token',
       user: { id: 1, email: 'user@example.com', name: 'Test User' },
@@ -163,6 +156,66 @@ describe('<LoginScreen />', () => {
   });
 
   it.each([
+    ['ios', 1],
+    // Android reads the error's live region itself.
+    ['android', 0],
+  ] as const)(
+    'announces a failed sign-in to the screen reader (%s)',
+    async (os, announcements) => {
+      jest.replaceProperty(Platform, 'OS', os);
+      const announce = jest.spyOn(
+        AccessibilityInfo,
+        'announceForAccessibility'
+      );
+      jest.spyOn(authService, 'login').mockRejectedValue(
+        new ApiError('Request failed', {
+          code: 'unauthorized',
+          status: 401,
+          data: { message: 'Invalid credentials' },
+        })
+      );
+      const { getByTestId, getByText } = renderLogin();
+      expect(getByTestId('login-error').props.accessibilityLiveRegion).toBe(
+        'polite'
+      );
+
+      fireEvent.changeText(getByTestId('login-username'), 'emily');
+      fireEvent.changeText(getByTestId('login-password'), 'wrong-password');
+      fireEvent.press(getByText('Sign In'));
+
+      await waitFor(() =>
+        expect(getByText('Invalid credentials')).toBeTruthy()
+      );
+      expect(announce).toHaveBeenCalledTimes(announcements);
+      if (announcements) {
+        expect(announce).toHaveBeenCalledWith('Invalid credentials');
+      }
+    }
+  );
+
+  it('clears the empty-field marks once both fields are filled', async () => {
+    jest
+      .spyOn(authService, 'login')
+      .mockRejectedValue(new ApiError('Network Error', { code: 'network' }));
+    const { getByTestId, getByText, findByText } = renderLogin();
+
+    fireEvent.press(getByText('Sign In'));
+    expect(await findByText('Please fill in all fields')).toBeTruthy();
+    expect(getByTestId('login-username').props.error).toBe(true);
+    expect(getByTestId('login-password').props.error).toBe(true);
+
+    fireEvent.changeText(getByTestId('login-username'), 'emily');
+    fireEvent.changeText(getByTestId('login-password'), 'secret-pass');
+    fireEvent.press(getByText('Sign In'));
+
+    expect(
+      await findByText('No connection. Check your network and try again.')
+    ).toBeTruthy();
+    expect(getByTestId('login-username').props.error).toBe(false);
+    expect(getByTestId('login-password').props.error).toBe(false);
+  });
+
+  it.each([
     [
       'a network error',
       new ApiError('Network Error', { code: 'network' }),
@@ -196,6 +249,7 @@ describe('<LoginScreen />', () => {
     ['both fields are empty', '', ''],
     ['the password is empty', 'emily', ''],
     ['the username is empty', '', 'secret-pass'],
+    ['the username is only spaces', '   ', 'secret-pass'],
   ])(
     'asks for both fields and does not sign in when %s',
     async (_case, username, password) => {

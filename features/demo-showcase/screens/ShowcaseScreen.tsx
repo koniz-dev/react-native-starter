@@ -150,10 +150,8 @@ export function ShowcaseScreen() {
         visible={snackbarMessage !== null}
         onDismiss={() => setSnackbarMessage(null)}
         duration={3000}
-        action={{
-          label: t('common.dismiss'),
-          onPress: () => setSnackbarMessage(null),
-        }}
+        // Paper calls onDismiss after the action.
+        action={{ label: t('common.dismiss') }}
       >
         {snackbarMessage}
       </Snackbar>

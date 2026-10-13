@@ -26,6 +26,5 @@ const styles = StyleSheet.create({
   note: {
     marginTop: 16,
     textAlign: 'center',
-    opacity: 0.7,
   },
 });

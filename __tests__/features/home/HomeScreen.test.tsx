@@ -1,7 +1,7 @@
 import { act, fireEvent } from '@testing-library/react-native';
 
 jest.mock('expo-router', () => {
-  return { router: { push: jest.fn(), replace: jest.fn() } };
+  return { router: { navigate: jest.fn(), replace: jest.fn() } };
 });
 
 import * as SecureStore from 'expo-secure-store';
@@ -29,7 +29,7 @@ describe('<HomeScreen /> session', () => {
     expect(queryByText('Log out')).toBeNull();
 
     fireEvent.press(getByText('Sign in'));
-    expect(router.push).toHaveBeenCalledWith('/login');
+    expect(router.navigate).toHaveBeenCalledWith('/login');
   });
 
   test('names a signed-in session without a stored profile generically', async () => {
@@ -120,7 +120,7 @@ describe('<HomeScreen /> examples', () => {
 
     fireEvent.press(getByText(title));
 
-    expect(router.push).toHaveBeenCalledWith(route);
+    expect(router.navigate).toHaveBeenCalledWith(route);
   });
 });
 // @demo remove-block-end

@@ -11,12 +11,12 @@ import { PaperProvider } from 'react-native-paper';
 import { SessionProvider } from '@/shared/session/SessionProvider';
 import { getTheme } from '@/shared/ui/theme';
 
-export const TEST_SAFE_AREA_METRICS = {
+const TEST_SAFE_AREA_METRICS = {
   frame: { x: 0, y: 0, width: 390, height: 844 },
   insets: { top: 0, left: 0, right: 0, bottom: 0 },
 };
 
-export interface ProvidersOptions {
+interface ProvidersOptions {
   /** Theme to render with (default 'light'). */
   scheme?: 'light' | 'dark';
   /** Wrap in SessionProvider (restores the session from the mocked stores). */

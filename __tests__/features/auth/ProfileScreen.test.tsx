@@ -1,3 +1,4 @@
+import { AccessibilityInfo } from 'react-native';
 import { waitFor } from '@testing-library/react-native';
 import { ProfileScreen } from '@/features/auth/screens/ProfileScreen';
 import { ApiError } from '@/shared/http/apiError';
@@ -25,6 +26,27 @@ describe('<ProfileScreen />', () => {
     await findByTestId('profile-logout');
     await waitForRefresh(queryByTestId);
     expect(getAllByText('—')).toHaveLength(2);
+  });
+
+  it('shows and announces a failed reload in a live region', async () => {
+    await signInWithoutProfile();
+    const announce = jest.spyOn(AccessibilityInfo, 'announceForAccessibility');
+    jest
+      .spyOn(authService, 'fetchProfile')
+      .mockRejectedValue(new ApiError('Network Error', { code: 'network' }));
+
+    const { findByTestId } = renderWithProviders(<ProfileScreen />, {
+      withSession: true,
+    });
+
+    const error = await findByTestId('profile-error');
+    const status = await findByTestId('profile-status');
+    const message =
+      'Could not refresh your profile: No connection. Check your network and try again.';
+    expect(error).toHaveTextContent(message);
+    expect(status.props.accessibilityLiveRegion).toBe('polite');
+    expect(status).toContainElement(error);
+    expect(announce).toHaveBeenCalledWith(message);
   });
 
   it('shows nothing for a 401: the session ends and the guard leaves', async () => {

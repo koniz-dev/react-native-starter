@@ -127,7 +127,14 @@ What the shipped screens do, so a new one fits in:
   `@/shared/ui/DocumentTitle`.
 - **Errors:** show a failed request with `errorMessage(error)` from
   `@/shared/http/errorMessage`: translated text, or the server's own message
-  for a 4xx, never axios's or a developer message.
+  for a 4xx, never axios's or a developer message. Put it in a view with
+  `accessibilityLiveRegion="polite"` that stays mounted, and call
+  `useAnnouncement(text)` from `@/shared/ui/useAnnouncement`, so screen
+  readers read it out (a live region on Android and the web, an announcement
+  on iOS). Log an error whose `code` is `'unknown'` with `logger.error`: the
+  user sees a generic message, and that is where the cause goes.
+- **Navigation:** open a screen from a button with `router.navigate`, not
+  `router.push`, so a double tap opens it once.
 - **Width:** cap content on tablets and the web (`maxWidth: 720`, or `480`
   for a form, with `width: '100%'` and `alignSelf: 'center'`).
 

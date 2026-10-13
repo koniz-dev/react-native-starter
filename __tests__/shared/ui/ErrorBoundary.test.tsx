@@ -13,7 +13,6 @@ import {
 import { configureIntegrations } from '@/shared/integrations/setup';
 import { setColorScheme } from '@/testing';
 
-// The app's routes load the auth service, which loads both storage modules.
 // Lets a test make the root layout's session provider throw while rendering,
 // to reach the app-level boundary instead of a route boundary.
 let mockSessionProviderThrows = false;
@@ -82,6 +81,8 @@ describe('error boundaries', () => {
 
       expect(await screen.findByText('Something went wrong')).toBeTruthy();
       expect(screen.getByText('Boom from a screen')).toBeTruthy();
+      // Development also shows the stack.
+      expect(screen.getByText(/^Error: Boom from a screen at /)).toBeTruthy();
       expect(backgroundOf('error-fallback')).toBe(theme.colors.background);
       expect(
         StyleSheet.flatten(screen.getByText('Something went wrong').props.style)
@@ -106,6 +107,7 @@ describe('error boundaries', () => {
         expect(await screen.findByText('Something went wrong')).toBeTruthy();
         expect(screen.getByText('An unexpected error occurred')).toBeTruthy();
         expect(screen.queryByText('Boom from a screen')).toBeNull();
+        expect(screen.queryByText(/at Bomb/)).toBeNull();
       } finally {
         Object.assign(globalThis, { __DEV__: dev });
       }
@@ -142,6 +144,22 @@ describe('error boundaries', () => {
 
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     expect(app.getPathname()).toBe('/');
+  });
+
+  it('"Go home" on a route boundary still clears the error when navigation fails', async () => {
+    renderRouter(
+      { appDir: './app', overrides: { '(tabs)/boom': Bomb } },
+      { initialUrl: '/boom' }
+    );
+    await screen.findByText('Something went wrong');
+    jest.spyOn(router, 'replace').mockImplementation(() => {
+      throw new Error('navigation is not ready');
+    });
+
+    shouldThrow = false;
+    fireEvent.press(screen.getByTestId('error-go-home'));
+
+    expect(await screen.findByText('Recovered')).toBeTruthy();
   });
 
   it('"Try again" on a route boundary re-renders the screen', async () => {

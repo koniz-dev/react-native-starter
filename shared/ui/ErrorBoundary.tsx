@@ -95,7 +95,7 @@ export function RouteErrorBoundary({ error, retry }: ErrorBoundaryProps) {
   );
 }
 
-export function ErrorFallback({
+function ErrorFallback({
   error,
   onRetry,
   onGoHome,

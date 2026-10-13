@@ -21,7 +21,11 @@ export function ConfigErrorScreen({ issues }: ConfigErrorScreenProps) {
       testID="config-error-screen"
     >
       <ScrollView contentContainerStyle={styles.content}>
-        <Text variant="headlineSmall" style={styles.title}>
+        <Text
+          variant="headlineSmall"
+          style={styles.title}
+          accessibilityRole="header"
+        >
           {t('configError.title')}
         </Text>
         <Text

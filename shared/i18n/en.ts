@@ -80,6 +80,7 @@ export const en = {
   'explore.subtitle': 'Fetching todos from JSONPlaceholder API',
   'explore.loading': 'Loading todos...',
   'explore.retry': 'Retry',
+  'explore.reload': 'Reload',
   'explore.retrying': 'Loading...',
   'explore.errorTitle': 'Error',
   'explore.listTitle': 'Todos ({count})',

@@ -345,7 +345,7 @@ on a simulator or emulator. No account is needed.
 | Flow                 | Checks                                                                        |
 | -------------------- | ----------------------------------------------------------------------------- |
 | `01-cold-start.yaml` | a fresh start opens Home, signed out, with the Sign in button                 |
-| `06-login-back.yaml` | Back from Login returns Home (Android system back; skipped on iOS, see below) |
+| `06-login-back.yaml` | Back from Login returns Home (Login's back button; and Android's system back) |
 | `dark-mode.yaml`     | screenshots with the device in dark mode                                      |
 
 <!-- @demo remove-block-start -->
@@ -394,11 +394,10 @@ The demo's flows use its `GET /todos`, `POST /auth/login`, and
 
 <!-- @demo remove-block-end -->
 
-`06-login-back.yaml` checks Android's system Back. iOS has no Back button;
-its left-edge swipe isn't triggered by Maestro's `swipe`, so `run.sh` skips
-the `android-only` flow there. Login's own back button (`auth-back`, both
-platforms) is covered by the Jest routing tests. Check the edge swipe by
-hand on the Simulator, or with an XCUITest UI test, which can drive it.
+`06-login-back.yaml` taps Login's own back button (`auth-back`) on both
+platforms, and on Android also checks the system Back. iOS's left-edge swipe
+isn't triggered by Maestro's `swipe`; check it by hand on the Simulator, or
+with an XCUITest UI test, which can drive it.
 
 Setup:
 

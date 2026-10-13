@@ -60,7 +60,7 @@ export function HomeScreen() {
                 </Button>
                 <Button
                   mode="contained-tonal"
-                  onPress={() => router.push('/profile')}
+                  onPress={() => router.navigate('/profile')}
                   testID="profile-button"
                 >
                   {t('home.session.viewProfile')}
@@ -69,7 +69,7 @@ export function HomeScreen() {
             ) : (
               <Button
                 mode="contained"
-                onPress={() => router.push('/login')}
+                onPress={() => router.navigate('/login')}
                 testID="sign-in-button"
               >
                 {t('home.session.signIn')}
