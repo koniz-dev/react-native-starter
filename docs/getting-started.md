@@ -68,7 +68,19 @@ Expo SDK 57 (React Native 0.86, React 19.2). Not included: a production
 backend, store builds and submission, and real analytics, crash-reporting,
 push, feature-flag, or update providers (the app has
 [seams](plug-in-a-provider.md) with no-op or console defaults). Landscape
-layouts are not designed.
+layouts are not designed. Phones stay in portrait (`orientation`), but
+iPads (`supportsTablet`) and Android 16 on large screens rotate anyway, so
+check your screens there, or set `supportsTablet: false` in
+`app.config.ts`.
+
+**Hosting the web export:** `dist/` is a single-page app. Serve it at the
+root of a domain, and have the host answer every unknown path with
+`index.html` (for example `/profile` after a reload), or links into the app
+return 404. Under a subpath, set
+[`experiments.baseUrl`](https://docs.expo.dev/guides/publishing-websites/)
+first. Since the web build keeps the sign-in token in memory, also send a
+Content-Security-Policy header that allows only your own scripts and your
+API origins.
 
 ## Install and run
 
@@ -148,6 +160,9 @@ applies them.
 `npm run audit:check` runs in its own workflow (`.github/workflows/audit.yml`,
 on pushes to `main`, on pull requests, and weekly), because advisories
 change over time; see [Dependency advisories](#dependency-advisories).
+GitHub turns off scheduled runs in a public repository after 60 days without
+activity; turn the workflow back on in the Actions tab
+([GitHub: disabling and enabling a workflow](https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-workflow-runs/disabling-and-enabling-a-workflow)).
 
 The variant scripts use POSIX `VAR=value command` syntax (macOS, Linux, WSL).
 `npm run android` and `npm run ios` use `expo start -a` and `expo start -i`

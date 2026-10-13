@@ -220,17 +220,23 @@ are lint errors in app code. Run it with `node`, or through an npm script.
   hooks `useThing.ts`, other modules camelCase (`tokenStore.ts`).
 - **Exports:** named exports; only `app/` route files use default exports
   (a default export in `features/` or `shared/` is a lint error).
-- **Imports:** `@/` for anything outside the current feature, relative within
-  it. `import type` for types (lint error otherwise). `shared/` doesn't import
+- **Imports:** `@/` for anything outside the current feature (or `shared/`
+  area), relative within it; a relative path that leaves it is a lint error.
+  `import type` for types (lint error otherwise). `shared/` doesn't import
   `features/` or `app/` (except `shared/integrations/setup.ts`), and a
-  feature doesn't import another feature (both lint errors).
+  feature doesn't import another feature: both lint errors, by `@/` or by a
+  relative path.
 - **Types:** TypeScript strict with `noUncheckedIndexedAccess`; no `any`
-  (lint error). Validate data at the edges with zod: config, and API payloads
+  (lint error). App code has no Node or Jest types (`tsconfig.json`), so
+  `fs`, `Buffer`, or `__dirname` in a screen is a type error; tests,
+  scripts, and `app.config.ts` have them (`tsconfig.tools.json`).
+  `npm run type-check` checks both. Validate data at the edges with zod: config, and API payloads
   in adapters and `api/` modules (examples in
   [Connect Your Backend](connect-your-backend.md#2-sign-in-write-an-authadapter)).
 - **Styles:** `StyleSheet.create` at the bottom of the file; colors from the
-  theme, never literals: a color literal in a style or in a color prop such
-  as an icon's `color` is a lint error, and so is an unused style.
+  theme, never literals: a color literal in a style or in any `*Color` prop
+  (`color`, `iconColor`, ...), as a string or inside an expression, is a lint
+  error, and so is an unused style.
 - **Text:** user-facing strings through `t()`.
 - **Logging:** `logger` from `@/shared/lib/logger`, never `console` (lint
   error); see [Error Reporting](error-reporting.md).

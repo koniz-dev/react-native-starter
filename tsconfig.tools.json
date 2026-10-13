@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["jest", "node"]
+  },
+  "exclude": [
+    "node_modules",
+    "**/node_modules",
+    "android",
+    "ios",
+    "dist",
+    "web-build",
+    "coverage",
+    "e2e-results",
+    ".docs-check"
+  ]
+}

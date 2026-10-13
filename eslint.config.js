@@ -7,6 +7,92 @@ const reactNative = require('eslint-plugin-react-native');
 const prettier = require('eslint-plugin-prettier');
 const prettierConfig = require('eslint-config-prettier');
 const globals = require('globals');
+const path = require('path');
+
+/**
+ * Colors come from the theme, also on props such as an icon's color, written
+ * as a string or inside an expression (AGENTS.md: Styles).
+ */
+const COLOR_LITERAL = {
+  selector:
+    'JSXAttribute[name.name=/[cC]olor$/] :matches(Literal[value=/^(#|rgba?\\(|hsla?\\()/i], TemplateElement[value.raw=/^(#|rgba?\\(|hsla?\\()/i])',
+  message: 'Use a color from the Paper theme (useTheme()), not a literal.',
+};
+
+/**
+ * The module a file belongs to, for the import rules: `features/<name>`,
+ * `shared/<area>`, or the top-level folder (`app`, `testing`, ...).
+ */
+function moduleOf(rel) {
+  const [top, sub] = rel.split('/');
+  return top === 'features' || top === 'shared' ? `${top}/${sub}` : top;
+}
+
+/**
+ * Project rules lint can't express with core rules: the dependency direction
+ * and `@/` for imports outside the current module (AGENTS.md: Project
+ * structure, Imports), for `@/` and relative paths alike.
+ */
+const project = {
+  rules: {
+    'import-boundaries': {
+      meta: { type: 'problem', schema: [] },
+      create(context) {
+        const file = path
+          .relative(__dirname, context.filename)
+          .split(path.sep)
+          .join('/');
+        const from = moduleOf(file);
+        const check = (node, source) => {
+          if (typeof source !== 'string') return;
+          let target;
+          if (source.startsWith('@/')) {
+            target = source.slice(2);
+          } else if (source.startsWith('.')) {
+            target = path.posix.normalize(
+              path.posix.join(path.posix.dirname(file), source)
+            );
+          } else {
+            return;
+          }
+          const to = moduleOf(target);
+          const [fromTop] = from.split('/');
+          const [toTop] = to.split('/');
+          const report = message => context.report({ node, message });
+          if (
+            fromTop === 'shared' &&
+            (toTop === 'features' || toTop === 'app') &&
+            file !== 'shared/integrations/setup.ts'
+          ) {
+            report(
+              'shared/ must not import features or routes; register them in shared/integrations/setup.ts.'
+            );
+          } else if (
+            fromTop === 'features' &&
+            (toTop === 'app' || (toTop === 'features' && to !== from))
+          ) {
+            report(
+              "A feature doesn't import another feature or a route; move shared code to shared/."
+            );
+          } else if (source.startsWith('.') && to !== from) {
+            report(
+              `Import ${target} with @/; relative paths stay inside ${from}.`
+            );
+          }
+        };
+        return {
+          ImportDeclaration: node => check(node.source, node.source.value),
+          ExportNamedDeclaration: node =>
+            node.source && check(node.source, node.source.value),
+          ExportAllDeclaration: node => check(node.source, node.source.value),
+          ImportExpression: node =>
+            node.source.type === 'Literal' &&
+            check(node.source, node.source.value),
+        };
+      },
+    },
+  },
+};
 
 /** Every rule is an error: `npm run lint` also runs with --max-warnings 0. */
 const asErrors = rules =>
@@ -85,7 +171,12 @@ module.exports = [
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       parser: typescriptParser,
-      parserOptions: { project: './tsconfig.json' },
+      // Tests, scripts, and app.config.ts are in tsconfig.tools.json (with
+      // Node and Jest types); the app's own code is in tsconfig.json.
+      parserOptions: {
+        project: ['./tsconfig.json', './tsconfig.tools.json'],
+        tsconfigRootDir: __dirname,
+      },
     },
     plugins: { '@typescript-eslint': typescript },
     rules: {
@@ -104,7 +195,7 @@ module.exports = [
   },
 
   // Named exports only; route files in app/ export their screen as default
-  // (AGENTS.md: Exports).
+  // (AGENTS.md: Exports). And no color literals (COLOR_LITERAL).
   {
     files: ['features/**/*.{ts,tsx}', 'shared/**/*.{ts,tsx}', 'testing/**'],
     rules: {
@@ -120,54 +211,21 @@ module.exports = [
           message:
             'Use a named export; only route files in app/ export a default.',
         },
-        {
-          // Colors come from the theme, also on props such as an icon's color.
-          selector:
-            'JSXAttribute[name.name=/^(color|backgroundColor|tintColor|placeholderTextColor|underlineColor|selectionColor)$/] > Literal',
-          message:
-            'Use a color from the Paper theme (useTheme()), not a literal.',
-        },
+        COLOR_LITERAL,
       ],
     },
+  },
+  {
+    files: ['app/**/*.{ts,tsx}'],
+    rules: { 'no-restricted-syntax': ['error', COLOR_LITERAL] },
   },
 
-  // Dependency direction (AGENTS.md: Project structure): shared/ never
-  // imports a feature (except the composition root), and a feature doesn't
-  // import another feature.
+  // Dependency direction and import paths (AGENTS.md: Project structure,
+  // Imports): see `project` above.
   {
-    files: ['shared/**/*.{ts,tsx}'],
-    ignores: ['shared/integrations/setup.ts'],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: [
-            {
-              group: ['@/features/**', '@/app/**'],
-              message:
-                'shared/ must not import features or routes; register them in shared/integrations/setup.ts.',
-            },
-          ],
-        },
-      ],
-    },
-  },
-  {
-    files: ['features/**/*.{ts,tsx}'],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: [
-            {
-              regex: '^@/(app/|features/)',
-              message:
-                "A feature doesn't import another feature or a route; move shared code to shared/.",
-            },
-          ],
-        },
-      ],
-    },
+    files: ['{app,features,shared,testing}/**/*.{ts,tsx}'],
+    plugins: { project },
+    rules: { 'project/import-boundaries': 'error' },
   },
 
   // Node config files (eslint.config.js, jest.setup.env.js) use CommonJS.

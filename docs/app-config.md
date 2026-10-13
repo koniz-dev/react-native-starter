@@ -41,9 +41,33 @@ own name, bundle ID, and scheme, so all three install side by side:
   that exports both variables.
 - `eas.json` has matching `development`, `preview`, and `production` build
   profiles for [EAS Build](https://docs.expo.dev/build/introduction/), which
-  needs your own Expo account; nothing else in the project does.
+  needs your own Expo account; nothing else in the project does. See
+  [EAS Build, the first time](#eas-build-the-first-time).
+- The `development` variant is a debug build without a dev client: it loads
+  the JavaScript from Metro on `localhost:8081`, so it is for simulators,
+  emulators, and the e2e flows. On a physical device, use Expo Go, or add
+  [`expo-dev-client`](https://docs.expo.dev/develop/development-builds/introduction/).
+- iOS builds declare that the app uses only exempt encryption (HTTPS and the
+  OS's own: `ios.config.usesNonExemptEncryption: false`), so App Store
+  Connect doesn't hold each build for an export-compliance answer. Change it
+  if you add your own cryptography.
 - Outside development, backend URLs must be `https`. `.env` is not committed,
   so set the variables in the build profile's `env` or with `eas env:create`.
+
+### EAS Build, the first time
+
+1. Install the CLI and sign in: `npm install -g eas-cli`, then `eas login`.
+2. Run `eas init` to create the project on expo.dev. The config is
+   `app.config.ts` (code), which `eas init` can't edit, so it prints the
+   project ID for you to add. In `app.config.ts`, change
+   `extra: { appVariant: variant }` to
+   `extra: { appVariant: variant, eas: { projectId: '<your-project-id>' } }`.
+
+3. Set `APP_BUILD_NUMBER` in each build profile's `env` in `eas.json` (or
+   in your CI), and raise it for every store upload; every build is `1`
+   otherwise.
+4. Build: `eas build --platform android --profile preview` (or `ios`). See
+   [Expo: create your first build](https://docs.expo.dev/build/setup/).
 
 ## Icons and splash screen
 

@@ -5,7 +5,7 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["jest", "node"],
+    "types": [],
     "paths": {
       "@/*": ["./*"]
     }
@@ -19,6 +19,10 @@
     "web-build",
     "coverage",
     "e2e-results",
-    ".docs-check"
+    ".docs-check",
+    "__tests__",
+    "testing",
+    "jest.setup.ts",
+    "app.config.ts"
   ]
 }

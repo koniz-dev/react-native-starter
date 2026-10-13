@@ -6,7 +6,7 @@ import { useSession } from '@/shared/session/SessionProvider';
 import { t } from '@/shared/i18n';
 import { DocumentTitle } from '@/shared/ui/DocumentTitle';
 // @demo remove-block-start
-// eslint-disable-next-line no-restricted-imports -- the demo is removable (npm run remove-demo)
+// eslint-disable-next-line project/import-boundaries -- the demo is removable (npm run remove-demo)
 import { ExampleLinks } from '@/features/demo-showcase/components/ExampleLinks';
 // @demo remove-block-end
 

@@ -20,7 +20,7 @@ import { errorMessage } from '@/shared/http/errorMessage';
 import { toApiError } from '@/shared/http/apiError';
 import { logger } from '@/shared/lib/logger';
 // @demo remove-block-start
-// eslint-disable-next-line no-restricted-imports -- the demo is removable (npm run remove-demo)
+// eslint-disable-next-line project/import-boundaries -- the demo is removable (npm run remove-demo)
 import { DemoCredentialsHint } from '@/features/demo-auth/DemoCredentialsHint';
 // @demo remove-block-end
 import { t } from '@/shared/i18n';

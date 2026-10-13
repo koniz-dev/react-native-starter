@@ -52,6 +52,7 @@ const ROOT_FILES = new Set([
   'eas.json',
   'package.json',
   'tsconfig.json',
+  'tsconfig.tools.json',
   'eslint.config.js',
   'jest.setup.ts',
   'jest.setup.env.js',
@@ -263,7 +264,8 @@ function main() {
     path.join(OUT, 'tsconfig.json'),
     JSON.stringify(
       {
-        extends: '../tsconfig.json',
+        // Snippets include tests, which need the Jest and Node types.
+        extends: '../tsconfig.tools.json',
         compilerOptions: { noEmit: true },
         include: ['./*.ts', './*.tsx', '../expo-env.d.ts'],
         // The project's exclude list names this folder.

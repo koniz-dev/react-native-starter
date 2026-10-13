@@ -103,6 +103,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       bundleIdentifier: bundleId,
       buildNumber: String(buildNumber),
       supportsTablet: true,
+      // Only HTTPS and the OS's own encryption, which are exempt: App Store
+      // Connect then doesn't hold each build at "Missing Compliance". Change
+      // it if you add your own cryptography.
+      config: { usesNonExemptEncryption: false },
     },
     android: {
       package: bundleId,

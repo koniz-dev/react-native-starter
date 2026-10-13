@@ -64,6 +64,10 @@ describe('app.config.ts variants', () => {
     ).toThrow(/APP_BUILD_NUMBER/);
   });
 
+  it('declares only exempt encryption, so iOS builds need no compliance answer', () => {
+    expect(resolve({}).ios?.config?.usesNonExemptEncryption).toBe(false);
+  });
+
   it('asks for no permission the app does not use', () => {
     const unused = [
       'android.permission.VIBRATE',
