@@ -62,3 +62,18 @@ own, so check them in a build (`npm run prebuild:preview`, then build). The
 native splash stays up until the stored session has been read
 (`app/_layout.tsx`). See
 [Expo: splash screen and app icon](https://docs.expo.dev/develop/user-interface/splash-screen-and-app-icon/).
+
+## Permissions
+
+The app asks for no permission it doesn't use. `app.config.ts` removes the
+Android permissions that Expo's template and libraries add by default
+(`UNUSED_ANDROID_PERMISSIONS`: vibration and shared storage) through
+`android.blockedPermissions`; preview and production builds also drop
+`SYSTEM_ALERT_WINDOW`, which only development tools use. On iOS,
+`expo-secure-store` is configured without a Face ID prompt
+(`faceIDPermission: false`), since tokens are stored without biometrics.
+
+When you add a feature that needs one of these, remove it from the list (or
+set `faceIDPermission` to the text iOS shows), and add any new permission
+with its plugin's options or `ios.infoPlist`. See
+[Expo: permissions](https://docs.expo.dev/guides/permissions/).

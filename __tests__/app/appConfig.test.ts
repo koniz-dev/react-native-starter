@@ -64,6 +64,28 @@ describe('app.config.ts variants', () => {
     ).toThrow(/APP_BUILD_NUMBER/);
   });
 
+  it('asks for no permission the app does not use', () => {
+    const unused = [
+      'android.permission.VIBRATE',
+      'android.permission.READ_EXTERNAL_STORAGE',
+      'android.permission.WRITE_EXTERNAL_STORAGE',
+    ];
+    const blocked = (variant: string) =>
+      resolve({ APP_VARIANT: variant }).android?.blockedPermissions;
+    // Development tools (the performance overlay) draw over other apps.
+    expect(blocked('development')).toEqual(unused);
+    for (const variant of ['preview', 'production']) {
+      expect(blocked(variant)).toEqual([
+        ...unused,
+        'android.permission.SYSTEM_ALERT_WINDOW',
+      ]);
+    }
+    expect(resolve({}).plugins).toContainEqual([
+      'expo-secure-store',
+      { faceIDPermission: false },
+    ]);
+  });
+
   it('configures the splash screen with light and dark backgrounds', () => {
     const plugins = resolve({ APP_VARIANT: 'production' }).plugins ?? [];
     const splash = plugins.find(

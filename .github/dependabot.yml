@@ -1,0 +1,13 @@
+# Proposes updates to the GitHub Actions that the workflows pin by commit, in
+# one pull request a month, so the pins don't fall behind (see
+# docs/getting-started.md#scripts). npm packages follow the Expo SDK
+# (npx expo install), so they are not updated here.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ['*']

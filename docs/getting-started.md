@@ -134,7 +134,10 @@ The local gate before a commit is
 `npm run docs:check`, `npm run doctor`, and a web export. CI uses what the
 repository pins (the lockfiles, the Node version in `.nvmrc`, the runner
 image, and actions by commit), so a commit that passes keeps passing when new
-versions of its dependencies are published.
+versions of its dependencies are published. Dependabot
+(`.github/dependabot.yml`) opens one pull request a month that moves the
+action pins to their latest releases, so they don't fall behind; CI runs on
+it like on any change.
 
 `npm run doctor` checks the installed packages against the Expo SDK in the
 lockfile (Expo Doctor with `EXPO_OFFLINE=1`), not against Expo's newest

@@ -71,6 +71,19 @@ function getBuildNumber(): number {
   return buildNumber;
 }
 
+/**
+ * Android permissions that Expo's template and libraries add but this app
+ * doesn't use: vibration, and shared storage (from expo-file-system). Remove
+ * an entry when you add a feature that needs it. Release variants also drop
+ * SYSTEM_ALERT_WINDOW, which only development tools (the performance
+ * overlay) use.
+ */
+const UNUSED_ANDROID_PERMISSIONS = [
+  'android.permission.VIBRATE',
+  'android.permission.READ_EXTERNAL_STORAGE',
+  'android.permission.WRITE_EXTERNAL_STORAGE',
+];
+
 export default ({ config }: ConfigContext): ExpoConfig => {
   const variant = getVariant();
   const { nameSuffix, idSuffix, schemeSuffix } = VARIANTS[variant];
@@ -99,13 +112,22 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         backgroundColor: APP.adaptiveIconBackground,
       },
       predictiveBackGestureEnabled: false,
+      blockedPermissions:
+        variant === 'development'
+          ? UNUSED_ANDROID_PERMISSIONS
+          : [
+              ...UNUSED_ANDROID_PERMISSIONS,
+              'android.permission.SYSTEM_ALERT_WINDOW',
+            ],
     },
     web: {
       favicon: './assets/favicon.png',
     },
     plugins: [
       'expo-font',
-      'expo-secure-store',
+      // No Face ID prompt text: tokens are stored without biometrics
+      // (set faceIDPermission to a message if you add requireAuthentication).
+      ['expo-secure-store', { faceIDPermission: false }],
       'expo-status-bar',
       'expo-router',
       [
