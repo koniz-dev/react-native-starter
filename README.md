@@ -153,3 +153,22 @@ harness:
   yet.
 - Never relay a subagent's PASS you have not inspected yourself. Subagents
   report optimistically; the closing session owns the verdict.
+
+## Repository settings
+
+Set on 2026-10-13 (all free for a public repository; template copies don't
+inherit them):
+
+- **Ruleset `main`:** blocks deleting and force-pushing `main`, and requires
+  the `Verify` check (CI) on pull requests, including Dependabot's.
+  Repository admins bypass it, so maintainers still push straight to
+  `main`; check CI after every push. `Audit` is not required on purpose: it
+  reports new advisories without blocking unrelated work.
+- **Dependabot alerts** on; **Dependabot security updates** off: npm
+  dependencies follow the Expo SDK (`npx expo install`), and automatic bumps
+  could break that alignment. Dismiss an alert only with a review in
+  `scripts/audit-allowlist.json` (reason "tolerable risk", pointing to it).
+  Version updates for the action pins come from `.github/dependabot.yml`.
+- **CodeQL default setup** (actions, JavaScript/TypeScript): a new alert is
+  a bug; open an issue for it.
+- **Actions must be pinned to a full commit SHA** (every workflow is).
