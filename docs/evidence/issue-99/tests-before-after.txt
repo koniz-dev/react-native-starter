@@ -1,0 +1,146 @@
+Commit 22e433a: docs(adopters): install output, user fields, adapter test, uploads, plugins; shared test helpers and quiet test logs
+Tests changed by the commit: __tests__/features/demo-todos/TodosScreen.test.tsx __tests__/shared/lib/logger.test.ts __tests__/testing/http.test.ts 
+
+== BEFORE: code at 22e433a^ with the tests (and testing/ helpers) from 22e433a
+      ✓ writes only messages at or above the minimum level (12 ms)
+      ✓ writes every level in development (11 ms)
+      ✓ writes nothing to the console when silent (3 ms)
+      ✓ reads the settings on every call (2 ms)
+      ✕ uses the configured level from shared/config/env.ts (12 ms)
+      ✓ a client failure is logged with logger.info (26 ms)
+      ✓ a server failure is logged with logger.info (4 ms)
+      ✓ a unauthorized failure is logged with logger.info (3 ms)
+      ✓ a network failure is logged with logger.warn (8 ms)
+      ✓ a timeout failure is logged with logger.warn (5 ms)
+      ✓ a unknown failure is logged with logger.warn (4 ms)
+      ✓ a canceled failure is logged with logger.debug (13 ms)
+      ✓ a client failure is shown in development: true, preview: true, production: false (1 ms)
+      ✓ a server failure is shown in development: true, preview: true, production: false (1 ms)
+      ✓ a unauthorized failure is shown in development: true, preview: true, production: false
+      ✓ a network failure is shown in development: true, preview: true, production: true (1 ms)
+      ✓ a timeout failure is shown in development: true, preview: true, production: true
+      ✓ a unknown failure is shown in development: true, preview: true, production: true (2 ms)
+      ✓ a canceled failure is shown in development: true, preview: false, production: false (3 ms)
+      ✓ reports an Error with the message and redacted context (15 ms)
+      ✓ reports a message when there is no Error (6 ms)
+      ✓ reports a thrown non-Error value as a message with the value (1 ms)
+      ✓ does not forward warnings (1 ms)
+      ✓ also forwards in development
+      ✓ setErrorReporter registers a provider (1 ms)
+      ✓ keeps working when the reporter throws (1 ms)
+      ✓ the default reporter writes one console line in development builds (5 ms)
+      ✓ the default reporter writes nothing in release builds, so silent is silent (2 ms)
+      ✓ sends an ApiError without its response body as an own enumerable field (2 ms)
+      ✓ never throws on a context it cannot read (3 ms)
+      ✓ always redacts auth headers, cookies, tokens, and passwords (1 ms)
+      ✓ redacts credential (1 ms)
+      ✓ redacts idCredential (1 ms)
+      ✓ redacts pin (4 ms)
+      ✓ redacts totp
+      ✓ redacts mfaCode (3 ms)
+      ✓ redacts refresh (2 ms)
+      ✓ redacts code_verifier (1 ms)
+      ✓ redacts accessKeyId (1 ms)
+      ✓ redacts access_key (1 ms)
+      ✓ redacts cvv (1 ms)
+      ✓ redacts signature
+      ✓ redacts response bodies outside development only (1 ms)
+      ✓ reduces Errors to name, message, code, and status outside development (2 ms)
+      ✓ prints a redacted Error summary in production and the Error in development (8 ms)
+      ✓ redacts keys that name a secret: authToken (2 ms)
+      ✓ redacts keys that name a secret: x-auth-token (1 ms)
+      ✓ redacts keys that name a secret: X-Auth-Token (1 ms)
+      ✓ redacts keys that name a secret: client_secret (1 ms)
+      ✓ redacts keys that name a secret: newPassword
+      ✓ redacts keys that name a secret: currentPassword
+      ✓ redacts keys that name a secret: passcode (5 ms)
+      ✓ redacts keys that name a secret: otp (4 ms)
+      ✓ redacts keys that name a secret: jwt (4 ms)
+      ✓ redacts keys that name a secret: sessionId (2 ms)
+      ✓ redacts keys that name a secret: session_id (5 ms)
+      ✓ redacts keys that name a secret: privateKey (1 ms)
+      ✓ redacts secrets inside arrays (2 ms)
+      ✓ logs an object referenced twice in full, not as circular (1 ms)
+      ✓ handles circular and deeply nested values (3 ms)
+      ✓ logs dates, maps, sets, and URLs by value, still redacting secrets (17 ms)
+      ✓ redacts what the logger writes outside development (3 ms)
+    ✓ holds each request until the test answers it (150 ms)
+    ✓ answers a 5xx as a server error (52 ms)
+    ✓ goes from loading to an error, then Retry loads the list (1765 ms)
+    ✓ announces the error from a live region, and leaves server errors unlogged (74 ms)
+    ✓ keeps the list on screen while it reloads (182 ms)
+    ✓ logs a response that fails validation and shows a generic message (68 ms)
+    ✓ shows the empty state for an empty list (74 ms)
+Tests:       1 failed, 68 passed, 69 total
+
+== AFTER: code and tests at 22e433a
+      ✓ writes only messages at or above the minimum level (8 ms)
+      ✓ writes every level in development (3 ms)
+      ✓ writes nothing to the console when silent (2 ms)
+      ✓ reads the settings on every call (1 ms)
+      ✓ uses the configured level from shared/config/env.ts (1 ms)
+      ✓ a client failure is logged with logger.info (11 ms)
+      ✓ a server failure is logged with logger.info (2 ms)
+      ✓ a unauthorized failure is logged with logger.info (2 ms)
+      ✓ a network failure is logged with logger.warn (2 ms)
+      ✓ a timeout failure is logged with logger.warn (2 ms)
+      ✓ a unknown failure is logged with logger.warn (2 ms)
+      ✓ a canceled failure is logged with logger.debug (2 ms)
+      ✓ a client failure is shown in development: true, preview: true, production: false (1 ms)
+      ✓ a server failure is shown in development: true, preview: true, production: false
+      ✓ a unauthorized failure is shown in development: true, preview: true, production: false (1 ms)
+      ✓ a network failure is shown in development: true, preview: true, production: true
+      ✓ a timeout failure is shown in development: true, preview: true, production: true
+      ✓ a unknown failure is shown in development: true, preview: true, production: true
+      ✓ a canceled failure is shown in development: true, preview: false, production: false (1 ms)
+      ✓ reports an Error with the message and redacted context (1 ms)
+      ✓ reports a message when there is no Error
+      ✓ reports a thrown non-Error value as a message with the value (1 ms)
+      ✓ does not forward warnings
+      ✓ also forwards in development (1 ms)
+      ✓ setErrorReporter registers a provider
+      ✓ keeps working when the reporter throws (1 ms)
+      ✓ the default reporter writes one console line in development builds (1 ms)
+      ✓ the default reporter writes nothing in release builds, so silent is silent
+      ✓ sends an ApiError without its response body as an own enumerable field
+      ✓ never throws on a context it cannot read (1 ms)
+      ✓ always redacts auth headers, cookies, tokens, and passwords (1 ms)
+      ✓ redacts credential (1 ms)
+      ✓ redacts idCredential
+      ✓ redacts pin (1 ms)
+      ✓ redacts totp
+      ✓ redacts mfaCode
+      ✓ redacts refresh (1 ms)
+      ✓ redacts code_verifier (11 ms)
+      ✓ redacts accessKeyId
+      ✓ redacts access_key (1 ms)
+      ✓ redacts cvv
+      ✓ redacts signature (1 ms)
+      ✓ redacts response bodies outside development only
+      ✓ reduces Errors to name, message, code, and status outside development (2 ms)
+      ✓ prints a redacted Error summary in production and the Error in development (1 ms)
+      ✓ redacts keys that name a secret: authToken
+      ✓ redacts keys that name a secret: x-auth-token (1 ms)
+      ✓ redacts keys that name a secret: X-Auth-Token
+      ✓ redacts keys that name a secret: client_secret
+      ✓ redacts keys that name a secret: newPassword
+      ✓ redacts keys that name a secret: currentPassword (1 ms)
+      ✓ redacts keys that name a secret: passcode
+      ✓ redacts keys that name a secret: otp
+      ✓ redacts keys that name a secret: jwt (1 ms)
+      ✓ redacts keys that name a secret: sessionId
+      ✓ redacts keys that name a secret: session_id
+      ✓ redacts keys that name a secret: privateKey (1 ms)
+      ✓ redacts secrets inside arrays
+      ✓ logs an object referenced twice in full, not as circular
+      ✓ handles circular and deeply nested values
+      ✓ logs dates, maps, sets, and URLs by value, still redacting secrets (5 ms)
+      ✓ redacts what the logger writes outside development
+    ✓ holds each request until the test answers it (24 ms)
+    ✓ answers a 5xx as a server error (3 ms)
+    ✓ goes from loading to an error, then Retry loads the list (324 ms)
+    ✓ announces the error from a live region, and leaves server errors unlogged (74 ms)
+    ✓ keeps the list on screen while it reloads (190 ms)
+    ✓ logs a response that fails validation and shows a generic message (81 ms)
+    ✓ shows the empty state for an empty list (70 ms)
+Tests:       69 passed, 69 total

@@ -1,0 +1,2 @@
+22e433a^: 99 console blocks (92 debug, 12 info), Tests:       529 passed, 529 total
+22e433a: 7 console blocks (7 debug, 5 info), Tests:       531 passed, 531 total
