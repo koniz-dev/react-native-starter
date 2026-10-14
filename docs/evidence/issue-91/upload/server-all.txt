@@ -1,0 +1,12 @@
+{"method":"POST","url":"/upload","multipart":true,"contentType":"multipart/form-data","parts":[{"name":"title","png":false,"text":"hello"},{"name":"avatar","filename":"icon.png","png":true}]}
+{"method":"POST","url":"/upload","multipart":true,"contentType":"multipart/form-data","parts":[{"name":"title","png":false,"text":"hello"},{"name":"avatar","filename":"icon.png","png":true}]}
+{"method":"POST","url":"/upload","multipart":true,"contentType":"multipart/form-data","parts":[{"name":"title","png":false,"text":"hello"},{"name":"avatar","filename":"icon.png","png":true}]}
+{"method":"POST","url":"/upload","multipart":false,"contentType":"application/json","parts":[]}
+{"method":"POST","url":"/upload","multipart":true,"contentType":"multipart/form-data","parts":[{"name":"title","png":false,"text":"hello"},{"name":"avatar","filename":"icon.png","png":true}]}
+{"method":"OPTIONS","url":"/upload","multipart":false,"contentType":"","parts":[]}
+{"method":"POST","url":"/upload","multipart":true,"contentType":"multipart/form-data","parts":[{"name":"title","png":false,"text":"hello"},{"name":"avatar","filename":"icon.png","png":true}]}
+{"method":"POST","url":"/upload","multipart":true,"contentType":"multipart/form-data","parts":[{"name":"title","png":false,"text":"hello"},{"name":"avatar","filename":"icon.png","png":true}]}
+{"method":"OPTIONS","url":"/upload","multipart":false,"contentType":"","parts":[]}
+{"method":"POST","url":"/upload","multipart":false,"contentType":"application/json","parts":[]}
+{"method":"POST","url":"/upload","multipart":false,"contentType":"application/json","parts":[]}
+{"method":"POST","url":"/upload","multipart":true,"contentType":"multipart/form-data","parts":[{"name":"title","png":false,"text":"hello"},{"name":"avatar","filename":"icon.png","png":true}]}

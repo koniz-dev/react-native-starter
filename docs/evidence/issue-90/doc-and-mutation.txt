@@ -1,0 +1,20 @@
+== 1. Old documented adapter (docs/connect-your-backend.md at ce743f1^) with the new tests
+    ✓ signs in with a tokens-only response, loading the user from /me (9 ms)
+    ✓ shows the envelope's message for a wrong password and stores nothing (38 ms)
+    ✓ rejects a login response without the envelope with a readable message and stores nothing (2 ms)
+    ✓ rejects a login response without a refresh token with a readable message and stores nothing (2 ms)
+    ✓ rejects a user payload without the required fields (4 ms)
+    ✓ refreshes on a 401 with rotation, keeping only the newest refresh token (6 ms)
+    ✓ signs out and drops the refresh token when the refresh is rejected (5 ms)
+    ✓ keeps the session and the refresh token when the refresh fails offline (113 ms)
+    ✕ revokes the refresh token on logout (10 ms)
+    ✕ revokes the refresh token on logout after the access token expired (4 ms)
+    ✕ revokes, and keeps nothing from, a refresh that finishes after logout (6 ms)
+    ✕ signs out locally when the backend is unreachable on logout (5 ms)
+Tests:       4 failed, 8 passed, 12 total
+
+== 2. Mutation: delete the stale-session guard (httpClient.ts: if (!sameSession()) return fail(error, config); before the token read)
+ shared/http/httpClient.ts | 2 --
+ 1 file changed, 2 deletions(-)
+    ✕ doesn't refresh for a 401 sent in an earlier session with the same token (5 ms)
+Tests:       1 failed, 25 passed, 26 total

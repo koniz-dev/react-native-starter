@@ -1,0 +1,122 @@
+Commit ee03aa4: fix(http): FormData goes out as multipart; APP_ENV empty or padded counts as unset; URLs the origin check can't read are rejected at startup
+Tests changed by the commit: __tests__/shared/config/env.test.ts __tests__/shared/http/api.test.ts __tests__/shared/session/authService.test.ts 
+
+== BEFORE: code at ee03aa4^ with the tests from ee03aa4
+    ✓ accepts a complete production configuration (6 ms)
+    ✓ accepts base URLs with a path prefix (1 ms)
+    ✓ parses and validates the API timeout (3 ms)
+    ✓ defaults the log level per environment and accepts an override (1 ms)
+    ✓ reports every missing required URL
+    ✓ treats an empty value (KEY=) as missing
+    ✓ rejects a URL that is not absolute http(s) (1 ms)
+    ✕ rejects "https://auth.example.com /v1", a URL the token origin check cannot read (4 ms)
+    ✕ rejects "https://auth example.com", a URL the token origin check cannot read (1 ms)
+    ✕ rejects "https://auth.example.com\\@evil.example.com", a URL the token origin check cannot read (1 ms)
+    ✕ rejects "https://auth.exa\tmple.com", a URL the token origin check cannot read (1 ms)
+    ✓ rejects "https://", a URL the token origin check cannot read (1 ms)
+    ✕ rejects "https://auth.example.com/v1?x=1 2", a URL the token origin check cannot read (1 ms)
+    ✓ accepts URLs with a port, path, query, or user info
+    ✓ rejects http outside development and allows it in development (1 ms)
+    ✓ fills missing URLs from the demo backends only when the flag is on (1 ms)
+    ✓ prefers explicit URLs over the demo backends
+    ✓ rejects a demo backends switch that is not true or false
+    ✓ defaults the app environment from the build type (1 ms)
+    ✕ treats an empty app environment (KEY=) as not set, and trims it (1 ms)
+    ✓ rejects an unknown app environment (1 ms)
+    ✓ parses and validates trusted origins
+    ✓ reads every variable by its own name (1 ms)
+    ✓ reads exactly the variables .env.example documents
+    ✓ throws a ConfigError naming the variables when configuration is invalid (24 ms)
+    ✓ injects the protected token into an outgoing request (8 ms)
+    ✓ rejects with an ApiError carrying the server message and status (29 ms)
+    ✕ sends a FormData body untouched, as multipart (3 ms)
+    ✓ sends an object as JSON (2 ms)
+    ✓ trusts only the auth backend origin by default
+    ✓ does not send the auth token to the separate API host (1 ms)
+    ✓ attaches the token to the auth origin, with or without the default port (1 ms)
+    ✓ does not attach or read the token for another origin (1 ms)
+    ✓ does not attach the token to a look-alike host (1 ms)
+    ✓ sends no Authorization header when no token is stored
+    ✓ trusts origins listed in EXPO_PUBLIC_API_TRUSTED_ORIGINS, including the API (33 ms)
+    ✓ https://API.Example.com/v1?x=1 -> https://api.example.com
+    ✓ https://api.example.com:443/v1 -> https://api.example.com
+    ✓ http://localhost:80 -> http://localhost
+    ✓ http://localhost:3000/x -> http://localhost:3000
+    ✓ https://user:pass@api.example.com/x -> https://api.example.com
+    ✓ /relative/path -> null
+    ✓  -> null (1 ms)
+    ✓ signs in through the adapter and stores the token and normalized user (14 ms)
+    ✓ rejects a response without a token and stores nothing (11 ms)
+    ✓ rejects an incomplete user and stores nothing (2 ms)
+    ✓ passes on a failed login and stores nothing (1 ms)
+    ✓ does not sign in when protected storage is unavailable (1 ms)
+    ✓ reads and deletes only the token through protected storage (1 ms)
+    ✓ calls the adapter's logout while the token is still stored, then clears the session (2 ms)
+    ✓ logs a failed adapter logout and signs out anyway (3 ms)
+    ✓ reloads the user with fetchUser when the adapter has it (1 ms)
+    ✓ returns the stored user when the adapter cannot fetch one (2 ms)
+    ✓ uses the adapter's refresh as the HTTP client's refresh handler and stores the new token (2 ms)
+    ✓ reports that sign-in is not configured (2 ms)
+    ✓ neither store nor send cookies (1 ms)
+    ✓ send the login request with withCredentials disabled (4 ms)
+Tests:       7 failed, 50 passed, 57 total
+
+== AFTER: code and tests at ee03aa4
+    ✓ accepts a complete production configuration (6 ms)
+    ✓ accepts base URLs with a path prefix (1 ms)
+    ✓ parses and validates the API timeout (2 ms)
+    ✓ defaults the log level per environment and accepts an override (1 ms)
+    ✓ reports every missing required URL
+    ✓ treats an empty value (KEY=) as missing (1 ms)
+    ✓ rejects a URL that is not absolute http(s)
+    ✓ rejects "https://auth.example.com /v1", a URL the token origin check cannot read (1 ms)
+    ✓ rejects "https://auth example.com", a URL the token origin check cannot read
+    ✓ rejects "https://auth.example.com\\@evil.example.com", a URL the token origin check cannot read (1 ms)
+    ✓ rejects "https://auth.exa\tmple.com", a URL the token origin check cannot read (1 ms)
+    ✓ rejects "https://", a URL the token origin check cannot read
+    ✓ rejects "https://auth.example.com/v1?x=1 2", a URL the token origin check cannot read
+    ✓ accepts URLs with a port, path, query, or user info (1 ms)
+    ✓ rejects http outside development and allows it in development (1 ms)
+    ✓ fills missing URLs from the demo backends only when the flag is on
+    ✓ prefers explicit URLs over the demo backends (1 ms)
+    ✓ rejects a demo backends switch that is not true or false
+    ✓ defaults the app environment from the build type
+    ✓ treats an empty app environment (KEY=) as not set, and trims it (1 ms)
+    ✓ rejects an unknown app environment
+    ✓ parses and validates trusted origins (1 ms)
+    ✓ reads every variable by its own name
+    ✓ reads exactly the variables .env.example documents (1 ms)
+    ✓ throws a ConfigError naming the variables when configuration is invalid (33 ms)
+    ✓ injects the protected token into an outgoing request (9 ms)
+    ✓ rejects with an ApiError carrying the server message and status (31 ms)
+    ✓ sends a FormData body untouched, as multipart (2 ms)
+    ✓ sends an object as JSON (1 ms)
+    ✓ trusts only the auth backend origin by default (1 ms)
+    ✓ does not send the auth token to the separate API host (1 ms)
+    ✓ attaches the token to the auth origin, with or without the default port (1 ms)
+    ✓ does not attach or read the token for another origin (1 ms)
+    ✓ does not attach the token to a look-alike host (1 ms)
+    ✓ sends no Authorization header when no token is stored (1 ms)
+    ✓ trusts origins listed in EXPO_PUBLIC_API_TRUSTED_ORIGINS, including the API (28 ms)
+    ✓ https://API.Example.com/v1?x=1 -> https://api.example.com (1 ms)
+    ✓ https://api.example.com:443/v1 -> https://api.example.com
+    ✓ http://localhost:80 -> http://localhost
+    ✓ http://localhost:3000/x -> http://localhost:3000
+    ✓ https://user:pass@api.example.com/x -> https://api.example.com
+    ✓ /relative/path -> null
+    ✓  -> null
+    ✓ signs in through the adapter and stores the token and normalized user (7 ms)
+    ✓ rejects a response without a token and stores nothing (2 ms)
+    ✓ rejects an incomplete user and stores nothing (1 ms)
+    ✓ passes on a failed login and stores nothing (2 ms)
+    ✓ does not sign in when protected storage is unavailable (1 ms)
+    ✓ reads and deletes only the token through protected storage (1 ms)
+    ✓ calls the adapter's logout while the token is still stored, then clears the session (1 ms)
+    ✓ logs a failed adapter logout and signs out anyway (1 ms)
+    ✓ reloads the user with fetchUser when the adapter has it (1 ms)
+    ✓ returns the stored user when the adapter cannot fetch one (1 ms)
+    ✓ uses the adapter's refresh as the HTTP client's refresh handler and stores the new token (6 ms)
+    ✓ reports that sign-in is not configured (1 ms)
+    ✓ neither store nor send cookies
+    ✓ send the login request with withCredentials disabled (4 ms)
+Tests:       57 passed, 57 total

@@ -1,0 +1,282 @@
+Commit e3ebce3: fix(foundation): integration setup and analytics can't crash the app; useFetch drops a stale error; logging never throws or leaks a body
+Tests changed by the commit: __tests__/app/integrationSetup.test.tsx __tests__/shared/integrations/screenTracking.test.tsx __tests__/shared/lib/logger.test.ts __tests__/shared/lib/useFetch.test.tsx __tests__/shared/ui/ErrorBoundary.test.tsx __tests__/shared/ui/theme.test.ts 
+
+== BEFORE: code at e3ebce3^ with the tests from e3ebce3
+      ✓ writes only messages at or above the minimum level (12 ms)
+      ✓ writes every level in development (3 ms)
+      ✓ writes nothing to the console when silent (1 ms)
+      ✓ reads the settings on every call (2 ms)
+      ✓ uses the configured level from shared/config/env.ts (1 ms)
+      ✓ a client failure is written with console.info in development (27 ms)
+      ✓ a server failure is written with console.info in development (4 ms)
+      ✓ a unauthorized failure is written with console.info in development (3 ms)
+      ✓ a network failure is written with console.warn in development (4 ms)
+      ✓ a timeout failure is written with console.warn in development (2 ms)
+      ✓ a unknown failure is written with console.warn in development (3 ms)
+      ✓ a canceled failure is written with console.debug in development (2 ms)
+      ✓ a client failure is shown in development: true, preview: true, production: false (1 ms)
+      ✓ a server failure is shown in development: true, preview: true, production: false (2 ms)
+      ✓ a unauthorized failure is shown in development: true, preview: true, production: false
+      ✓ a network failure is shown in development: true, preview: true, production: true
+      ✓ a timeout failure is shown in development: true, preview: true, production: true
+      ✓ a unknown failure is shown in development: true, preview: true, production: true (3 ms)
+      ✓ a canceled failure is shown in development: true, preview: false, production: false (1 ms)
+      ✓ reports an Error with the message and redacted context (1 ms)
+      ✓ reports a message when there is no Error (1 ms)
+      ✓ reports a thrown non-Error value as a message with the value (15 ms)
+      ✓ does not forward warnings (2 ms)
+      ✓ also forwards in development (3 ms)
+      ✓ setErrorReporter registers a provider (7 ms)
+      ✓ keeps working when the reporter throws (1 ms)
+      ✓ the default reporter writes one console line in development builds
+      ✕ the default reporter writes nothing in release builds, so silent is silent (2 ms)
+      ✕ sends an ApiError without its response body as an own enumerable field (2 ms)
+      ✕ never throws on a context it cannot read (22 ms)
+      ✓ always redacts auth headers, cookies, tokens, and passwords (1 ms)
+      ✓ redacts credential (1 ms)
+      ✓ redacts idCredential
+      ✓ redacts pin (1 ms)
+      ✓ redacts totp
+      ✓ redacts mfaCode (1 ms)
+      ✓ redacts refresh (2 ms)
+      ✓ redacts code_verifier (2 ms)
+      ✓ redacts accessKeyId
+      ✓ redacts access_key
+      ✓ redacts cvv (1 ms)
+      ✓ redacts signature
+      ✓ redacts response bodies outside development only (1 ms)
+      ✓ reduces Errors to name, message, code, and status outside development (1 ms)
+      ✓ prints a redacted Error summary in production and the Error in development (1 ms)
+      ✓ redacts keys that name a secret: authToken (1 ms)
+      ✓ redacts keys that name a secret: x-auth-token
+      ✓ redacts keys that name a secret: X-Auth-Token
+      ✓ redacts keys that name a secret: client_secret
+      ✓ redacts keys that name a secret: newPassword
+      ✓ redacts keys that name a secret: currentPassword (1 ms)
+      ✓ redacts keys that name a secret: passcode
+      ✓ redacts keys that name a secret: otp
+      ✓ redacts keys that name a secret: jwt (1 ms)
+      ✓ redacts keys that name a secret: sessionId
+      ✓ redacts keys that name a secret: session_id (1 ms)
+      ✓ redacts keys that name a secret: privateKey
+      ✓ redacts secrets inside arrays (1 ms)
+      ✓ logs an object referenced twice in full, not as circular
+      ✓ handles circular and deeply nested values (1 ms)
+      ✕ logs dates, maps, sets, and URLs by value, still redacting secrets (7 ms)
+      ✓ redacts what the logger writes outside development (1 ms)
+    ✓ loads data, exposes a typed ApiError, and refetches (80 ms)
+    ✓ maps HTTP failures to ApiError codes (55 ms)
+    ✓ aborts the request on unmount (2 ms)
+    ✓ aborts the previous request when deps change (4 ms)
+    ✓ goes back to loading without the old error on a deps change and on refetch (4 ms)
+    ✓ keeps the latest response when an older one arrives later (2 ms)
+    ✓ ignores an older request that fails after the newer one succeeded (3 ms)
+    ✓ doesn't end the newer request's loading when an older one settles (3 ms)
+    ✓ refetch aborts a request in flight and uses the newest fetchFn (3 ms)
+    ✓ keeps working when its effect is cleaned up and run again (944 ms)
+    ✕ drops the old error when its effect runs again and succeeds (1056 ms)
+  ✓ public/index.html paints the theme's backgrounds before the app renders (1 ms)
+  ✓ getTheme falls back to light for an unknown scheme
+    ✓ is what getTheme returns for the scheme (8 ms)
+    ✓ uses the brand primary rather than the MD3 baseline (1 ms)
+    ✓ onPrimary on primary meets WCAG AA contrast (4.5:1) (1 ms)
+    ✓ onPrimaryContainer on primaryContainer meets WCAG AA contrast (4.5:1) (1 ms)
+    ✓ onSecondaryContainer on secondaryContainer meets WCAG AA contrast (4.5:1) (1 ms)
+    ✓ onBackground on background meets WCAG AA contrast (4.5:1)
+    ✓ onSurface on surface meets WCAG AA contrast (4.5:1)
+    ✓ primary on background meets WCAG AA contrast (4.5:1) (1 ms)
+    ✕ primary on surfaceVariant meets WCAG AA contrast (4.5:1) (1 ms)
+    ✕ primary on secondaryContainer meets WCAG AA contrast (4.5:1) (1 ms)
+    ✓ inversePrimary on inverseSurface meets WCAG AA contrast (4.5:1)
+    ✓ onSurfaceVariant on surfaceVariant meets WCAG AA contrast (4.5:1) (1 ms)
+    ✓ onSurfaceVariant on background meets WCAG AA contrast (4.5:1)
+    ✓ onSecondary on secondary meets WCAG AA contrast (4.5:1)
+    ✓ primary and onSurface on elevation level1 meet WCAG AA
+    ✓ primary and onSurface on elevation level2 meet WCAG AA (1 ms)
+    ✓ primary and onSurface on elevation level3 meet WCAG AA
+    ✓ primary and onSurface on elevation level4 meet WCAG AA
+    ✓ primary and onSurface on elevation level5 meet WCAG AA (1 ms)
+    ✓ replaces the MD3 baseline purple in the neutral and elevation roles
+    ✓ is what getTheme returns for the scheme (1 ms)
+    ✓ uses the brand primary rather than the MD3 baseline
+    ✓ onPrimary on primary meets WCAG AA contrast (4.5:1)
+    ✓ onPrimaryContainer on primaryContainer meets WCAG AA contrast (4.5:1)
+    ✓ onSecondaryContainer on secondaryContainer meets WCAG AA contrast (4.5:1)
+    ✓ onBackground on background meets WCAG AA contrast (4.5:1) (1 ms)
+    ✓ onSurface on surface meets WCAG AA contrast (4.5:1)
+    ✓ primary on background meets WCAG AA contrast (4.5:1)
+    ✓ primary on surfaceVariant meets WCAG AA contrast (4.5:1)
+    ✓ primary on secondaryContainer meets WCAG AA contrast (4.5:1) (1 ms)
+    ✓ inversePrimary on inverseSurface meets WCAG AA contrast (4.5:1)
+    ✓ onSurfaceVariant on surfaceVariant meets WCAG AA contrast (4.5:1)
+    ✓ onSurfaceVariant on background meets WCAG AA contrast (4.5:1)
+    ✓ onSecondary on secondary meets WCAG AA contrast (4.5:1)
+    ✓ primary and onSurface on elevation level1 meet WCAG AA
+    ✓ primary and onSurface on elevation level2 meet WCAG AA (1 ms)
+    ✓ primary and onSurface on elevation level3 meet WCAG AA
+    ✓ primary and onSurface on elevation level4 meet WCAG AA
+    ✓ primary and onSurface on elevation level5 meet WCAG AA
+    ✓ replaces the MD3 baseline purple in the neutral and elevation roles (1 ms)
+    ✕ is logged, and the app still shows the configuration error screen (1329 ms)
+    ✓ reports a screen view for the initial route and each navigation (2256 ms)
+    ✕ names a dynamic route by its pattern, never by the values in the URL (15 ms)
+    ✕ logs a provider that throws, and the app keeps working (83 ms)
+    ✓ "Go home" on a route boundary returns to Home (340 ms)
+    ✓ "Go home" on a route boundary still clears the error when navigation fails (168 ms)
+    ✓ "Try again" on a route boundary re-renders the screen (125 ms)
+      ✓ a route boundary catches a throwing screen, reports it, and renders a themed fallback (1101 ms)
+      ✓ shows users the translated message, not the error text, outside development (98 ms)
+      ✓ the app boundary sits inside the theme provider and reports with the component stack (46 ms)
+      ✓ a route boundary catches a throwing screen, reports it, and renders a themed fallback (79 ms)
+      ✓ shows users the translated message, not the error text, outside development (83 ms)
+      ✓ the app boundary sits inside the theme provider and reports with the component stack (41 ms)
+      ✓ "Try again" re-renders the children (31 ms)
+      ✓ "Go home" navigates to Home and re-renders (27 ms)
+      ✓ renders a custom fallback, which can reset the boundary (6 ms)
+      ✕ shows the fallback and reports when undefined is thrown (3 ms)
+      ✕ shows the fallback and reports when null is thrown (5 ms)
+      ✕ shows the fallback and reports when 0 is thrown (3 ms)
+      ✕ shows the fallback and reports when "" is thrown (2 ms)
+      ✓ renders its children when nothing throws (88 ms)
+      ✓ reports in every build, with the component stack (19 ms)
+Tests:       14 failed, 123 passed, 137 total
+
+== AFTER: code and tests at e3ebce3
+    ✓ loads data, exposes a typed ApiError, and refetches (82 ms)
+    ✓ maps HTTP failures to ApiError codes (54 ms)
+    ✓ aborts the request on unmount (2 ms)
+    ✓ aborts the previous request when deps change (4 ms)
+    ✓ goes back to loading without the old error on a deps change and on refetch (5 ms)
+    ✓ keeps the latest response when an older one arrives later (2 ms)
+    ✓ ignores an older request that fails after the newer one succeeded (2 ms)
+    ✓ doesn't end the newer request's loading when an older one settles (2 ms)
+    ✓ refetch aborts a request in flight and uses the newest fetchFn (2 ms)
+    ✓ keeps working when its effect is cleaned up and run again (160 ms)
+    ✓ drops the old error when its effect runs again and succeeds (55 ms)
+      ✓ writes only messages at or above the minimum level (4 ms)
+      ✓ writes every level in development (1 ms)
+      ✓ writes nothing to the console when silent (1 ms)
+      ✓ reads the settings on every call
+      ✓ uses the configured level from shared/config/env.ts (1 ms)
+      ✓ a client failure is written with console.info in development (10 ms)
+      ✓ a server failure is written with console.info in development (2 ms)
+      ✓ a unauthorized failure is written with console.info in development (2 ms)
+      ✓ a network failure is written with console.warn in development (2 ms)
+      ✓ a timeout failure is written with console.warn in development (2 ms)
+      ✓ a unknown failure is written with console.warn in development (2 ms)
+      ✓ a canceled failure is written with console.debug in development (1 ms)
+      ✓ a client failure is shown in development: true, preview: true, production: false (2 ms)
+      ✓ a server failure is shown in development: true, preview: true, production: false
+      ✓ a unauthorized failure is shown in development: true, preview: true, production: false
+      ✓ a network failure is shown in development: true, preview: true, production: true (1 ms)
+      ✓ a timeout failure is shown in development: true, preview: true, production: true (1 ms)
+      ✓ a unknown failure is shown in development: true, preview: true, production: true (1 ms)
+      ✓ a canceled failure is shown in development: true, preview: false, production: false
+      ✓ reports an Error with the message and redacted context (1 ms)
+      ✓ reports a message when there is no Error (1 ms)
+      ✓ reports a thrown non-Error value as a message with the value
+      ✓ does not forward warnings (1 ms)
+      ✓ also forwards in development
+      ✓ setErrorReporter registers a provider (1 ms)
+      ✓ keeps working when the reporter throws (1 ms)
+      ✓ the default reporter writes one console line in development builds (1 ms)
+      ✓ the default reporter writes nothing in release builds, so silent is silent (1 ms)
+      ✓ sends an ApiError without its response body as an own enumerable field (2 ms)
+      ✓ never throws on a context it cannot read (1 ms)
+      ✓ always redacts auth headers, cookies, tokens, and passwords (1 ms)
+      ✓ redacts credential (1 ms)
+      ✓ redacts idCredential
+      ✓ redacts pin
+      ✓ redacts totp
+      ✓ redacts mfaCode (1 ms)
+      ✓ redacts refresh
+      ✓ redacts code_verifier (1 ms)
+      ✓ redacts accessKeyId (1 ms)
+      ✓ redacts access_key (1 ms)
+      ✓ redacts cvv (2 ms)
+      ✓ redacts signature (1 ms)
+      ✓ redacts response bodies outside development only (1 ms)
+      ✓ reduces Errors to name, message, code, and status outside development (6 ms)
+      ✓ prints a redacted Error summary in production and the Error in development (2 ms)
+      ✓ redacts keys that name a secret: authToken
+      ✓ redacts keys that name a secret: x-auth-token (1 ms)
+      ✓ redacts keys that name a secret: X-Auth-Token (1 ms)
+      ✓ redacts keys that name a secret: client_secret (1 ms)
+      ✓ redacts keys that name a secret: newPassword
+      ✓ redacts keys that name a secret: currentPassword
+      ✓ redacts keys that name a secret: passcode (1 ms)
+      ✓ redacts keys that name a secret: otp (1 ms)
+      ✓ redacts keys that name a secret: jwt
+      ✓ redacts keys that name a secret: sessionId (1 ms)
+      ✓ redacts keys that name a secret: session_id
+      ✓ redacts keys that name a secret: privateKey (1 ms)
+      ✓ redacts secrets inside arrays
+      ✓ logs an object referenced twice in full, not as circular (1 ms)
+      ✓ handles circular and deeply nested values
+      ✓ logs dates, maps, sets, and URLs by value, still redacting secrets (5 ms)
+      ✓ redacts what the logger writes outside development (1 ms)
+  ✓ public/index.html paints the theme's backgrounds before the app renders
+  ✓ getTheme falls back to light for an unknown scheme
+    ✓ is what getTheme returns for the scheme (6 ms)
+    ✓ uses the brand primary rather than the MD3 baseline
+    ✓ onPrimary on primary meets WCAG AA contrast (4.5:1) (1 ms)
+    ✓ onPrimaryContainer on primaryContainer meets WCAG AA contrast (4.5:1) (1 ms)
+    ✓ onSecondaryContainer on secondaryContainer meets WCAG AA contrast (4.5:1)
+    ✓ onBackground on background meets WCAG AA contrast (4.5:1)
+    ✓ onSurface on surface meets WCAG AA contrast (4.5:1) (1 ms)
+    ✓ primary on background meets WCAG AA contrast (4.5:1)
+    ✓ primary on surfaceVariant meets WCAG AA contrast (4.5:1)
+    ✓ primary on secondaryContainer meets WCAG AA contrast (4.5:1)
+    ✓ inversePrimary on inverseSurface meets WCAG AA contrast (4.5:1)
+    ✓ onSurfaceVariant on surfaceVariant meets WCAG AA contrast (4.5:1) (1 ms)
+    ✓ onSurfaceVariant on background meets WCAG AA contrast (4.5:1)
+    ✓ onSecondary on secondary meets WCAG AA contrast (4.5:1)
+    ✓ primary and onSurface on elevation level1 meet WCAG AA
+    ✓ primary and onSurface on elevation level2 meet WCAG AA
+    ✓ primary and onSurface on elevation level3 meet WCAG AA (6 ms)
+    ✓ primary and onSurface on elevation level4 meet WCAG AA
+    ✓ primary and onSurface on elevation level5 meet WCAG AA
+    ✓ replaces the MD3 baseline purple in the neutral and elevation roles (1 ms)
+    ✓ is what getTheme returns for the scheme
+    ✓ uses the brand primary rather than the MD3 baseline
+    ✓ onPrimary on primary meets WCAG AA contrast (4.5:1)
+    ✓ onPrimaryContainer on primaryContainer meets WCAG AA contrast (4.5:1) (1 ms)
+    ✓ onSecondaryContainer on secondaryContainer meets WCAG AA contrast (4.5:1)
+    ✓ onBackground on background meets WCAG AA contrast (4.5:1)
+    ✓ onSurface on surface meets WCAG AA contrast (4.5:1)
+    ✓ primary on background meets WCAG AA contrast (4.5:1)
+    ✓ primary on surfaceVariant meets WCAG AA contrast (4.5:1)
+    ✓ primary on secondaryContainer meets WCAG AA contrast (4.5:1) (1 ms)
+    ✓ inversePrimary on inverseSurface meets WCAG AA contrast (4.5:1)
+    ✓ onSurfaceVariant on surfaceVariant meets WCAG AA contrast (4.5:1)
+    ✓ onSurfaceVariant on background meets WCAG AA contrast (4.5:1)
+    ✓ onSecondary on secondary meets WCAG AA contrast (4.5:1)
+    ✓ primary and onSurface on elevation level1 meet WCAG AA
+    ✓ primary and onSurface on elevation level2 meet WCAG AA (1 ms)
+    ✓ primary and onSurface on elevation level3 meet WCAG AA
+    ✓ primary and onSurface on elevation level4 meet WCAG AA
+    ✓ primary and onSurface on elevation level5 meet WCAG AA
+    ✓ replaces the MD3 baseline purple in the neutral and elevation roles (1 ms)
+    ✓ is logged, and the app still shows the configuration error screen (1098 ms)
+    ✓ reports a screen view for the initial route and each navigation (1093 ms)
+    ✓ names a dynamic route by its pattern, never by the values in the URL (21 ms)
+    ✓ logs a provider that throws, and the app keeps working (79 ms)
+    ✓ "Go home" on a route boundary returns to Home (222 ms)
+    ✓ "Go home" on a route boundary still clears the error when navigation fails (150 ms)
+    ✓ "Try again" on a route boundary re-renders the screen (120 ms)
+      ✓ a route boundary catches a throwing screen, reports it, and renders a themed fallback (542 ms)
+      ✓ shows users the translated message, not the error text, outside development (181 ms)
+      ✓ the app boundary sits inside the theme provider and reports with the component stack (53 ms)
+      ✓ a route boundary catches a throwing screen, reports it, and renders a themed fallback (85 ms)
+      ✓ shows users the translated message, not the error text, outside development (69 ms)
+      ✓ the app boundary sits inside the theme provider and reports with the component stack (50 ms)
+      ✓ "Try again" re-renders the children (33 ms)
+      ✓ "Go home" navigates to Home and re-renders (18 ms)
+      ✓ renders a custom fallback, which can reset the boundary (4 ms)
+      ✓ shows the fallback and reports when undefined is thrown (17 ms)
+      ✓ shows the fallback and reports when null is thrown (17 ms)
+      ✓ shows the fallback and reports when 0 is thrown (17 ms)
+      ✓ shows the fallback and reports when "" is thrown (16 ms)
+      ✓ renders its children when nothing throws (1 ms)
+      ✓ reports in every build, with the component stack (18 ms)
+Tests:       137 passed, 137 total

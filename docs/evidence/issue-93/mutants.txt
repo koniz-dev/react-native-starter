@@ -1,0 +1,17 @@
+== Mutant M17: Back from Login always goes Home (app/(auth)/_layout.tsx)
+ app/(auth)/_layout.tsx | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+    ✕ returns from Login to the screen that opened it, not Home (278 ms)
+Tests:       1 failed, 44 passed, 45 total
+
+== Mutant M2: Login without DocumentTitle
+ features/auth/screens/LoginScreen.tsx | 1 -
+ 1 file changed, 1 deletion(-)
+    ✕ masks the password and titles the screen for screen readers and the browser tab (58 ms)
+Tests:       1 failed, 29 passed, 30 total
+
+== Mutant M3: Profile without DocumentTitle
+ features/auth/screens/ProfileScreen.tsx | 1 -
+ 1 file changed, 1 deletion(-)
+    ✕ names the browser tab (30 ms)
+Tests:       1 failed, 29 passed, 30 total

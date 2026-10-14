@@ -1,0 +1,12 @@
+appId: ${APP_ID}
+---
+- stopApp
+- openLink: ${URL}
+- extendedWaitUntil:
+    visible: Upload
+    timeout: 120000
+- tapOn: Upload
+- extendedWaitUntil:
+    visible: 'multipart:true type:multipart/form-data parts:title:hello,avatar:png'
+    timeout: 30000
+- takeScreenshot: upload-${PLATFORM}

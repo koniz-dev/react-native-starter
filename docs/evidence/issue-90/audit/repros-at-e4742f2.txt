@@ -1,0 +1,45 @@
+FAIL __tests__/audit/homeEmptyName.test.tsx
+  ✕ a user whose name is empty is named with the fallback (174 ms)
+FAIL __tests__/audit/restore.test.tsx
+  ✕ F4 a failed cold-start restore is logged (82 ms)
+FAIL __tests__/audit/logger.audit.test.ts
+    ✕ A1 Date / Map / URL in context are logged as {} (40 ms)
+    ✕ A2 a throwing getter in context makes logger.error throw (6 ms)
+    ✕ A3 the reporter receives the raw ApiError with its response body in production (3 ms)
+    ✕ A4 default reporter writes to the console even when silent (3 ms)
+    ✓ A5 context key "error" is overwritten for non-Error thrown values (1 ms)
+    ✓ A6 over/under redaction samples (10 ms)
+    ✓ A7 secret in an Error message / URL value is not redacted (2 ms)
+FAIL __tests__/audit/formData.test.ts
+  ✕ sends a FormData body as multipart (7 ms)
+  ✓ still sends JSON for an object (1 ms)
+FAIL __tests__/audit/logoutExpired.test.ts
+  ✕ F5 revokes the refresh token on logout even when the access token has expired (36 ms)
+FAIL __tests__/audit/ui.audit.test.tsx
+    ✕ B1 useFetch keeps a stale error after a successful re-run of its effect (121 ms)
+    ✕ B2 the app ErrorBoundary and a falsy thrown value (42 ms)
+    ✕ B3 an analytics provider that throws in screen() takes the app down (188 ms)
+    ✓ B4 screen tracking sends the concrete path with dynamic segment values (268 ms)
+FAIL __tests__/audit/core.test.ts
+    ✕ settles (fails) instead of hanging when the refresh call itself gets a 401 (1015 ms)
+    ✕ counts as not set, like every other variable (2 ms)
+    ✕ tolerates surrounding whitespace, like every other variable (1 ms)
+    ✕ "https://auth.example.com /v1" (1 ms)
+    ✕ "https://auth example.com" (2 ms)
+    ✕ is logged (3 ms)
+FAIL __tests__/audit/loginRepeatAnnounce.test.tsx
+  ✕ a second submit with the field still empty is announced again (iOS) (1315 ms)
+PASS __tests__/audit/dummyJsonValidation.test.ts
+  ✓ normalizeUser accepts payloads AuthUser does not allow (38 ms)
+PASS __tests__/audit/configSetup.audit.test.tsx
+    ✓ shows the configuration error screen instead of the app (403 ms)
+PASS __tests__/audit/theme.audit.test.ts
+  ✓ contrast survey (25 ms)
+FAIL __tests__/audit/refreshAfterLogout.test.ts
+FAIL __tests__/audit/logoutRevocation.test.ts
+PASS __tests__/audit/rootRouteError.test.tsx
+  ✓ a root-level route (app/<name>.tsx) that throws: Go home (844 ms)
+  ✓ a root-level route that throws on a cold deep link: Go home (146 ms)
+PASS __tests__/audit/authBackReturns.test.tsx
+  ✓ Back from Login returns to the screen that opened it, not Home (572 ms)
+Tests:       18 failed, 11 passed, 29 total

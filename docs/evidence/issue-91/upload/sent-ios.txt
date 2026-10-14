@@ -1,0 +1,2 @@
+ LOG  UPLOAD-SENT multipart/form-data object true
+ LOG  UPLOAD-SENT application/json string false

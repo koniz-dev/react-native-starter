@@ -1,0 +1,11 @@
+iOS simulator (iPhone 16 Plus, iOS 18.6), Expo Go, main a222f45: npm run test:e2e:ios
+[Passed] Cold start opens Home (1m 8s)
+[Passed] Back from Login returns Home (49s)
+[Passed] Tab navigation (32s)
+[Passed] Sign-in session survives a relaunch; logout clears it (2m 9s)
+[Passed] Login keyboard return keys (57s)
+[Passed] Explore error state and Retry (36s)
+[Passed] Profile is protected and reloads the user (1m 21s)
+7/7 Flows Passed in 7m 33s
+Take screenshot dark-home... COMPLETED
+Take screenshot dark-explore... COMPLETED

@@ -1,0 +1,161 @@
+__tests__/shared/config/env.test.ts	1-281	Good coverage of URLs/timeout/log level/trusted origins; misses empty/whitespace EXPO_PUBLIC_APP_ENV (F2)
+__tests__/shared/http/api.test.ts	1-170	Token origin allow-list well tested; fine
+__tests__/shared/http/errorMessage.test.ts	1-37	Fine; covers each code and 4xx server message
+__tests__/shared/http/httpClient.test.ts	1-423	Strong 401/refresh/timeout/error-mapping tests; 'never sends a token to the auth backend' only exercises the public client (name broader than test)
+__tests__/shared/http/tokenSafety.test.ts	1-487	Thorough session-generation race tests; no case for a refresh that itself 401s (F1)
+__tests__/shared/session/authService.test.ts	1-266	Fine
+__tests__/shared/session/realBackendAdapter.test.ts	1-334	Fake DELETE /sessions ignores the access token, so logout with an expired access token is never exercised (F5)
+__tests__/shared/session/tokenStore.test.tsx	1-160	Fine
+__tests__/shared/storage/storage.test.ts	1-88	Fine
+shared/config/env.ts	1-246	APP_ENV not trimmed / empty not treated as unset (F2); isHttpUrl accepts URLs getOrigin rejects (F3)
+shared/config/featureFlags.ts	1-21	Fine
+shared/http/api.ts	1-14	Fine (withCredentials left at RN default; see Checked)
+shared/http/apiError.ts	1-146	Fine; RequestSummary exported but unused outside (F6)
+shared/http/errorMessage.ts	1-29	Fine
+shared/http/httpClient.ts	1-248	Refresh that 401s through an authenticated client deadlocks forever (F1); generation guards otherwise hold
+shared/session/SessionProvider.tsx	1-169	Cold-start restore failure swallowed without logging, token left stored (F4)
+shared/session/authService.ts	1-208	Refresh wrapper passes clients.authenticated to refresh with no guard (F1); otherwise fine
+shared/session/session.ts	1-163	In-flight refresh has no re-entrancy guard (F1); generation logic fine
+shared/session/tokenStore.ts	1-76	Fine
+shared/storage/secureStorage.ts	1-30	isSecureStorageAvailable exported, unused outside (F6); fine otherwise
+shared/storage/storage.ts	1-71	Fine; JSON handling and hasItem semantics correct
+AGENTS.md	1-167	Accurate; lint-enforced colors claim overstated (F3); demo/recipe blocks strip cleanly
+CLAUDE.md	1-6	Fine (points to AGENTS.md)
+README.md	1-83	Accurate; init-project/remove-demo blocks verified
+app/README.md	1-19	Accurate vs app/ routes and layouts
+docs/README.md	1-82	Accurate description of docs:check (route-file lint case omitted, trivial)
+docs/api-and-storage.md	1-371	401/refresh/token-origin/storage claims match code; no mention of FormData/default JSON Content-Type pitfall (F2)
+docs/app-config.md	1-103	Variants, assets (sizes/alpha checked), permissions match app.config.ts/eas.json
+docs/connect-your-backend.md	1-437	Example adapter: logout revocation fails with expired access token (F1a), rotated refresh token survives sign-out race (F1b); rest verified by running it
+docs/conventions.md	1-255	Structure/navigation verified; color-literal lint claim false for named colors/object props (F3); screen snippet works
+docs/environment-variables.md	1-120	Matches env.ts validation, defaults, messages
+docs/error-reporting.md	1-230	Logger levels/redaction/reporter/boundaries match code; no-console exemption list slightly off (F5)
+docs/getting-started.md	1-230	Scripts/init/audit claims verified by running init; type-check row incomplete (F5)
+docs/make-it-yours.md	1-40	Accurate; deleted by init as stated
+docs/plug-in-a-provider.md	1-247	Seam interfaces/defaults match code; snippets compile
+docs/recipes/package-lock.json	1-200 (node queries)	lockfile v3, root deps == package.json pins, all resolved+integrity, MIT
+docs/recipes/package.json	1-12	Exact pins; consistent with lock and CI step
+docs/recipes/state-management.md	1-272	Snippets compile; Jest ESM transformIgnorePatterns claim verified (jotai/RTK fail without, pass with)
+docs/remove-demo.md	1-137	Verified by running remove-demo: listed changes happen; lint/type-check/docs:check/format/test:ci pass after
+docs/testing.md	1-492	Setup/coverage/e2e claims match code; PostsScreen + sameOrigin + full-app seam snippets run and pass
+docs/ui-and-theming.md	1-165	Matches theme.ts, index.html, theme tests
+scripts/README.md	1-61	Accurate vs check-docs/check-audit/run.sh/init
+__tests__/shared/integrations/i18n.test.tsx	1-93	ok: covers default, interpolation, pseudo-locale through shipped screens
+__tests__/shared/integrations/screenTracking.test.tsx	1-29	ok for the happy path; no test that a throwing provider is isolated (F2) or that dynamic segments are sent raw (F5)
+__tests__/shared/integrations/seams.test.ts	1-115	ok: each seam default + replacement
+__tests__/shared/lib/logger.test.ts	1-462	thorough; misses non-plain objects (F6), throwing getters (F7), raw Error props to reporter (F4)
+__tests__/shared/lib/useFetch.test.tsx	1-267	good race coverage; Activity test only covers success->success (F3); unmount test's 'ignores its result' half is vacuous (mutation survives)
+__tests__/shared/ui/DocumentTitle.test.tsx	1-18	ok (mocks Head; checks the title is passed)
+__tests__/shared/ui/ErrorBoundary.test.tsx	1-261	good; no case for a falsy thrown value (F8)
+__tests__/shared/ui/LoadingScreen.test.tsx	1-34	ok
+__tests__/shared/ui/theme.test.ts	1-89	good contrast pairs; misses primary on surfaceVariant (flat TextInput label) (F9)
+index.ts	1-1	ok: expo-router/entry
+jest.setup.env.js	1-7	ok
+jest.setup.ts	1-35	ok; module re-evaluation in Jest masks module-scope throws in app/_layout (F1), not a setup defect itself
+shared/i18n/en.ts	1-122	ok: keys typed, demo blocks marked
+shared/i18n/index.ts	1-51	ok: own-key interpolation, single pass, fallback to key
+shared/integrations/analytics.ts	1-38	seam has no failure isolation (F2)
+shared/integrations/errorReporter.ts	1-70	default reporter writes console.info regardless of log level incl. silent (F10)
+shared/integrations/featureFlags.ts	1-34	ok
+shared/integrations/pushNotifications.ts	1-41	ok
+shared/integrations/seam.ts	1-27	ok
+shared/integrations/setup.ts	1-41	runs at module scope, even with invalid config, with no isolation (F1)
+shared/integrations/updates.ts	1-27	ok
+shared/integrations/useScreenTracking.ts	1-15	unguarded provider call in root layout effect (F2); sends concrete pathname incl. dynamic values (F5)
+shared/lib/logger.ts	1-192	redaction: Date/Map/URL -> {} (F6), throwing getter escapes (F7), raw Error to reporter (F4); cycles/depth fine
+shared/lib/useFetch.ts	1-111	success path doesn't clear a previous error on effect re-run (F3); races otherwise fine
+shared/ui/ConfigErrorScreen.tsx	1-73	ok (themed, header role; issue text from env.ts is English by design)
+shared/ui/DocumentTitle.tsx	1-13	ok
+shared/ui/ErrorBoundary.tsx	1-199	falsy thrown value escapes the app boundary (F8); otherwise reset/go-home fine
+shared/ui/LoadingScreen.tsx	1-47	ok ('' message is ignored by React, no text-node crash)
+shared/ui/theme.ts	1-134	primary on surfaceVariant 4.27:1 in light (F9); rest fine
+shared/ui/useAnnouncement.ts	1-17	ok (RNW maps accessibilityLiveRegion to aria-live)
+testing/colorScheme.ts	1-14	ok
+testing/index.ts	1-3	ok
+testing/render.tsx	1-48	ok
+testing/secureStore.ts	1-43	ok
+__tests__/scripts/checkAudit.test.ts	1-176	ok; misses severity-escalation/package-mismatch/far reviewBy cases (F5)
+__tests__/scripts/checkDocs.test.ts	1-60	ok; fails with ENOTSUP if node_modules is a symlink (F10)
+__tests__/scripts/initProject.test.ts	1-535	mostly strong; line 442 regex can never match the real restore command (F4); npx without shell (F8)
+__tests__/scripts/lintRules.test.ts	1-186	ok: fixtures would fail if rules broke
+__tests__/scripts/projectCopy.test.ts	1-28	ok (covers no-git walk only)
+__tests__/scripts/removeDemo.test.ts	1-228	strong; npx without shell (F8)
+scripts/audit-allowlist.json	1-29	ok; entries valid until 2027-01-09
+scripts/check-audit.js	1-196	false passes: id-only match ignores severity escalation, package, unbounded reviewBy (F5)
+scripts/check-docs.js	1-394	ok; source-anchor scan skips .sh/.yml/.env.example/root .ts (F6)
+scripts/e2e/mock-api.js	1-117	ok; empty ROUTES after remove-demo verified
+scripts/e2e/run.sh	1-158	ok under /bin/bash 3.2 with stubs: exit status, port-in-use, backend cmd, TERM/HUP/normal cleanup
+scripts/init-project.js	1-811	works end to end; self-delete before Prettier (F2), no-git guard (F3), dead md() (F7), contradictory advice via remove-demo (F1)
+scripts/remove-demo.js	1-240	works end to end; destructive restore advice on dirty tree, no dirty check (F1); stale header comment (F9)
+testing/projectCopy.ts	1-80	ok; copies symlinked node_modules entry from git ls-files and throws (F10)
+.env.example	1-40 (all; also after remove-demo)	fine: matches readRawEnv vars; demo blocks resolve cleanly
+.gitattributes	1-3	fine: LF everywhere; PNGs detected as binary (git ls-files --eol)
+.github/dependabot.yml	1-13	fine: monthly grouped action-pin updates; runs succeed
+.github/workflows/audit.yml	1-45	fine: read-only perms, pinned actions, weekly + PR + main
+.github/workflows/ci.yml	1-73	gap (F5): only the web bundle is built; native (iOS/Android) Metro bundling never runs in CI
+.github/workflows/e2e-android.yml	1-108	fine: checksum-pinned Maestro/Expo Go, SDK guard, init rewrites the hard-coded dev IDs
+.gitignore	1-57	gap (F4): *.keystore and CLAUDE.local.md not ignored
+.maestro/01-cold-start.yaml	1-15	fine: selectors exist (en.ts, testIDs); survives remove-demo
+.maestro/02-tabs.yaml	1-17	fine (demo, removed by remove-demo)
+.maestro/03-auth-session.yaml	1-29	fine (demo)
+.maestro/04-login-keyboard.yaml	1-50	fine (demo)
+.maestro/05-explore-error-retry.yaml	1-38	fine: onFlowComplete resets mock mode
+.maestro/06-login-back.yaml	1-52	fine; Android system-back part lacks the lost-tap retry (minor flake risk, not reported)
+.maestro/07-profile.yaml	1-38	fine (demo)
+.maestro/config.yaml	1-18	fine: order list trimmed correctly by remove-demo
+.maestro/dark-mode.yaml	1-23	fine
+.maestro/scripts/set-api-mode.js	1-5	fine: still documented in testing.md after remove-demo
+.maestro/subflows/open-app.yaml	1-90	fine: overlay handling avoids app's own error screen
+.maestro/subflows/sign-in.yaml	1-48	fine
+.nvmrc	1	fine: 24.21.0 inside engines and RN 0.86 engines
+.prettierignore	1-16	fine
+.prettierrc	1-13	fine
+LICENSE	1-22	fine: init rewrites year + holder
+app.config.ts	1-152 (+ expo config --type introspect, production)	low (F7): extra.appVariant is never read; splash colors duplicate theme without a test (F6)
+assets/adaptive-icon.png	sips: 1024x1024 RGBA; viewed	fine (placeholder, transparent foreground)
+assets/favicon.png	sips: 48x48 Gray+alpha; viewed meta	fine
+assets/icon.png	sips: 1024x1024 RGB no alpha; viewed	fine (iOS requirement met)
+assets/splash-icon.png	sips: 1024x1024 RGBA; viewed	fine
+eas.json	1-42	fine: profiles match variants; build number via APP_BUILD_NUMBER documented
+eslint.config.js	1-288 (+ probe files in repo copy)	medium (F1): color-literal rule misses named colors/`colors` prop/constants; low (F3): no-require-imports blocks idiomatic asset require
+package-lock.json	root entry vs package.json, all 1078 entries resolved+integrity; npm ls	fine: lock in sync, registry-only, integrity everywhere
+package.json	1-133 (+ expo install --check, bundledNativeModules compare)	low (F2 ESLint 9 EOL; F8 unused react-native-gesture-handler)
+public/index.html	1-43	fine: backgrounds tested against theme
+tsconfig.json	1-28 (+ tsc --listFilesOnly)	fine: strict + noUncheckedIndexedAccess, types []
+tsconfig.tools.json	1-17 (+ tsc --listFilesOnly)	fine: covers __tests__, testing, app.config.ts
+__tests__/app/appConfig.test.ts	1-104	OK; "asks for no permission the app does not use" only re-checks the constant list (F7)
+__tests__/app/configError.test.tsx	1-38	OK: invalid config shows themed error screen and hides splash
+__tests__/app/initialRoute.test.tsx	1-36	OK: anchor, /, /login, back from deep-linked /login
+__tests__/app/sessionRoutes.test.tsx	1-327	Strong: guards, cold-start deep link, 401, double taps; mutations M20/M22 caught. Gap: Back-from-Login-to-opener not tested (F2)
+__tests__/app/splashScreen.test.tsx	1-37	OK
+__tests__/app/statusBar.test.tsx	1-28	OK: light/dark status bar
+__tests__/app/tabBarTheme.test.tsx	1-59	OK: tab bar colors from theme, both schemes; demo block correct
+__tests__/features/auth/LoginScreen.test.tsx	1-417	Thorough; misses repeated-error announcement (F3) and asserts autoComplete 'password' (F4); DocumentTitle unchecked (F6)
+__tests__/features/auth/ProfileScreen.test.tsx	1-112	Good: 401 silence (M19 caught), live region, logging; DocumentTitle unchecked (F6)
+__tests__/features/demo-auth/DemoCredentialsHint.test.tsx	1-33	OK
+__tests__/features/demo-auth/dummyJsonAdapter.test.ts	1-68	OK for happy path; no malformed-type payload cases (F8)
+__tests__/features/demo-showcase/ShowcaseScreen.test.tsx	1-55	OK (demo)
+__tests__/features/demo-todos/TodosScreen.test.tsx	1-167	Good: loading/error/retry/reload/empty/validation via controlled axios adapter
+__tests__/features/home/HomeScreen.test.tsx	1-141	Good; no empty-name case (F1)
+__tests__/features/not-found/NotFoundScreen.test.tsx	1-40	Good: themed 404, dismissTo Home (M4/M26 caught)
+app/(app)/_layout.tsx	1-46	OK: first-screen back button, route error boundary
+app/(app)/profile.tsx	1	OK one-line route
+app/(auth)/_layout.tsx	1-44	Works; comment on line 34 is false: Stack title does not name the web tab (F5)
+app/(auth)/login.tsx	1	OK one-line route
+app/(tabs)/_layout.tsx	1-62	OK: theme tints, a11y labels, demo markers
+app/(tabs)/explore.tsx	1-2	OK demo route
+app/(tabs)/index.tsx	1	OK one-line route
+app/+not-found.tsx	1	OK one-line route
+app/_layout.tsx	1-98	OK: providers, splash gating, Stack.Protected guards, anchor
+app/showcase.tsx	1-2	OK demo route (root-level, caught by app boundary; verified)
+features/auth/screens/LoginScreen.tsx	1-209	Double-submit guard OK; repeated empty-field error not re-announced (F3); autoComplete="password" invalid on web (F4); field error is color-only (F9)
+features/auth/screens/ProfileScreen.tsx	1-137	Unmount guard and 401 handling OK; '—' literal placeholder (F10); no retry (considered)
+features/demo-auth/DemoCredentialsHint.tsx	1-30	OK
+features/demo-auth/dummyJsonAdapter.ts	1-53	No zod validation, contrary to AGENTS.md; accepts non-string email/id (F8)
+features/demo-showcase/components/ExampleLinks.tsx	1-28	OK (demo)
+features/demo-showcase/screens/ShowcaseScreen.tsx	1-209	OK (demo); minor snackbar cosmetics not reported
+features/demo-todos/api/todosApi.ts	1-30	OK: zod-validated, abort signal passed
+features/demo-todos/screens/TodosScreen.tsx	1-239	OK: states, live region, logging of unknown errors
+features/demo-todos/types.ts	1-7	OK
+features/home/screens/HomeScreen.tsx	1-116	Empty user name renders "Signed in as " (F1)
+features/not-found/screens/NotFoundScreen.tsx	1-67	OK

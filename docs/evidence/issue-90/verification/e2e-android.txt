@@ -1,0 +1,11 @@
+Android emulator (Medium_Phone_API_37.0), Expo Go, main a222f45: npm run test:e2e:android
+[Passed] Cold start opens Home (2m 7s)
+[Passed] Back from Login returns Home (3m 24s)
+[Passed] Tab navigation (2m 45s)
+[Passed] Sign-in session survives a relaunch; logout clears it (7m 37s)
+[Passed] Login keyboard return keys (3m 46s)
+[Passed] Explore error state and Retry (1m)
+[Passed] Profile is protected and reloads the user (1m 47s)
+7/7 Flows Passed in 22m 26s
+Take screenshot dark-home... COMPLETED
+Take screenshot dark-explore... COMPLETED

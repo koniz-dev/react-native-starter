@@ -1,0 +1,9 @@
+Android native debug build on GitHub Actions: https://github.com/koniz-dev/react-native-starter/actions/runs/38572469509 (a222f45, success)
+[Passed] Cold start opens Home (58s)
+[Passed] Back from Login returns Home (42s)
+[Passed] Tab navigation (24s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 27s)
+[Passed] Login keyboard return keys (48s)
+[Passed] Explore error state and Retry (26s)
+[Passed] Profile is protected and reloads the user (1m)
+7/7 Flows Passed in 5m 45s

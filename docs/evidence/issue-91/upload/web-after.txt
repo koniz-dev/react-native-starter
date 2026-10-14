@@ -1,0 +1,3 @@
+request: GET undefined | POST multipart/form-data; boundary=----WebKitFormBoundaryAvyV9G3OTBh5k2Rb
+result: multipart:true type:multipart/form-data parts:title:hello,avatar:png
+WEB UPLOAD PASSED

@@ -1,0 +1,14 @@
+__tests__/scripts/checkAudit.test.ts
+__tests__/scripts/checkDocs.test.ts
+__tests__/scripts/initProject.test.ts
+__tests__/scripts/lintRules.test.ts
+__tests__/scripts/projectCopy.test.ts
+__tests__/scripts/removeDemo.test.ts
+scripts/audit-allowlist.json
+scripts/check-audit.js
+scripts/check-docs.js
+scripts/e2e/mock-api.js
+scripts/e2e/run.sh
+scripts/init-project.js
+scripts/remove-demo.js
+testing/projectCopy.ts

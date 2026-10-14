@@ -1,0 +1,5 @@
+password autocomplete: current-password
+both empty: Please fill in all fields
+live region on 2nd press: ["","Please fill in all fields"]
+username only: Please enter your password
+WEB #93 PASSED

@@ -1,0 +1,6 @@
+== A Badge.android.tsx that requires a missing image, rendered on Home (copy of HEAD 9dbe37d)
+type-check exit 0
+lint exit 1
+web export exit 0
+native bundle exit 1
+Unable to resolve module ./badge.png from /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/ev95/np/features/home/components/Badge.android.tsx: 

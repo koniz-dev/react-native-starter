@@ -1,0 +1,5 @@
+== Mutant: the dark theme background changes, the splash color does not (shared/ui/theme.ts)
+ shared/ui/theme.ts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+    ✕ configures the splash screen with light and dark backgrounds (5 ms)
+Tests:       1 failed, 9 passed, 10 total

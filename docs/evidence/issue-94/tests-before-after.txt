@@ -1,0 +1,180 @@
+Commit 9dbe37d: fix(scripts): init and remove-demo change nothing on a Prettier failure, refuse dirty trees, and never advise discarding work; check-audit matches package and severity
+Tests changed by the commit: __tests__/scripts/checkAudit.test.ts __tests__/scripts/checkDocs.test.ts __tests__/scripts/initProject.test.ts __tests__/scripts/projectCopy.test.ts __tests__/scripts/removeDemo.test.ts 
+
+== BEFORE: code at 9dbe37d^ with the tests from 9dbe37d
+    ✓ fails on a high advisory that is not reviewed (24 ms)
+    ✓ passes an allowlisted advisory without a fix in range (3 ms)
+    ✓ fails once npm can fix an allowlisted advisory within the ranges (2 ms)
+    ✓ fails when an allowlist review has expired (1 ms)
+    ✓ fails when an allowlist entry has reviewBy undefined, not a YYYY-MM-DD date (1 ms)
+    ✓ fails when an allowlist entry has reviewBy "2027-1-9", not a YYYY-MM-DD date (2 ms)
+    ✓ fails when an allowlist entry has reviewBy "2027/01/09", not a YYYY-MM-DD date (1 ms)
+    ✓ fails when an allowlist entry has reviewBy "Jan 9 2027", not a YYYY-MM-DD date (1 ms)
+    ✓ fails when an allowlist entry has reviewBy "2027-02-30", not a YYYY-MM-DD date (1 ms)
+    ✕ fails when an advisory is re-scored above its review (5 ms)
+    ✕ fails when npm reports the advisory on another package (2 ms)
+    ✕ accepts a reviewBy at most 183 days away (9999-12-31) (2 ms)
+    ✕ accepts a reviewBy at most 183 days away (2027-04-14) (1 ms)
+    ✓ accepts a reviewBy at most 183 days away (2027-04-13)
+    ✕ fails when an entry has no severity, or not high or critical (1 ms)
+    ✓ fails when an allowlist entry has no id, package, or tracking link (1 ms)
+    ✓ reports moderate advisories without failing (1 ms)
+    ✓ fails on an npm error instead of reporting nothing
+    ✓ fails on a report without results instead of reporting nothing (1 ms)
+    ✓ notes an allowlisted advisory that npm no longer reports (1 ms)
+    ✓ lists the files of a project that is not a git repository (41 ms)
+    ✕ leaves out a symlinked node_modules, even one git lists (125 ms)
+    ✕ checks indented snippets, flow and public paths, and docs/ subfolder references (6329 ms)
+    ✓ lists the changes on --dry-run and changes nothing (888 ms)
+    ✓ leaves no mention of the demo in the code, docs, config, or flows (9719 ms)
+    ✕ fails when a doc still names a deleted file (775 ms)
+    ✓ removes marked blocks anywhere in the project, not only in source folders (1832 ms)
+    ✓ keeps itself and the demo, and says how to restore, when a write fails (579 ms)
+    ✕ refuses uncommitted changes unless --force, and then never suggests discarding them (1634 ms)
+    ✕ changes nothing when Prettier can't format a result (1797 ms)
+    ✕ changes nothing when a marker is malformed, and says so without a stack trace (729 ms)
+    ✓ accepts slug "acme-notes" (13 ms)
+    ✓ accepts slug "notes2"
+    ✓ accepts scheme "acmenotes"
+    ✓ accepts scheme "acme-notes.app" (1 ms)
+    ✓ accepts bundleId "com.acme.notes" (1 ms)
+    ✓ accepts bundleId "io.acme.notesApp2"
+    ✓ accepts name "Acme Notes" (1 ms)
+    ✓ accepts name "Bob's Ghi Chú"
+    ✓ accepts owner "Acme Inc."
+    ✓ rejects slug "Acme-Notes" (2 ms)
+    ✓ rejects slug "acme_notes" (1 ms)
+    ✓ rejects slug "-acme"
+    ✓ rejects slug "acme--notes" (1 ms)
+    ✓ rejects scheme "AcmeNotes"
+    ✓ rejects scheme "1acme"
+    ✓ rejects scheme "acme notes" (1 ms)
+    ✓ rejects bundleId "acme"
+    ✓ rejects bundleId "com.acme-corp.notes"
+    ✓ rejects bundleId "com.1acme.notes"
+    ✓ rejects bundleId "com.acme."
+    ✓ rejects bundleId "com.example.notes"
+    ✓ rejects bundleId "com.example"
+    ✓ rejects bundleId "io.acme.notes_app" (1 ms)
+    ✓ rejects bundleId "com.acme.new"
+    ✓ rejects bundleId "com.class.notes"
+    ✓ rejects scheme "exp" (1 ms)
+    ✓ rejects scheme "exps"
+    ✓ rejects scheme "https"
+    ✓ rejects scheme "http" (1 ms)
+    ✓ rejects scheme "file" (5 ms)
+    ✓ rejects name "" (1 ms)
+    ✓ rejects name " Acme"
+    ✓ rejects name "Acme | Notes"
+    ✓ rejects name "Acme
+    ✓ rejects owner ""
+    ✓ rejects slug "react" (1 ms)
+    ✓ rejects slug "expo"
+    ✓ parses flags and options (1 ms)
+    ✓ rejects unknown arguments, missing values, and conflicting flags (36 ms)
+    ✓ derives a slug and quotes strings the way Prettier does (1 ms)
+    ✓ lists the changes on --dry-run and changes nothing (1164 ms)
+    ✓ refuses invalid input without a terminal (832 ms)
+    ✓ names the empty app name as the problem (716 ms)
+    ✓ writes $ in the name and owner literally (1566 ms)
+    ✓ on --force, changes the old scheme only where it is the scheme (2236 ms)
+    ✓ on --force after the APP block was edited, replaces the template identity too (1428 ms)
+    ✓ refuses a dirty working tree unless --force (592 ms)
+    ✓ sets the identity and deletes itself (3737 ms)
+    ✓ keeps the recipes with --keep-recipes, without their markers (1313 ms)
+    ✓ after a failure on uncommitted changes, never suggests discarding them (612 ms)
+    ✓ after a failure on a clean tree, prints a restore command for the project root (660 ms)
+    ✕ changes nothing, and keeps itself, when Prettier cannot format a result (1378 ms)
+    ✕ says nothing was changed when remove-demo stops before changing anything (789 ms)
+    ✕ without git, says it cannot check or undo, and never suggests git (692 ms)
+    ✓ removes the demo with --remove-demo and refuses a second run (2643 ms)
+Tests:       14 failed, 72 passed, 86 total
+
+== AFTER: code and tests at 9dbe37d
+    ✓ fails on a high advisory that is not reviewed (10 ms)
+    ✓ passes an allowlisted advisory without a fix in range (10 ms)
+    ✓ fails once npm can fix an allowlisted advisory within the ranges (1 ms)
+    ✓ fails when an allowlist review has expired (1 ms)
+    ✓ fails when an allowlist entry has reviewBy undefined, not a YYYY-MM-DD date
+    ✓ fails when an allowlist entry has reviewBy "2027-1-9", not a YYYY-MM-DD date (1 ms)
+    ✓ fails when an allowlist entry has reviewBy "2027/01/09", not a YYYY-MM-DD date (1 ms)
+    ✓ fails when an allowlist entry has reviewBy "Jan 9 2027", not a YYYY-MM-DD date
+    ✓ fails when an allowlist entry has reviewBy "2027-02-30", not a YYYY-MM-DD date (1 ms)
+    ✓ fails when an advisory is re-scored above its review (1 ms)
+    ✓ fails when npm reports the advisory on another package
+    ✓ accepts a reviewBy at most 183 days away (9999-12-31) (1 ms)
+    ✓ accepts a reviewBy at most 183 days away (2027-04-14)
+    ✓ accepts a reviewBy at most 183 days away (2027-04-13)
+    ✓ fails when an entry has no severity, or not high or critical (1 ms)
+    ✓ fails when an allowlist entry has no id, package, or tracking link (1 ms)
+    ✓ reports moderate advisories without failing
+    ✓ fails on an npm error instead of reporting nothing (2 ms)
+    ✓ fails on a report without results instead of reporting nothing
+    ✓ notes an allowlisted advisory that npm no longer reports (1 ms)
+    ✓ lists the files of a project that is not a git repository (61 ms)
+    ✓ leaves out a symlinked node_modules, even one git lists (137 ms)
+    ✓ checks indented snippets, flow and public paths, and docs/ subfolder references (6232 ms)
+    ✓ lists the changes on --dry-run and changes nothing (2198 ms)
+    ✓ leaves no mention of the demo in the code, docs, config, or flows (9539 ms)
+    ✓ fails when a doc still names a deleted file (814 ms)
+    ✓ removes marked blocks anywhere in the project, not only in source folders (1738 ms)
+    ✓ keeps itself and the demo, and says how to restore, when a write fails (1543 ms)
+    ✓ refuses uncommitted changes unless --force, and then never suggests discarding them (1771 ms)
+    ✓ changes nothing when Prettier can't format a result (1793 ms)
+    ✓ changes nothing when a marker is malformed, and says so without a stack trace (823 ms)
+    ✓ accepts slug "acme-notes" (5 ms)
+    ✓ accepts slug "notes2" (1 ms)
+    ✓ accepts scheme "acmenotes" (1 ms)
+    ✓ accepts scheme "acme-notes.app" (1 ms)
+    ✓ accepts bundleId "com.acme.notes" (1 ms)
+    ✓ accepts bundleId "io.acme.notesApp2" (1 ms)
+    ✓ accepts name "Acme Notes"
+    ✓ accepts name "Bob's Ghi Chú"
+    ✓ accepts owner "Acme Inc."
+    ✓ rejects slug "Acme-Notes" (1 ms)
+    ✓ rejects slug "acme_notes"
+    ✓ rejects slug "-acme"
+    ✓ rejects slug "acme--notes"
+    ✓ rejects scheme "AcmeNotes" (1 ms)
+    ✓ rejects scheme "1acme"
+    ✓ rejects scheme "acme notes"
+    ✓ rejects bundleId "acme"
+    ✓ rejects bundleId "com.acme-corp.notes" (1 ms)
+    ✓ rejects bundleId "com.1acme.notes"
+    ✓ rejects bundleId "com.acme."
+    ✓ rejects bundleId "com.example.notes" (1 ms)
+    ✓ rejects bundleId "com.example"
+    ✓ rejects bundleId "io.acme.notes_app"
+    ✓ rejects bundleId "com.acme.new" (1 ms)
+    ✓ rejects bundleId "com.class.notes"
+    ✓ rejects scheme "exp"
+    ✓ rejects scheme "exps" (1 ms)
+    ✓ rejects scheme "https"
+    ✓ rejects scheme "http"
+    ✓ rejects scheme "file" (1 ms)
+    ✓ rejects name ""
+    ✓ rejects name " Acme"
+    ✓ rejects name "Acme | Notes" (1 ms)
+    ✓ rejects name "Acme
+    ✓ rejects owner ""
+    ✓ rejects slug "react" (1 ms)
+    ✓ rejects slug "expo"
+    ✓ parses flags and options (2 ms)
+    ✓ rejects unknown arguments, missing values, and conflicting flags (33 ms)
+    ✓ derives a slug and quotes strings the way Prettier does (1 ms)
+    ✓ lists the changes on --dry-run and changes nothing (3042 ms)
+    ✓ refuses invalid input without a terminal (866 ms)
+    ✓ names the empty app name as the problem (666 ms)
+    ✓ writes $ in the name and owner literally (1481 ms)
+    ✓ on --force, changes the old scheme only where it is the scheme (1914 ms)
+    ✓ on --force after the APP block was edited, replaces the template identity too (1375 ms)
+    ✓ refuses a dirty working tree unless --force (597 ms)
+    ✓ sets the identity and deletes itself (3524 ms)
+    ✓ keeps the recipes with --keep-recipes, without their markers (1276 ms)
+    ✓ after a failure on uncommitted changes, never suggests discarding them (1289 ms)
+    ✓ after a failure on a clean tree, prints a restore command for the project root (1224 ms)
+    ✓ changes nothing, and keeps itself, when Prettier cannot format a result (908 ms)
+    ✓ says nothing was changed when remove-demo stops before changing anything (912 ms)
+    ✓ without git, says it cannot check or undo, and never suggests git (1263 ms)
+    ✓ removes the demo with --remove-demo and refuses a second run (2433 ms)
+Tests:       86 passed, 86 total
