@@ -1,0 +1,26 @@
+Android Expo Go on tag v1.1.10: https://github.com/koniz-dev/react-native-starter/actions/runs/38578329511
+[Passed] Cold start opens Home (1m 7s)
+[Passed] Back from Login returns Home (50s)
+[Passed] Tab navigation (25s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 43s)
+[Passed] Login keyboard return keys (1m)
+[Passed] Explore error state and Retry (28s)
+[Passed] Profile is protected and reloads the user (1m 13s)
+7/7 Flows Passed in 6m 46s
+
+Android native debug on a222f45 (the tagged commit): https://github.com/koniz-dev/react-native-starter/actions/runs/38572469509
+[Passed] Cold start opens Home (58s)
+[Passed] Back from Login returns Home (42s)
+[Passed] Tab navigation (24s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 27s)
+[Passed] Login keyboard return keys (48s)
+[Passed] Explore error state and Retry (26s)
+[Passed] Profile is protected and reloads the user (1m)
+7/7 Flows Passed in 5m 45s
+
+Workflows on a222f45:
+E2E (Android, manual): success (38578329511)
+E2E (Android, manual): success (38572469509)
+Push on main: success (38568551029)
+Audit: success (38568547085)
+CI: success (38568547110)

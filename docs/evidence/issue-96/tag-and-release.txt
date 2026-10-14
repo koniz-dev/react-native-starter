@@ -1,0 +1,10 @@
+object a222f45b305ca08706a3de3fb53a849288adac34
+type commit
+tag v1.1.10
+tagger koniz-dev <kietna.work@gmail.com> 1791987047 +0700
+
+v1.1.10: fixes from the fourth deep audit (#90-#95)
+
+Refs koniz-dev/react-native-starter#96
+
+latest release: v1.1.10, draft=false, published 2026-10-14T14:24:03Z, https://github.com/koniz-dev/react-native-starter/releases/tag/v1.1.10

@@ -1,0 +1,115 @@
+== Clean clone of tag v1.1.10 (2026-10-14T14:11:03Z), node v24.21.0, npm 11.19.0
+Note: switching to 'a222f45b305ca08706a3de3fb53a849288adac34'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+a222f45b305ca08706a3de3fb53a849288adac34 fix(tooling): color lint covers names, lists, options, and constants; local assets lint clean; CI bundles iOS and Android; splash follows the theme
+npm ci exit 0
+recipes npm ci exit 0
+$ npm run lint
+exit 0
+$ npm run type-check
+exit 0
+$ npm run format:check
+Checking formatting...
+All matched files use Prettier code style!
+exit 0
+$ npm run docs:check
+Checked 19 files: 45 TypeScript snippets compiled with tsc.
+No problems.
+exit 0
+$ npm run test:ci
+Tests:       529 passed, 529 total
+Snapshots:   0 total
+Time:        46.083 s
+Ran all test suites.
+exit 0
+$ npm run audit:check
+moderate sprintf-js GHSA-hp3w-g68c-fv3c: reported (not gated)
+moderate uuid GHSA-w5hq-g745-h8pq: reported (not gated)
+npm audit --omit=dev: 5 advisories (records: 0 critical, 45 high, 16 moderate, 0 low).
+No unreviewed high or critical advisories.
+exit 0
+$ npm run doctor
+Running 21 checks on your project...
+21/21 checks passed. No issues detected!
+exit 0
+$ EXPO_PUBLIC_API_URL=https://api.example.com EXPO_PUBLIC_AUTH_API_URL=https://auth.example.com npx expo export --platform web --clear
+
+Exported: /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/final/rel/dist
+exit 0
+$ APP_VARIANT=production EXPO_PUBLIC_APP_ENV=production npx expo export --platform ios --platform android
+
+Exported: /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/final/rel/dist-native
+exit 0
+git status after the gates:
+
+== init-project --remove-demo --remove-recipes on the same clean clone
+  3. Replace the images in assets/ and the palette in shared/ui/theme.ts
+     (docs/app-config.md, docs/ui-and-theming.md).
+  4. Run npm run lint, npm run type-check, and npm run test:ci, then commit.
+leftovers (starter, demo, template, recipe wording or markers):
+__tests__/scripts/checkDocs.test.ts:37:    append('shared/lib/logger.ts', '\n// See docs/recipes/no-such.md.\n');
+__tests__/scripts/checkDocs.test.ts:57:      'refers to missing docs/recipes/no-such.md'
+(end of leftovers)
+README.md
+api-and-storage.md
+app-config.md
+connect-your-backend.md
+conventions.md
+environment-variables.md
+error-reporting.md
+getting-started.md
+plug-in-a-provider.md
+testing.md
+ui-and-theming.md
+$ npm run lint
+exit 0
+$ npm run type-check
+exit 0
+$ npm run format:check
+Checking formatting...
+All matched files use Prettier code style!
+exit 0
+$ npm run docs:check
+Checked 16 files: 39 TypeScript snippets compiled with tsc.
+No problems.
+exit 0
+$ npm run test:ci
+Tests:       440 passed, 440 total
+Snapshots:   0 total
+Time:        12.761 s, estimated 25 s
+Ran all test suites.
+exit 0
+$ npm run audit:check
+moderate sprintf-js GHSA-hp3w-g68c-fv3c: reported (not gated)
+moderate uuid GHSA-w5hq-g745-h8pq: reported (not gated)
+npm audit --omit=dev: 5 advisories (records: 0 critical, 45 high, 16 moderate, 0 low).
+No unreviewed high or critical advisories.
+exit 0
+$ npm run doctor
+Running 21 checks on your project...
+21/21 checks passed. No issues detected!
+exit 0
+$ EXPO_PUBLIC_API_URL=https://api.example.com EXPO_PUBLIC_AUTH_API_URL=https://auth.example.com npx expo export --platform web --clear
+
+Exported: /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/final/rel/init-dist
+exit 0
+$ APP_VARIANT=production EXPO_PUBLIC_APP_ENV=production npx expo export --platform ios --platform android
+
+Exported: /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/af240f43-5faf-4dd2-b463-4799602502e7/scratchpad/final/rel/init-dist-native
+exit 0
+done
