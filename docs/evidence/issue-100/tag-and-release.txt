@@ -1,0 +1,13 @@
+object 22e433af6ff5f400a1ccc185b6d43de536d83fb1
+type commit
+tag v1.1.11
+tagger koniz-dev <kietna.work@gmail.com> 1791997866 +0700
+
+v1.1.11: fixes from dogfooding v1.1.10 (#98, #99)
+
+Refs koniz-dev/react-native-starter#100
+
+latest release: v1.1.11, draft=false, published 2026-10-14T17:25:02Z, https://github.com/koniz-dev/react-native-starter/releases/tag/v1.1.11
+
+App code changed since v1.1.10 (app/ features/ shared/):
+(empty: none)

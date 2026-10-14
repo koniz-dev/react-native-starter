@@ -1,0 +1,10 @@
+[Passed] Cold start opens Home (42s)
+[Passed] Back from Login returns Home (45s)
+[Passed] Tab navigation (30s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 59s)
+[Passed] Login keyboard return keys (52s)
+[Passed] Explore error state and Retry (33s)
+[Passed] Profile is protected and reloads the user (1m 15s)
+7/7 Flows Passed in 6m 35s
+Take screenshot dark-home... COMPLETED
+Take screenshot dark-explore... COMPLETED
