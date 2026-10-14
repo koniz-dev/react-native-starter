@@ -54,6 +54,9 @@ export async function saveSettings(
     `code_verifier` too) become `[redacted]`, also inside arrays;
   - an `Error` in the context is reduced to its name, message, `code`, and
     `status` (development adds its stack);
+  - a `Date` becomes its ISO string, a `Map` an object, a `Set` an array,
+    and a `URL` its address without the query string; a value whose
+    getter throws becomes `[unreadable]`, so logging never throws;
   - outside development: `data` and `body` values (response bodies) become
     `[redacted]`.
 
@@ -63,7 +66,8 @@ export async function saveSettings(
   The `Error` passed to `captureException` is the original object, so the
   provider gets its stack. An `ApiError` from the HTTP clients carries no
   headers or request body (its `cause` is a summary without the query
-  string). If your own errors carry sensitive fields, strip them in the
+  string), and its `data` (the response body) is not an enumerable field,
+  so SDKs that copy an error's fields into the report leave it out. If your own errors carry sensitive fields, strip them in the
   adapter (or the provider's `beforeSend`).
 
 - **No `console` in app code.** ESLint `no-console` is an error everywhere
@@ -114,7 +118,9 @@ interface ErrorReportContext {
 ```
 
 The default, `consoleErrorReporter`, writes one `[error-reporter] …` line per
-report and ignores `setUser`. `SessionProvider` calls `setUser({ id })` on
+report in development builds, nothing in release builds (where the logger's
+own line, at `EXPO_PUBLIC_LOG_LEVEL`, is all that is written), and ignores
+`setUser`. `SessionProvider` calls `setUser({ id })` on
 sign-in and `setUser(null)` on sign-out or expiry; only the user id is sent.
 
 A reporter that throws never breaks the caller; the logger catches it.

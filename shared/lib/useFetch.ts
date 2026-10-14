@@ -82,7 +82,10 @@ export function useFetch<T>(
 
     try {
       const result = await fetchFnRef.current(controller.signal);
-      if (isCurrent()) setData(result);
+      if (isCurrent()) {
+        setData(result);
+        setError(null);
+      }
     } catch (caught) {
       if (isCurrent()) {
         setError(toApiError(caught));

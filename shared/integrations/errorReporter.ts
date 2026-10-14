@@ -41,20 +41,27 @@ function describe(error: unknown): string {
   return String(error);
 }
 
+const isDevelopmentBuild = () => typeof __DEV__ !== 'undefined' && __DEV__;
+
 /**
- * Default reporter: one console line per report, so the forwarding is visible
- * in development and in device logs. The logger has already written the
- * full error to the console at this point, so this does not repeat it.
+ * Default reporter: in development builds, one console line per report, so
+ * the forwarding is visible. Release builds write nothing here: the logger
+ * has already written the error at its level (EXPO_PUBLIC_LOG_LEVEL,
+ * including `silent`), and this does not repeat it.
  */
 export const consoleErrorReporter: ErrorReporter = {
-  captureException: (error, context) =>
+  captureException: (error, context) => {
+    if (!isDevelopmentBuild()) return;
     console.info(
       `[error-reporter] exception: ${describe(error)}${
         context?.message ? ` (${context.message})` : ''
       }`
-    ),
-  captureMessage: (message, level = 'error') =>
-    console.info(`[error-reporter] ${level}: ${message}`),
+    );
+  },
+  captureMessage: (message, level = 'error') => {
+    if (!isDevelopmentBuild()) return;
+    console.info(`[error-reporter] ${level}: ${message}`);
+  },
   // Nothing to attach the user to; a real provider tags later reports.
   setUser: () => {},
 };

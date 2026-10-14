@@ -288,13 +288,79 @@ describe('logger', () => {
       expect(consoleSpies.error).toHaveBeenCalled();
     });
 
-    it('the default reporter writes one console line', () => {
+    it('the default reporter writes one console line in development builds', () => {
       errorReporterSeam.reset();
       createLogger(() => PRODUCTION).error('Failed to save', new Error('boom'));
 
       expect(errorReporterSeam.get()).toBe(consoleErrorReporter);
       expect(consoleSpies.info).toHaveBeenCalledWith(
         '[error-reporter] exception: Error: boom (Failed to save)'
+      );
+    });
+
+    it('the default reporter writes nothing in release builds, so silent is silent', () => {
+      errorReporterSeam.reset();
+      const dev = __DEV__;
+      (globalThis as unknown as { __DEV__: boolean }).__DEV__ = false;
+      try {
+        const logger = createLogger(() => ({
+          minLevel: 'silent',
+          development: false,
+        }));
+        logger.error('Failed to save', new Error('secret detail'));
+        logger.error('Failed without an Error');
+      } finally {
+        (globalThis as unknown as { __DEV__: boolean }).__DEV__ = dev;
+      }
+
+      for (const spy of Object.values(consoleSpies)) {
+        expect(spy).not.toHaveBeenCalled();
+      }
+    });
+
+    it('sends an ApiError without its response body as an own enumerable field', () => {
+      const error = new ApiError('Rejected', {
+        code: 'client',
+        status: 422,
+        data: { email: 'emily@example.com' },
+      });
+      createLogger(() => PRODUCTION).error('Sign-in failed', error);
+
+      const sent = reporter.captureException.mock.calls[0]?.[0] as ApiError;
+      expect(sent).toBe(error);
+      // What SDKs that copy an error's fields into the report would read.
+      expect(Object.keys(sent)).not.toContain('data');
+      expect(JSON.stringify({ ...sent })).not.toContain('emily');
+      // The app can still read it.
+      expect(sent.data).toEqual({ email: 'emily@example.com' });
+    });
+
+    it('never throws on a context it cannot read', () => {
+      const throwingGetter = {
+        ok: 1,
+        get broken(): string {
+          throw new Error('getter');
+        },
+      };
+      const revoked = Proxy.revocable({}, {});
+      revoked.revoke();
+      const logger = createLogger(() => PRODUCTION);
+
+      expect(() =>
+        logger.error('Failed', new Error('boom'), {
+          state: throwingGetter,
+          draft: revoked.proxy,
+        })
+      ).not.toThrow();
+      expect(reporter.captureException).toHaveBeenCalledWith(
+        expect.any(Error),
+        {
+          message: 'Failed',
+          extra: {
+            state: { ok: 1, broken: '[unreadable]' },
+            draft: '[unreadable]',
+          },
+        }
       );
     });
   });
@@ -444,6 +510,30 @@ describe('logger', () => {
       });
       expect(redact(deep, false)).toEqual({
         a: { b: { c: { d: { e: '[truncated]' } } } },
+      });
+    });
+
+    it('logs dates, maps, sets, and URLs by value, still redacting secrets', () => {
+      expect(
+        redact(
+          {
+            at: new Date(0),
+            bad: new Date(NaN),
+            headers: new Map<unknown, unknown>([
+              ['Authorization', 'Bearer abc'],
+              [1, 'one'],
+            ]),
+            ids: new Set([1, 2]),
+            link: new URL('https://x.example.com/a?token=abc#f'),
+          },
+          false
+        )
+      ).toEqual({
+        at: '1970-01-01T00:00:00.000Z',
+        bad: 'Invalid Date',
+        headers: { Authorization: '[redacted]', 1: 'one' },
+        ids: [1, 2],
+        link: 'https://x.example.com/a',
       });
     });
 

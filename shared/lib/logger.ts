@@ -60,6 +60,17 @@ const SECRET_KEY =
 const BODY_KEY = /^(data|body)$/i;
 const MAX_DEPTH = 5;
 
+const UNREADABLE = '[unreadable]';
+
+/** A property's value, or a marker if its getter throws. */
+function read(object: object, key: string): unknown {
+  try {
+    return (object as Record<string, unknown>)[key];
+  } catch {
+    return UNREADABLE;
+  }
+}
+
 /**
  * Returns a copy of `value` that is safe to log or send to a reporter:
  * secret keys are always replaced, bodies are replaced unless `development`,
@@ -78,6 +89,9 @@ export function redact(value: unknown, development: boolean): unknown {
     ancestors.add(current);
     try {
       return walkObject(current, depth);
+    } catch {
+      // A revoked Proxy, for example: logging must never throw.
+      return UNREADABLE;
     } finally {
       ancestors.delete(current);
     }
@@ -97,12 +111,25 @@ export function redact(value: unknown, development: boolean): unknown {
         ...(development && current.stack && { stack: current.stack }),
       };
     }
-    if (Array.isArray(current)) {
-      return current.map(item => walk(item, depth + 1));
+    if (Array.isArray(current) || current instanceof Set) {
+      return Array.from(current, item => walk(item, depth + 1));
     }
+    if (current instanceof Date) {
+      return Number.isNaN(current.getTime())
+        ? 'Invalid Date'
+        : current.toISOString();
+    }
+    if (typeof URL !== 'undefined' && current instanceof URL) {
+      // Like request logs: no query string or fragment.
+      return current.href.split(/[?#]/)[0];
+    }
+    const entries: [string, unknown][] =
+      current instanceof Map
+        ? Array.from(current, ([key, item]) => [String(key), item])
+        : Object.keys(current).map(key => [key, read(current, key)]);
 
     const result: Record<string, unknown> = {};
-    for (const [key, item] of Object.entries(current)) {
+    for (const [key, item] of entries) {
       if (SECRET_KEY.test(key)) {
         result[key] = REDACTED;
       } else if (!development && BODY_KEY.test(key)) {

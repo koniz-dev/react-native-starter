@@ -237,6 +237,30 @@ describe('error boundaries', () => {
       expect(screen.getByText('Recovered')).toBeTruthy();
     });
 
+    it.each([undefined, null, 0, ''])(
+      'shows the fallback and reports when %j is thrown',
+      thrown => {
+        function ThrowsValue(): ReactNode {
+          throw thrown;
+        }
+        render(
+          <PaperProvider theme={getTheme('light')}>
+            <ErrorBoundary>
+              <ThrowsValue />
+            </ErrorBoundary>
+          </PaperProvider>
+        );
+
+        expect(screen.getByText('Something went wrong')).toBeTruthy();
+        expect(reporter.captureException).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message: `A non-Error value was thrown: ${String(thrown)}`,
+          }),
+          expect.anything()
+        );
+      }
+    );
+
     it('renders its children when nothing throws', () => {
       shouldThrow = false;
       renderBoundary();

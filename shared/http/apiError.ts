@@ -37,7 +37,11 @@ export class ApiError extends Error {
     this.name = 'ApiError';
     this.code = options.code;
     this.status = options.status;
+    // Not enumerable: error reporters that copy an error's own fields into
+    // the report (e.g. Sentry's ExtraErrorData) would send the response
+    // body, which may hold personal data. Code still reads `error.data`.
     this.data = options.data;
+    Object.defineProperty(this, 'data', { enumerable: false });
   }
 }
 

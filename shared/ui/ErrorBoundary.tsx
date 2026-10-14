@@ -36,17 +36,28 @@ interface State {
   error: Error | null;
 }
 
+/** `throw undefined` (or null, 0, '') must still show the fallback. */
+function toError(thrown: unknown): Error {
+  return thrown instanceof Error
+    ? thrown
+    : new Error(`A non-Error value was thrown: ${String(thrown)}`);
+}
+
 export class ErrorBoundary extends Component<Props, State> {
   override state: State = { error: null };
 
-  static getDerivedStateFromError(error: Error): State {
-    return { error };
+  static getDerivedStateFromError(error: unknown): State {
+    return { error: toError(error) };
   }
 
-  override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    logger.error('Render error caught by the app error boundary', error, {
-      componentStack: errorInfo.componentStack ?? undefined,
-    });
+  override componentDidCatch(error: unknown, errorInfo: ErrorInfo) {
+    logger.error(
+      'Render error caught by the app error boundary',
+      toError(error),
+      {
+        componentStack: errorInfo.componentStack ?? undefined,
+      }
+    );
   }
 
   resetError = () => {

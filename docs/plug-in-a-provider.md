@@ -5,7 +5,10 @@ a default that needs no account, key, or native setup, so the app runs as-is.
 To use a provider, install its SDK, write a small adapter to the seam's
 interface, and register it in `shared/integrations/setup.ts`, which runs
 once from `app/_layout.tsx` before the first screen renders. No other code
-changes.
+changes. If registering throws (an SDK that fails to start, or one that
+reads `getConfig()` while the configuration is invalid), the error is logged
+and the app starts with the defaults for what wasn't registered, so the
+configuration error screen still shows.
 
 | Seam               | Interface (module)                                               | Default                                            | Call it with                                 |
 | ------------------ | ---------------------------------------------------------------- | -------------------------------------------------- | -------------------------------------------- |
@@ -13,7 +16,7 @@ changes.
 | Feature flags      | `FeatureFlags` (`shared/integrations/featureFlags.ts`)           | static values from `shared/config/featureFlags.ts` | `getFeatureFlags().isEnabled('flag')`        |
 | Push notifications | `PushNotifications` (`shared/integrations/pushNotifications.ts`) | "not configured": no permission, no token          | `getPushNotifications().requestPermission()` |
 | OTA updates        | `Updates` (`shared/integrations/updates.ts`)                     | never finds an update                              | `getUpdates().checkForUpdate()`              |
-| Error reporting    | `ErrorReporter` (`shared/integrations/errorReporter.ts`)         | one console line per report                        | `logger.error('message', error)`             |
+| Error reporting    | `ErrorReporter` (`shared/integrations/errorReporter.ts`)         | one console line per report (development builds)   | `logger.error('message', error)`             |
 | i18n               | `I18n` (`shared/i18n/index.ts`)                                  | English, from `shared/i18n/en.ts`                  | `t('login.title')`                           |
 
 Each seam is a `createSeam(default)` with `set()` and `reset()`; tests set a
@@ -30,8 +33,11 @@ exact API.
 ## Analytics
 
 Screen views are reported automatically: `useScreenTracking()` in
-`app/_layout.tsx` calls `getAnalytics().screen(pathname)` on every route
-change. Call `track` for events, and `identify` when the signed-in user
+`app/_layout.tsx` calls `getAnalytics().screen(name)` on every route
+change. The name is the route pattern without groups, such as `/` or
+`/orders/[id]`, never the path itself, so ids and tokens in a URL don't
+reach the provider. A provider that throws is logged (`logger.error`) and
+doesn't break navigation. Call `track` for events, and `identify` when the signed-in user
 changes. The session is the place to watch: a hook that calls `identify` with
 the user's id on sign-in (and on a restored session), and `identify(null)` on
 sign-out. The session provider does the same for the error reporter.

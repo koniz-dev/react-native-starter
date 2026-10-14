@@ -48,6 +48,10 @@ describe.each([
     ['onBackground', 'background'],
     ['onSurface', 'surface'],
     ['primary', 'background'],
+    // Paper's default (flat) TextInput puts its primary label on
+    // surfaceVariant; a selected chip or segment sits on secondaryContainer.
+    ['primary', 'surfaceVariant'],
+    ['primary', 'secondaryContainer'],
     ['inversePrimary', 'inverseSurface'],
     ['onSurfaceVariant', 'surfaceVariant'],
     ['onSurfaceVariant', 'background'],

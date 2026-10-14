@@ -73,8 +73,9 @@ Paper's component docs:
 
 Edit `palette` in `shared/ui/theme.ts`. Keep each `on*` color readable on its
 pair: `__tests__/shared/ui/theme.test.ts` checks WCAG AA contrast (4.5:1) for
-the brand pairs, `primary` on the background and on every elevation level
-(cards, dialogs, menus), `onSurfaceVariant`, and `inversePrimary` on the
+the brand pairs, `primary` on the background, on `surfaceVariant` (the
+label of Paper's default flat `TextInput`), on `secondaryContainer`, and on
+every elevation level (cards, dialogs, menus), `onSurfaceVariant`, and `inversePrimary` on the
 inverse surface, in both modes. The palette also sets the neutral roles
 (`surfaceVariant`, `outline`, `secondary`), and the elevation tints are mixed
 from `surface` and `primary`. The roles it doesn't set (`tertiary`, the

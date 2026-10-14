@@ -15,7 +15,10 @@
  *
  * docs/plug-in-a-provider.md has an example adapter for each seam, and
  * docs/error-reporting.md one for the error reporter. This function
- * runs once, from app/_layout.tsx, before the first screen renders.
+ * runs once, from app/_layout.tsx, before the first screen renders, and
+ * also when the configuration is invalid: getConfig() throws then. If it
+ * throws, the error is logged and the app starts with the defaults for
+ * whatever wasn't registered yet.
  */
 // @demo remove-block-start
 import { setAuthAdapter } from '@/shared/session/authService';

@@ -98,17 +98,15 @@ describe('useFetch', () => {
     expect(result.current.loading).toBe(false);
   });
 
-  it('aborts the request on unmount and ignores its result', async () => {
+  // (A result after unmount can't be observed: React drops the update. The
+  // tests below cover ignoring stale results on a mounted component.)
+  it('aborts the request on unmount', async () => {
     const { fetchFn, calls } = controlledFetch<string>();
-    const { result, unmount } = renderHook(() => useFetch(fetchFn));
-    const before = result.current;
+    const { unmount } = renderHook(() => useFetch(fetchFn));
 
     unmount();
-    expect(calls[0]?.signal.aborted).toBe(true);
 
-    await act(async () => calls[0]?.resolve('late'));
-    expect(result.current).toBe(before);
-    expect(result.current.data).toBeNull();
+    expect(calls[0]?.signal.aborted).toBe(true);
   });
 
   it('aborts the previous request when deps change', async () => {
@@ -263,5 +261,34 @@ describe('useFetch', () => {
       ).toHaveTextContent('false:v2')
     );
     expect(fetchFn).toHaveBeenCalledTimes(2);
+  });
+
+  it('drops the old error when its effect runs again and succeeds', async () => {
+    const fetchFn = jest
+      .fn<Promise<string>, [AbortSignal]>()
+      .mockRejectedValueOnce(new Error('down'))
+      .mockResolvedValueOnce('ok');
+    function Probe() {
+      const { data, loading, error } = useFetch(fetchFn);
+      return (
+        <Text testID="probe">{`${loading}:${data}:${error?.message}`}</Text>
+      );
+    }
+    const view = (mode: 'visible' | 'hidden') => (
+      <Activity mode={mode}>
+        <Probe />
+      </Activity>
+    );
+    const probe = () =>
+      screen.getByTestId('probe', { includeHiddenElements: true });
+    const { rerender } = render(view('visible'));
+    await waitFor(() => expect(probe()).toHaveTextContent('false:null:down'));
+
+    await act(async () => rerender(view('hidden')));
+    await act(async () => rerender(view('visible')));
+
+    await waitFor(() =>
+      expect(probe()).toHaveTextContent('false:ok:undefined')
+    );
   });
 });

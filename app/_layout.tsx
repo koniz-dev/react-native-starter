@@ -12,9 +12,16 @@ import { configureIntegrations } from '@/shared/integrations/setup';
 import { useScreenTracking } from '@/shared/integrations/useScreenTracking';
 import { SessionProvider, useSession } from '@/shared/session/SessionProvider';
 import { t } from '@/shared/i18n';
+import { logger } from '@/shared/lib/logger';
 
-// Register integration providers before the first screen renders.
-configureIntegrations();
+// Register integration providers before the first screen renders. A
+// provider that fails to start (or reads invalid config) is logged; it must
+// not keep the app, or its configuration error screen, from rendering.
+try {
+  configureIntegrations();
+} catch (error) {
+  logger.error('Configuring integrations failed', error);
+}
 
 // Keep the native splash screen up until the stored session has been read.
 SplashScreen.preventAutoHideAsync().catch(() => {});

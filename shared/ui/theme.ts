@@ -16,7 +16,7 @@ import { DarkTheme, DefaultTheme, type Theme } from 'expo-router';
  */
 const palette = {
   light: {
-    primary: '#07709a',
+    primary: '#066a92',
     onPrimary: '#ffffff',
     primaryContainer: '#c2e8ff',
     onPrimaryContainer: '#001e2c',
