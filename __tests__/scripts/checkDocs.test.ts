@@ -18,7 +18,8 @@ describe('check-docs on a copy of the project', () => {
     dir = makeCopy();
   });
   afterAll(() => {
-    fs.rmSync(dir, { recursive: true, force: true });
+    // Unset if making the copy failed: report that, not a second error.
+    if (dir) fs.rmSync(dir, { recursive: true, force: true });
   });
 
   it('checks indented snippets, flow and public paths, and docs/ subfolder references', () => {
@@ -34,6 +35,8 @@ describe('check-docs on a copy of the project', () => {
       '\nSee `.maestro/no-such-flow.yaml` and `public/nope.html`.\n'
     );
     append('shared/lib/logger.ts', '\n// See docs/recipes/no-such.md.\n');
+    append('scripts/e2e/run.sh', '\n# See docs/testing.md#no-such-heading.\n');
+    append('.env.example', '\n# See docs/no-such-page.md.\n');
     // A snippet that compiles but breaks the lint rules where it says it goes.
     append(
       'docs/conventions.md',
@@ -53,6 +56,12 @@ describe('check-docs on a copy of the project', () => {
     expect(result.stderr).toContain(
       'refers to missing docs/recipes/no-such.md'
     );
+    expect(result.stderr).toContain('scripts/e2e/run.sh:');
+    expect(result.stderr).toContain(
+      'no heading for docs/testing.md#no-such-heading'
+    );
+    expect(result.stderr).toContain('.env.example:');
+    expect(result.stderr).toContain('refers to missing docs/no-such-page.md');
     expect(result.stderr).toMatch(
       /docs\/conventions\.md:\d+: Use a named export.*\(no-restricted-syntax\)/
     );

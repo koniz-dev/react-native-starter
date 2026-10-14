@@ -26,7 +26,11 @@ Then it:
 - deletes the template's onboarding page and itself.
 
 `npm run init-project -- --dry-run` lists every change first. It refuses to
-run on uncommitted changes or a second time unless you pass `--force`.
+run on uncommitted changes or a second time unless you pass `--force`. It
+formats its changes before writing any, and deletes itself last, so a
+problem (such as a syntax error in a file it rewrites) changes nothing;
+without git (a downloaded ZIP), keep a copy first, since it can't check for
+or undo changes.
 [Make It Yours](make-it-yours.md) lists what it changes and what is left for
 you (icons, colors, backend, providers).
 
@@ -187,9 +191,12 @@ bundles), so the Audit workflow starts green. Make the review yours:
    once npm can apply a fix within your dependency ranges, and notes entries
    npm no longer reports.
 3. Otherwise set `owner` to your team, `reviewed` to today, `reviewBy` to
-   your next review (at most a few months out), and `tracking` to your own
-   issue if you track it. An entry without an `id`, `package`, `tracking`,
-   or a `reviewBy` date written YYYY-MM-DD fails the check.
+   your next review (at most 183 days out), and `tracking` to your own
+   issue if you track it. An entry without an `id`, `package`, `severity`
+   (`high` or `critical`), `tracking`, or a `reviewBy` date written
+   YYYY-MM-DD fails the check, and so does one whose `package` or
+   `severity` no longer matches what npm reports (an advisory re-scored to
+   critical needs a new review).
 
 New advisories fail the check until you fix or review them the same way. The
 Audit workflow fails, and CI doesn't, so a new advisory doesn't block work on

@@ -1,6 +1,7 @@
 /**
  * @jest-environment node
  */
+import { execFileSync } from 'child_process';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
@@ -23,6 +24,22 @@ describe('projectFiles', () => {
       expect(projectFiles(root).sort()).toEqual(['docs/a.md', 'package.json']);
     } finally {
       fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it('leaves out a symlinked node_modules, even one git lists', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'linked-'));
+    const shared = fs.mkdtempSync(path.join(os.tmpdir(), 'shared-modules-'));
+    try {
+      fs.writeFileSync(path.join(root, 'package.json'), '');
+      fs.symlinkSync(shared, path.join(root, 'node_modules'), 'junction');
+      execFileSync('git', ['init', '-q'], { cwd: root });
+      // Committed by `git add -A` before node_modules matched symlinks too.
+      execFileSync('git', ['add', '-A'], { cwd: root });
+      expect(projectFiles(root)).toEqual(['package.json']);
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+      fs.rmSync(shared, { recursive: true, force: true });
     }
   });
 });

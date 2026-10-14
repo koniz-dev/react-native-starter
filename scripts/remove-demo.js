@@ -2,8 +2,9 @@
 /**
  * Removes the demo code (see docs/remove-demo.md):
  *
- * 1. works out every change below and checks the result (step 4) before it
- *    changes anything, so a problem leaves the project as it was;
+ * 1. works out every change below, formats it with Prettier in memory, and
+ *    checks the result (step 4) before it changes anything, so a problem
+ *    leaves the project as it was (exit code 2);
  * 2. edits every source, doc, and config file in the project (any .ts, .tsx,
  *    .js, .jsx, .md, .yml, .yaml, .sh, or .html file, and .env.example,
  *    outside node_modules and generated folders):
@@ -13,16 +14,20 @@
  *    - between `@demo uncomment-block-start` and `@demo uncomment-block-end`
  *      lines, uncomments each line (drops its leading `# ` or `// `) and
  *      deletes the two marker lines: for text that only applies once the
- *      demo is gone (.env.example, the e2e runner, the config's URL check);
- * 3. formats the changed files with Prettier (stripping leaves blank lines),
- *    then deletes the demo folders, routes, and Maestro flows listed in
+ *      demo is gone (.env.example and the config's URL check);
+ * 3. deletes the demo folders, routes, and Maestro flows listed in
  *    DEMO_PATHS, this command's doc, test, and npm script, and this script
  *    last, so it is still there if a step fails;
- * 4. fails, before step 2, if a marker is malformed or any `@demo` marker,
- *    import of a removed path, or mention of a deleted file would be left.
-
- * Usage: npm run remove-demo [-- --dry-run]
+ * 4. fails, before step 2, if a marker is malformed, Prettier can't format
+ *    a result, or any `@demo` marker, import of a removed path, or mention
+ *    of a deleted file would be left.
+ *
+ * It refuses to run on uncommitted changes unless --force, so a failure
+ * part way can be undone with git.
+ *
+ * Usage: npm run remove-demo [-- --dry-run] [-- --force]
  * (--no-summary skips the closing message, for a caller that prints its own.)
+ * Exit codes: 0 done, 2 nothing was changed, 1 failed after changing files.
  */
 const { spawnSync } = require('child_process');
 const fs = require('fs');
@@ -30,6 +35,7 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const DRY_RUN = process.argv.includes('--dry-run');
+const FORCE = process.argv.includes('--force');
 const SUMMARY = !process.argv.includes('--no-summary');
 
 const DEMO_PATHS = [
@@ -89,17 +95,44 @@ function markedFiles(dir = '') {
 }
 
 /**
- * Runs the project's Prettier with this Node (not `npx`, which needs a shell
- * on Windows). Returns an error message, or null.
+ * Formats each edit's text with the project's Prettier, in memory, so a
+ * Prettier failure (a syntax error, say) stops the run before any file is
+ * written. Returns the problems; files Prettier ignores are left as they are.
  */
-function runPrettier(files) {
-  const result = spawnSync(
-    process.execPath,
-    [require.resolve('prettier/bin/prettier.cjs'), '--write', ...files],
-    { cwd: ROOT, stdio: ['ignore', 'ignore', 'inherit'] }
-  );
-  if (result.error) return `prettier did not run: ${result.error.message}`;
-  return result.status === 0 ? null : 'prettier failed';
+async function formatEdits(edits) {
+  const prettier = require('prettier');
+  const problems = [];
+  for (const edit of edits) {
+    if (!PRETTIER_EXT.test(edit.rel)) continue;
+    const file = path.join(ROOT, edit.rel);
+    const info = await prettier.getFileInfo(file, {
+      ignorePath: ['.gitignore', '.prettierignore'].map(name =>
+        path.join(ROOT, name)
+      ),
+    });
+    if (info.ignored || !info.inferredParser) continue;
+    try {
+      const options = await prettier.resolveConfig(file);
+      edit.text = await prettier.format(edit.text, {
+        ...options,
+        filepath: file,
+      });
+    } catch (error) {
+      problems.push(
+        `${edit.rel}: Prettier can't format the result: ${String(error.message).split('\n')[0]}`
+      );
+    }
+  }
+  return problems;
+}
+
+/** `git status --porcelain`, or null when this is not a git repository. */
+function gitStatus() {
+  const result = spawnSync('git', ['status', '--porcelain'], {
+    cwd: ROOT,
+    encoding: 'utf8',
+  });
+  return result.status === 0 ? result.stdout.trim() : null;
 }
 
 /** Returns the file's text without its marked demo lines. */
@@ -126,8 +159,29 @@ function stripMarkers(text, file) {
   return out.join('\n').replace(/\n{3,}/g, '\n\n');
 }
 
-function main() {
+/** Thrown for a problem found before anything changed (exit code 2). */
+class Refusal extends Error {}
+
+async function main() {
   const log = message => process.stdout.write(`${message}\n`);
+  const status = gitStatus();
+  if (status && !FORCE && !DRY_RUN) {
+    throw new Refusal(
+      `the working tree has uncommitted changes; commit or stash them, or pass --force:\n${status}`
+    );
+  }
+  restoreHint =
+    status === null
+      ? 'This is not a git repository, so restore the changed files from your\n' +
+        'own copy, then fix the problem above and run it again.\n'
+      : status
+        ? 'Your uncommitted changes are mixed in, so review `git status` and\n' +
+          '`git diff` and restore what remove-demo changed by hand, then fix\n' +
+          'the problem above and run it again.\n'
+        : 'Restore your last commit with\n' +
+          // -C: npm runs scripts from the root, the shell may be elsewhere.
+          `  git -C ${JSON.stringify(ROOT)} checkout -- . && git -C ${JSON.stringify(ROOT)} clean -fd\n` +
+          'then fix the problem above and run npm run remove-demo again.\n';
   log(DRY_RUN ? 'Dry run: nothing is changed.' : 'Removing the demo...');
 
   // First work out every change and check the result, without touching a
@@ -166,11 +220,11 @@ function main() {
     }
   }
 
+  if (problems.length === 0) problems.push(...(await formatEdits(edits)));
   if (problems.length > 0) {
-    process.stderr.write(
-      `${problems.join('\n')}\nNothing was changed. Fix the above, then run it again.\n`
+    throw new Refusal(
+      `${problems.join('\n')}\nFix the above, then run it again.`
     );
-    process.exit(1);
   }
 
   // Write the edits first, then delete, this script last: if anything
@@ -188,14 +242,6 @@ function main() {
     delete pkg.scripts['remove-demo'];
     if (!DRY_RUN)
       fs.writeFileSync(pkgFile, `${JSON.stringify(pkg, null, 2)}\n`);
-  }
-
-  const formattable = edits
-    .map(edit => edit.rel)
-    .filter(rel => PRETTIER_EXT.test(rel));
-  if (!DRY_RUN && formattable.length > 0) {
-    const prettierError = runPrettier(formattable);
-    if (prettierError) throw new Error(prettierError);
   }
 
   const self = path.relative(ROOT, __filename).split(path.sep).join('/');
@@ -224,17 +270,15 @@ function main() {
 
 /** Set once files may have changed, so a failure says how to undo it. */
 let started = false;
+/** How to undo a failure part way, for the state the run started in. */
+let restoreHint = '';
 
-try {
-  main();
-} catch (error) {
+main().catch(error => {
   process.stderr.write(`remove-demo: ${error.message}\n`);
-  if (started) {
-    process.stderr.write(
-      'Some files may already be changed. Restore your last commit with\n' +
-        `  git -C ${JSON.stringify(ROOT)} checkout -- . && git -C ${JSON.stringify(ROOT)} clean -fd\n` +
-        'then fix the problem above and run npm run remove-demo again.\n'
-    );
+  if (error instanceof Refusal || !started) {
+    process.stderr.write('Nothing was changed.\n');
+    process.exit(2);
   }
+  process.stderr.write(`Some files may already be changed. ${restoreHint}`);
   process.exit(1);
-}
+});

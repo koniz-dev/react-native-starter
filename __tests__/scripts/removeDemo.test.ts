@@ -155,9 +155,14 @@ describe('remove-demo on a copy of the template', () => {
     ).toBeUndefined();
 
     // Formatted, and the docs still check out (links, paths, snippets).
+    // With this Node, not npx (which needs a shell on Windows).
     const prettier = spawnSync(
-      'npx',
-      ['prettier', '--check', '**/*.{ts,tsx,js,json,md}'],
+      process.execPath,
+      [
+        require.resolve('prettier/bin/prettier.cjs'),
+        '--check',
+        '**/*.{ts,tsx,js,jsx,json,md}',
+      ],
       { cwd: dir, encoding: 'utf8' }
     );
     expect(prettier.status).toBe(0);
@@ -177,7 +182,7 @@ describe('remove-demo on a copy of the template', () => {
     );
     commit(dir, 'unmarked demo reference');
     const result = run(dir);
-    expect(result.status).toBe(1);
+    expect(result.status).toBe(2);
     expect(result.stderr).toContain(
       'docs/conventions.md: still mentions features/demo-todos'
     );
@@ -211,6 +216,43 @@ describe('remove-demo on a copy of the template', () => {
     expect(exists(dir, 'features/demo-todos')).toBe(true);
   }, 60000);
 
+  it('refuses uncommitted changes unless --force, and then never suggests discarding them', () => {
+    const dir = copy();
+    fs.writeFileSync(path.join(dir, 'NOTES.md'), 'my notes\n');
+    const refused = run(dir);
+    expect(refused.status).toBe(2);
+    expect(refused.stderr).toContain('uncommitted changes');
+    expect(refused.stderr).toContain('Nothing was changed.');
+    expect(gitStatus(dir)).toBe('?? NOTES.md\n');
+
+    // With --force, a write that fails part way: restore by hand.
+    fs.chmodSync(path.join(dir, 'shared/i18n/en.ts'), 0o444);
+    const result = run(dir, ['--force']);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('restore what remove-demo changed by hand');
+    expect(result.stderr).not.toMatch(/checkout|clean -fd/);
+    expect(read(dir, 'NOTES.md')).toBe('my notes\n');
+  }, 60000);
+
+  it("changes nothing when Prettier can't format a result", () => {
+    const dir = copy();
+    // Parses only with the marked line in: it opens the comment that the
+    // next line closes.
+    fs.writeFileSync(
+      path.join(dir, 'shared/lib/broken.ts'),
+      `/* @${'demo'} remove-current-line\nexport const x = 1; */\n`
+    );
+    commit(dir, 'a marker whose result does not parse');
+    const result = run(dir);
+    expect(result.status).toBe(2);
+    expect(result.stderr).toContain(
+      "shared/lib/broken.ts: Prettier can't format the result"
+    );
+    expect(result.stderr).toContain('Nothing was changed.');
+    expect(gitStatus(dir)).toBe('');
+    expect(exists(dir, 'features/demo-todos')).toBe(true);
+  }, 60000);
+
   it('changes nothing when a marker is malformed, and says so without a stack trace', () => {
     const dir = copy();
     fs.appendFileSync(
@@ -219,9 +261,9 @@ describe('remove-demo on a copy of the template', () => {
     );
     commit(dir, 'unterminated marker');
     const result = run(dir);
-    expect(result.status).toBe(1);
+    expect(result.status).toBe(2);
     expect(result.stderr).toBe(
-      'README.md: unterminated @demo block\nNothing was changed. Fix the above, then run it again.\n'
+      'remove-demo: README.md: unterminated @demo block\nFix the above, then run it again.\nNothing was changed.\n'
     );
     expect(gitStatus(dir)).toBe('');
   }, 60000);

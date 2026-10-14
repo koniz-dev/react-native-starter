@@ -40,16 +40,18 @@ npm run remove-demo
    `remove-demo` npm script, since there is nothing left to remove;
 4. formats the changed files with Prettier;
 5. checks the result before it changes any file: if a `@demo` marker is
-   malformed (a block without its end) or would be left, or an import of a
-   removed demo or a doc or flow that names a deleted file would remain, it
-   names the file and changes nothing.
+   malformed (a block without its end) or would be left, Prettier can't
+   format a result, or an import of a removed demo or a doc or flow that
+   names a deleted file would remain, it names the file and changes
+   nothing.
 
-It writes its edits before it deletes anything, and deletes itself last, so
-if a step fails (a read-only file, say), the script is still there: it says
-how to restore your last commit, and you can run it again.
-
-It is meant to run once on a fresh project; commit first so you can review
-the diff.
+It refuses to run on uncommitted changes unless you pass `--force`, so you
+can review and undo it with git. It writes its edits before it deletes
+anything, and deletes itself last, so if a step fails part way (a read-only
+file, say), the script is still there and you can run it again. It then
+says how to restore: on a clean tree, the `git` command that restores your
+last commit; on uncommitted changes (`--force`), to restore by hand, since
+that command would discard them too.
 
 ## What you get
 

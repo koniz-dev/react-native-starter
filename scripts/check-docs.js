@@ -19,8 +19,11 @@
  *    for #anchors), and every repo path in inline code exists. Paths with
  *    placeholders (<name>, *, {a,b}, ...) are not checked.
  *
- * 5. every `docs/<page>.md#anchor` (or `docs/<folder>/<page>.md`) mentioned in source files (comments in
- *    app/, features/, shared/, scripts/, testing/, app.config.ts) exists.
+ * 5. every `docs/<page>.md#anchor` (or `docs/<folder>/<page>.md`) mentioned
+ *    in a source or config file (.ts, .tsx, .js, .sh, .yml, .yaml, and
+ *    .env.example, in the project root, app/, features/, shared/, scripts/,
+ *    testing/, .github/, and .maestro/) exists. (Tests that read a doc fail
+ *    by themselves when it is missing.)
  *
  * @demo remove-block-start
  * Removing the demo removes its docs too, so a doc that still names it is
@@ -296,23 +299,37 @@ function main() {
     });
   }
 
+  const isSource = name =>
+    /\.(ts|tsx|js|sh|ya?ml)$/.test(name) || name === '.env.example';
   const sourceFiles = dir => {
     const full = path.join(ROOT, dir);
     if (!fs.existsSync(full)) return [];
-    if (fs.statSync(full).isFile()) return [dir];
     return fs
       .readdirSync(full, { withFileTypes: true })
-      .flatMap(entry => sourceFiles(path.join(dir, entry.name)))
-      .filter(file => /\.(ts|tsx|js)$/.test(file));
+      .flatMap(entry =>
+        entry.isDirectory()
+          ? sourceFiles(path.join(dir, entry.name))
+          : entry.isFile() && isSource(entry.name)
+            ? [path.join(dir, entry.name)]
+            : []
+      );
   };
+  const rootFiles = fs
+    .readdirSync(ROOT, { withFileTypes: true })
+    .filter(entry => entry.isFile() && isSource(entry.name))
+    .map(entry => entry.name);
   for (const file of [
-    'app',
-    'features',
-    'shared',
-    'scripts',
-    'testing',
-    'app.config.ts',
-  ].flatMap(sourceFiles)) {
+    ...rootFiles,
+    ...[
+      'app',
+      'features',
+      'shared',
+      'scripts',
+      'testing',
+      '.github',
+      '.maestro',
+    ].flatMap(sourceFiles),
+  ]) {
     const lines = fs.readFileSync(path.join(ROOT, file), 'utf8').split(/\r?\n/);
     lines.forEach((line, index) => {
       for (const m of line.matchAll(/docs\/([\w/-]+\.md)(#[\w-]+)?/g)) {

@@ -5,7 +5,10 @@
  *
  * - a high or critical advisory is not in the allowlist;
  * - an allowlisted entry is past its reviewBy date, or is missing its id,
- *   package, tracking link, or a YYYY-MM-DD reviewBy date;
+ *   package, severity, tracking link, or a YYYY-MM-DD reviewBy date, or its
+ *   reviewBy is more than MAX_REVIEW_DAYS away;
+ * - npm reports an allowlisted advisory on another package, or at a higher
+ *   severity than the entry's review (for example re-scored to critical);
  * - npm can now fix an allowlisted advisory within the current dependency
  *   ranges (`npm audit fix` would apply it without a major upgrade), so an
  *   upstream fix is noticed without tracking it by hand.
@@ -22,6 +25,16 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const GATED = new Set(['high', 'critical']);
+const SEVERITY_RANK = { low: 0, moderate: 1, high: 2, critical: 3 };
+/** How far out a review may be set: about six months. */
+const MAX_REVIEW_DAYS = 183;
+
+/** Whole days from `from` to `to`, both YYYY-MM-DD. */
+function daysBetween(from, to) {
+  return Math.round(
+    (Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86400000
+  );
+}
 
 /** True when `npm audit fix` can apply the fix without a major upgrade. */
 function fixWithinRanges(fixAvailable) {
@@ -46,7 +59,7 @@ function isDate(value) {
  * Problems with the allowlist entries themselves: an entry that can't be
  * matched or never expires would hide an advisory for good.
  */
-function checkEntries(allowlist) {
+function checkEntries(allowlist, today) {
   if (!Array.isArray(allowlist)) {
     return ['scripts/audit-allowlist.json: "advisories" must be a list'];
   }
@@ -55,8 +68,15 @@ function checkEntries(allowlist) {
     const problems = ['id', 'package', 'tracking']
       .filter(key => typeof entry?.[key] !== 'string' || !entry[key].trim())
       .map(key => `${name}: "${key}" is missing`);
+    if (!GATED.has(entry?.severity)) {
+      problems.push(`${name}: "severity" must be high or critical`);
+    }
     if (!isDate(entry?.reviewBy)) {
       problems.push(`${name}: "reviewBy" must be a date (YYYY-MM-DD)`);
+    } else if (daysBetween(today, entry.reviewBy) > MAX_REVIEW_DAYS) {
+      problems.push(
+        `${name}: "reviewBy" ${entry.reviewBy} is more than ${MAX_REVIEW_DAYS} days away; review it again sooner`
+      );
     }
     return problems;
   });
@@ -99,7 +119,7 @@ function evaluate(report, allowlist, today) {
     }
   }
 
-  const entryProblems = checkEntries(allowlist);
+  const entryProblems = checkEntries(allowlist, today);
   if (entryProblems.length > 0) return { lines: [], problems: entryProblems };
 
   const allowed = new Map(allowlist.map(entry => [entry.id, entry]));
@@ -122,6 +142,16 @@ function evaluate(report, allowlist, today) {
     if (!entry) {
       problems.push(
         `${advisory.severity} ${advisory.package} ${advisory.id} (${advisory.title}) is not in scripts/audit-allowlist.json: remediate it or review and allowlist it.`
+      );
+    } else if (entry.package !== advisory.package) {
+      problems.push(
+        `${advisory.id}: allowlisted for ${entry.package}, but npm reports it on ${advisory.package}; review it for that package.`
+      );
+    } else if (
+      SEVERITY_RANK[advisory.severity] > SEVERITY_RANK[entry.severity]
+    ) {
+      problems.push(
+        `${advisory.package} ${advisory.id}: now ${advisory.severity}, reviewed as ${entry.severity}; review it again.`
       );
     } else if (advisory.fixable) {
       problems.push(

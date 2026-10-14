@@ -223,17 +223,38 @@ function slugify(name) {
 }
 
 /**
- * Runs the project's Prettier with this Node (not `npx`, which needs a shell
- * on Windows). Returns an error message, or null.
+ * Formats the planned contents with the project's Prettier, in memory, so a
+ * Prettier failure (a syntax error in a file being rewritten, say) stops the
+ * run before init-project writes anything. Files Prettier ignores are left
+ * as they are.
  */
-function runPrettier(files) {
-  const result = spawnSync(
-    process.execPath,
-    [require.resolve('prettier/bin/prettier.cjs'), '--write', ...files],
-    { cwd: ROOT, stdio: ['ignore', 'ignore', 'inherit'] }
-  );
-  if (result.error) return `prettier did not run: ${result.error.message}`;
-  return result.status === 0 ? null : 'prettier failed';
+async function formatChanges(changes) {
+  const prettier = require('prettier');
+  for (const change of changes) {
+    if (
+      change.action !== 'write' ||
+      !/\.(ts|tsx|js|json|md)$/.test(change.file)
+    )
+      continue;
+    const file = path.join(ROOT, change.file);
+    const info = await prettier.getFileInfo(file, {
+      ignorePath: ['.gitignore', '.prettierignore'].map(name =>
+        path.join(ROOT, name)
+      ),
+    });
+    if (info.ignored || !info.inferredParser) continue;
+    try {
+      const options = await prettier.resolveConfig(file);
+      change.content = await prettier.format(change.content, {
+        ...options,
+        filepath: file,
+      });
+    } catch (error) {
+      throw new Error(
+        `Prettier can't format the new ${change.file}: ${String(error.message).split('\n')[0]}`
+      );
+    }
+  }
 }
 
 function gitUserName() {
@@ -481,12 +502,6 @@ function allowlistFor(text, owner) {
 }
 
 /**
- * Escapes text for a Markdown table cell: a raw | ends the cell, and a
- * backslash would escape the escape.
- */
-const md = value => value.replace(/[\\|]/g, '\\$&');
-
-/**
  * Builds the list of changes: { file, action: 'write' | 'delete', summary,
  * content? }. Nothing is written here.
  */
@@ -572,16 +587,17 @@ function planChanges(input) {
         return code !== undefined ? `\`${replaced}\`` : replaced;
       }
     );
+  // The name validator rejects | and \, so the name is safe in a table cell.
   const nameCells = text =>
     previous.reduce(
       (out, app) =>
         out
-          .replace(`\`${app.name} (Dev)\``, () => `\`${md(input.name)} (Dev)\``)
+          .replace(`\`${app.name} (Dev)\``, () => `\`${input.name} (Dev)\``)
           .replace(
             `\`${app.name} (Preview)\``,
-            () => `\`${md(input.name)} (Preview)\``
+            () => `\`${input.name} (Preview)\``
           )
-          .replace(`\`${app.name}\``, () => `\`${md(input.name)}\``),
+          .replace(`\`${app.name}\``, () => `\`${input.name}\``),
       text
     );
 
@@ -663,7 +679,11 @@ function gitStatus() {
   return result.status === 0 ? result.stdout.trim() : null;
 }
 
-function runRemoveDemo(dryRun) {
+/**
+ * Runs remove-demo. Returns false when it changed nothing (exit code 2),
+ * throws when it failed after changing files.
+ */
+function runRemoveDemo(dryRun, force) {
   const result = spawnSync(
     process.execPath,
     // Its own closing message would repeat or precede this script's.
@@ -671,13 +691,16 @@ function runRemoveDemo(dryRun) {
       path.join(ROOT, REMOVE_DEMO),
       '--no-summary',
       ...(dryRun ? ['--dry-run'] : []),
+      ...(force ? ['--force'] : []),
     ],
     {
       cwd: ROOT,
       stdio: 'inherit',
     }
   );
-  if (result.status !== 0) throw new Error('remove-demo failed');
+  if (result.status === 0) return true;
+  if (result.status === 2) return false;
+  throw new Error('remove-demo failed');
 }
 
 const HELP = `Usage: npm run init-project [-- options]
@@ -698,12 +721,13 @@ Prompts for every value that is not given (in a terminal).
   --help                show this help`;
 
 /**
- * Set once files may have changed, so a failure says how to undo it; `dirty`
- * when the run started on uncommitted changes (--force), which a blanket
+ * Set once files may have changed, so a failure says how to undo it;
+ * `status` is the working tree's state at the start: null without git,
+ * '' when clean, else the uncommitted changes (--force), which a blanket
  * restore would discard.
  */
 let started = false;
-let dirty = false;
+let status = '';
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
@@ -721,22 +745,30 @@ async function main() {
       `this project is already initialized (bundle ID ${current.bundleId}); pass --force to run again`
     );
   }
-  const status = gitStatus();
+  status = gitStatus();
   if (status && !force && !dryRun) {
     throw new Error(
       `the working tree has uncommitted changes; commit or stash them, or pass --force:\n${status}`
     );
   }
+  if (status === null) {
+    log(
+      'Note: this is not a git repository, so init-project cannot check for\n' +
+        'uncommitted changes or tell you how to undo a failure. Keep a copy.'
+    );
+  }
 
-  dirty = Boolean(status);
   const input = await collectInput(args);
   const demoPresent = exists(REMOVE_DEMO);
 
   log(dryRun ? 'Dry run: nothing is changed.' : 'Initializing the project...');
-  started = !dryRun;
   if (input.removeDemo) {
     log('  run remove-demo:');
-    runRemoveDemo(dryRun);
+    started = !dryRun;
+    if (!runRemoveDemo(dryRun, force)) {
+      started = false;
+      throw new Error('remove-demo stopped (see above)');
+    }
   } else if (demoPresent) {
     log('  keep the demo (run npm run remove-demo later to remove it)');
   }
@@ -748,12 +780,19 @@ async function main() {
       `  ${change.action === 'delete' ? 'delete' : 'update'} ${change.file}: ${change.summary}`
     );
   }
+  await formatChanges(changes);
   if (dryRun) {
     log('Dry run complete.');
     return;
   }
 
-  for (const change of changes) {
+  // Writes first, then deletions, this script last (it is last in the plan):
+  // if a step fails, the script is still there to run again.
+  started = true;
+  for (const change of [
+    ...changes.filter(change => change.action === 'write'),
+    ...changes.filter(change => change.action === 'delete'),
+  ]) {
     const full = path.join(ROOT, change.file);
     if (change.action === 'delete')
       fs.rmSync(full, { recursive: true, force: true });
@@ -762,15 +801,6 @@ async function main() {
   const testsDir = path.join(ROOT, '__tests__/scripts');
   if (fs.existsSync(testsDir) && fs.readdirSync(testsDir).length === 0)
     fs.rmdirSync(testsDir);
-
-  const formattable = changes
-    .filter(
-      change =>
-        change.action === 'write' && /\.(ts|tsx|js|json|md)$/.test(change.file)
-    )
-    .map(change => change.file);
-  const prettierError = runPrettier(formattable);
-  if (prettierError) throw new Error(prettierError);
 
   const steps = [
     ...(input.removeDemo
@@ -792,20 +822,30 @@ async function main() {
 if (require.main === module) {
   main().catch(error => {
     process.stderr.write(`init-project: ${error.message}\n`);
-    if (started) {
+    if (!started) {
+      process.stderr.write('Nothing was changed.\n');
+    } else if (status === null) {
       process.stderr.write(
-        dirty
-          ? 'Some files may already be changed. Your uncommitted changes are mixed\n' +
-              'in, so review `git status` and `git diff` and restore what init-project\n' +
-              'changed by hand, then fix the problem above and run it again.\n'
-          : 'Some files may already be changed. Restore your last commit with\n' +
-              // -C: npm runs scripts from the root, the shell may be elsewhere.
-              `  git -C ${JSON.stringify(ROOT)} checkout -- . && git -C ${JSON.stringify(ROOT)} clean -fd\n` +
-              'then fix the problem above and run init-project again.\n'
+        'Some files may already be changed. This is not a git repository, so\n' +
+          'restore them from your own copy, then fix the problem above and run\n' +
+          'init-project again.\n'
+      );
+    } else if (status) {
+      process.stderr.write(
+        'Some files may already be changed. Your uncommitted changes are mixed\n' +
+          'in, so review `git status` and `git diff` and restore what init-project\n' +
+          'changed by hand, then fix the problem above and run it again.\n'
+      );
+    } else {
+      process.stderr.write(
+        'Some files may already be changed. Restore your last commit with\n' +
+          // -C: npm runs scripts from the root, the shell may be elsewhere.
+          `  git -C ${JSON.stringify(ROOT)} checkout -- . && git -C ${JSON.stringify(ROOT)} clean -fd\n` +
+          'then fix the problem above and run init-project again.\n'
       );
     }
     process.exit(1);
   });
 }
 
-module.exports = { parseArgs, validators, slugify, tsString, md };
+module.exports = { parseArgs, validators, slugify, tsString };

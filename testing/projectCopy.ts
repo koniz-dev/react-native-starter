@@ -35,10 +35,21 @@ function walk(root: string, dir = ''): string[] {
     });
 }
 
+/** A regular file (not a symlink or folder) outside the skipped folders. */
+function isProjectFile(root: string, file: string): boolean {
+  if (file.split('/').some(part => SKIPPED_DIRS.has(part))) return false;
+  try {
+    return fs.lstatSync(path.join(root, file)).isFile();
+  } catch {
+    return false;
+  }
+}
+
 /**
- * The project's files: tracked and untracked-but-not-ignored ones, or, in a
- * project that isn't a git repository (a downloaded ZIP), every file outside
- * the skipped folders.
+ * The project's regular files: tracked and untracked-but-not-ignored ones,
+ * or, in a project that isn't a git repository (a downloaded ZIP), every
+ * file outside the skipped folders. Symlinks (such as a linked
+ * node_modules) are left out.
  */
 export function projectFiles(root = PROJECT_ROOT): string[] {
   let listed: string;
@@ -51,9 +62,7 @@ export function projectFiles(root = PROJECT_ROOT): string[] {
   } catch {
     return walk(root);
   }
-  return listed
-    .split('\0')
-    .filter(file => file && fs.existsSync(path.join(root, file)));
+  return listed.split('\0').filter(file => file && isProjectFile(root, file));
 }
 
 /**

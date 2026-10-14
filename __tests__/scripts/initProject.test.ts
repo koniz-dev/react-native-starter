@@ -15,7 +15,6 @@ const init = require('../../scripts/init-project.js') as {
   validators: Record<string, (value: string) => string | null>;
   slugify(name: string): string;
   tsString(value: string): string;
-  md(value: string): string;
 };
 
 const ROOT = path.resolve(__dirname, '../..');
@@ -112,9 +111,6 @@ describe('init-project input', () => {
     expect(init.slugify('Mom’s Recipes')).toBe('moms-recipes');
     expect(init.slugify("Bob's App")).toBe('bobs-app');
     expect(init.tsString('Acme')).toBe("'Acme'");
-    // Markdown table cells: both | and \ escaped, so \| can't unescape a pipe.
-    expect(init.md('a|b')).toBe('a\\|b');
-    expect(init.md('a\\|b')).toBe('a\\\\\\|b');
     expect(init.tsString("Bob's")).toBe(`"Bob's"`);
   });
 });
@@ -136,6 +132,19 @@ function makeCopy(): string {
     'template'
   );
   return dir;
+}
+
+/** Prettier's check over the files format:check covers, with this Node. */
+function prettierCheck(dir: string) {
+  return spawnSync(
+    process.execPath,
+    [
+      require.resolve('prettier/bin/prettier.cjs'),
+      '--check',
+      '**/*.{ts,tsx,js,jsx,json,md}',
+    ],
+    { cwd: dir, encoding: 'utf8' }
+  );
 }
 
 function run(dir: string, args: string[]) {
@@ -396,12 +405,7 @@ describe('init-project on a copy of the template', () => {
     expect(leftovers.stdout).toBe('');
 
     // Formatted: Prettier finds nothing to change.
-    const prettier = spawnSync(
-      'npx',
-      ['prettier', '--check', '**/*.{ts,tsx,js,json,md}'],
-      { cwd: dir, encoding: 'utf8' }
-    );
-    expect(prettier.status).toBe(0);
+    expect(prettierCheck(dir).status).toBe(0);
   }, 60000);
 
   it('keeps the recipes with --keep-recipes, without their markers', () => {
@@ -424,8 +428,52 @@ describe('init-project on a copy of the template', () => {
     expect(markers.stdout).toBe('');
   }, 60000);
 
+  it('after a failure on uncommitted changes, never suggests discarding them', () => {
+    const dir = copy();
+    fs.writeFileSync(path.join(dir, 'NOTES.md'), 'my notes\n');
+    // A write that fails once init-project has started changing files.
+    fs.chmodSync(path.join(dir, 'app.config.ts'), 0o444);
+    const result = run(dir, [...IDENTITY, '--keep-demo', '--force']);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toMatch(/^init-project: EACCES/);
+    expect(result.stderr).toContain(
+      'restore what init-project\nchanged by hand'
+    );
+    expect(result.stderr).not.toMatch(/checkout|clean -fd/);
+    expect(read(dir, 'NOTES.md')).toBe('my notes\n');
+    expect(exists(dir, 'scripts/init-project.js')).toBe(true);
+  });
+
+  it('after a failure on a clean tree, prints a restore command for the project root', () => {
+    const dir = copy();
+    fs.chmodSync(path.join(dir, 'app.config.ts'), 0o444);
+    const result = run(dir, [...IDENTITY, '--keep-demo']);
+    expect(result.status).toBe(1);
+    // -C with the root, so it works from a subdirectory too.
+    const root = JSON.stringify(fs.realpathSync(dir));
+    expect(result.stderr.replace(/\/private\/var\//g, '/var/')).toContain(
+      `git -C ${root.replace(/\/private\/var\//g, '/var/')} checkout -- .`
+    );
+    expect(exists(dir, 'scripts/init-project.js')).toBe(true);
+  });
+
+  it('changes nothing, and keeps itself, when Prettier cannot format a result', () => {
+    const dir = copy();
+    // Work in progress that doesn't parse, in a file init-project rewrites.
+    fs.appendFileSync(path.join(dir, 'app.config.ts'), '\nconst = ;\n');
+    const before = gitStatus(dir);
+    const result = run(dir, [...IDENTITY, '--keep-demo', '--force']);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain(
+      "init-project: Prettier can't format the new app.config.ts"
+    );
+    expect(result.stderr).toContain('Nothing was changed.');
+    expect(gitStatus(dir)).toBe(before);
+    expect(exists(dir, 'scripts/init-project.js')).toBe(true);
+  });
+
   (HAS_DEMO ? it : it.skip)(
-    'after a failure on uncommitted changes, never suggests discarding them',
+    'says nothing was changed when remove-demo stops before changing anything',
     () => {
       const dir = copy();
       fs.appendFileSync(
@@ -434,43 +482,28 @@ describe('init-project on a copy of the template', () => {
         `\n<!-- @${'demo'} remove-block-start -->\nunterminated\n`
       );
       fs.writeFileSync(path.join(dir, 'NOTES.md'), 'my notes\n');
+      const before = gitStatus(dir);
       const result = run(dir, [...IDENTITY, '--remove-demo', '--force']);
       expect(result.status).toBe(1);
       expect(result.stderr).toContain(
         'docs/conventions.md: unterminated @' + 'demo block'
       );
-      expect(result.stderr).not.toMatch(/git (checkout|clean)/);
-      expect(read(dir, 'NOTES.md')).toBe('my notes\n');
+      expect(result.stderr).toMatch(/Nothing was changed\.\n$/);
+      expect(result.stderr).not.toMatch(/checkout|clean -fd/);
+      expect(gitStatus(dir)).toBe(before);
     }
   );
 
-  (HAS_DEMO ? it : it.skip)(
-    'after a failure on a clean tree, prints a restore command for the project root',
-    () => {
-      const dir = copy();
-      fs.appendFileSync(
-        path.join(dir, 'docs/conventions.md'),
-        `\n<!-- @${'demo'} remove-block-start -->\nunterminated\n`
-      );
-      execFileSync('git', ['commit', '-qam', 'broken marker'], {
-        cwd: dir,
-        env: {
-          ...process.env,
-          GIT_AUTHOR_NAME: 't',
-          GIT_AUTHOR_EMAIL: 't@example.com',
-          GIT_COMMITTER_NAME: 't',
-          GIT_COMMITTER_EMAIL: 't@example.com',
-        },
-      });
-      const result = run(dir, [...IDENTITY, '--remove-demo']);
-      expect(result.status).toBe(1);
-      // -C with the root, so it works from a subdirectory too.
-      const root = JSON.stringify(fs.realpathSync(dir));
-      expect(result.stderr.replace(/\/private\/var\//g, '/var/')).toContain(
-        `git -C ${root.replace(/\/private\/var\//g, '/var/')} checkout -- .`
-      );
-    }
-  );
+  it('without git, says it cannot check or undo, and never suggests git', () => {
+    const dir = copy();
+    fs.rmSync(path.join(dir, '.git'), { recursive: true, force: true });
+    fs.chmodSync(path.join(dir, 'app.config.ts'), 0o444);
+    const result = run(dir, [...IDENTITY, '--keep-demo']);
+    expect(result.stdout).toContain('this is not a git repository');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('restore them from your own copy');
+    expect(result.stderr).not.toMatch(/git -C|checkout|clean -fd/);
+  });
 
   it('removes the demo with --remove-demo and refuses a second run', () => {
     const dir = copy();

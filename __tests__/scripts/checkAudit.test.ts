@@ -6,6 +6,7 @@ import path from 'path';
 interface AllowlistEntry {
   id: string;
   package: string;
+  severity?: string;
   reviewBy?: string;
   tracking: string;
 }
@@ -54,6 +55,7 @@ function entry(pkg: string, reviewBy = '2027-01-09'): AllowlistEntry {
   return {
     id: `GHSA-${pkg}`,
     package: pkg,
+    severity: 'high',
     reviewBy,
     tracking: `https://github.com/advisories/GHSA-${pkg}`,
   };
@@ -121,6 +123,60 @@ describe('check-audit', () => {
       ]);
     }
   );
+
+  it('fails when an advisory is re-scored above its review', () => {
+    const { problems } = evaluate(
+      report('forge', 'critical'),
+      [entry('forge')],
+      TODAY
+    );
+    expect(problems).toEqual([
+      'forge GHSA-forge: now critical, reviewed as high; review it again.',
+    ]);
+  });
+
+  it('fails when npm reports the advisory on another package', () => {
+    const { problems } = evaluate(
+      report('forge', 'high'),
+      [{ ...entry('forge'), package: 'other' }],
+      TODAY
+    );
+    expect(problems).toEqual([
+      'GHSA-forge: allowlisted for other, but npm reports it on forge; review it for that package.',
+    ]);
+  });
+
+  it.each([
+    ['9999-12-31', false],
+    ['2027-04-14', false],
+    ['2027-04-13', true],
+  ])('accepts a reviewBy at most 183 days away (%s)', (reviewBy, accepted) => {
+    const { problems } = evaluate(
+      report('forge', 'high'),
+      [entry('forge', reviewBy)],
+      TODAY
+    );
+    expect(problems).toEqual(
+      accepted
+        ? []
+        : [
+            `scripts/audit-allowlist.json advisories[0]: "reviewBy" ${reviewBy} is more than 183 days away; review it again sooner`,
+          ]
+    );
+  });
+
+  it('fails when an entry has no severity, or not high or critical', () => {
+    for (const severity of [undefined, 'moderate']) {
+      const { problems } = evaluate(
+        report('forge', 'high'),
+        [{ ...entry('forge'), severity }],
+        TODAY
+      );
+      expect(problems).toEqual([
+        'scripts/audit-allowlist.json advisories[0]: "severity" must be high or critical',
+      ]);
+    }
+  });
 
   it('fails when an allowlist entry has no id, package, or tracking link', () => {
     const { problems } = evaluate(
