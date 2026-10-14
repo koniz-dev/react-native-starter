@@ -3,8 +3,8 @@
  * the page itself, so the documented code is what is tested) against a fake
  * backend with the shapes that page describes: success responses in a
  * `{ data }` envelope, a tokens-only login plus GET /me, rotating refresh
- * tokens, an error envelope, and revocation on logout. The requests go through the real auth clients, session service,
- * and token stores.
+ * tokens, an error envelope, and revocation on logout. The requests go
+ * through the real auth clients, session service, and token stores.
  */
 import fs from 'fs';
 import os from 'os';
@@ -17,10 +17,12 @@ import type {
 import { AxiosError, AxiosHeaders } from 'axios';
 import {
   authClients,
+  authRefreshClients,
   authService,
   setAuthAdapter,
   type AuthAdapter,
 } from '@/shared/session/authService';
+import { onSessionExpired } from '@/shared/session/session';
 import { STORAGE_KEYS } from '@/shared/storage/storage';
 import { secureStore } from '@/testing';
 import { linkDependencies } from '@/testing/projectCopy';
@@ -68,6 +70,8 @@ function fakeBackend() {
     refreshDown: false,
     /** Replaces the next success body, for a backend of another shape. */
     nextBody: undefined as unknown,
+    /** Holds the refresh endpoint's answer (after rotating) until it resolves. */
+    refreshGate: null as Promise<void> | null,
   };
   const issue = () => {
     state.issued += 1;
@@ -152,11 +156,14 @@ function fakeBackend() {
       if (!state.validRefresh.delete(refresh_token ?? '')) {
         return respond(config, 401, failure('invalid_refresh', 'Revoked'));
       }
-      return respond(config, 200, issue());
+      const tokens = issue();
+      // The backend has rotated the tokens; the answer is still on its way.
+      await state.refreshGate;
+      return respond(config, 200, tokens);
     }
-    if (method === 'DELETE' && url === '/sessions') {
+    if (method === 'POST' && url === '/sessions/revoke') {
+      // The refresh token is the credential; no access token needed.
       state.validRefresh.delete(refresh_token ?? '');
-      if (bearer) state.validAccess.delete(bearer);
       return respond(config, 204, null);
     }
     return respond(config, 404, failure('not_found', `${method} ${url}`));
@@ -165,22 +172,29 @@ function fakeBackend() {
 }
 
 let backend: ReturnType<typeof fakeBackend>;
-const originalAdapters = {
-  public: authClients.public.defaults.adapter,
-  authenticated: authClients.authenticated.defaults.adapter,
-};
+const allClients = [
+  authClients.public,
+  authClients.authenticated,
+  authRefreshClients.authenticated,
+];
+const originalAdapters = allClients.map(client => client.defaults.adapter);
+let expired: jest.Mock;
+let unsubscribe: () => void;
 
 beforeEach(() => {
   backend = fakeBackend();
-  authClients.public.defaults.adapter = backend.adapter;
-  authClients.authenticated.defaults.adapter = backend.adapter;
+  for (const client of allClients) client.defaults.adapter = backend.adapter;
   setAuthAdapter(myBackendAuthAdapter);
+  expired = jest.fn();
+  unsubscribe = onSessionExpired(expired);
 });
 
 afterEach(() => {
-  authClients.public.defaults.adapter = originalAdapters.public;
-  authClients.authenticated.defaults.adapter = originalAdapters.authenticated;
+  allClients.forEach((client, index) => {
+    client.defaults.adapter = originalAdapters[index];
+  });
   setAuthAdapter(null);
+  unsubscribe();
 });
 
 const signIn = () =>
@@ -304,19 +318,56 @@ describe('the documented AuthAdapter against a backend of another shape', () => 
     expect(secureStore.get(REFRESH_KEY)).toBe('refresh-2');
   });
 
-  it('revokes the refresh token on logout, with the access token still sent', async () => {
+  it('revokes the refresh token on logout', async () => {
     await signIn();
 
     await authService.logout();
 
     expect(backend.requests.at(-1)).toEqual({
-      method: 'DELETE',
-      url: '/sessions',
-      authorization: 'Bearer access-1',
+      method: 'POST',
+      url: '/sessions/revoke',
+      authorization: undefined,
       body: { refresh_token: 'refresh-1' },
     });
     expect(backend.state.validRefresh.has('refresh-1')).toBe(false);
     expect(secureStore.size).toBe(0);
+  });
+
+  it('revokes the refresh token on logout after the access token expired', async () => {
+    await signIn();
+    backend.state.validAccess.clear();
+
+    await authService.logout();
+
+    expect(backend.requests.map(r => r.url)).toEqual([
+      '/sessions',
+      '/me',
+      '/sessions/revoke',
+    ]);
+    expect(backend.state.validRefresh.size).toBe(0);
+    expect(secureStore.size).toBe(0);
+    expect(expired).not.toHaveBeenCalled();
+  });
+
+  it('revokes, and keeps nothing from, a refresh that finishes after logout', async () => {
+    await signIn();
+    backend.state.validAccess.clear();
+    let answer!: () => void;
+    backend.state.refreshGate = new Promise(resolve => (answer = resolve));
+
+    const profile = authService.fetchProfile().catch((error: unknown) => error);
+    // The refresh is on its way; meanwhile the user signs out.
+    await new Promise(resolve => setTimeout(resolve, 0));
+    await authService.logout();
+    answer();
+
+    await expect(profile).resolves.toMatchObject({ code: 'unauthorized' });
+    expect(secureStore.size).toBe(0);
+    expect(backend.state.validRefresh.size).toBe(0);
+    expect(backend.requests.at(-1)).toMatchObject({
+      url: '/sessions/revoke',
+      body: { refresh_token: 'refresh-2' },
+    });
   });
 
   it('signs out locally when the backend is unreachable on logout', async () => {
@@ -326,8 +377,8 @@ describe('the documented AuthAdapter against a backend of another shape', () => 
     await expect(authService.logout()).resolves.toBeUndefined();
 
     expect(backend.requests.at(-1)).toMatchObject({
-      method: 'DELETE',
-      url: '/sessions',
+      method: 'POST',
+      url: '/sessions/revoke',
     });
     expect(secureStore.size).toBe(0);
   });

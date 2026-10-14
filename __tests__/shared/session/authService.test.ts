@@ -2,6 +2,7 @@ import type { InternalAxiosRequestConfig } from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import {
   authClients,
+  authRefreshClients,
   authService,
   getAuthAdapter,
   notConfiguredAuthAdapter,
@@ -199,7 +200,7 @@ describe('authService with an adapter', () => {
     setAuthAdapter(fakeAdapter({ refresh }));
 
     await expect(refreshAccessToken()).resolves.toBe('refreshed-token');
-    expect(refresh).toHaveBeenCalledWith(authClients);
+    expect(refresh).toHaveBeenCalledWith(authRefreshClients);
     expect(SecureStore.setItemAsync).toHaveBeenCalledWith(
       'auth_token',
       'refreshed-token'

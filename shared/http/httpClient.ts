@@ -63,6 +63,13 @@ export interface HttpClientOptions {
    * 401 means "wrong credentials", not "session expired".
    */
   authenticated?: boolean;
+  /**
+   * With `authenticated`: on a 401 for the stored token, refresh it and then
+   * run the unauthorized handler (the default). Off for the client handed to
+   * the refresh itself: a 401 there just fails, so the refresh fails instead
+   * of waiting for itself.
+   */
+  handleUnauthorized?: boolean;
   /** Passed to axios; React Native defaults it to true (stores cookies). */
   withCredentials?: boolean;
 }
@@ -195,7 +202,12 @@ export function createHttpClient(options: HttpClientOptions): AxiosInstance {
   client.interceptors.response.use(undefined, async (error: AxiosError) => {
     const config = error.config as RetriableConfig | undefined;
     const sentToken = config?._sentToken;
-    if (!config || !sentToken || error.response?.status !== 401) {
+    if (
+      !config ||
+      !sentToken ||
+      error.response?.status !== 401 ||
+      options.handleUnauthorized === false
+    ) {
       return fail(error, config);
     }
     // Sent in a session that has ended since: the 401 says nothing about the

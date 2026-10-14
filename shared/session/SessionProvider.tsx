@@ -57,7 +57,12 @@ const SessionContext = createContext<SessionContextValue | null>(null);
 
 const SIGNED_OUT: Session = { status: 'signedOut', user: null };
 
-/** Reads the stored session; a storage failure counts as signed out. */
+/**
+ * Reads the stored session. A storage failure is logged and counts as signed
+ * out for this launch; the stored session is left alone, so a passing failure
+ * (such as a Keychain read while the device is locked) doesn't sign the user
+ * out for good.
+ */
 async function readStoredSession(): Promise<Session> {
   try {
     await clearSessionFromPreviousInstall();
@@ -67,8 +72,8 @@ async function readStoredSession(): Promise<Session> {
     // No token, e.g. after a reload on web, where the token lives in memory
     // only: drop the profile left in AsyncStorage (localStorage on web).
     await clearStoredSession();
-  } catch {
-    // Fall through to signed out.
+  } catch (error) {
+    logger.error('Restoring the session failed', error);
   }
   return SIGNED_OUT;
 }

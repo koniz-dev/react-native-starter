@@ -79,7 +79,8 @@ This example is for a backend with the shapes real backends commonly use:
   `GET /me`;
 - `POST /sessions/refresh` rotates the refresh token: it returns a new pair,
   and the old refresh token stops working;
-- `DELETE /sessions` revokes a refresh token.
+- `POST /sessions/revoke` takes `{ refresh_token }` and revokes it; it
+  needs no access token.
 
 The adapter checks every payload with zod before it uses it, as the
 [conventions](conventions.md#code-style) ask: a typed `http.post<Tokens>()`
@@ -185,6 +186,14 @@ export const myBackendAuthAdapter: AuthAdapter = {
           })
         ).data
       );
+      // Signed out (or in again) while this ran: the new tokens belong to
+      // no session. Revoke the refresh token instead of keeping it.
+      if ((await refreshTokens.get()) !== refreshToken) {
+        await http
+          .post('/sessions/revoke', { refresh_token: tokens.refresh_token })
+          .catch(() => undefined);
+        return null;
+      }
       // Rotation: keep the new refresh token; the old one no longer works.
       await refreshTokens.set(tokens.refresh_token);
       return tokens.access_token;
@@ -203,15 +212,17 @@ export const myBackendAuthAdapter: AuthAdapter = {
     }
   },
 
-  // Optional: end the session on the backend. Runs on sign-out while the
-  // access token is still stored; if it throws, the user is signed out anyway.
-  logout: async ({ authenticated }) => {
+  // Optional: end the session on the backend. Runs on sign-out; if it
+  // throws, the user is signed out anyway. The refresh token is the
+  // credential, so this works after the access token has expired.
+  logout: async ({ public: http }) => {
     const refreshToken = await refreshTokens.get();
-    await refreshTokens.clear();
-    if (refreshToken) {
-      await authenticated.delete('/sessions', {
-        data: { refresh_token: refreshToken },
-      });
+    try {
+      if (refreshToken) {
+        await http.post('/sessions/revoke', { refresh_token: refreshToken });
+      }
+    } finally {
+      await refreshTokens.clear();
     }
   },
 };
@@ -277,10 +288,21 @@ it sends the stored token, and there is none until `login` returns.
   request fails with that error. Anything else, `null` or any other error
   (a 4xx, a response that fails validation), means the refresh token was
   rejected: the user is signed out, so drop the refresh token first, as the
-  example does. A refresh that finishes after the user signed out is
-  discarded.
-- **Revocation.** Revoke and delete it in `logout`. Delete it before the
-  request, so a failed request doesn't leave it on the device.
+  example does.
+- **Sign-out during a refresh.** The service discards an access token from a
+  refresh that finishes after the user signed out (or in again), but it
+  can't see the refresh token your adapter stores. Before storing a rotated
+  one, check that the stored refresh token is still the one this refresh
+  used; if not, the session it belonged to is over, so revoke the new one,
+  as the example does.
+- **Revocation.** Revoke and delete it in `logout`. Revoke with the refresh
+  token through the `public` client, as the example does: the access token
+  has often expired by the time the user signs out, and the refresh token
+  alone identifies the session. Delete it in `finally`, so a failed request doesn't leave it on the
+  device.
+- **Clients.** `refresh` gets clients where a 401 on `authenticated` fails
+  the refresh (the user is signed out) instead of starting another refresh.
+  Make its requests through these clients, not the app's `api` client.
 
 ### Error messages
 

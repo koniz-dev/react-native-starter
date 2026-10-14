@@ -14,6 +14,7 @@ import {
 import { secureStore } from '@/testing';
 import { configureIntegrations } from '@/shared/integrations/setup';
 import { errorReporterSeam } from '@/shared/integrations/errorReporter';
+import { logger } from '@/shared/lib/logger';
 
 const user = { id: 1, email: 'emily@example.com', name: 'Emily Johnson' };
 
@@ -274,17 +275,21 @@ describe('first launch after an install', () => {
     expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('stored-token');
   });
 
-  it('keeps the token when the store cannot be read at launch', async () => {
+  it('keeps the token, and logs why, when the store cannot be read at launch', async () => {
     await setItem(STORAGE_KEYS.INSTALL_MARKER, true);
     await storeSession();
-    jest
-      .mocked(AsyncStorage.getItem)
-      .mockRejectedValueOnce(new Error('database is locked'));
+    const failure = new Error('database is locked');
+    jest.mocked(AsyncStorage.getItem).mockRejectedValueOnce(failure);
+    const logError = jest.spyOn(logger, 'error').mockImplementation(() => {});
 
     const first = renderRouter('./app', { initialUrl: '/' });
     // This launch can't tell, so it starts signed out, without clearing.
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('stored-token');
+    expect(logError).toHaveBeenCalledWith(
+      'Restoring the session failed',
+      failure
+    );
     first.unmount();
 
     renderRouter('./app', { initialUrl: '/' });

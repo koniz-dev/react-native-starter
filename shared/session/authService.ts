@@ -67,7 +67,9 @@ export interface AuthAdapter {
   fetchUser?(clients: AuthClients): Promise<unknown>;
   /**
    * Obtains a new access token, e.g. with a refresh token the adapter keeps;
-   * null when the session can't be refreshed. Called once on a 401.
+   * null when the session can't be refreshed. Called once on a 401. A 401 on
+   * `clients.authenticated` here rejects (and so signs the user out); it
+   * never starts another refresh. Use `clients`, not the app's `api` client.
    */
   refresh?(clients: AuthClients): Promise<string | null>;
   /**
@@ -109,6 +111,21 @@ const clients: AuthClients = {
 /** The auth backend clients (exported for tests and custom calls). */
 export const authClients: Readonly<AuthClients> = clients;
 
+/**
+ * The clients `refresh` gets (exported for tests): a 401 on `authenticated`
+ * fails the refresh, signing the user out, instead of starting another
+ * refresh that would wait for this one forever.
+ */
+export const authRefreshClients: Readonly<AuthClients> = {
+  public: clients.public,
+  authenticated: createHttpClient({
+    getBaseURL: () => getConfig().authApiUrl,
+    authenticated: true,
+    handleUnauthorized: false,
+    withCredentials: false,
+  }),
+};
+
 let adapter: AuthAdapter = notConfiguredAuthAdapter;
 
 /**
@@ -122,7 +139,7 @@ export function setAuthAdapter(next: AuthAdapter | null): void {
     refresh
       ? async () => {
           const generation = getSessionGeneration();
-          const token = await refresh(clients);
+          const token = await refresh(authRefreshClients);
           // Signed out (or in again) meanwhile: don't bring the old session back.
           if (generation !== getSessionGeneration()) return null;
           if (token) await getTokenStore().set(token);

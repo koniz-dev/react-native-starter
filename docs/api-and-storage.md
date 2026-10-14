@@ -175,6 +175,11 @@ picked by platform:
 | iOS / Android | iOS Keychain / Android Keystore (Expo SecureStore) | Still signed in        |
 | Web           | Memory only (`createMemoryTokenStore()`)           | Signed out             |
 
+If reading the stored session fails at launch (secure storage or
+AsyncStorage throws), the app starts signed out and logs `Restoring the
+session failed` with `logger.error`, so it is reported. The stored session
+is kept, and the next launch tries again.
+
 ### After a reinstall
 
 iOS keeps Keychain items when an app is deleted, but deletes its AsyncStorage.

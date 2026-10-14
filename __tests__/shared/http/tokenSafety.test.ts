@@ -17,7 +17,11 @@ import {
   setUnauthorizedHandler,
 } from '@/shared/session/session';
 import { getTokenStore, setTokenStore } from '@/shared/session/tokenStore';
-import { authService, setAuthAdapter } from '@/shared/session/authService';
+import {
+  authRefreshClients,
+  authService,
+  setAuthAdapter,
+} from '@/shared/session/authService';
 import { getItem, setItem, STORAGE_KEYS } from '@/shared/storage/storage';
 import { getConfig } from '@/shared/config/env';
 import { logger } from '@/shared/lib/logger';
@@ -376,6 +380,58 @@ describe('work that outlives its session', () => {
     expect(seen).toEqual(['Bearer token-A']);
     expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('token-B');
     expect(expired).not.toHaveBeenCalled();
+  });
+
+  it("doesn't refresh for a 401 sent in an earlier session with the same token", async () => {
+    const refresh = jest.fn(async () => 'token-A2');
+    useAdapter({ refresh });
+    await signInAs('A');
+    const client = authenticatedClient(async config => {
+      // A signs out and in again, and the backend issues the same token.
+      await authService.logout();
+      await signInAs('A');
+      throw httpError(config, 401);
+    });
+
+    await expect(client.get('/me')).rejects.toMatchObject({
+      code: 'unauthorized',
+    });
+    expect(refresh).not.toHaveBeenCalled();
+    expect(expired).not.toHaveBeenCalled();
+    expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('token-A');
+  });
+
+  it('signs out, never waits forever, when the refresh itself gets a 401', async () => {
+    // A backend that wants the old access token with the refresh token.
+    useAdapter({
+      refresh: async ({ authenticated }) => {
+        await authenticated.post('/sessions/refresh');
+        return 'token-A2';
+      },
+    });
+    await signInAs('A');
+    const original = authRefreshClients.authenticated.defaults.adapter;
+    const rejectAll: AxiosAdapter = async config => {
+      throw httpError(config, 401);
+    };
+    authRefreshClients.authenticated.defaults.adapter = rejectAll;
+    const client = authenticatedClient(rejectAll);
+
+    try {
+      await expect(client.get('/me')).rejects.toMatchObject({
+        code: 'unauthorized',
+      });
+      expect(expired).toHaveBeenCalledTimes(1);
+      expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
+      // The next session's 401 isn't stuck behind it either.
+      await signInAs('B');
+      await expect(client.get('/me')).rejects.toMatchObject({
+        code: 'unauthorized',
+      });
+      expect(expired).toHaveBeenCalledTimes(2);
+    } finally {
+      authRefreshClients.authenticated.defaults.adapter = original;
+    }
   });
 
   it("doesn't send a retry once its session has ended", async () => {
