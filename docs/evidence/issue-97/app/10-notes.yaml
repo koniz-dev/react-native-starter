@@ -1,0 +1,72 @@
+# Notes: signed out the tab asks to sign in; after sign-in it lists the
+# notes; a new note opens on its own screen; a note still loads after every
+# access token expires (the app refreshes it).
+appId: ${APP_ID}
+name: Notes with sign-in, create, and token refresh
+---
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'true'
+- tapOn:
+    id: tab-notes
+- extendedWaitUntil:
+    visible: Sign in to see your notes
+    timeout: 15000
+- tapOn:
+    id: notes-sign-in
+- runFlow: subflows/sign-in.yaml
+# Back on the tab, now with the list.
+# A list item is one element to screen readers ("Groceries, Milk, ..."), so
+# find it by its test ID.
+- extendedWaitUntil:
+    visible:
+      id: note-n1
+    timeout: 20000
+- takeScreenshot: 10-notes-list
+- tapOn:
+    id: notes-new
+- extendedWaitUntil:
+    visible:
+      id: note-title-input
+    timeout: 15000
+- tapOn:
+    id: note-save
+- assertVisible: Please enter a title
+- tapOn:
+    id: note-title-input
+- inputText: Dogfood
+- tapOn:
+    id: note-body-input
+- inputText: Written on a device
+- hideKeyboard
+- tapOn:
+    id: note-save
+- extendedWaitUntil:
+    visible:
+      id: note-title
+    timeout: 20000
+- assertVisible: Written on a device
+- takeScreenshot: 10-note-created
+# Every access token expires; opening a note must still work.
+- runScript:
+    file: scripts/backend.js
+    env:
+      ACTION: expire
+# The group's back button (the detail replaced New note, so it is first).
+- tapOn:
+    id: protected-back
+- extendedWaitUntil:
+    visible:
+      id: note-n1
+    timeout: 15000
+- tapOn:
+    id: note-n1
+- extendedWaitUntil:
+    visible: Milk, eggs, bread
+    timeout: 20000
+- runScript:
+    file: scripts/backend.js
+    env:
+      ACTION: assert-refreshed
+- takeScreenshot: 10-after-refresh

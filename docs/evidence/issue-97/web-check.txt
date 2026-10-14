@@ -1,0 +1,7 @@
+1. Notes tab signed out: prompt shown
+2. Signed in, back on the tab with the list
+3. Created: From the web at /notes/n3
+4. After every access token expired, the note loaded; refreshes: 1
+5. Photo uploaded: {"type":"image/png","size":22380}
+6. Signed out
+console errors: Failed to load resource: the server responded with a status of 401 (Unauthorized)  (the deliberate expiry)

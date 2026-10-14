@@ -1,0 +1,30 @@
+# Signs in on the Login screen with the test account from MAESTRO_E2E_USERNAME
+# and MAESTRO_E2E_PASSWORD (never committed). Login must be open; ends when
+# Login has closed. iOS workarounds copied from the template's demo subflow.
+appId: ${APP_ID}
+---
+- extendedWaitUntil:
+    visible: Welcome Back
+    timeout: 20000
+- tapOn:
+    id: login-username
+- inputText: ${MAESTRO_E2E_USERNAME}
+- tapOn:
+    id: login-password
+- inputText: ${MAESTRO_E2E_PASSWORD}
+- hideKeyboard
+# On iOS, hiding the keyboard can press its Go key, which already submits.
+- runFlow:
+    when:
+      visible:
+        id: login-submit
+    commands:
+      - tapOn:
+          id: login-submit
+# iOS may offer to save the password in a sheet over the app.
+- extendedWaitUntil:
+    notVisible: Welcome Back
+    timeout: 30000
+- tapOn:
+    text: Not Now
+    optional: true

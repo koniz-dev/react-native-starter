@@ -1,0 +1,5 @@
+16d4176 Profile photo: retry once after a network error (Android picker); flows for both platforms
+81b9941 Tests and Maestro flows for notes, token refresh, and the profile photo
+329cb21 Notes, profile photo, and PostHog adapter (tests and flows next)
+56c1b00 Connect the backend: AuthAdapter from the docs, Email sign-in
+f2e92f2 Initialize Pocket Notes from react-native-starter v1.1.10

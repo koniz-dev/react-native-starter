@@ -1,0 +1,27 @@
+iOS simulator (iPhone 16 Plus, iOS 18.6), Expo Go 57.0.9, dev backend with 60 s access tokens
+[Passed] Cold start opens Home (49s)
+[Passed] Back from Login returns Home (51s)
+[Passed] Notes with sign-in, create, and token refresh (1m 25s)
+[Passed] Profile photo upload (1m 6s)
+4/4 Flows Passed in 4m 10s
+Take screenshot dark-home... COMPLETED
+
+Android emulator (API 37), Expo Go
+[Passed] Cold start opens Home (1m 12s)
+[Passed] Back from Login returns Home (1m 4s)
+[Passed] Notes with sign-in, create, and token refresh (1m 57s)
+[Passed] Profile photo upload (1m 29s)
+4/4 Flows Passed in 5m 42s
+Take screenshot dark-home... COMPLETED
+
+Backend log of the iOS token-refresh run:
+2026-10-14T16:24:34.656Z GET /notes/n1 401 auth=missing
+2026-10-14T16:24:34.687Z POST /sessions/refresh 200 auth=missing
+2026-10-14T16:24:34.772Z GET /notes/n1 200 auth=ok
+2026-10-14T16:25:40.354Z POST /me/avatar 200 auth=ok
+
+Web (Chrome headless, production export):
+see web-check.txt
+
+App gates:
+Tests:       455 passed, 455 total

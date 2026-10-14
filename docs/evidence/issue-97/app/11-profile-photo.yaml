@@ -1,0 +1,51 @@
+# Profile photo: pick an image from the library and upload it (multipart).
+appId: ${APP_ID}
+name: Profile photo upload
+---
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'true'
+- tapOn:
+    id: sign-in-button
+- runFlow: subflows/sign-in.yaml
+- extendedWaitUntil:
+    visible:
+      id: profile-button
+    timeout: 20000
+- tapOn:
+    id: profile-button
+- extendedWaitUntil:
+    visible:
+      id: avatar-change
+    timeout: 20000
+- tapOn:
+    id: avatar-change
+# The system photo picker (both platforms show a Photos tab), then a photo:
+# on iOS a sample photo (second cell); on Android the one the test pushed.
+- extendedWaitUntil:
+    visible: Photos
+    timeout: 20000
+- takeScreenshot: 11-picker
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn:
+          point: 50%,27%
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn:
+          point: 16%,60%
+      # Expo Go's picker confirms the selection with Done.
+      - tapOn:
+          text: Done
+          optional: true
+- extendedWaitUntil:
+    visible: Photo updated
+    timeout: 30000
+- assertVisible:
+    id: avatar-image
+- takeScreenshot: 11-photo-updated
