@@ -101,3 +101,12 @@ When you add a feature that needs one of these, remove it from the list (or
 set `faceIDPermission` to the text iOS shows), and add any new permission
 with its plugin's options or `ios.infoPlist`. See
 [Expo: permissions](https://docs.expo.dev/guides/permissions/).
+
+**Libraries with a config plugin.** `app.config.ts` is code, so
+`npx expo install <library>` can't add the library's plugin for you (it
+edits only a static app config). Add it to `plugins` in `app.config.ts`
+yourself, with the options its docs list, such as the text iOS shows when
+asking for photos:
+`['expo-image-picker', { photosPermission: 'Your photos set your profile picture.' }]`.
+Expo Go doesn't need the plugin; native builds do, so check them after
+adding a library.

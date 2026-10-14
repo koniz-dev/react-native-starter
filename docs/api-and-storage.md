@@ -43,19 +43,27 @@ export const paymentsApi = createHttpClient({
 
 Post a `FormData`; the client sends it as `multipart/form-data` (React
 Native and the browser add the boundary). On iOS and Android a file part
-is an object with the file's `uri`, `name`, and `type`, for example from
-an image picker:
+is an object with the file's `uri`, `name`, and `type`. Take the name and
+type from what picked the file: an iOS photo is often HEIC
+(`image/heic`), not JPEG.
 
 ```ts
 import { api } from '@/shared/http/api';
 
-export async function uploadAvatar(uri: string): Promise<void> {
+/** What an image picker returns, e.g. an expo-image-picker asset. */
+interface PickedFile {
+  uri: string;
+  fileName?: string | null;
+  mimeType?: string;
+}
+
+export async function uploadAvatar(file: PickedFile): Promise<void> {
   const form = new FormData();
   // React Native reads the file at `uri`; the cast is for the DOM typings.
   form.append('avatar', {
-    uri,
-    name: 'avatar.jpg',
-    type: 'image/jpeg',
+    uri: file.uri,
+    name: file.fileName ?? 'upload',
+    type: file.mimeType ?? 'application/octet-stream',
   } as unknown as Blob);
   await api.post('/me/avatar', form);
 }

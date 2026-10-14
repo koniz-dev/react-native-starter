@@ -5,3 +5,7 @@
 // that check validation call parseEnv() directly with their own values.
 process.env.EXPO_PUBLIC_API_URL = 'https://api.example.com';
 process.env.EXPO_PUBLIC_AUTH_API_URL = 'https://auth.example.com';
+// Only warnings and errors reach the console, so a test run's output shows
+// failures, not every screen view and failed request the app logs at debug
+// or info. Tests that check logging spy on the logger or console directly.
+process.env.EXPO_PUBLIC_LOG_LEVEL = 'warn';

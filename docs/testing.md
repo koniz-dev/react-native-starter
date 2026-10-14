@@ -176,57 +176,20 @@ api.defaults.adapter = async config => ({
 ```
 
 To check a screen's states in order, hold each request open and answer it
-from the test. For the `PostsScreen` in
+from the test with the helpers in `@/testing` (`holdRequests`, `ok`,
+`httpError`; `holdRequests(client)` for another client). Keep helpers of
+your own in `testing/` too: Jest runs every file under `__tests__/` as a
+test file. For the `PostsScreen` in
 [Connect Your Backend](connect-your-backend.md#3-add-endpoints-for-a-feature):
 
 ```tsx
 // __tests__/features/posts/PostsScreen.test.tsx
 import type { ReactElement } from 'react';
-import {
-  AxiosError,
-  AxiosHeaders,
-  type AxiosAdapter,
-  type AxiosResponse,
-  type InternalAxiosRequestConfig,
-} from 'axios';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react-native';
 import { api } from '@/shared/http/api';
-import { renderWithProviders } from '@/testing';
+import { holdRequests, httpError, ok, renderWithProviders } from '@/testing';
 
 declare function PostsScreen(): ReactElement; // from features/posts/screens/
-
-interface HeldRequest {
-  config: InternalAxiosRequestConfig;
-  resolve: (response: AxiosResponse) => void;
-  reject: (error: unknown) => void;
-}
-
-/** Replaces the API's adapter: each request waits until the test answers. */
-function holdRequests(): HeldRequest[] {
-  const held: HeldRequest[] = [];
-  api.defaults.adapter = (config =>
-    new Promise((resolve, reject) =>
-      held.push({ config, resolve, reject })
-    )) as AxiosAdapter;
-  return held;
-}
-
-const ok = (config: InternalAxiosRequestConfig, data: unknown) => ({
-  data,
-  status: 200,
-  statusText: 'OK',
-  headers: {},
-  config,
-});
-
-const unavailable = (config: InternalAxiosRequestConfig) =>
-  new AxiosError('Request failed', 'ERR_BAD_RESPONSE', config, null, {
-    data: { message: 'Service unavailable' },
-    status: 503,
-    statusText: 'Service Unavailable',
-    headers: new AxiosHeaders(),
-    config,
-  });
 
 const originalAdapter = api.defaults.adapter;
 afterEach(() => {
@@ -241,7 +204,11 @@ it('shows loading, then the error, and Try again loads the list', async () => {
   await waitFor(() => expect(requests).toHaveLength(1));
   expect(requests[0]?.config.url).toBe('/posts');
 
-  await act(async () => requests[0]?.reject(unavailable(requests[0].config)));
+  await act(async () =>
+    requests[0]?.reject(
+      httpError(requests[0].config, 503, { message: 'Service unavailable' })
+    )
+  );
   // A 5xx shows translated text, not the server's body.
   expect(
     await screen.findByText('The server had a problem. Please try again later.')
@@ -364,8 +331,9 @@ The demo adds flows that need it; `npm run remove-demo` deletes them with it:
 | `05-explore-error-retry.yaml` | Explore shows the API error, then Retry loads the list (local mock API)                     |
 | `07-profile.yaml`             | View profile opens the protected screen, which reloads the user; Back, then Log out from it |
 
-They sign in with the demo account (`subflows/sign-in.yaml`), which the e2e
-mock serves, and `dark-mode.yaml` also screenshots Explore.
+They sign in with the demo account, which the e2e mock serves (`run.sh`
+uses it unless `MAESTRO_E2E_USERNAME` is set), and `dark-mode.yaml` also
+screenshots Explore.
 
 <!-- @demo remove-block-end -->
 
@@ -383,6 +351,33 @@ and no network access. On Android it sets up `adb reverse` for Metro and for eve
 `localhost` URL it uses. It runs the numbered flows, then switches the device
 to dark mode for `dark-mode.yaml` and back. Results, screenshots, and a JUnit
 report go to `e2e-results/<platform>/` (gitignored).
+
+### Writing a flow
+
+Two subflows in `.maestro/subflows/` cover what most flows start with:
+
+- `open-app.yaml` opens the app and waits for Home; with
+  `CLEAR_STATE: 'true'` it starts from a fresh install, signed out.
+- `open-login.yaml` opens Login from Home, and `sign-in.yaml` signs in on
+  it with `MAESTRO_E2E_USERNAME` and `MAESTRO_E2E_PASSWORD`. It handles
+  what iOS adds around a sign-in (the keyboard's Go key submitting the form,
+  the "Save Password?" sheet), and ends once Login has closed:
+
+```yaml
+- runFlow:
+    file: subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'true'
+- runFlow: subflows/open-login.yaml
+- runFlow: subflows/sign-in.yaml
+- assertVisible: Signed in as Ada Lovelace
+```
+
+Select elements by `testID` (`id:` in Maestro) rather than by text when the
+text is inside a larger element: on iOS a Paper `List.Item` is one element
+whose label joins its title and description, so `tapOn: <title>` doesn't
+find it. Flows get `API_URL` and `AUTH_API_URL`, the backend's URLs for the
+run, for a `runScript` that seeds or changes data on it.
 
 The e2e mock is there so a flow can check an error state without a real
 backend failing: a flow switches it between `ok` and `error`
@@ -457,10 +452,9 @@ E2E_API_URL=http://localhost:4000 E2E_BACKEND_CMD="node scripts/<your-mock>.js" 
 ```
 
 - **Signed-in flows** sign in through the Login screen with a test account,
-  never a real user. Maestro passes `MAESTRO_*` variables to every flow, so a
-  flow types `${MAESTRO_E2E_USERNAME}` and the password never goes in the
-  repository. Start the flow with `.maestro/subflows/open-app.yaml` and
-  `CLEAR_STATE: 'true'` so it begins signed out.
+  never a real user, using `subflows/sign-in.yaml` ([Writing a
+  flow](#writing-a-flow)). Maestro passes `MAESTRO_*` variables to every
+  flow, so the password never goes in the repository.
 - **The results contain the test account.** Maestro writes the values of
   those variables into `e2e-results/` (`commands.json` and its logs), and the
   manual Android workflow uploads that folder as an artifact. Use an account

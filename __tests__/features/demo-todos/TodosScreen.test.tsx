@@ -1,9 +1,4 @@
-import {
-  AxiosError,
-  AxiosHeaders,
-  type AxiosAdapter,
-  type InternalAxiosRequestConfig,
-} from 'axios';
+import type { InternalAxiosRequestConfig } from 'axios';
 import { AccessibilityInfo, StyleSheet } from 'react-native';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react-native';
 import { TodosScreen } from '@/features/demo-todos/screens/TodosScreen';
@@ -11,7 +6,7 @@ import type { Todo } from '@/features/demo-todos/types';
 import { api } from '@/shared/http/api';
 import { logger } from '@/shared/lib/logger';
 import { DocumentTitle } from '@/shared/ui/DocumentTitle';
-import { renderWithProviders } from '@/testing';
+import { holdRequests, httpError, ok, renderWithProviders } from '@/testing';
 
 const todos: Todo[] = Array.from({ length: 12 }, (_, index) => ({
   id: index + 1,
@@ -20,33 +15,9 @@ const todos: Todo[] = Array.from({ length: 12 }, (_, index) => ({
   completed: index === 0,
 }));
 
-function ok(config: InternalAxiosRequestConfig, data: unknown) {
-  return { data, status: 200, statusText: 'OK', headers: {}, config };
-}
-
-function serverError(config: InternalAxiosRequestConfig) {
-  return new AxiosError('Request failed', 'ERR_BAD_RESPONSE', config, null, {
-    data: { message: 'Service unavailable' },
-    status: 503,
-    statusText: 'Service Unavailable',
-    headers: new AxiosHeaders(),
-    config,
-  });
-}
-
-/** Lets a test decide, request by request, how the API answers. */
-function controlledApi() {
-  const pending: {
-    config: InternalAxiosRequestConfig;
-    resolve: (value: ReturnType<typeof ok>) => void;
-    reject: (error: unknown) => void;
-  }[] = [];
-  api.defaults.adapter = (config =>
-    new Promise((resolve, reject) =>
-      pending.push({ config, resolve, reject })
-    )) as AxiosAdapter;
-  return pending;
-}
+/** The 503 the tests answer with. */
+const serverError = (config: InternalAxiosRequestConfig) =>
+  httpError(config, 503, { message: 'Service unavailable' });
 
 const originalAdapter = api.defaults.adapter;
 afterEach(() => {
@@ -56,7 +27,7 @@ afterEach(() => {
 
 describe('<TodosScreen /> (Explore)', () => {
   it('goes from loading to an error, then Retry loads the list', async () => {
-    const requests = controlledApi();
+    const requests = holdRequests();
     renderWithProviders(<TodosScreen />);
 
     expect(screen.getByText('Loading todos...')).toBeTruthy();
@@ -97,7 +68,7 @@ describe('<TodosScreen /> (Explore)', () => {
   it('announces the error from a live region, and leaves server errors unlogged', async () => {
     const logged = jest.spyOn(logger, 'error');
     const announce = jest.spyOn(AccessibilityInfo, 'announceForAccessibility');
-    const requests = controlledApi();
+    const requests = holdRequests();
     renderWithProviders(<TodosScreen />);
     await waitFor(() => expect(requests).toHaveLength(1));
 
@@ -114,7 +85,7 @@ describe('<TodosScreen /> (Explore)', () => {
   });
 
   it('keeps the list on screen while it reloads', async () => {
-    const requests = controlledApi();
+    const requests = holdRequests();
     renderWithProviders(<TodosScreen />);
     await waitFor(() => expect(requests).toHaveLength(1));
     await act(async () => requests[0]?.resolve(ok(requests[0].config, todos)));
@@ -137,7 +108,7 @@ describe('<TodosScreen /> (Explore)', () => {
 
   it('logs a response that fails validation and shows a generic message', async () => {
     const logged = jest.spyOn(logger, 'error').mockImplementation(() => {});
-    const requests = controlledApi();
+    const requests = holdRequests();
     renderWithProviders(<TodosScreen />);
     await waitFor(() => expect(requests).toHaveLength(1));
 
@@ -155,7 +126,7 @@ describe('<TodosScreen /> (Explore)', () => {
   });
 
   it('shows the empty state for an empty list', async () => {
-    const requests = controlledApi();
+    const requests = holdRequests();
     renderWithProviders(<TodosScreen />);
     await waitFor(() => expect(requests).toHaveLength(1));
 

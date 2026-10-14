@@ -1,5 +1,6 @@
 import {
   createLogger,
+  logger,
   redact,
   settingsFromConfig,
   type LoggerSettings,
@@ -112,9 +113,10 @@ describe('logger', () => {
     });
 
     it('uses the configured level from shared/config/env.ts', () => {
-      // jest.setup.env.js runs tests as a development build.
+      // jest.setup.env.js runs tests as a development build, with the
+      // console level at warn.
       expect(settingsFromConfig()).toEqual({
-        minLevel: 'debug',
+        minLevel: 'warn',
         development: true,
       });
     });
@@ -149,8 +151,9 @@ describe('logger', () => {
       throw new TypeError('Unexpected');
     }
 
-    // The app's logger, as a development build (jest.setup.env.js) writes it:
-    // console.warn is what raises a LogBox toast in React Native.
+    // The level the HTTP client logs each failure at: console.warn is what
+    // raises a LogBox toast in React Native. (Which levels reach the console
+    // in each build is the next test.)
     it.each([
       ['client', 'info', 'API GET /notes failed: client (422)'],
       ['server', 'info', 'API GET /notes failed: server (503)'],
@@ -161,8 +164,14 @@ describe('logger', () => {
       ['unknown', 'warn', 'API request failed: unknown'],
       ['canceled', 'debug', 'API request failed: canceled'],
     ] as const)(
-      'a %s failure is written with console.%s in development',
+      'a %s failure is logged with logger.%s',
       async (code, method, message) => {
+        const spies = {
+          debug: jest.spyOn(logger, 'debug'),
+          info: jest.spyOn(logger, 'info'),
+          warn: jest.spyOn(logger, 'warn'),
+          error: jest.spyOn(logger, 'error'),
+        };
         const client = createHttpClient({
           getBaseURL: () => 'https://api.example.com',
         });
@@ -170,10 +179,9 @@ describe('logger', () => {
 
         await expect(client.get('/notes')).rejects.toMatchObject({ code });
 
-        expect(consoleSpies[method]).toHaveBeenCalledWith(message);
+        expect(spies[method]).toHaveBeenCalledWith(message);
         for (const other of ['debug', 'info', 'warn', 'error'] as const) {
-          if (other !== method)
-            expect(consoleSpies[other]).not.toHaveBeenCalled();
+          if (other !== method) expect(spies[other]).not.toHaveBeenCalled();
         }
         expect(reporter.captureException).not.toHaveBeenCalled();
         expect(reporter.captureMessage).not.toHaveBeenCalled();

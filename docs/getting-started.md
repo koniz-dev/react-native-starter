@@ -97,6 +97,20 @@ npm start
 `npm ci` installs the exact versions in `package-lock.json`; keep the lockfile
 (regenerating it can pull versions that don't match the Expo SDK).
 
+npm's output looks worse than it is. These are expected:
+
+- **Deprecation warnings** (`inflight`, `glob`, `uuid`, `eslint`, ...) come
+  from Expo's, Metro's, and Jest's own dependencies; they go away as those
+  tools update them.
+- **"1 package has install scripts not yet covered by allowScripts:
+  fsevents"**: fsevents ships its prebuilt binary, so it works without its
+  install script.
+- **"N vulnerabilities (… high)"** after `npm install` or `npx expo install`
+  counts every advisory in the tree, including development tools. `npm run
+audit:check` is the check that matters: it fails on an unreviewed high or
+  critical advisory in the app's runtime dependencies, and lists the
+  reviewed ones (see [Dependency advisories](#dependency-advisories)).
+
 Set your backend URLs in `.env` (`EXPO_PUBLIC_API_URL`,
 `EXPO_PUBLIC_AUTH_API_URL`); see
 [Connect Your Backend](connect-your-backend.md). While they are missing, the

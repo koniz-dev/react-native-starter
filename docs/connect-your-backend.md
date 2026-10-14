@@ -262,7 +262,33 @@ your backend calls them; map them in `login`, as the example does with
 `email: username`. To label the field "Email", change `'login.username'` in
 `shared/i18n/en.ts`; for the email keyboard and autofill, also set
 `keyboardType="email-address"` and `autoComplete="email"` on the
-`login-username` field in `features/auth/screens/LoginScreen.tsx`.
+`login-username` field in `features/auth/screens/LoginScreen.tsx`. Two
+tests in `__tests__/features/auth/LoginScreen.test.tsx` pin the label and
+`autoComplete`; update them with it.
+
+### More fields on the user
+
+The signed-in user the app keeps is `AuthUser` (`id`, `email`, `name`) in
+`shared/session/authService.ts`. To keep another field, such as an avatar
+URL, add it there in three places:
+
+- the `AuthUser` interface;
+- `StoredUserSchema`, as an optional field, so a profile stored by an
+  earlier version of the app still validates;
+- your adapter's `normalizeUser`, which maps it from your payload.
+
+Screens then read it from `useSession().session.user`. Data that changes
+often, or that only one screen needs, is better loaded by that screen from
+your API (with `useFetch`) than stored in the session.
+
+### Testing your adapter
+
+`__tests__/shared/session/realBackendAdapter.test.ts` tests the example
+above, taken from this page. Once your adapter has its own file, such as
+`features/auth/<backend>Adapter.ts`, point the test at it, or `test:ci`
+fails the coverage threshold on your file: delete `loadDocumentedAdapter()`
+and the imports only it uses, and import your adapter in its place. Then
+change the test's fake backend to your API's shapes.
 
 ### A login response without the user
 
@@ -316,9 +342,8 @@ message you want.
 `__tests__/shared/session/realBackendAdapter.test.ts` runs this example,
 taken from this page, against a fake backend with these shapes. It reads
 the snippet that starts with `// features/auth/myBackendAdapter.ts`, so it
-fails if you edit that snippet or delete this page. Once your own adapter
-exists, point the test at it (import it instead of loading the snippet), or
-delete the test with the page.
+fails if you edit that snippet or delete this page; see
+[Testing your adapter](#testing-your-adapter).
 
 Screens read the session with `useSession()`:
 
