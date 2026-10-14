@@ -4,6 +4,7 @@ import { ProfileScreen } from '@/features/auth/screens/ProfileScreen';
 import { ApiError } from '@/shared/http/apiError';
 import { authService } from '@/shared/session/authService';
 import { logger } from '@/shared/lib/logger';
+import { DocumentTitle } from '@/shared/ui/DocumentTitle';
 import { setItem, STORAGE_KEYS } from '@/shared/storage/storage';
 import { renderWithProviders, secureStore } from '@/testing';
 
@@ -26,7 +27,35 @@ describe('<ProfileScreen />', () => {
 
     await findByTestId('profile-logout');
     await waitForRefresh(queryByTestId);
-    expect(getAllByText('—')).toHaveLength(2);
+    expect(getAllByText('Not available')).toHaveLength(2);
+  });
+
+  it('names the browser tab', async () => {
+    await signInWithoutProfile();
+    jest.spyOn(authService, 'fetchProfile').mockResolvedValue(null);
+
+    const view = renderWithProviders(<ProfileScreen />, { withSession: true });
+
+    await view.findByTestId('profile-logout');
+    await waitForRefresh(view.queryByTestId);
+    expect(view.UNSAFE_getByType(DocumentTitle).props.title).toBe('Profile');
+  });
+
+  it('shows the placeholder for an empty name', async () => {
+    await signInWithoutProfile();
+    await setItem(STORAGE_KEYS.USER_DATA, {
+      id: 1,
+      email: 'emily@example.com',
+      name: ' ',
+    });
+    jest.spyOn(authService, 'fetchProfile').mockResolvedValue(null);
+
+    const { findByText, getByText } = renderWithProviders(<ProfileScreen />, {
+      withSession: true,
+    });
+
+    expect(await findByText('emily@example.com')).toBeTruthy();
+    expect(getByText('Not available')).toBeTruthy();
   });
 
   it('shows and announces a failed reload in a live region', async () => {

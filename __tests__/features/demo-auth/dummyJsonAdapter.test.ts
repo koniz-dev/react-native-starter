@@ -50,11 +50,19 @@ describe('DummyJSON auth adapter', () => {
     ).toEqual({ id: 2, email: 'x@y.z', name: 'x@y.z' });
   });
 
-  it('rejects a payload without user information', () => {
-    expect(() => dummyJsonAuthAdapter.normalizeUser({ id: 1 })).toThrow(
+  it.each([
+    ['without an email', { id: 1 }],
+    ['undefined', undefined],
+    ['with an email that is not a string', { id: 1, email: 42 }],
+    [
+      'with an id that is not a number',
+      { id: { nested: true }, email: 'a@b.c' },
+    ],
+    ['with a name that is not a string', { ...dummyUser, firstName: {} }],
+  ])('rejects a user payload %s', (_case, payload) => {
+    expect(() => dummyJsonAuthAdapter.normalizeUser(payload)).toThrow(
       'did not include user information'
     );
-    expect(() => dummyJsonAuthAdapter.normalizeUser(undefined)).toThrow();
   });
 
   it('loads the current user from /auth/me with the authenticated client', async () => {

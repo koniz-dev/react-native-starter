@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -39,14 +39,32 @@ export function LoginScreen() {
   const { signIn } = useSession();
   // Set synchronously, so a second "Go" before the re-render is ignored.
   const submittingRef = useRef(false);
+  const repeatErrorRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(repeatErrorRef.current), []);
   useAnnouncement(error);
 
   const handleLogin = async () => {
     if (submittingRef.current) return;
+    clearTimeout(repeatErrorRef.current);
     const empty = { username: !username.trim(), password: !password.trim() };
     if (empty.username || empty.password) {
       setMissing(empty);
-      setError(t('login.error.emptyFields'));
+      // Name the missing field in words, not only by the field's color.
+      const message = t(
+        empty.username && empty.password
+          ? 'login.error.emptyFields'
+          : empty.username
+            ? 'login.error.usernameRequired'
+            : 'login.error.passwordRequired'
+      );
+      if (message === error) {
+        // The same message again: clear it for a moment, so screen readers
+        // (the live region, and the iOS announcement) say it again.
+        setError(null);
+        repeatErrorRef.current = setTimeout(() => setError(message), 100);
+      } else {
+        setError(message);
+      }
       return;
     }
 
@@ -136,7 +154,7 @@ export function LoginScreen() {
               autoCapitalize="none"
               autoCorrect={false}
               spellCheck={false}
-              autoComplete="password"
+              autoComplete="current-password"
               textContentType="password"
               returnKeyType="go"
               onSubmitEditing={submit}

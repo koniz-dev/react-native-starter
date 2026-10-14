@@ -41,8 +41,9 @@ export function HomeScreen() {
                   until the stored session has been read. */}
               {session.status === 'signedIn'
                 ? t('home.session.signedIn', {
+                    // `||`: an empty name falls back too.
                     name:
-                      session.user?.name ??
+                      session.user?.name.trim() ||
                       t('home.session.signedInFallbackName'),
                   })
                 : t('home.session.signedOut')}

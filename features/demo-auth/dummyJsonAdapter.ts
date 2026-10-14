@@ -3,16 +3,18 @@
  * public backend used when EXPO_PUBLIC_USE_DEMO_BACKENDS=true. Replace it
  * with an adapter for your backend; see docs/connect-your-backend.md.
  */
+import { z } from 'zod';
 import type { AuthAdapter, AuthUser } from '@/shared/session/authService';
 
-interface DummyJsonUser {
-  id?: number;
-  email?: string;
-  firstName?: string;
-  lastName?: string;
-}
+/** The fields of DummyJSON's user payload the app uses, checked with zod. */
+const DummyJsonUserSchema = z.object({
+  id: z.number(),
+  email: z.string().min(1),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+});
 
-interface DummyJsonLoginResponse extends DummyJsonUser {
+interface DummyJsonLoginResponse {
   accessToken?: string;
 }
 
@@ -32,12 +34,14 @@ export const dummyJsonAuthAdapter: AuthAdapter = {
   },
 
   normalizeUser: (raw): AuthUser => {
-    const data = (raw ?? {}) as DummyJsonUser;
-    if (!data.id || !data.email) {
+    const result = DummyJsonUserSchema.safeParse(raw);
+    if (!result.success) {
       throw new Error(
-        'The authentication response did not include user information'
+        'The authentication response did not include user information',
+        { cause: result.error }
       );
     }
+    const data = result.data;
     return {
       id: data.id,
       email: data.email,
@@ -47,7 +51,7 @@ export const dummyJsonAuthAdapter: AuthAdapter = {
   },
 
   fetchUser: async ({ authenticated }) => {
-    const { data } = await authenticated.get<DummyJsonUser>('/auth/me');
+    const { data } = await authenticated.get<unknown>('/auth/me');
     return data;
   },
 };

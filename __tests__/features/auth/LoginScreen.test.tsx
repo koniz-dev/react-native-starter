@@ -56,6 +56,7 @@ import { renderWithProviders } from '@/testing';
 import { useSession } from '@/shared/session/SessionProvider';
 import { authService } from '@/shared/session/authService';
 import { logger } from '@/shared/lib/logger';
+import { DocumentTitle } from '@/shared/ui/DocumentTitle';
 
 /** Shows the provider's session status so tests can see sign-in take effect. */
 function SessionProbe() {
@@ -185,16 +186,18 @@ describe('<LoginScreen />', () => {
     fireEvent.changeText(getByTestId('login-username'), 'emily');
     fireEvent.press(getByText('Sign In'));
 
-    expect(await findByText('Please fill in all fields')).toBeTruthy();
+    expect(await findByText('Please enter your password')).toBeTruthy();
     expect(getByTestId('login-username').props.error).toBe(false);
     expect(getByTestId('login-password').props.error).toBe(true);
   });
 
-  it('masks the password and titles the screen for screen readers', async () => {
-    const { getByTestId, getByRole } = await renderLoginReady();
+  it('masks the password and titles the screen for screen readers and the browser tab', async () => {
+    const { getByTestId, getByRole, UNSAFE_getByType } =
+      await renderLoginReady();
+    expect(UNSAFE_getByType(DocumentTitle).props.title).toBe('Sign in');
     expect(getByTestId('login-password').props).toMatchObject({
       secureTextEntry: true,
-      autoComplete: 'password',
+      autoComplete: 'current-password',
     });
     expect(getByTestId('login-username').props.autoComplete).toBe('username');
     expect(getByRole('header', { name: 'Welcome Back' })).toBeTruthy();
@@ -294,6 +297,22 @@ describe('<LoginScreen />', () => {
     }
   );
 
+  it('says the same empty-field error again on a second try (iOS and live region)', async () => {
+    jest.replaceProperty(Platform, 'OS', 'ios');
+    const announce = jest.spyOn(AccessibilityInfo, 'announceForAccessibility');
+    const { getByTestId, getByText, findByText } = renderLogin();
+    const shown = () => getByTestId('login-error').props.children;
+
+    fireEvent.press(getByText('Sign In'));
+    expect(await findByText('Please fill in all fields')).toBeTruthy();
+    fireEvent.press(getByText('Sign In'));
+    // Cleared for a moment, so the live region changes, then shown again.
+    expect(shown()).toBe('');
+    await waitFor(() => expect(shown()).toBe('Please fill in all fields'));
+
+    expect(announce).toHaveBeenCalledTimes(2);
+  });
+
   it('clears the empty-field marks once both fields are filled', async () => {
     jest
       .spyOn(authService, 'login')
@@ -347,13 +366,18 @@ describe('<LoginScreen />', () => {
   );
 
   it.each([
-    ['both fields are empty', '', ''],
-    ['the password is empty', 'emily', ''],
-    ['the username is empty', '', 'secret-pass'],
-    ['the username is only spaces', '   ', 'secret-pass'],
+    ['both fields are empty', '', '', 'Please fill in all fields'],
+    ['the password is empty', 'emily', '', 'Please enter your password'],
+    ['the username is empty', '', 'secret-pass', 'Please enter your username'],
+    [
+      'the username is only spaces',
+      '   ',
+      'secret-pass',
+      'Please enter your username',
+    ],
   ])(
-    'asks for both fields and does not sign in when %s',
-    async (_case, username, password) => {
+    'names what is missing and does not sign in when %s',
+    async (_case, username, password, message) => {
       const login = jest.spyOn(authService, 'login');
       const { getByTestId, getByText, findByText } = renderLogin();
 
@@ -361,7 +385,7 @@ describe('<LoginScreen />', () => {
       fireEvent.changeText(getByTestId('login-password'), password);
       fireEvent.press(getByText('Sign In'));
 
-      expect(await findByText('Please fill in all fields')).toBeTruthy();
+      expect(await findByText(message)).toBeTruthy();
       expect(login).not.toHaveBeenCalled();
       expect(getByTestId('session-probe').props.children).toBe('signedOut');
     }

@@ -1,3 +1,4 @@
+import { Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { act, fireEvent } from '@testing-library/react-native';
 import { router } from 'expo-router';
@@ -90,6 +91,26 @@ describe('session-guarded routes', () => {
 
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     expect(app.getPathname()).toBe('/');
+  });
+
+  it('returns from Login to the screen that opened it, not Home', async () => {
+    function Settings() {
+      return <Text>Settings screen</Text>;
+    }
+    const app = renderRouter(
+      { appDir: './app', overrides: { settings: Settings } },
+      { initialUrl: '/' }
+    );
+    await screen.findByText('Not signed in');
+    act(() => router.push('/settings'));
+    await screen.findByText('Settings screen');
+    act(() => router.push('/login'));
+    await screen.findByText('Welcome Back');
+
+    fireEvent.press(screen.getByTestId('auth-back'));
+
+    expect(await screen.findByText('Settings screen')).toBeTruthy();
+    expect(app.getPathname()).toBe('/settings');
   });
 
   it('goes Home from Login when there is nothing to go back to', async () => {

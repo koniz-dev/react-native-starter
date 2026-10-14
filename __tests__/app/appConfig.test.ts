@@ -68,7 +68,7 @@ describe('app.config.ts variants', () => {
     expect(resolve({}).ios?.config?.usesNonExemptEncryption).toBe(false);
   });
 
-  it('asks for no permission the app does not use', () => {
+  it('blocks the permissions its libraries add that the app does not use, and Face ID', () => {
     const unused = [
       'android.permission.VIBRATE',
       'android.permission.READ_EXTERNAL_STORAGE',

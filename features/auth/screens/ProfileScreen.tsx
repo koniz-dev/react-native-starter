@@ -86,7 +86,7 @@ export function ProfileScreen() {
         </View>
         <List.Item
           title={t('profile.name')}
-          description={user?.name ?? '—'}
+          description={user?.name.trim() || t('profile.unknown')}
           left={props => (
             <View aria-hidden>
               <List.Icon {...props} icon="account" />
@@ -95,7 +95,7 @@ export function ProfileScreen() {
         />
         <List.Item
           title={t('profile.email')}
-          description={user?.email ?? '—'}
+          description={user?.email.trim() || t('profile.unknown')}
           left={props => (
             <View aria-hidden>
               <List.Icon {...props} icon="email" />

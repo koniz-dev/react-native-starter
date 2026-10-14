@@ -10,6 +10,7 @@ import { HomeScreen } from '@/features/home/screens/HomeScreen';
 import { DocumentTitle } from '@/shared/ui/DocumentTitle';
 import { getItem, setItem, STORAGE_KEYS } from '@/shared/storage/storage';
 import { defaultUnauthorizedHandler } from '@/shared/session/session';
+import { logger } from '@/shared/lib/logger';
 import { renderWithProviders, secureStore } from '@/testing';
 
 describe('<HomeScreen /> session', () => {
@@ -38,6 +39,17 @@ describe('<HomeScreen /> session', () => {
     // no stored user.
     secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
     await setItem(STORAGE_KEYS.INSTALL_MARKER, true);
+
+    const { findByText } = renderWithProviders(<HomeScreen />, {
+      withSession: true,
+    });
+
+    expect(await findByText('Signed in as your account')).toBeTruthy();
+  });
+
+  test('names a user with an empty name generically', async () => {
+    secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
+    await setItem(STORAGE_KEYS.USER_DATA, { ...user, name: '' });
 
     const { findByText } = renderWithProviders(<HomeScreen />, {
       withSession: true,
@@ -83,12 +95,18 @@ describe('<HomeScreen /> session', () => {
     jest
       .mocked(SecureStore.getItemAsync)
       .mockRejectedValueOnce(new Error('Keychain unavailable'));
+    const logError = jest.spyOn(logger, 'error').mockImplementation(() => {});
 
     const { findByText } = renderWithProviders(<HomeScreen />, {
       withSession: true,
     });
 
     expect(await findByText('Not signed in')).toBeTruthy();
+    expect(logError).toHaveBeenCalledWith(
+      'Restoring the session failed',
+      expect.any(Error)
+    );
+    logError.mockRestore();
   });
 
   test('switches to signed out when the API reports the session expired', async () => {

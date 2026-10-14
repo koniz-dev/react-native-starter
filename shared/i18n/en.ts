@@ -60,6 +60,7 @@ export const en = {
     'This screen is in the protected (app) route group: it is only reachable while signed in.',
   'profile.name': 'Name',
   'profile.email': 'Email',
+  'profile.unknown': 'Not available',
   'profile.refreshFailed': 'Could not refresh your profile: {message}',
   'profile.refreshing': 'Refreshing your profile',
 
@@ -71,6 +72,8 @@ export const en = {
   'login.password': 'Password',
   'login.submit': 'Sign In',
   'login.error.emptyFields': 'Please fill in all fields',
+  'login.error.usernameRequired': 'Please enter your username',
+  'login.error.passwordRequired': 'Please enter your password',
   'login.error.generic': 'Login failed. Please try again.',
   // @demo remove-block-start
   'login.demoHint':

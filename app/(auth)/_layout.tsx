@@ -10,7 +10,9 @@ export { RouteErrorBoundary as ErrorBoundary } from '@/shared/ui/ErrorBoundary';
 /**
  * Screens for signed-out users. The header has only a back button, so the
  * user can always leave: back to the screen that opened sign-in, or Home
- * when the screen was opened directly (a deep link or a web URL).
+ * when the screen was opened directly (a deep link or a web URL). Each
+ * screen names the browser tab itself with <DocumentTitle>: Expo Router
+ * turns off React Navigation's document title.
  */
 export default function AuthLayout() {
   const router = useRouter();
@@ -30,10 +32,7 @@ export default function AuthLayout() {
           />
         ),
       }}
-    >
-      {/* The title names the browser tab on the web. */}
-      <Stack.Screen name="login" options={{ title: t('login.headerTitle') }} />
-    </Stack>
+    />
   );
 }
 
