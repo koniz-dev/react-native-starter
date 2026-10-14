@@ -28,10 +28,10 @@ name: Login keyboard return keys
     timeout: 20000
 - tapOn:
     id: login-username
-- inputText: emilys
+- inputText: ${MAESTRO_E2E_USERNAME}
 - pressKey: Enter
 - takeScreenshot: 04-password-focused
-- inputText: emilyspass
+- inputText: ${MAESTRO_E2E_PASSWORD}
 - pressKey: Enter
 # iOS may offer to save the password in a sheet over the app.
 - extendedWaitUntil:

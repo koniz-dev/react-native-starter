@@ -8,7 +8,11 @@ name: Profile is protected and reloads the user
     file: subflows/open-app.yaml
     env:
       CLEAR_STATE: 'true'
+- runFlow: subflows/open-login.yaml
 - runFlow: subflows/sign-in.yaml
+- extendedWaitUntil:
+    visible: Signed in as Emily Johnson
+    timeout: 10000
 # iOS may read each Profile row as one element ("Email, emily..."), Android
 # exposes the value on its own: the patterns accept both.
 - tapOn:

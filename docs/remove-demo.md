@@ -83,11 +83,14 @@ that command would discard them too.
 | `05-explore-error-retry.yaml` | deleted: the Explore tab                   |
 | `07-profile.yaml`             | deleted: signs in with the demo account    |
 
-`subflows/sign-in.yaml` (the demo account) is deleted too, and so are the
-e2e mock's demo routes (`GET /todos`, `POST /auth/login`, `GET /auth/me`). The e2e runner keeps the mock and points
-both URLs at it. Add your own sign-in flows against a test account on your
-backend or mock
-([Your backend or mock](testing.md#your-backend-or-mock)).
+The e2e mock's demo routes (`GET /todos`, `POST /auth/login`,
+`GET /auth/me`) go too; the runner keeps the mock and points both URLs at
+it, and stops defaulting the test account to the demo's. The subflows stay:
+`open-login.yaml` and `sign-in.yaml` sign in with `MAESTRO_E2E_USERNAME`
+and `MAESTRO_E2E_PASSWORD`, so your signed-in flows use them against a test
+account on your backend or mock
+([Writing a flow](testing.md#writing-a-flow),
+[Your backend or mock](testing.md#your-backend-or-mock)).
 
 ## Then
 

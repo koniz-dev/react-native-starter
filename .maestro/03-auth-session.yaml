@@ -6,7 +6,11 @@ name: Sign-in session survives a relaunch; logout clears it
     file: subflows/open-app.yaml
     env:
       CLEAR_STATE: 'true'
+- runFlow: subflows/open-login.yaml
 - runFlow: subflows/sign-in.yaml
+- extendedWaitUntil:
+    visible: Signed in as Emily Johnson
+    timeout: 10000
 - takeScreenshot: 03-signed-in
 - stopApp
 - runFlow:

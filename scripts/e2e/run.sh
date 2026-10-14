@@ -12,6 +12,9 @@
 #   E2E_AUTH_API_URL   the auth URL (default: E2E_API_URL)
 #   E2E_BACKEND_CMD    a command that starts it (e.g. "node scripts/my-mock.js"),
 #                      run in the background and stopped at the end
+# Signed-in flows (subflows/sign-in.yaml) sign in with MAESTRO_E2E_USERNAME
+# and MAESTRO_E2E_PASSWORD, a test account; flows get API_URL and
+# AUTH_API_URL to reach the backend.
 # On Android, the ports of localhost URLs are forwarded with adb reverse.
 #
 # Needs: the Maestro CLI (`maestro` on PATH, or MAESTRO=/path/to/maestro) and
@@ -35,6 +38,11 @@ esac
 APP_ID="${E2E_APP_ID:-$APP_ID}"
 APP_URL="${E2E_APP_URL:-exp://127.0.0.1:$METRO_PORT}"
 
+# @demo remove-block-start
+# The signed-in flows use the demo account, served by the e2e mock.
+export MAESTRO_E2E_USERNAME="${MAESTRO_E2E_USERNAME:-emilys}"
+export MAESTRO_E2E_PASSWORD="${MAESTRO_E2E_PASSWORD:-emilyspass}"
+# @demo remove-block-end
 command -v "$MAESTRO" >/dev/null || { echo "Maestro CLI not found (set MAESTRO=...)" >&2; exit 1; }
 if [ "$PLATFORM" = android ]; then
   adb get-state >/dev/null 2>&1 || { echo "No Android device/emulator connected" >&2; exit 1; }
@@ -145,7 +153,9 @@ if [ "$PLATFORM" = android ]; then
 fi
 
 set_dark_mode no
-COMMON=(-e "APP_ID=$APP_ID" -e "APP_URL=$APP_URL" -e "MOCK_API_URL=$MOCK_API_URL")
+# API_URL and AUTH_API_URL let a flow reach your backend (e.g. to seed data).
+COMMON=(-e "APP_ID=$APP_ID" -e "APP_URL=$APP_URL" -e "MOCK_API_URL=$MOCK_API_URL"
+  -e "API_URL=$API_URL" -e "AUTH_API_URL=$AUTH_API_URL")
 
 status=0
 "$MAESTRO" test "${COMMON[@]}" --exclude-tags dark --format junit --output "$OUT/report.xml" \

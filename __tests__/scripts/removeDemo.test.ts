@@ -127,14 +127,22 @@ describe('remove-demo on a copy of the template', () => {
       'scripts',
       'subflows',
     ]);
-    expect(fs.readdirSync(path.join(dir, '.maestro/subflows'))).toEqual([
+    // The subflows stay, for the adopter's own (signed-in) flows; signing in
+    // uses the test account variables, not the demo's.
+    expect(fs.readdirSync(path.join(dir, '.maestro/subflows')).sort()).toEqual([
       'open-app.yaml',
+      'open-login.yaml',
+      'sign-in.yaml',
     ]);
+    expect(read(dir, '.maestro/subflows/sign-in.yaml')).toMatch(
+      /inputText: \$\{MAESTRO_E2E_USERNAME\}/
+    );
     expect(read(dir, '.maestro/config.yaml')).not.toMatch(/Tab navigation/);
     // The e2e runner points both URLs at the e2e mock (or E2E_* overrides),
     // and the mock lost its demo routes and account.
     const runner = read(dir, 'scripts/e2e/run.sh');
-    expect(runner).not.toMatch(/DEMO/);
+    expect(runner).not.toMatch(/DEMO|emilys/);
+    expect(runner).toMatch(/-e "API_URL=\$API_URL"/);
     expect(runner).toMatch(
       /^AUTH_API_URL="\$\{E2E_AUTH_API_URL:-\$API_URL\}"$/m
     );
