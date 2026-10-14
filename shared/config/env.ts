@@ -17,7 +17,7 @@ export type AppEnv = 'development' | 'preview' | 'production';
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'silent';
 
 /** Console log level per environment when EXPO_PUBLIC_LOG_LEVEL is not set. */
-export const DEFAULT_LOG_LEVELS: Record<AppEnv, LogLevel> = {
+const DEFAULT_LOG_LEVELS: Record<AppEnv, LogLevel> = {
   development: 'debug',
   preview: 'info',
   production: 'warn',
@@ -72,7 +72,17 @@ const optionalString = z
   .optional()
   .transform(value => (value ? value : undefined));
 
-const isHttpUrl = (value: string) => /^https?:\/\/[^/?#\s]+/i.test(value);
+/**
+ * An absolute http(s) URL with a host, and no whitespace, backslash, or
+ * control character anywhere: the HTTP client can't read the origin of
+ * such a URL (shared/http/httpClient.ts getOrigin), so it would never trust
+ * it with the token.
+ */
+const isHttpUrl = (value: string) =>
+  // eslint-disable-next-line no-control-regex
+  /^https?:\/\/[^/?#\s\\\x00-\x1f\x7f]+([/?#][^\s\\\x00-\x1f\x7f]*)?$/i.test(
+    value
+  );
 
 const urlField = optionalString.refine(
   value => value === undefined || isHttpUrl(value),
@@ -80,11 +90,13 @@ const urlField = optionalString.refine(
 );
 
 const schema = z.object({
-  EXPO_PUBLIC_APP_ENV: z
-    .enum(['development', 'preview', 'production'], {
-      message: 'must be development, preview, or production',
-    })
-    .optional(),
+  EXPO_PUBLIC_APP_ENV: optionalString.pipe(
+    z
+      .enum(['development', 'preview', 'production'], {
+        message: 'must be development, preview, or production',
+      })
+      .optional()
+  ),
   // @demo remove-block-start
   EXPO_PUBLIC_USE_DEMO_BACKENDS: optionalString.refine(
     value => value === undefined || value === 'true' || value === 'false',

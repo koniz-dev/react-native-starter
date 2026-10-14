@@ -1,7 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 
-export async function isSecureStorageAvailable(): Promise<boolean> {
+async function isSecureStorageAvailable(): Promise<boolean> {
   return Platform.OS !== 'web' && (await SecureStore.isAvailableAsync());
 }
 

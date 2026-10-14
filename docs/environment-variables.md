@@ -42,7 +42,10 @@ URL fails loudly. `npm run remove-demo` removes the switch.
 
 Validation rules:
 
-- URLs must be absolute `http(s)` URLs; an empty value (`KEY=`) counts as unset.
+- URLs must be absolute `http(s)` URLs with a host, and contain no
+  whitespace, backslash, or control character (the HTTP client could not
+  read the origin of such a URL, so it would never send the token to it).
+- Every value is trimmed, and an empty value (`KEY=`) counts as unset.
 - Outside `development`, `http://` URLs and trusted origins are rejected.
   This includes `npx expo export`: an export is not a development build, so
   `EXPO_PUBLIC_APP_ENV` defaults to `production`. With `http://localhost`

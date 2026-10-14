@@ -71,7 +71,7 @@ function codeForStatus(status: number): ApiErrorCode {
  * Authorization token) and no request body (a password), since errors reach
  * logs and the error reporter. The URL loses its query string and fragment.
  */
-export interface RequestSummary {
+interface RequestSummary {
   name: string;
   message: string;
   code?: string;

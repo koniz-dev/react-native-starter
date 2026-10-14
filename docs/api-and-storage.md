@@ -21,6 +21,8 @@ The factory gives every client the same behavior:
 - the token attached only for [trusted origins](#which-hosts-receive-the-token);
 - every failure rejected as an [`ApiError`](#errors);
 - [401 handling](#expired-sessions-401) with an optional refresh;
+- a plain object body sent as JSON, and a `FormData` body as
+  `multipart/form-data` ([uploads](#uploading-files));
 - failures logged as method, path, code, and status, without headers or
   bodies, at a level that depends on the code
   ([Failed requests](error-reporting.md#failed-requests)).
@@ -36,6 +38,31 @@ export const paymentsApi = createHttpClient({
   authenticated: true, // attach the token (trusted origins only), handle 401s
 });
 ```
+
+### Uploading files
+
+Post a `FormData`; the client sends it as `multipart/form-data` (React
+Native and the browser add the boundary). On iOS and Android a file part
+is an object with the file's `uri`, `name`, and `type`, for example from
+an image picker:
+
+```ts
+import { api } from '@/shared/http/api';
+
+export async function uploadAvatar(uri: string): Promise<void> {
+  const form = new FormData();
+  // React Native reads the file at `uri`; the cast is for the DOM typings.
+  form.append('avatar', {
+    uri,
+    name: 'avatar.jpg',
+    type: 'image/jpeg',
+  } as unknown as Blob);
+  await api.post('/me/avatar', form);
+}
+```
+
+On the web, append a `Blob` or `File` instead. Large uploads may need a
+longer `timeout` for that request.
 
 ## Errors
 

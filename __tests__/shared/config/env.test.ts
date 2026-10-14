@@ -132,6 +132,38 @@ describe('parseEnv', () => {
     ]);
   });
 
+  it.each([
+    'https://auth.example.com /v1',
+    'https://auth example.com',
+    'https://auth.example.com\\@evil.example.com',
+    'https://auth.exa\tmple.com',
+    'https://',
+    'https://auth.example.com/v1?x=1 2',
+  ])('rejects %j, a URL the token origin check cannot read', url => {
+    expect(issuesOf({ ...valid, EXPO_PUBLIC_AUTH_API_URL: url })).toEqual([
+      expect.objectContaining({
+        variable: 'EXPO_PUBLIC_AUTH_API_URL',
+        message: expect.stringContaining('absolute http(s) URL'),
+      }),
+    ]);
+    expect(
+      issuesOf({ ...valid, EXPO_PUBLIC_API_TRUSTED_ORIGINS: url })
+    ).toEqual([
+      expect.objectContaining({ variable: 'EXPO_PUBLIC_API_TRUSTED_ORIGINS' }),
+    ]);
+  });
+
+  it('accepts URLs with a port, path, query, or user info', () => {
+    for (const url of [
+      'https://auth.example.com:8443',
+      'https://auth.example.com/v1/',
+      'https://auth.example.com/v1?region=eu#x',
+      'https://user@auth.example.com',
+    ]) {
+      expect(issuesOf({ ...valid, EXPO_PUBLIC_AUTH_API_URL: url })).toEqual([]);
+    }
+  });
+
   it('rejects http outside development and allows it in development', () => {
     const httpApi = { ...valid, EXPO_PUBLIC_API_URL: 'http://api.example.com' };
     expect(issuesOf(httpApi)).toEqual([
@@ -192,6 +224,16 @@ describe('parseEnv', () => {
     const release = parseEnv(base, false);
     expect(dev.success && dev.config.appEnv).toBe('development');
     expect(release.success && release.config.appEnv).toBe('production');
+  });
+
+  it('treats an empty app environment (KEY=) as not set, and trims it', () => {
+    const empty = parseEnv({ ...valid, EXPO_PUBLIC_APP_ENV: '' }, true);
+    expect(empty.success && empty.config.appEnv).toBe('development');
+    const spaced = parseEnv(
+      { ...valid, EXPO_PUBLIC_APP_ENV: ' preview ' },
+      true
+    );
+    expect(spaced.success && spaced.config.appEnv).toBe('preview');
   });
 
   it('rejects an unknown app environment', () => {

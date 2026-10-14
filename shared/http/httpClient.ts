@@ -158,6 +158,12 @@ export function createHttpClient(options: HttpClientOptions): AxiosInstance {
 
   client.interceptors.request.use(async config => {
     config.baseURL ??= options.getBaseURL();
+    // The JSON default would make axios serialize a FormData body as JSON.
+    // React Native sends multipart with this type and adds the boundary;
+    // on the web, axios drops it so the browser sets it with the boundary.
+    if (typeof FormData !== 'undefined' && config.data instanceof FormData) {
+      config.headers.setContentType('multipart/form-data');
+    }
     // axios's default timeout is 0 (none); 0 here means "not set by caller".
     config.timeout ||= getConfig().apiTimeoutMs;
 

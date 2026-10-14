@@ -63,6 +63,44 @@ describe('api interceptors', () => {
   });
 });
 
+describe('request bodies', () => {
+  async function send(data: unknown) {
+    let received: AxiosRequestConfig | undefined;
+    await api.post('/upload', data, {
+      adapter: async config => {
+        received = config;
+        return { config, data: {}, headers: {}, status: 200, statusText: 'OK' };
+      },
+    });
+    return {
+      body: received?.data,
+      contentType: String(received?.headers?.['Content-Type']),
+    };
+  }
+
+  it('sends a FormData body untouched, as multipart', async () => {
+    const form = new FormData();
+    form.append('title', 'hello');
+    form.append('file', {
+      uri: 'file:///photo.jpg',
+      name: 'photo.jpg',
+      type: 'image/jpeg',
+    } as unknown as Blob);
+
+    const { body, contentType } = await send(form);
+
+    expect(body).toBe(form);
+    expect(contentType).toBe('multipart/form-data');
+  });
+
+  it('sends an object as JSON', async () => {
+    await expect(send({ title: 'hello' })).resolves.toEqual({
+      body: '{"title":"hello"}',
+      contentType: 'application/json',
+    });
+  });
+});
+
 function captureRequest(url: string) {
   let received: AxiosRequestConfig | undefined;
   return api

@@ -4,8 +4,6 @@ import {
   authClients,
   authRefreshClients,
   authService,
-  getAuthAdapter,
-  notConfiguredAuthAdapter,
   setAuthAdapter,
   type AuthAdapter,
 } from '@/shared/session/authService';
@@ -215,7 +213,6 @@ describe('without an adapter', () => {
   it('reports that sign-in is not configured', async () => {
     setAuthAdapter(null);
 
-    expect(getAuthAdapter()).toBe(notConfiguredAuthAdapter);
     await expect(
       authService.login({ username: 'ada', password: 'secret' })
     ).rejects.toThrow('Sign-in is not configured');

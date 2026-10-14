@@ -82,7 +82,7 @@ export interface AuthAdapter {
 }
 
 /** Default until an adapter is registered: sign-in reports it isn't set up. */
-export const notConfiguredAuthAdapter: AuthAdapter = {
+const notConfiguredAuthAdapter: AuthAdapter = {
   login: async () => {
     throw new Error(
       'Sign-in is not configured: register an AuthAdapter in shared/integrations/setup.ts.'
@@ -147,10 +147,6 @@ export function setAuthAdapter(next: AuthAdapter | null): void {
         }
       : null
   );
-}
-
-export function getAuthAdapter(): AuthAdapter {
-  return adapter;
 }
 
 export const authService = {
