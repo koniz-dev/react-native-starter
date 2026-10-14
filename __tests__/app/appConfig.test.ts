@@ -1,5 +1,6 @@
 import type { ExpoConfig } from 'expo/config';
 import appConfig, { APP } from '../../app.config';
+import { darkTheme, lightTheme } from '@/shared/ui/theme';
 
 function resolve(env: Record<string, string | undefined>): ExpoConfig {
   const previous = { ...process.env };
@@ -37,7 +38,6 @@ describe('app.config.ts variants', () => {
     expect(config.scheme).toBe(scheme);
     expect(config.ios?.bundleIdentifier).toBe(bundleId);
     expect(config.android?.package).toBe(bundleId);
-    expect(config.extra?.appVariant).toBe(variant ?? 'development');
   });
 
   it('gives each variant a distinct bundle ID and scheme', () => {
@@ -95,10 +95,11 @@ describe('app.config.ts variants', () => {
     const splash = plugins.find(
       plugin => Array.isArray(plugin) && plugin[0] === 'expo-splash-screen'
     ) as [string, Record<string, unknown>] | undefined;
+    // The theme's backgrounds, so the splash hands over without a flash.
     expect(splash?.[1]).toMatchObject({
       image: './assets/splash-icon.png',
-      backgroundColor: expect.any(String),
-      dark: { backgroundColor: expect.any(String) },
+      backgroundColor: lightTheme.colors.background,
+      dark: { backgroundColor: darkTheme.colors.background },
     });
   });
 });

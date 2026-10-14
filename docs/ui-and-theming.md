@@ -25,7 +25,8 @@ The UI is built with [React Native Paper](https://callstack.github.io/react-nati
 ## Using the theme
 
 Use Paper components, and read colors from the theme instead of literals
-(ESLint `react-native/no-color-literals` rejects color literals in styles):
+(lint rejects them in styles, color props, and options; see
+[Conventions](conventions.md#code-style)):
 
 ```tsx
 import { StyleSheet, View } from 'react-native';
@@ -119,7 +120,7 @@ import { lightTheme } from '@/shared/ui/theme';
 // In app/_layout.tsx, before rendering (keep the splash screen up until loaded):
 export function useAppFonts(): boolean {
   const [loaded] = useFonts({
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    // Lint allows require() for local assets (images, fonts, media).
     Inter: require('../assets/fonts/Inter-Regular.ttf'),
   });
   return loaded;
@@ -163,4 +164,8 @@ environment) and writes `dist/`.
 - [Expo: system bars](https://docs.expo.dev/develop/user-interface/system-bars/)
 - [Expo: animation](https://docs.expo.dev/develop/user-interface/animation/)
   (`react-native-reanimated` is installed)
+- [Expo: gestures](https://docs.expo.dev/develop/user-interface/gestures/)
+  (`react-native-gesture-handler` is installed: Expo Router's drawer
+  requires it and Reanimated, so they are pinned to the versions for the
+  Expo SDK even before you use them)
 - [Expo: assets](https://docs.expo.dev/develop/user-interface/assets/)

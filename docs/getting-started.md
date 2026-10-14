@@ -128,7 +128,7 @@ emulator), or `w` (web), or scan the QR code with Expo Go.
 | `npm run config:print`                                            | Print the resolved app config (`APP_VARIANT=preview npm run config:print` for another variant)                |
 | `npm run lint` / `npm run lint:fix`                               | ESLint, failing on any warning                                                                                |
 | `npm run format` / `npm run format:check`                         | Prettier                                                                                                      |
-| `npm run type-check`                                              | `tsc --noEmit`                                                                                                |
+| `npm run type-check`                                              | `tsc --noEmit` for the app, then for tests, scripts, and config (`tsconfig.tools.json`)                       |
 | `npm test`                                                        | Jest in watch mode                                                                                            |
 | `npm run test:ci`                                                 | Jest once, with coverage and its threshold                                                                    |
 | `npm run test:coverage`                                           | Jest with an HTML coverage report in `coverage/`                                                              |
@@ -147,7 +147,9 @@ emulator), or `w` (web), or scan the QR code with Expo Go.
 The local gate before a commit is
 `npm run lint && npm run type-check && npm run test:ci`; CI
 (`.github/workflows/ci.yml`) also runs `npm run format:check`,
-`npm run docs:check`, `npm run doctor`, and a web export. CI uses what the
+`npm run docs:check`, `npm run doctor`, a web export, and an iOS and
+Android bundle (`expo export`, which catches a broken import in an `.ios`
+or `.android` file that Jest and the web export don't load). CI uses what the
 repository pins (the lockfiles, the Node version in `.nvmrc`, the runner
 image, and actions by commit), so a commit that passes keeps passing when new
 versions of its dependencies are published. Dependabot

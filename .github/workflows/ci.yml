@@ -57,6 +57,11 @@ jobs:
       - name: Export web build
         run: npm run export:web -- --output-dir dist
 
+      # Jest and the web export resolve only some platform files: bundling
+      # for iOS and Android catches a broken import in an .ios/.android file.
+      - name: Bundle for iOS and Android
+        run: APP_VARIANT=production EXPO_PUBLIC_APP_ENV=production npx expo export --platform ios --platform android --output-dir dist/native
+
       - name: Check docs (snippets compile, paths and scripts exist)
         run: |
           # @recipes remove-block-start

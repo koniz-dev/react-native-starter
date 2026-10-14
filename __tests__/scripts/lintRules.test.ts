@@ -65,7 +65,10 @@ const IMPORTS_ALLOWED: Fixture[] = [
 
 const component = (jsx: string) =>
   'declare const Icon: (p: { color?: string; iconColor?: string }) => null;\n' +
+  'export declare const Spinner: (p: { colors?: string[] }) => null;\n' +
+  'export declare const Tabs: (p: { screenOptions?: object }) => null;\n' +
   'declare const dark: boolean;\n' +
+  'export declare function pick(name: string): string;\n' +
   `export const X = () => (dark ? ${jsx} : null);\n`;
 
 const COLORS_REJECTED: Fixture[] = [
@@ -74,6 +77,12 @@ const COLORS_REJECTED: Fixture[] = [
   ['a conditional', "<Icon color={dark ? '#fff' : 'rgb(0,0,0)'} />"],
   ['a template literal', '<Icon color={`#ff0000`} />'],
   ["Paper's iconColor", '<Icon iconColor="#ff0000" />'],
+  ['a color name', '<Icon color="white" />'],
+  ['a list of colors', "<Spinner colors={['#f00', 'blue']} />"],
+  [
+    'a navigator option',
+    "<Tabs screenOptions={{ tabBarActiveTintColor: 'red' }} />",
+  ],
 ].flatMap(([name, jsx]) =>
   ['features/home/X.tsx', 'app/x.tsx'].map((file): Fixture => [
     `${name} in ${file}`,
@@ -81,11 +90,43 @@ const COLORS_REJECTED: Fixture[] = [
     component(jsx ?? ''),
   ])
 );
+COLORS_REJECTED.push([
+  'a color constant',
+  'shared/ui/X.tsx',
+  "const ACCENT = '#ff0000';\n" + component('<Icon color={ACCENT} />'),
+]);
 
 const THEME_COLOR: Fixture = [
   'a theme color',
   'features/home/X.tsx',
   'declare const c: string;\n' + component('<Icon color={c} />'),
+];
+const COLORS_ALLOWED: Fixture[] = [
+  [
+    'transparent',
+    'features/home/X.tsx',
+    component('<Icon color="transparent" />'),
+  ],
+  [
+    'a string passed to a function',
+    'features/home/X.tsx',
+    component("<Icon color={pick('primary')} />"),
+  ],
+  [
+    'the palette in shared/ui/theme.ts',
+    'shared/ui/theme.ts',
+    "export const palette = { primary: '#066a92' };\n",
+  ],
+];
+const ASSET_REQUIRE: Fixture = [
+  'require() of a local image',
+  'features/home/Logo.ts',
+  "export const logo: unknown = require('../../assets/icon.png');\n",
+];
+const MODULE_REQUIRE: Fixture = [
+  'require() of a module',
+  'features/home/Logo.ts',
+  "export const helpers: unknown = require('./helpers');\n",
 ];
 const DEFAULT_EXPORT: Fixture = [
   'a default export',
@@ -131,7 +172,10 @@ beforeAll(() => {
     ...IMPORTS_REJECTED,
     ...IMPORTS_ALLOWED,
     ...COLORS_REJECTED,
+    ...COLORS_ALLOWED,
     THEME_COLOR,
+    ASSET_REQUIRE,
+    MODULE_REQUIRE,
     DEFAULT_EXPORT,
   ];
   const run = spawnSync(process.execPath, ['-e', LINT], {
@@ -177,10 +221,26 @@ describe('lint: colors come from the theme', () => {
     );
   });
 
+  it.each(COLORS_ALLOWED)('allows %s', (...fixture) => {
+    expect(messagesFor(fixture)).toEqual([]);
+  });
+
   it('allows a theme color, and still rejects default exports', () => {
     expect(messagesFor(THEME_COLOR)).toEqual([]);
     expect(messagesFor(DEFAULT_EXPORT)).toEqual([
       expect.stringMatching(/^no-restricted-syntax: Use a named export/),
+    ]);
+  });
+});
+
+describe('lint: ES imports, except require() of a local asset', () => {
+  it('allows require() of an image, font, or media file', () => {
+    expect(messagesFor(ASSET_REQUIRE)).toEqual([]);
+  });
+
+  it('rejects require() of a module', () => {
+    expect(messagesFor(MODULE_REQUIRE)).toEqual([
+      expect.stringMatching(/^@typescript-eslint\/no-require-imports: /),
     ]);
   });
 });

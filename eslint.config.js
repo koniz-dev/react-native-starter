@@ -10,13 +10,55 @@ const globals = require('globals');
 const path = require('path');
 
 /**
- * Colors come from the theme, also on props such as an icon's color, written
- * as a string or inside an expression (AGENTS.md: Styles).
+ * Colors come from the theme, never literals (AGENTS.md: Styles):
+ *
+ * - any string (a name such as 'white' too, but not 'transparent') given to
+ *   a prop or option whose name ends in `color` or `colors` (`color`,
+ *   `iconColor`, `colors={[...]}`, `tabBarActiveTintColor: ...`), directly,
+ *   in a template, a condition, or an array;
+ * - and, outside the palette in shared/ui/theme.ts, a string that can only
+ *   be a color (`#rrggbb`, `rgb(...)`, `hsl(...)`) anywhere, such as a
+ *   module constant.
  */
+const COLOR_NAME = '/[cC]olors?$/';
+const ANY_COLOR = '/^(?!transparent$)./';
+const COLOR_FORMAT = '/^(#[0-9a-f]{3,8}$|rgba?\\(|hsla?\\()/i';
+const colorValues = parent =>
+  [
+    `Literal[value=${ANY_COLOR}]`,
+    `TemplateLiteral > TemplateElement[value.raw=${ANY_COLOR}]`,
+    `ConditionalExpression > Literal[value=${ANY_COLOR}]`,
+    `LogicalExpression > Literal[value=${ANY_COLOR}]`,
+    `ArrayExpression > Literal[value=${ANY_COLOR}]`,
+  ].map(value => `${parent} > ${value}`);
+const COLOR_PROP_SELECTORS = [
+  `JSXAttribute[name.name=${COLOR_NAME}] > Literal[value=${ANY_COLOR}]`,
+  ...colorValues(
+    `JSXAttribute[name.name=${COLOR_NAME}] > JSXExpressionContainer`
+  ),
+  // key.name: an identifier key, so the Literal child is the value.
+  ...colorValues(`Property[key.name=${COLOR_NAME}]`),
+];
+const NAMED_EXPORTS = [
+  'ExportDefaultDeclaration',
+  "ExportSpecifier[exported.name='default']",
+].map(selector => ({
+  selector,
+  message: 'Use a named export; only route files in app/ export a default.',
+}));
+const COLOR_MESSAGE =
+  'Use a color from the Paper theme (useTheme()), not a literal.';
+const COLOR_PROP = {
+  selector: `:matches(${COLOR_PROP_SELECTORS.join(', ')})`,
+  message: COLOR_MESSAGE,
+};
 const COLOR_LITERAL = {
-  selector:
-    'JSXAttribute[name.name=/[cC]olor$/] :matches(Literal[value=/^(#|rgba?\\(|hsla?\\()/i], TemplateElement[value.raw=/^(#|rgba?\\(|hsla?\\()/i])',
-  message: 'Use a color from the Paper theme (useTheme()), not a literal.',
+  selector: `:matches(${[
+    ...COLOR_PROP_SELECTORS,
+    `Literal[value=${COLOR_FORMAT}]`,
+    `TemplateElement[value.raw=${COLOR_FORMAT}]`,
+  ].join(', ')})`,
+  message: COLOR_MESSAGE,
 };
 
 /**
@@ -182,6 +224,16 @@ module.exports = [
     rules: {
       ...asErrors(typescript.configs.recommended.rules),
       '@typescript-eslint/explicit-module-boundary-types': 'off',
+      // ES imports everywhere, except require() of a local asset (an image,
+      // font, or media file), which is how Metro bundles one.
+      '@typescript-eslint/no-require-imports': [
+        'error',
+        {
+          allow: [
+            '\\.(png|jpe?g|gif|webp|bmp|svg|ttf|otf|mp3|wav|m4a|aac|mp4|mov|lottie|json)$',
+          ],
+        },
+      ],
       // `import type` for types (AGENTS.md: Imports).
       '@typescript-eslint/consistent-type-imports': [
         'error',
@@ -195,24 +247,18 @@ module.exports = [
   },
 
   // Named exports only; route files in app/ export their screen as default
-  // (AGENTS.md: Exports). And no color literals (COLOR_LITERAL).
+  // (AGENTS.md: Exports). And no color literals (COLOR_LITERAL), except the
+  // palette itself.
   {
     files: ['features/**/*.{ts,tsx}', 'shared/**/*.{ts,tsx}', 'testing/**'],
     rules: {
-      'no-restricted-syntax': [
-        'error',
-        {
-          selector: 'ExportDefaultDeclaration',
-          message:
-            'Use a named export; only route files in app/ export a default.',
-        },
-        {
-          selector: "ExportSpecifier[exported.name='default']",
-          message:
-            'Use a named export; only route files in app/ export a default.',
-        },
-        COLOR_LITERAL,
-      ],
+      'no-restricted-syntax': ['error', ...NAMED_EXPORTS, COLOR_LITERAL],
+    },
+  },
+  {
+    files: ['shared/ui/theme.ts'],
+    rules: {
+      'no-restricted-syntax': ['error', ...NAMED_EXPORTS, COLOR_PROP],
     },
   },
   {

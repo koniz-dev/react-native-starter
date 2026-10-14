@@ -5,12 +5,12 @@ The app's identity, build variants, and native assets, all set in
 
 ## Identity
 
-| What                                                          | Where                                                                           |
-| ------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| App name, slug, URL scheme, bundle / package ID, version      | the `APP` block at the top of `app.config.ts`                                   |
-| Store build number (iOS `buildNumber`, Android `versionCode`) | `APP_BUILD_NUMBER` at build time (default `1`); raise it for every store upload |
-| Splash and adaptive-icon background colors                    | `APP.splashBackground`, `APP.adaptiveIconBackground` in `app.config.ts`         |
-| Per-variant build settings and env for EAS Build              | `eas.json` build profiles                                                       |
+| What                                                          | Where                                                                                                                       |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| App name, slug, URL scheme, bundle / package ID, version      | the `APP` block at the top of `app.config.ts`                                                                               |
+| Store build number (iOS `buildNumber`, Android `versionCode`) | `APP_BUILD_NUMBER` at build time (default `1`); raise it for every store upload                                             |
+| Splash and adaptive-icon background colors                    | `APP.splashBackground` (the theme's backgrounds; a test checks they match), `APP.adaptiveIconBackground` in `app.config.ts` |
+| Per-variant build settings and env for EAS Build              | `eas.json` build profiles                                                                                                   |
 
 Run `npm run config:print` to see the resolved config
 (`APP_VARIANT=preview npm run config:print` for another variant).
@@ -59,9 +59,9 @@ own name, bundle ID, and scheme, so all three install side by side:
 1. Install the CLI and sign in: `npm install -g eas-cli`, then `eas login`.
 2. Run `eas init` to create the project on expo.dev. The config is
    `app.config.ts` (code), which `eas init` can't edit, so it prints the
-   project ID for you to add. In `app.config.ts`, change
-   `extra: { appVariant: variant }` to
-   `extra: { appVariant: variant, eas: { projectId: '<your-project-id>' } }`.
+   project ID for you to add. In `app.config.ts`, add
+   `extra: { eas: { projectId: '<your-project-id>' } }` to the config it
+   returns.
 
 3. Set `APP_BUILD_NUMBER` in each build profile's `env` in `eas.json` (or
    in your CI), and raise it for every store upload; every build is `1`

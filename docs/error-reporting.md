@@ -67,12 +67,13 @@ export async function saveSettings(
   provider gets its stack. An `ApiError` from the HTTP clients carries no
   headers or request body (its `cause` is a summary without the query
   string), and its `data` (the response body) is not an enumerable field,
-  so SDKs that copy an error's fields into the report leave it out. If your own errors carry sensitive fields, strip them in the
-  adapter (or the provider's `beforeSend`).
+  so SDKs that copy an error's fields into the report leave it out. If
+  your own errors carry sensitive fields, strip them in the adapter (or the
+  provider's `beforeSend`).
 
 - **No `console` in app code.** ESLint `no-console` is an error everywhere
   except `shared/lib/logger.ts`, the default reporter, and code that doesn't
-  ship in the app (tests, `scripts/`, the Jest setup files).
+  ship in the app: `__tests__/`, `scripts/`, and `jest.setup.env.js`.
 
 ### Failed requests
 

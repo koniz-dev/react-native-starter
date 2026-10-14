@@ -26,7 +26,11 @@ export const APP = {
   bundleId: 'com.example.rnstarter',
   /** Marketing version shown in the stores. */
   version: '1.0.0',
-  /** Splash background colors (light and dark mode). */
+  /**
+   * Splash background colors (light and dark mode): the theme's
+   * `background` in shared/ui/theme.ts, so the splash hands over to the
+   * first screen without a flash (a test checks they match).
+   */
   splashBackground: { light: '#ffffff', dark: '#151718' },
   /** Android adaptive icon background color. */
   adaptiveIconBackground: '#ffffff',
@@ -145,8 +149,5 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         },
       ],
     ],
-    extra: {
-      appVariant: variant,
-    },
   };
 };

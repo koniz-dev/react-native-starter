@@ -115,7 +115,8 @@ npm run lint && npm run type-check && npm run test:ci
 
 CI also runs `npm run format:check`, `npm run docs:check` (compiles and lints
 the docs' snippets and checks their paths), `npm run doctor` (Expo Doctor
-against the installed SDK), and a web export; the Audit workflow runs
+against the installed SDK), a web export, and an iOS and Android bundle
+(which catches a broken import in a platform file); the Audit workflow runs
 `npm run audit:check`. Run `npm run docs:check` when you change
 docs; name a file that doesn't exist yet with a placeholder
 ([docs/README.md](docs/README.md)). For flows on a device,

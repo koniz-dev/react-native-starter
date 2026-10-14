@@ -235,9 +235,13 @@ are lint errors in app code. Run it with `node`, or through an npm script.
   in adapters and `api/` modules (examples in
   [Connect Your Backend](connect-your-backend.md#2-sign-in-write-an-authadapter)).
 - **Styles:** `StyleSheet.create` at the bottom of the file; colors from the
-  theme, never literals: a color literal in a style or in any `*Color` prop
-  (`color`, `iconColor`, ...), as a string or inside an expression, is a lint
-  error, and so is an unused style.
+  theme, never literals. Lint rejects a color in a style; any string (a
+  name such as `'white'` too, not `'transparent'`) given to a prop or
+  option named `*color` or `*colors` (`color`, `iconColor`,
+  `colors={[...]}`, `tabBarActiveTintColor`), directly, in a template, a
+  condition, or a list; and a `#hex`, `rgb()`, or `hsl()` string anywhere
+  outside the palette in `shared/ui/theme.ts`. An unused style is a lint
+  error too.
 - **Text:** user-facing strings through `t()`.
 - **Logging:** `logger` from `@/shared/lib/logger`, never `console` (lint
   error); see [Error Reporting](error-reporting.md).

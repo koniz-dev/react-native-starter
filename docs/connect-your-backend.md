@@ -314,7 +314,11 @@ another shape, map it in your adapter: catch the error and throw one with the
 message you want.
 
 `__tests__/shared/session/realBackendAdapter.test.ts` runs this example,
-taken from this page, against a fake backend with these shapes.
+taken from this page, against a fake backend with these shapes. It reads
+the snippet that starts with `// features/auth/myBackendAdapter.ts`, so it
+fails if you edit that snippet or delete this page. Once your own adapter
+exists, point the test at it (import it instead of loading the snippet), or
+delete the test with the page.
 
 Screens read the session with `useSession()`:
 
