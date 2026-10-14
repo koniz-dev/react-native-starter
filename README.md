@@ -176,3 +176,14 @@ inherit them):
 - **CodeQL default setup** (actions, JavaScript/TypeScript): a new alert is
   a bug; open an issue for it.
 - **Actions must be pinned to a full commit SHA** (every workflow is).
+
+## Dependencies held back
+
+- **ESLint 9** (deprecated upstream; ESLint 10 is current). Blocked by peer
+  ranges: eslint-plugin-react 7.37.x allows `^9.7` at most and
+  eslint-plugin-react-native 5.0.0 allows `^9`. Upgrade when both plugins
+  accept ESLint 10 (recorded in #95, 2026-10-14).
+- **react-native-gesture-handler** stays a direct dependency although the
+  app doesn't import it: it is a required peer of expo-router's
+  react-native-drawer-layout, so npm installs it anyway; keeping it direct
+  keeps it pinned to the SDK's version (#95).
