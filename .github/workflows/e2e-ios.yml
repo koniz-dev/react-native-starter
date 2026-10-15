@@ -59,7 +59,9 @@ jobs:
           echo "$HOME/maestro/bin" >> "$GITHUB_PATH"
 
       # A debug build without a dev client: it loads the bundle from Metro on
-      # localhost:8081 and opens with its own URL scheme.
+      # localhost:8081 and opens with its own URL scheme. Signed ad hoc (no
+      # team needed on a simulator): an unsigned app has no Keychain
+      # entitlement, so expo-secure-store fails.
       - name: Build the native debug app (development variant)
         run: |
           set -o pipefail
@@ -68,7 +70,8 @@ jobs:
           xcodebuild -workspace "$workspace" -scheme "$(basename "$workspace" .xcworkspace)" \
             -configuration Debug -sdk iphonesimulator \
             -destination 'generic/platform=iOS Simulator' \
-            -derivedDataPath ios/build CODE_SIGNING_ALLOWED=NO -quiet build
+            -derivedDataPath ios/build -quiet build \
+            CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM=""
           echo "E2E_APP_ID=com.example.rnstarter.dev" >> "$GITHUB_ENV"
           echo "E2E_APP_URL=rnstarter-dev://" >> "$GITHUB_ENV"
 
