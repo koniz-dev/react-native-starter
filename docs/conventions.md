@@ -222,7 +222,8 @@ are lint errors in app code. Run it with `node`, or through an npm script.
 - **Exports:** named exports; only `app/` route files use default exports
   (a default export in `features/` or `shared/` is a lint error).
 - **Imports:** `@/` for anything outside the current feature (or `shared/`
-  area), relative within it; a relative path that leaves it is a lint error.
+  area), relative within it; a relative path that leaves it is a lint error,
+  and so is `@/` for a file in the same feature.
   `import type` for types (lint error otherwise). `shared/` doesn't import
   `features/` or `app/` (except `shared/integrations/setup.ts`), and a
   feature doesn't import another feature: both lint errors, by `@/` or by a

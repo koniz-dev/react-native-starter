@@ -114,7 +114,8 @@ environment variables.
 
 `jest.setup.env.js` sets `EXPO_PUBLIC_API_URL` and `EXPO_PUBLIC_AUTH_API_URL`
 to placeholder URLs before each test file, so the config is valid in every
-test. Validation tests call `parseEnv(raw, isDevBuild)` directly with
+test, and `EXPO_PUBLIC_LOG_LEVEL` to `warn`, so only warnings and errors
+reach the test output. Validation tests call `parseEnv(raw, isDevBuild)` directly with
 explicit values.
 
 ## References

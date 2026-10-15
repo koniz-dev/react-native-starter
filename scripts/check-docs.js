@@ -2,7 +2,8 @@
 /**
  * Checks the docs against the code (npm run docs:check):
  *
- * 1. every ```ts / ```tsx block compiles (indented ones too, as in a list): each block becomes a module in
+ * 1. every ```ts / ```tsx / ```typescript block (or ~~~ fence) compiles,
+ *    indented ones too (as in a list): each block becomes a module in
  *    .docs-check/ and `tsc` type-checks them all against the repo (imports
  *    such as '@/shared/...' resolve to the real code). Blocks declare their
  *    own placeholders, e.g. `declare function loadRefreshToken(): ...`;
@@ -13,15 +14,22 @@
  *    each block also passes ESLint with the project's config, as the file
  *    its first line names (`// features/x/y.ts`), or else as a test (if it
  *    reads like one), a route, or a module in a feature (lintSnippets);
- * 2. every ```json block parses;
- * 3. every `npm run <script>` names a script in package.json;
- * 4. every relative Markdown link points to an existing file (and heading,
- *    for #anchors), and every repo path in inline code exists. Paths with
- *    placeholders (<name>, *, {a,b}, ...) are not checked.
+ * 2. every ```json block parses; blocks in other languages (sh, js, yaml)
+ *    are not checked, and a fence left open is reported;
+ * 3. every `npm run <script>` (or `npm run-script`) names a script in
+ *    package.json;
+ * 4. every relative link points to an existing file (and heading, for
+ *    #anchors): inline links (with a title or in <angle brackets> too),
+ *    reference definitions (`[ref]: path`), and HTML `href`/`src`; every repo
+ *    path in inline code exists (a path in a known folder or a known root
+ *    file, `./` allowed), with its heading for a `.md#anchor`. Anchors are
+ *    compared as GitHub writes them (lowercase). Paths with placeholders
+ *    (<name>, *, {a,b}, ...) are not checked.
  *
  * 5. every `docs/<page>.md#anchor` (or `docs/<folder>/<page>.md`) mentioned
- *    in a source or config file (.ts, .tsx, .js, .sh, .yml, .yaml, and
- *    .env.example, in the project root, app/, features/, shared/, scripts/,
+ *    in a source or config file (.ts, .tsx, .js, .sh, .yml, .yaml, .json
+ *    except package-lock.json, and .env.example, in the project root, app/,
+ *    features/, shared/, scripts/,
  *    testing/, .github/, and .maestro/) exists. (Tests that read a doc fail
  *    by themselves when it is missing.)
  *
@@ -87,9 +95,27 @@ function docFiles() {
         return entry.name.endsWith('.md') ? [rel] : [];
       });
   const docs = walk('docs');
-  const folderReadmes = ['app/README.md', 'scripts/README.md'].filter(file =>
-    fs.existsSync(path.join(ROOT, file))
-  );
+  // A README.md in any source folder (app/README.md, features/x/README.md).
+  const readmes = dir => {
+    if (!fs.existsSync(path.join(ROOT, dir))) return [];
+    return fs
+      .readdirSync(path.join(ROOT, dir), { withFileTypes: true })
+      .flatMap(entry => {
+        const rel = `${dir}/${entry.name}`;
+        if (entry.isDirectory())
+          return entry.name === 'node_modules' ? [] : readmes(rel);
+        return entry.name === 'README.md' ? [rel] : [];
+      });
+  };
+  const folderReadmes = [
+    'app',
+    'features',
+    'shared',
+    'scripts',
+    'testing',
+    '.maestro',
+    '.github',
+  ].flatMap(readmes);
   return ['README.md', 'AGENTS.md', 'CLAUDE.md', ...docs, ...folderReadmes];
 }
 
@@ -98,10 +124,18 @@ function anchorsOf(file) {
   const text = fs.readFileSync(path.join(ROOT, file), 'utf8');
   const anchors = new Set();
   const counts = {};
-  let inFence = false;
+  let fence = null;
   for (const line of text.split(/\r?\n/)) {
-    if (line.startsWith('```')) inFence = !inFence;
-    const match = !inFence && /^#{1,6}\s+(.*)$/.exec(line);
+    const marker = fenceMarker(line);
+    if (marker && !fence) {
+      fence = marker;
+      continue;
+    }
+    if (marker && closes(fence, marker)) {
+      fence = null;
+      continue;
+    }
+    const match = !fence && /^#{1,6}\s+(.*)$/.exec(line);
     if (!match) continue;
     const base = match[1]
       .trim()
@@ -113,6 +147,37 @@ function anchorsOf(file) {
     anchors.add(n === 0 ? base : `${base}-${n}`);
   }
   return anchors;
+}
+
+/** A code fence line (``` or ~~~, three or more), or null. */
+function fenceMarker(line) {
+  const match = /^(\s*)(`{3,}|~{3,})\s*([^\s`]*)/.exec(line);
+  if (!match) return null;
+  const lang = match[3].toLowerCase();
+  return {
+    indent: match[1].length,
+    char: match[2][0],
+    length: match[2].length,
+    lang: lang === 'typescript' ? 'ts' : lang,
+    bare: line.trim() === match[2],
+  };
+}
+
+/** Whether `marker` closes `fence`: same character, at least as long, bare. */
+function closes(fence, marker) {
+  return (
+    marker.bare && marker.char === fence.char && marker.length >= fence.length
+  );
+}
+
+/** A link target without <angle brackets> and %-escapes. */
+function decodeTarget(raw) {
+  const target = raw.replace(/^<(.*)>$/, '$1');
+  try {
+    return decodeURI(target);
+  } catch {
+    return target;
+  }
 }
 
 function isPlaceholder(value) {
@@ -207,9 +272,10 @@ function main() {
     let requires = [];
     lines.forEach((line, index) => {
       const lineNo = index + 1;
-      // Fences may be indented (inside a list item).
-      const fenceMatch = /^(\s*)```(\w*)/.exec(line);
-      if (fenceMatch) {
+      // Fences may be indented (inside a list item); inside a fence, only a
+      // matching closer ends it (a ``` line in a ```` block is content).
+      const marker = fenceMarker(line);
+      if (marker && (!fence || closes(fence, marker))) {
         if (fence) {
           const body = fence.body.join('\n');
           const missing = fence.requires.filter(pkg => !isInstalled(pkg));
@@ -239,8 +305,10 @@ function main() {
           fence = null;
         } else {
           fence = {
-            lang: fenceMatch[2],
-            indent: fenceMatch[1].length,
+            lang: marker.lang,
+            char: marker.char,
+            length: marker.length,
+            indent: marker.indent,
             line: lineNo,
             body: [],
             requires,
@@ -256,21 +324,42 @@ function main() {
       }
       if (fence) fence.body.push(line.slice(fence.indent));
 
-      for (const m of line.matchAll(/npm run ([\w:-]+)/g)) {
+      for (const m of line.matchAll(/npm (?:run|run-script) ([\w:-]+)/g)) {
         if (!scripts.includes(m[1])) {
           report(file, lineNo, `npm run ${m[1]}: no such script`);
         }
       }
       if (fence) return;
 
-      for (const m of line.matchAll(/\]\(([^)\s]+)\)/g)) {
-        const target = m[1];
-        if (/^(https?:|mailto:|#)/.test(target)) {
-          if (target.startsWith('#')) {
-            anchorCache[file] ??= anchorsOf(file);
-            if (!anchorCache[file].has(target.slice(1))) {
-              report(file, lineNo, `no heading for ${target}`);
-            }
+      const hasHeading = (doc, anchor) => {
+        anchorCache[doc] ??= anchorsOf(doc);
+        return anchorCache[doc].has(anchor);
+      };
+      const targets = [
+        // [text](target) and [text](target "title"), images too.
+        ...Array.from(
+          line.matchAll(
+            /\]\(\s*(<[^>]*>|[^)\s]+)(?:\s+(?:"[^"]*"|'[^']*'))?\s*\)/g
+          ),
+          m => m[1]
+        ),
+        // [ref]: target
+        ...Array.from(
+          line.matchAll(/^\s{0,3}\[[^\]]+\]:\s*(<[^>]*>|\S+)/g),
+          m => m[1]
+        ),
+        // <a href="target">, <img src="target">
+        ...Array.from(
+          line.matchAll(/<(?:a|img)\b[^>]*?\s(?:href|src)=["']([^"']+)["']/gi),
+          m => m[1]
+        ),
+      ];
+      for (const raw of targets) {
+        const target = decodeTarget(raw);
+        if (/^[a-z][\w+.-]*:/i.test(target)) continue; // https:, mailto:, ...
+        if (target.startsWith('#')) {
+          if (!hasHeading(file, target.slice(1))) {
+            report(file, lineNo, `no heading for ${target}`);
           }
           continue;
         }
@@ -279,28 +368,36 @@ function main() {
         if (!fs.existsSync(path.join(ROOT, resolved))) {
           report(file, lineNo, `broken link ${target}`);
         } else if (anchor && resolved.endsWith('.md')) {
-          anchorCache[resolved] ??= anchorsOf(resolved);
-          if (!anchorCache[resolved].has(anchor)) {
+          if (!hasHeading(resolved, anchor)) {
             report(file, lineNo, `no heading for ${target}`);
           }
         }
       }
 
       for (const m of line.matchAll(/`([^`\s]+)`/g)) {
-        const value = m[1].replace(/[#:].*$/, '').replace(/[),.]+$/, '');
+        const code = m[1].replace(/^\.\//, '');
+        const anchor = /\.md#([\w-]+)/.exec(code)?.[1];
+        const value = code.replace(/[#:].*$/, '').replace(/[),.]+$/, '');
         const isRepoPath =
           PATH_ROOTS.some(root => value.startsWith(root)) ||
           ROOT_FILES.has(value);
         if (!isRepoPath || isPlaceholder(m[1])) continue;
         if (!fs.existsSync(path.join(ROOT, value))) {
           report(file, lineNo, `path does not exist: ${value}`);
+        } else if (anchor && !hasHeading(value, anchor)) {
+          report(file, lineNo, `no heading for ${value}#${anchor}`);
         }
       }
     });
+    if (fence) {
+      report(file, fence.line, 'code block is never closed');
+    }
   }
 
   const isSource = name =>
-    /\.(ts|tsx|js|sh|ya?ml)$/.test(name) || name === '.env.example';
+    /\.(ts|tsx|js|sh|ya?ml)$/.test(name) ||
+    (name.endsWith('.json') && name !== 'package-lock.json') ||
+    name === '.env.example';
   const sourceFiles = dir => {
     const full = path.join(ROOT, dir);
     if (!fs.existsSync(full)) return [];

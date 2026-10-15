@@ -37,6 +37,11 @@ const IMPORTS_REJECTED: Fixture[] = [
     'shared/lib/x.ts',
     "void import('../../features/home/x');",
   ],
+  [
+    'its own feature through @/',
+    'features/home/screens/x.ts',
+    "export * from '@/features/home/api/y';",
+  ],
 ];
 
 const IMPORTS_ALLOWED: Fixture[] = [

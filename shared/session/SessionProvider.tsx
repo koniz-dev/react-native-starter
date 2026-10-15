@@ -21,12 +21,12 @@ import {
   authService,
   type AuthResponse,
   type LoginCredentials,
-} from '@/shared/session/authService';
+} from './authService';
 import {
   clearSessionFromPreviousInstall,
   clearStoredSession,
   onSessionExpired,
-} from '@/shared/session/session';
+} from './session';
 import { getErrorReporter } from '@/shared/integrations/errorReporter';
 import { logger } from '@/shared/lib/logger';
 

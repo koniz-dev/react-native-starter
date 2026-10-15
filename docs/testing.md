@@ -30,8 +30,10 @@ __tests__/                    mirrors the source tree
 testing/                      shared helpers (import from '@/testing')
 ├── render.tsx                renderWithProviders
 ├── secureStore.ts            in-memory expo-secure-store
-└── colorScheme.ts            setColorScheme
-jest.setup.env.js             env for every test file (placeholder URLs)
+├── colorScheme.ts            setColorScheme
+├── http.ts                   holdRequests, ok, httpError
+└── projectCopy.ts            copies of the project, for script tests
+jest.setup.env.js             env for every test file (URLs, log level)
 jest.setup.ts                 shared mocks, reset before each test
 ```
 
@@ -77,7 +79,8 @@ local to that file.
 
 `jest.setup.env.js` sets the API and auth URLs to placeholders
 (`https://api.example.com`, `https://auth.example.com`), so the app's config
-is valid in tests. Tests of config validation call `parseEnv()`
+is valid in tests, and the log level to `warn`, so only warnings and errors
+reach the output; to check a debug or info line, spy on `logger`. Tests of config validation call `parseEnv()`
 directly. One consequence: in tests the API and the auth backend are on
 different origins, so requests through `api` never carry the token; see
 [Requests that carry the token](#requests-that-carry-the-token).

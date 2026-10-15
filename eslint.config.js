@@ -71,9 +71,9 @@ function moduleOf(rel) {
 }
 
 /**
- * Project rules lint can't express with core rules: the dependency direction
- * and `@/` for imports outside the current module (AGENTS.md: Project
- * structure, Imports), for `@/` and relative paths alike.
+ * Project rules lint can't express with core rules: the dependency direction,
+ * `@/` for imports outside the current module, and relative paths inside a
+ * feature (AGENTS.md: Project structure, Imports).
  */
 const project = {
   rules: {
@@ -119,6 +119,14 @@ const project = {
           } else if (source.startsWith('.') && to !== from) {
             report(
               `Import ${target} with @/; relative paths stay inside ${from}.`
+            );
+          } else if (
+            source.startsWith('@/') &&
+            to === from &&
+            fromTop === 'features'
+          ) {
+            report(
+              `Import ${target} with a relative path: it is inside ${from}.`
             );
           }
         };

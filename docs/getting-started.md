@@ -195,8 +195,9 @@ and the `build:preview:*` / `build:production:*` scripts for the others
 
 ## Dependency advisories
 
-`npm run audit:check` fails on a high or critical advisory in the app's
-runtime dependencies unless `scripts/audit-allowlist.json` has a review of it
+`npm run audit:check` fails on a high or critical advisory in the
+production dependency tree (`npm audit --omit=dev`, which also holds build
+tools such as Expo CLI) unless `scripts/audit-allowlist.json` has a review of it
 whose `reviewBy` date has not passed. Its first entries are the review of
 the dependencies the project started with (build tools only, not in the app
 bundles), so the Audit workflow starts green. Make the review yours:
@@ -210,9 +211,9 @@ bundles), so the Audit workflow starts green. Make the review yours:
    your next review (at most 183 days out), and `tracking` to your own
    issue if you track it. An entry without an `id`, `package`, `severity`
    (`high` or `critical`), `tracking`, or a `reviewBy` date written
-   YYYY-MM-DD fails the check, and so does one whose `package` or
-   `severity` no longer matches what npm reports (an advisory re-scored to
-   critical needs a new review).
+   YYYY-MM-DD fails the check, and so does one whose `package` differs from
+   what npm reports or whose `severity` npm has raised (an advisory
+   re-scored to critical needs a new review).
 
 New advisories fail the check until you fix or review them the same way. The
 Audit workflow fails, and CI doesn't, so a new advisory doesn't block work on

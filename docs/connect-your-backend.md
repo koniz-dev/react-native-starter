@@ -153,7 +153,8 @@ export const myBackendAuthAdapter: AuthAdapter = {
   },
 
   // Required: your payload -> { id, email, name }; throw if it's incomplete.
-  // It also reads the user stored by an earlier version of the app.
+  // It reads what login and fetchUser return; the stored profile is checked
+  // by StoredUserSchema in shared/session/authService.ts instead.
   normalizeUser: raw => {
     const result = UserSchema.safeParse(raw);
     if (!result.success) {
@@ -261,7 +262,8 @@ development, and the error reporter).
 
 The Login screen sends `LoginCredentials`, `{ username, password }`, whatever
 your backend calls them; map them in `login`, as the example does with
-`email: username`. To label the field "Email", change `'login.username'` in
+`email: username`. To label the field "Email", change `'login.username'` and
+the empty-field message `'login.error.usernameRequired'` in
 `shared/i18n/en.ts`; for the email keyboard and autofill, also set
 `keyboardType="email-address"` and `autoComplete="email"` on the
 `login-username` field in `features/auth/screens/LoginScreen.tsx`. Two

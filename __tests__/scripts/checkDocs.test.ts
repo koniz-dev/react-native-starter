@@ -66,4 +66,87 @@ describe('check-docs on a copy of the project', () => {
       /docs\/conventions\.md:\d+: Use a named export.*\(no-restricted-syntax\)/
     );
   }, 120000);
+
+  it('checks every link form, typescript and ~~~ fences, inline-code anchors, and open fences', () => {
+    const copy = makeCopy();
+    try {
+      const write = (file: string, text: string) =>
+        fs.writeFileSync(path.join(copy, file), text);
+      write(
+        'docs/forms.md',
+        [
+          '# Forms',
+          '',
+          '[titled](nope-titled.md "A title")',
+          '[angle](<nope angle.md>)',
+          '[ref][r]',
+          '',
+          '[r]: ./nope-ref.md',
+          '',
+          '<a href="nope-html.md">html</a>',
+          '',
+          'See `docs/testing.md#no-such-anchor` and `./shared/nope.ts`.',
+          '',
+          'Run `npm run-script nope`.',
+          '',
+          // Not problems: an encoded space, a real anchor.
+          '[space](forms%20ok.md) and [anchor](#forms)',
+          '',
+          '```typescript',
+          "export { Missing } from '@/shared/ui/NoSuchTypescript';",
+          '```',
+          '',
+          '~~~ts',
+          "export { Missing } from '@/shared/ui/NoSuchTilde';",
+          '~~~',
+          '',
+          '````md',
+          '```ts',
+          'this is an example of Markdown, not code',
+          '```',
+          '````',
+          '',
+          '```ts',
+          'const unclosed = 1;',
+        ].join('\n')
+      );
+      write('docs/forms ok.md', '# OK\n');
+      fs.writeFileSync(
+        path.join(copy, 'scripts/audit-allowlist.json'),
+        JSON.stringify({ $comment: 'See docs/nope-json.md.', advisories: [] })
+      );
+      fs.mkdirSync(path.join(copy, 'features/notes'), { recursive: true });
+      write(
+        'features/notes/README.md',
+        'See [the page](../../docs/nope-readme.md).\n'
+      );
+
+      const result = spawnSync(process.execPath, ['scripts/check-docs.js'], {
+        cwd: copy,
+        encoding: 'utf8',
+      });
+      expect(result.status).toBe(1);
+      for (const problem of [
+        'broken link nope-titled.md',
+        'broken link nope angle.md',
+        'broken link ./nope-ref.md',
+        'broken link nope-html.md',
+        'no heading for docs/testing.md#no-such-anchor',
+        'path does not exist: shared/nope.ts',
+        'npm run nope: no such script',
+        'NoSuchTypescript',
+        'NoSuchTilde',
+        'code block is never closed',
+        'scripts/audit-allowlist.json:1: refers to missing docs/nope-json.md',
+        'features/notes/README.md:1: broken link ../../docs/nope-readme.md',
+      ]) {
+        expect(result.stderr).toContain(problem);
+      }
+      expect(result.stderr).not.toMatch(
+        /forms%20ok|forms ok|#forms\b|Markdown, not code/
+      );
+    } finally {
+      fs.rmSync(copy, { recursive: true, force: true });
+    }
+  }, 120000);
 });

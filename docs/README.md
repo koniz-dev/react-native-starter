@@ -52,11 +52,14 @@ Native topics, the pages link to the official documentation.
 - [Testing](testing.md): test layout, shared setup, coverage, end-to-end
   flows.
 
-`npm run docs:check` compiles every TypeScript snippet in these pages against
-the code, lints it with the project's rules as the file its first line names
+`npm run docs:check` compiles every TypeScript snippet (`ts`, `tsx`, or
+`typescript` blocks) in these pages against the code, lints it with the
+project's rules as the file its first line names
 (`// features/posts/api/postsApi.ts`; otherwise as a module in a feature, or
-a test if it reads like one), and checks every path, link, and `npm run`
-script they mention; CI runs it.
+a test if it reads like one), parses every `json` block, and checks every
+relative link and anchor, repo path in inline code, and `npm run` script
+they mention; CI runs it. Blocks in other languages (`sh`, `js`, `yaml`)
+aren't checked. Write anchors in lowercase, as GitHub generates them.
 
 When a page names something the reader will create, which doesn't exist yet,
 write it so the check skips it:
