@@ -14,7 +14,11 @@ appId: ${APP_ID}
           commands:
             - clearKeychain
 - launchApp
-- openLink: ${APP_URL}
+# Optional: a busy simulator can time out opening the link (code 60) while
+# the app opens anyway; the loop below opens it again if still needed.
+- openLink:
+    link: ${APP_URL}
+    optional: true
 # Until Home is usable: reopen the link if Expo Go is still on its own home
 # screen (the link can arrive before Expo Go is ready), and dismiss overlays:
 # iOS's "Open in “Expo Go”?" prompt (shown for a link on a fresh simulator),
@@ -44,7 +48,9 @@ appId: ${APP_ID}
           when:
             visible: Development servers
           commands:
-            - openLink: ${APP_URL}
+            - openLink:
+                link: ${APP_URL}
+                optional: true
       - runFlow:
           when:
             platform: Android
