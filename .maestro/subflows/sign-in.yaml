@@ -13,7 +13,10 @@ appId: ${APP_ID}
 - tapOn:
     id: login-password
 - inputText: ${MAESTRO_E2E_PASSWORD}
-- hideKeyboard
+# Optional: on some iOS versions Maestro can't find a way to dismiss the
+# keyboard; Sign In stays reachable above it (the form avoids the keyboard).
+- hideKeyboard:
+    optional: true
 # On iOS, hiding the keyboard can press its Go key, which already submits
 # the form; tap Sign In only if the login screen is still there (a second
 # submit while one runs is ignored by the screen).
