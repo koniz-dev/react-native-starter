@@ -1,0 +1,16 @@
+Running on iPhone 17 - iOS 26.5 - 10B884BF-749F-4E8B-AFCD-26AB8F1DBD01
+ > Flow Dark mode screenshots
+Run subflows/open-app.yaml...
+  Run flow when ${CLEAR_STATE == 'true'} is true...
+  Run flow when false is true... SKIPPED
+  Launch app "${APP_ID}"... COMPLETED
+  Open ${APP_URL}... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)...
+  Repeat while id: tab-home is not visible (up to 10 times)... SKIPPED
+  Assert that "Session" is visible... COMPLETED
+Run subflows/open-app.yaml... COMPLETED
+Take screenshot dark-home... COMPLETED
+Tap on id: tab-explore... COMPLETED
+Assert that "API Example" is visible... COMPLETED
+Take screenshot dark-explore... COMPLETED
+Tap on id: tab-home... COMPLETED

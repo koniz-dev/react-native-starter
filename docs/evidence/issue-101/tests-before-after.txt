@@ -1,0 +1,18 @@
+## Before the fix (DocumentTitle from 8f2895a, no .web file)
+    ✕ / renders (2607 ms)
+    ✕ /login renders (338 ms)
+    ✕ /no-such-page renders (121 ms)
+    ✕ /explore renders (125 ms)
+    ✕ /showcase renders (120 ms)
+Tests:       5 failed, 5 total
+    Render error caught by a route error boundary Error: Expo Head: Add the handoff origin to the Expo Config (requires rebuild). Add the Config Plugin { plugins: [["expo-router", { origin: "...<URL>..." }]] }, where `origin` is the hosted URL.
+
+## After the fix (46c936b)
+    ✓ puts its title in the document head on the web (25 ms)
+    ✓ renders nothing on native (2 ms)
+    ✓ / renders (5223 ms)
+    ✓ /login renders (980 ms)
+    ✓ /no-such-page renders (353 ms)
+    ✓ /explore renders (351 ms)
+    ✓ /showcase renders (194 ms)
+Tests:       7 passed, 7 total

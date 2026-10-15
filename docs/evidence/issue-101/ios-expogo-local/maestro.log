@@ -1,0 +1,14 @@
+
+Requested 1 shards, but it cannot be higher than the number of flows (0). Will use 1 shards instead.
+
+Waiting for flows to complete...
+[Passed] Cold start opens Home (1m 21s)
+[Passed] Back from Login returns Home (1m 17s)
+[Passed] Tab navigation (1m 17s)
+[Passed] Sign-in session survives a relaunch; logout clears it (4m)
+[Passed] Login keyboard return keys (1m 22s)
+[Passed] Explore error state and Retry (57s)
+[Passed] Profile is protected and reloads the user (1m 54s)
+
+7/7 Flows Passed in 12m 9s
+
