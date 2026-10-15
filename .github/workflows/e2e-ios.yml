@@ -8,6 +8,11 @@ name: E2E (iOS, manual)
 # verify job.
 on:
   workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Commit, branch, or tag to test (default: the branch the run is for), e.g. to reproduce a bug before its fix'
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -21,10 +26,14 @@ jobs:
     env:
       MAESTRO_VERSION: '2.11.0'
       MAESTRO_SHA256: '5384593cb4e7a106489e75a821d157dd43f4e438df6bc308b72e82c685e1283a'
+      # The XCTest driver's first start on a fresh simulator can take over
+      # the runner's default 3 minutes here.
+      MAESTRO_DRIVER_STARTUP_TIMEOUT: '600000'
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ inputs.ref }}
           persist-credentials: false
 
       - name: Set up Node.js
@@ -82,6 +91,14 @@ jobs:
 
       - name: Run the flows
         run: npm run test:e2e:ios
+
+      # What the app showed last, for a run that failed before a flow could
+      # take a screenshot (such as a crash at launch).
+      - name: Screenshot the simulator
+        if: always()
+        run: |
+          mkdir -p e2e-results/ios
+          xcrun simctl io booted screenshot e2e-results/ios/simulator-last.png || true
 
       - name: Upload Maestro results
         if: always()
