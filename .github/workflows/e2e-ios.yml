@@ -1,0 +1,93 @@
+name: E2E (iOS, manual)
+
+# Runs the Maestro flows in .maestro/ on an iOS simulator in a native debug
+# build of the development variant: the code paths Expo Go doesn't take (the
+# app's own native modules, such as expo-router's ExpoHead). Expo Go on iOS
+# runs locally (npm run test:e2e:ios).
+# Manual only: a native build and a simulator run take far longer than the
+# verify job.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  e2e-ios:
+    name: Maestro on iOS simulator (native-debug)
+    # Expo SDK 57 needs Xcode 26.4 or later.
+    runs-on: macos-26
+    timeout-minutes: 120
+    env:
+      MAESTRO_VERSION: '2.11.0'
+      MAESTRO_SHA256: '5384593cb4e7a106489e75a821d157dd43f4e438df6bc308b72e82c685e1283a'
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Set up Java 17 (Maestro)
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install the Maestro CLI (release zip, checksum verified)
+        run: |
+          curl -fsSL -o maestro.zip "https://github.com/mobile-dev-inc/maestro/releases/download/cli-${MAESTRO_VERSION}/maestro.zip"
+          echo "${MAESTRO_SHA256}  maestro.zip" | shasum -a 256 -c -
+          unzip -q maestro.zip -d "$HOME"
+          echo "$HOME/maestro/bin" >> "$GITHUB_PATH"
+
+      # A debug build without a dev client: it loads the bundle from Metro on
+      # localhost:8081 and opens with its own URL scheme.
+      - name: Build the native debug app (development variant)
+        run: |
+          set -o pipefail
+          npm run prebuild:development -- --platform ios
+          workspace="$(ls -d ios/*.xcworkspace)"
+          xcodebuild -workspace "$workspace" -scheme "$(basename "$workspace" .xcworkspace)" \
+            -configuration Debug -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath ios/build CODE_SIGNING_ALLOWED=NO -quiet build
+          echo "E2E_APP_ID=com.example.rnstarter.dev" >> "$GITHUB_ENV"
+          echo "E2E_APP_URL=rnstarter-dev://" >> "$GITHUB_ENV"
+
+      - name: Boot a simulator and install the app
+        run: |
+          # An iPhone 17 (or another iPhone) on the newest installed iOS runtime.
+          udid="$(xcrun simctl list devices available -j | node -e '
+            const { devices } = JSON.parse(require("fs").readFileSync(0, "utf8"));
+            const ios = Object.keys(devices)
+              .filter(runtime => runtime.includes("iOS"))
+              .sort((a, b) => a.localeCompare(b, "en", { numeric: true }));
+            const phones = devices[ios.at(-1)].filter(d => d.name.startsWith("iPhone"));
+            console.log((phones.find(d => d.name === "iPhone 17") ?? phones[0]).udid);
+          ')"
+          # Flows type with the software keyboard.
+          defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool false
+          xcrun simctl boot "$udid"
+          xcrun simctl bootstatus "$udid" -b
+          xcrun simctl install "$udid" ios/build/Build/Products/Debug-iphonesimulator/*.app
+
+      - name: Run the flows
+        run: npm run test:e2e:ios
+
+      - name: Upload Maestro results
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          retention-days: 14
+          name: e2e-ios-native-debug-results
+          path: e2e-results/ios
+          if-no-files-found: ignore

@@ -317,9 +317,11 @@ describe('init-project on a copy of the template', () => {
       { cwd: dir, encoding: 'utf8' }
     );
     expect(leftovers.stdout).toBe('');
-    expect(read(dir, '.github/workflows/e2e-android.yml')).toContain(
-      'com.acme.notes.dev'
-    );
+    for (const workflow of ['e2e-android.yml', 'e2e-ios.yml']) {
+      expect(read(dir, `.github/workflows/${workflow}`)).toContain(
+        'com.acme.notes.dev'
+      );
+    }
   });
 
   it('refuses a dirty working tree unless --force', () => {
@@ -380,9 +382,11 @@ describe('init-project on a copy of the template', () => {
       .advisories) {
       expect(entry.owner).toBe('Acme Inc. (re-review by reviewBy)');
     }
-    expect(read(dir, '.github/workflows/e2e-android.yml')).toContain(
-      'E2E_APP_URL=acmenotes-dev://'
-    );
+    for (const workflow of ['e2e-android.yml', 'e2e-ios.yml']) {
+      expect(read(dir, `.github/workflows/${workflow}`)).toContain(
+        'E2E_APP_URL=acmenotes-dev://'
+      );
+    }
 
     for (const file of [
       'scripts/init-project.js',

@@ -617,6 +617,7 @@ function planChanges(input) {
       nameCells(replaceIds(text, { bareScheme: true })),
     'docs/testing.md': replaceIds,
     '.github/workflows/e2e-android.yml': replaceIds,
+    '.github/workflows/e2e-ios.yml': replaceIds,
   };
   const files = new Set([
     ...MARKED_FILES,
