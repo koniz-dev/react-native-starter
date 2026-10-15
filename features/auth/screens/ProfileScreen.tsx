@@ -24,7 +24,7 @@ import { useAnnouncement } from '@/shared/ui/useAnnouncement';
  */
 export function ProfileScreen() {
   const theme = useTheme();
-  const { session, signOut, refreshUser } = useSession();
+  const { session, signOut, signingOut, refreshUser } = useSession();
   const [refreshing, setRefreshing] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const user = session.user;
@@ -105,6 +105,8 @@ export function ProfileScreen() {
         <Button
           mode="outlined"
           onPress={() => void signOut()}
+          loading={signingOut}
+          disabled={signingOut}
           style={styles.button}
           testID="profile-logout"
         >

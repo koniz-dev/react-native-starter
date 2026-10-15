@@ -46,6 +46,19 @@ export class ApiError extends Error {
 }
 
 /**
+ * Whether a failure says nothing about the request itself, so trying again
+ * later may work: offline, timed out, canceled, a server error (5xx), or a
+ * 408 (request timeout) or 429 (too many requests).
+ */
+export function isTransient(error: ApiError): boolean {
+  return (
+    ['network', 'timeout', 'server', 'canceled'].includes(error.code) ||
+    error.status === 408 ||
+    error.status === 429
+  );
+}
+
+/**
  * The message in a JSON error body, if any: a string `message` or `error`
  * field, or the `message` of an envelope such as
  * `{ "error": { "code": "invalid_credentials", "message": "..." } }`.

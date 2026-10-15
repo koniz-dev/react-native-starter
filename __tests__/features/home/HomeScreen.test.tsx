@@ -1,4 +1,5 @@
-import { act, fireEvent } from '@testing-library/react-native';
+import { act, fireEvent, waitFor, within } from '@testing-library/react-native';
+import { ActivityIndicator } from 'react-native-paper';
 
 jest.mock('expo-router', () => {
   return { router: { navigate: jest.fn(), replace: jest.fn() } };
@@ -10,6 +11,7 @@ import { HomeScreen } from '@/features/home/screens/HomeScreen';
 import { DocumentTitle } from '@/shared/ui/DocumentTitle';
 import { getItem, setItem, STORAGE_KEYS } from '@/shared/storage/storage';
 import { defaultUnauthorizedHandler } from '@/shared/session/session';
+import { setAuthAdapter } from '@/shared/session/authService';
 import { logger } from '@/shared/lib/logger';
 import { renderWithProviders, secureStore } from '@/testing';
 
@@ -89,6 +91,32 @@ describe('<HomeScreen /> session', () => {
     );
     expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
     expect(await getItem(STORAGE_KEYS.USER_DATA)).toBeNull();
+  });
+
+  test('shows Log out loading and disabled while the backend signs out', async () => {
+    secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
+    await setItem(STORAGE_KEYS.USER_DATA, user);
+    let finish!: () => void;
+    setAuthAdapter({
+      login: async () => ({ token: 't', user }),
+      normalizeUser: raw => raw as typeof user,
+      logout: () => new Promise<void>(resolve => (finish = resolve)),
+    });
+    const { findByText, getByTestId } = renderWithProviders(<HomeScreen />, {
+      withSession: true,
+    });
+    await findByText('Signed in as Emily Johnson');
+
+    fireEvent.press(getByTestId('logout-button'));
+
+    // Disabled, with Paper's loading indicator in place of the label's icon.
+    await waitFor(() => expect(getByTestId('logout-button')).toBeDisabled());
+    expect(
+      within(getByTestId('logout-button')).UNSAFE_getByType(ActivityIndicator)
+    ).toBeTruthy();
+    await act(async () => finish());
+    expect(await findByText('Not signed in')).toBeTruthy();
+    setAuthAdapter(null);
   });
 
   test('treats a secure storage failure as signed out', async () => {

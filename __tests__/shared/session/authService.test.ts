@@ -8,7 +8,10 @@ import {
   type AuthAdapter,
 } from '@/shared/session/authService';
 import { logger } from '@/shared/lib/logger';
-import { refreshAccessToken } from '@/shared/session/session';
+import {
+  clearStoredSession,
+  refreshAccessToken,
+} from '@/shared/session/session';
 import * as storage from '@/shared/storage/storage';
 import { secureStore } from '@/testing';
 
@@ -166,6 +169,30 @@ describe('authService with an adapter', () => {
     expect(storage.removeItem).toHaveBeenCalledWith('user_data');
   });
 
+  it('leaves a newer session alone when the session ended while the adapter signed out', async () => {
+    secureStore.set('auth_token', 'token-a');
+    let finishLogout!: () => void;
+    setAuthAdapter(
+      fakeAdapter({
+        login: jest.fn(async () => ({
+          token: 'token-b',
+          user: { uid: 8, mail: 'b@example.com' },
+        })),
+        logout: () => new Promise<void>(resolve => (finishLogout = resolve)),
+      })
+    );
+
+    const signingOut = authService.logout();
+    // Meanwhile the session expires (a 401) and B signs in.
+    await clearStoredSession();
+    await authService.login({ username: 'b', password: 'p' });
+    finishLogout();
+    await signingOut;
+
+    expect(secureStore.get('auth_token')).toBe('token-b');
+    expect(storage.removeItem).toHaveBeenCalledTimes(1); // the expiry's
+  });
+
   it('reloads the user with fetchUser when the adapter has it', async () => {
     setAuthAdapter(
       fakeAdapter({
@@ -206,6 +233,20 @@ describe('authService with an adapter', () => {
 
     setAuthAdapter(fakeAdapter());
     await expect(refreshAccessToken()).resolves.toBeNull();
+  });
+
+  it('keeps the session when the refreshed token cannot be stored', async () => {
+    const warn = jest.spyOn(logger, 'warn').mockImplementation(() => {});
+    jest
+      .mocked(SecureStore.setItemAsync)
+      .mockRejectedValueOnce(new Error('User interaction is not allowed.'));
+    setAuthAdapter(fakeAdapter({ refresh: async () => 'refreshed-token' }));
+
+    // The request is retried with the new token; nothing signs the user out.
+    await expect(refreshAccessToken()).resolves.toBe('refreshed-token');
+    expect(warn).toHaveBeenCalledWith('Storing the refreshed token failed', {
+      error: 'User interaction is not allowed.',
+    });
   });
 });
 

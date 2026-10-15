@@ -91,7 +91,7 @@ less useful error.
 // features/auth/myBackendAdapter.ts
 import { Platform } from 'react-native';
 import { z } from 'zod';
-import { toApiError } from '@/shared/http/apiError';
+import { isTransient, toApiError } from '@/shared/http/apiError';
 import type { AuthAdapter } from '@/shared/session/authService';
 import {
   createMemoryTokenStore,
@@ -172,8 +172,8 @@ export const myBackendAuthAdapter: AuthAdapter = {
     unwrap(UserSchema, (await authenticated.get('/me')).data),
 
   // Optional: a new access token on a 401, or null to sign the user out.
-  // Throwing a network, timeout, server, or canceled error keeps the
-  // session; any other error signs the user out.
+  // Throwing a transient error (network, timeout, server, canceled, 408, or
+  // 429) keeps the session; any other error signs the user out.
   refresh: async ({ public: http }) => {
     const refreshToken = await refreshTokens.get();
     if (!refreshToken) return null;
@@ -199,13 +199,9 @@ export const myBackendAuthAdapter: AuthAdapter = {
       return tokens.access_token;
     } catch (error) {
       const apiError = toApiError(error);
-      // Offline, timed out, canceled, or a server error: the session is
-      // kept, so keep the refresh token and try again later.
-      if (
-        ['network', 'timeout', 'server', 'canceled'].includes(apiError.code)
-      ) {
-        throw apiError;
-      }
+      // Offline, timed out, canceled, rate limited, or a server error: the
+      // session is kept, so keep the refresh token and try again later.
+      if (isTransient(apiError)) throw apiError;
       // Anything else signs the user out next: drop the refresh token.
       await refreshTokens.clear();
       return null;
@@ -222,7 +218,11 @@ export const myBackendAuthAdapter: AuthAdapter = {
         await http.post('/sessions/revoke', { refresh_token: refreshToken });
       }
     } finally {
-      await refreshTokens.clear();
+      // Unless someone signed in while the request ran: that refresh token
+      // is the new session's.
+      if ((await refreshTokens.get()) === refreshToken) {
+        await refreshTokens.clear();
+      }
     }
   },
 };
@@ -249,7 +249,9 @@ there; replace that registration with yours.
 The service rejects a missing token, stores the token and the normalized
 user, and registers `refresh` (if any) as the HTTP client's refresh handler,
 which is tried once per 401 before signing out. On sign-out it calls `logout`
-(if any), then clears the stored session. Nothing in `shared/` changes.
+(if any), then clears the stored session, unless that session ended while
+`logout` ran (it expired, and the user may have signed in again). Nothing in
+`shared/` changes.
 Until an adapter is registered, Login shows "Login failed. Please try
 again." and the reason, "Sign-in is not configured: register an AuthAdapter
 in shared/integrations/setup.ts.", goes to the log (the console in
@@ -309,12 +311,13 @@ it sends the stored token, and there is none until `login` returns.
   refresh between concurrent 401s, and a 401 for a request sent with an older
   access token is retried with the current one instead of refreshing again,
   so a rotated token is used only once.
-- **Failures.** Throw an error whose `code` is `network`, `timeout`,
-  `server` (a 5xx), or `canceled`, and the session is kept; the original
-  request fails with that error. Anything else, `null` or any other error
-  (a 4xx, a response that fails validation), means the refresh token was
-  rejected: the user is signed out, so drop the refresh token first, as the
-  example does.
+- **Failures.** Throw a transient error (`isTransient` in
+  `shared/http/apiError.ts`: its `code` is `network`, `timeout`, `server`
+  (a 5xx), or `canceled`, or its status is 408 or 429) and the session is
+  kept; the original request fails with that error. Anything else, `null` or
+  any other error (another 4xx, a response that fails validation), means the
+  refresh token was rejected: the user is signed out, so drop the refresh
+  token first, as the example does.
 - **Sign-out during a refresh.** The service discards an access token from a
   refresh that finishes after the user signed out (or in again), but it
   can't see the refresh token your adapter stores. Before storing a rotated
@@ -325,7 +328,14 @@ it sends the stored token, and there is none until `login` returns.
   token through the `public` client, as the example does: the access token
   has often expired by the time the user signs out, and the refresh token
   alone identifies the session. Delete it in `finally`, so a failed request doesn't leave it on the
-  device.
+  device, but only if it is still the one you revoked: a slow sign-out can
+  finish after the user signed in again.
+- **Sessions that end without a sign-out.** When a session ends another
+  way (a 401 that a successful refresh didn't fix, or a reinstall on iOS,
+  where the service clears the access token the Keychain kept), `logout`
+  isn't called, so the refresh token stays stored. It is never used while
+  signed out and is replaced at the next sign-in; to revoke it sooner,
+  revoke and delete a stored refresh token at the start of `login`.
 - **Clients.** `refresh` gets clients where a 401 on `authenticated` fails
   the refresh (the user is signed out) instead of starting another refresh.
   Make its requests through these clients, not the app's `api` client.

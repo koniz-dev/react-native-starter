@@ -238,6 +238,23 @@ describe('<LoginScreen />', () => {
     });
   });
 
+  it('sends a password of spaces as typed, and the username without outer spaces', async () => {
+    const login = jest.spyOn(authService, 'login').mockResolvedValue({
+      token: 'test-token',
+      user: { id: 1, email: 'user@example.com', name: 'Test User' },
+    });
+    const { getByTestId, getByText, queryByTestId } = await renderLoginReady();
+
+    fireEvent.changeText(getByTestId('login-username'), '  emily ');
+    fireEvent.changeText(getByTestId('login-password'), '   ');
+    fireEvent.press(getByText('Sign In'));
+
+    await waitFor(() =>
+      expect(login).toHaveBeenCalledWith({ username: 'emily', password: '   ' })
+    );
+    expect(queryByTestId('login-error')?.props.children ?? '').toBe('');
+  });
+
   it('keeps the user on the login screen and shows the server message for a rejected sign-in', async () => {
     jest.spyOn(authService, 'login').mockRejectedValue(
       new ApiError('Request failed with status code 401', {

@@ -22,7 +22,10 @@ import {
   setAuthAdapter,
   type AuthAdapter,
 } from '@/shared/session/authService';
-import { onSessionExpired } from '@/shared/session/session';
+import {
+  defaultUnauthorizedHandler,
+  onSessionExpired,
+} from '@/shared/session/session';
 import { STORAGE_KEYS } from '@/shared/storage/storage';
 import { secureStore } from '@/testing';
 import { linkDependencies } from '@/testing/projectCopy';
@@ -72,6 +75,8 @@ function fakeBackend() {
     nextBody: undefined as unknown,
     /** Holds the refresh endpoint's answer (after rotating) until it resolves. */
     refreshGate: null as Promise<void> | null,
+    /** Holds the revoke endpoint's answer until it resolves. */
+    revokeGate: null as Promise<void> | null,
   };
   const issue = () => {
     state.issued += 1;
@@ -164,6 +169,7 @@ function fakeBackend() {
     if (method === 'POST' && url === '/sessions/revoke') {
       // The refresh token is the credential; no access token needed.
       state.validRefresh.delete(refresh_token ?? '');
+      await state.revokeGate;
       return respond(config, 204, null);
     }
     return respond(config, 404, failure('not_found', `${method} ${url}`));
@@ -347,6 +353,25 @@ describe('the documented AuthAdapter against a backend of another shape', () => 
     expect(backend.state.validRefresh.size).toBe(0);
     expect(secureStore.size).toBe(0);
     expect(expired).not.toHaveBeenCalled();
+  });
+
+  it('keeps the next session when a slow logout finishes after the user signed in again', async () => {
+    await signIn();
+    let answer!: () => void;
+    backend.state.revokeGate = new Promise(resolve => (answer = resolve));
+
+    const loggingOut = authService.logout();
+    // The revoke is on its way; meanwhile the session expires and the user
+    // signs in again.
+    await new Promise(resolve => setTimeout(resolve, 0));
+    await defaultUnauthorizedHandler();
+    await signIn();
+    answer();
+    await loggingOut;
+
+    expect(secureStore.get('auth_token')).toBe('access-2');
+    expect(secureStore.get('refresh_token')).toBe('refresh-2');
+    expect(backend.state.validRefresh).toEqual(new Set(['refresh-2']));
   });
 
   it('revokes, and keeps nothing from, a refresh that finishes after logout', async () => {

@@ -13,7 +13,7 @@ import { ExampleLinks } from '@/features/demo-showcase/components/ExampleLinks';
 /** Home: the session card, with sign-in, profile, and sign-out. */
 export function HomeScreen() {
   const theme = useTheme();
-  const { session, signOut } = useSession();
+  const { session, signOut, signingOut } = useSession();
 
   return (
     <SafeAreaView
@@ -55,6 +55,8 @@ export function HomeScreen() {
                 <Button
                   mode="outlined"
                   onPress={() => void signOut()}
+                  loading={signingOut}
+                  disabled={signingOut}
                   testID="logout-button"
                 >
                   {t('home.session.logOut')}

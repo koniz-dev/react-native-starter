@@ -142,7 +142,18 @@ export function setAuthAdapter(next: AuthAdapter | null): void {
           const token = await refresh(authRefreshClients);
           // Signed out (or in again) meanwhile: don't bring the old session back.
           if (generation !== getSessionGeneration()) return null;
-          if (token) await getTokenStore().set(token);
+          if (token) {
+            try {
+              await getTokenStore().set(token);
+            } catch (error) {
+              // Such as the Keychain while the device is locked. The request
+              // is retried with the new token anyway; the next 401 refreshes
+              // again. Signing the user out over it would be worse.
+              logger.warn('Storing the refreshed token failed', {
+                error: toApiError(error).message,
+              });
+            }
+          }
           return token;
         }
       : null
@@ -175,9 +186,12 @@ export const authService = {
 
   /**
    * Signs out: lets the adapter end the session on the backend, then removes
-   * the token and the stored profile, even if the adapter failed.
+   * the token and the stored profile, even if the adapter failed. If the
+   * session ended while the adapter ran (it expired, and maybe someone signed
+   * in again), it removes nothing: the stored session is a newer one.
    */
   logout: async (): Promise<void> => {
+    const generation = getSessionGeneration();
     try {
       await adapter.logout?.(clients);
     } catch (error) {
@@ -186,6 +200,7 @@ export const authService = {
         error: toApiError(error).message,
       });
     }
+    if (generation !== getSessionGeneration()) return;
     await clearStoredSession();
   },
 

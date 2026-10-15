@@ -100,7 +100,7 @@ export function getOrigin(url: string): string | null {
     return null;
   }
   const rawHost = authority.slice(authority.lastIndexOf('@') + 1);
-  if (!rawHost) {
+  if (!rawHost || rawHost.startsWith(':')) {
     return null;
   }
   const scheme = rawScheme.toLowerCase();
@@ -224,7 +224,17 @@ export function createHttpClient(options: HttpClientOptions): AxiosInstance {
     // Only the current token can be refreshed or ended. If the stored token
     // changed meanwhile (another request refreshed it), retry with it; if
     // it's gone, there is no session to end.
-    const current = await getTokenStore().get();
+    let current: string | null;
+    try {
+      current = await getTokenStore().get();
+    } catch (readError) {
+      // Such as the Keychain while the device is locked: without the stored
+      // token nothing can be decided, so keep the session and fail the request.
+      logger.warn('Reading the token after a 401 failed', {
+        error: toApiError(readError).message,
+      });
+      return fail(error, config);
+    }
     const currentSession =
       current === sentToken || sentToken === config._refreshedToken;
     if (!currentSession) {

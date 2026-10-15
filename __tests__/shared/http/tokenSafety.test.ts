@@ -3,6 +3,7 @@
  */
 import {
   AxiosError,
+  CanceledError,
   type AxiosAdapter,
   type InternalAxiosRequestConfig,
 } from 'axios';
@@ -136,32 +137,29 @@ describe('token safety', () => {
     expect(seen).toEqual([undefined]);
   });
 
+  const statusError = (status: number) =>
+    new AxiosError('Request failed', 'ERR_BAD_RESPONSE', undefined, undefined, {
+      status,
+      statusText: String(status),
+      data: {},
+      headers: {},
+      config: {} as InternalAxiosRequestConfig,
+    });
+
   it.each([
-    ['network', () => networkError()],
+    ['a network', 'network', () => networkError()],
     [
+      'a timeout',
       'timeout',
       () => new AxiosError('timeout of 15000ms exceeded', 'ECONNABORTED'),
     ],
-    [
-      'server',
-      () =>
-        new AxiosError(
-          'Request failed',
-          'ERR_BAD_RESPONSE',
-          undefined,
-          undefined,
-          {
-            status: 503,
-            statusText: '503',
-            data: {},
-            headers: {},
-            config: {} as InternalAxiosRequestConfig,
-          }
-        ),
-    ],
+    ['a canceled', 'canceled', () => new CanceledError('canceled')],
+    ['a server', 'server', () => statusError(503)],
+    ['a 408', 'client', () => statusError(408)],
+    ['a 429 (rate limited)', 'client', () => statusError(429)],
   ])(
-    'keeps the session when the refresh fails with a %s error',
-    async (code, failure) => {
+    'keeps the session when the refresh fails with %s error',
+    async (_label, code, failure) => {
       await signIn('t1');
       setRefreshTokenHandler(async () => {
         throw failure();
@@ -175,6 +173,30 @@ describe('token safety', () => {
       expect(expired).not.toHaveBeenCalled();
     }
   );
+
+  it('keeps the session, and fails with an ApiError, when the token cannot be read after a 401', async () => {
+    await signIn('t1');
+    const refresh = jest.fn(async () => 't2');
+    setRefreshTokenHandler(refresh);
+    const client = authenticatedClient(async config => {
+      // Such as the Keychain once the device is locked.
+      jest
+        .spyOn(getTokenStore(), 'get')
+        .mockRejectedValueOnce(new Error('User interaction is not allowed.'));
+      throw httpError(config, 401);
+    });
+
+    const error = await client.get('/me').catch((e: unknown) => e);
+    expect(error).toBeInstanceOf(ApiError);
+    expect(error).toMatchObject({ code: 'unauthorized' });
+    expect(logger.warn).toHaveBeenCalledWith(
+      'Reading the token after a 401 failed',
+      { error: 'User interaction is not allowed.' }
+    );
+    expect(refresh).not.toHaveBeenCalled();
+    expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('t1');
+    expect(expired).not.toHaveBeenCalled();
+  });
 
   it('retries with the current token, without refreshing, when the 401 was for an older one', async () => {
     await signIn('t1');

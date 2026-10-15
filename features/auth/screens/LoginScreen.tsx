@@ -46,7 +46,10 @@ export function LoginScreen() {
   const handleLogin = async () => {
     if (submittingRef.current) return;
     clearTimeout(repeatErrorRef.current);
-    const empty = { username: !username.trim(), password: !password.trim() };
+    // A password may be or contain spaces; a username's outer spaces are
+    // typos (or a keyboard's suggestion), so they are dropped.
+    const name = username.trim();
+    const empty = { username: !name, password: !password };
     if (empty.username || empty.password) {
       setMissing(empty);
       // Name the missing field in words, not only by the field's color.
@@ -76,7 +79,7 @@ export function LoginScreen() {
     try {
       // Signing in flips the route guards in app/_layout.tsx: this screen
       // (signed-out only) is removed, back to the screen that opened it.
-      await signIn({ username, password });
+      await signIn({ username: name, password });
     } catch (err) {
       // Not a server answer (e.g. no AuthAdapter registered): the user sees a
       // generic message, the developer the reason.

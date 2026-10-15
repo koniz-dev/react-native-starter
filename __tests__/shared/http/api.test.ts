@@ -202,6 +202,8 @@ describe('getOrigin', () => {
     ['https://user:pass@api.example.com/x', 'https://api.example.com'],
     ['/relative/path', null],
     ['', null],
+    ['https://:443', null],
+    ['https://user@/v1', null],
   ])('%s -> %s', (url, expected) => {
     expect(getOrigin(url)).toBe(expected);
   });

@@ -139,6 +139,10 @@ describe('parseEnv', () => {
     'https://auth.exa\tmple.com',
     'https://',
     'https://auth.example.com/v1?x=1 2',
+    'https://@',
+    'https://user@/v1',
+    'https://:443',
+    'https://a@b@auth.example.com',
   ])('rejects %j, a URL the token origin check cannot read', url => {
     expect(issuesOf({ ...valid, EXPO_PUBLIC_AUTH_API_URL: url })).toEqual([
       expect.objectContaining({
@@ -159,6 +163,7 @@ describe('parseEnv', () => {
       'https://auth.example.com/v1/',
       'https://auth.example.com/v1?region=eu#x',
       'https://user@auth.example.com',
+      'https://user:pass@auth.example.com:8443/v1',
     ]) {
       expect(issuesOf({ ...valid, EXPO_PUBLIC_AUTH_API_URL: url })).toEqual([]);
     }

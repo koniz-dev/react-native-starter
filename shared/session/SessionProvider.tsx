@@ -46,6 +46,8 @@ export interface SessionContextValue {
    * Never rejects (a failure is logged); repeated calls share one sign-out.
    */
   signOut(): Promise<void>;
+  /** True while a sign-out is in progress (show Log out loading, disabled). */
+  signingOut: boolean;
   /**
    * Reloads the user from the auth backend. Rejects with the API error; a 401
    * also signs out (the HTTP client emits session-expired).
@@ -122,26 +124,39 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     }
   }, [session.status, userId]);
 
+  // One sign-out at a time: repeated taps share it. It never rejects: if
+  // clearing storage fails, the error is reported and the app still shows
+  // the user signed out.
+  const signOutRef = useRef<Promise<void> | null>(null);
+  const [signingOut, setSigningOut] = useState(false);
+
   const signIn = useCallback(
     async (credentials: LoginCredentials) => {
       const { user } = await authService.login(credentials);
+      // A sign-out still pending from an earlier session (it expired
+      // meanwhile) is not this session's: it must not end it, and this
+      // session's own sign-out must not join it.
+      signOutRef.current = null;
+      if (isMountedRef.current) setSigningOut(false);
       update({ status: 'signedIn', user });
     },
     [update]
   );
 
-  // One sign-out at a time: repeated taps share it. It never rejects: if
-  // clearing storage fails, the error is reported and the app still shows
-  // the user signed out.
-  const signOutRef = useRef<Promise<void> | null>(null);
   const signOut = useCallback(() => {
-    signOutRef.current ??= authService
-      .logout()
-      .catch(error => logger.error('Signing out failed', error))
-      .finally(() => {
-        signOutRef.current = null;
-        update(SIGNED_OUT);
-      });
+    if (!signOutRef.current) {
+      const pending: Promise<void> = authService
+        .logout()
+        .catch(error => logger.error('Signing out failed', error))
+        .finally(() => {
+          if (signOutRef.current !== pending) return;
+          signOutRef.current = null;
+          if (isMountedRef.current) setSigningOut(false);
+          update(SIGNED_OUT);
+        });
+      signOutRef.current = pending;
+      setSigningOut(true);
+    }
     return signOutRef.current;
   }, [update]);
 
@@ -155,8 +170,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ session, signIn, signOut, refreshUser }),
-    [session, signIn, signOut, refreshUser]
+    () => ({ session, signIn, signOut, signingOut, refreshUser }),
+    [session, signIn, signOut, signingOut, refreshUser]
   );
 
   return (

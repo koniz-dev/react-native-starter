@@ -5,7 +5,7 @@
  * use it without importing the auth service (which is itself built on the
  * HTTP client).
  */
-import { toApiError } from '@/shared/http/apiError';
+import { isTransient, toApiError } from '@/shared/http/apiError';
 import {
   hasItem,
   removeItem,
@@ -107,7 +107,8 @@ export function getUnauthorizedHandler(): UnauthorizedHandler {
  * with a refresh token), store it with getTokenStore().set(), and return it;
  * return null when the session can't be refreshed. If it throws, a network,
  * timeout, server, or canceled error keeps the session (the request fails
- * with that error); any other error counts as "can't refresh". The HTTP client retries
+ * with that error), as does a 408 or 429 (`isTransient` in
+ * shared/http/apiError.ts); any other error counts as "can't refresh". The HTTP client retries
  * the failed request once with the new token. No refresh handler is set by
  * default, so a 401 goes straight to the unauthorized handler.
  */
@@ -126,15 +127,12 @@ export function setRefreshTokenHandler(
   refreshTokenHandler = handler;
 }
 
-/** Refresh failures that say nothing about the session: try again later. */
-const TRANSIENT_CODES = new Set(['network', 'timeout', 'server', 'canceled']);
-
 /**
  * Runs the refresh handler, sharing one in-flight refresh between concurrent
  * 401s. Resolves to the new token, or null if there is no handler, the
  * session can't be refreshed, or the session ended while refreshing. Rejects
  * with an ApiError when the refresh failed for a transient reason (network,
- * timeout, 5xx, canceled), so the caller keeps the session.
+ * timeout, 5xx, canceled, 408, 429), so the caller keeps the session.
  */
 export async function refreshAccessToken(): Promise<string | null> {
   if (!refreshTokenHandler) return null;
@@ -146,8 +144,9 @@ export async function refreshAccessToken(): Promise<string | null> {
     const started = {
       generation,
       promise: refreshTokenHandler().catch((error: unknown) => {
+        // Says nothing about the session (try again later), or no session.
         const apiError = toApiError(error);
-        if (TRANSIENT_CODES.has(apiError.code)) throw apiError;
+        if (isTransient(apiError)) throw apiError;
         return null;
       }),
     };

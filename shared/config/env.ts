@@ -73,14 +73,14 @@ const optionalString = z
   .transform(value => (value ? value : undefined));
 
 /**
- * An absolute http(s) URL with a host, and no whitespace, backslash, or
- * control character anywhere: the HTTP client can't read the origin of
- * such a URL (shared/http/httpClient.ts getOrigin), so it would never trust
- * it with the token.
+ * An absolute http(s) URL with a host (after any `user@`, and not only a
+ * port), and no whitespace, backslash, or control character anywhere: the
+ * HTTP client can't read the origin of any other URL (shared/http/httpClient.ts
+ * getOrigin), so it would never trust it with the token.
  */
 const isHttpUrl = (value: string) =>
   // eslint-disable-next-line no-control-regex
-  /^https?:\/\/[^/?#\s\\\x00-\x1f\x7f]+([/?#][^\s\\\x00-\x1f\x7f]*)?$/i.test(
+  /^https?:\/\/([^/?#@\s\\\x00-\x1f\x7f]*@)?[^/?#@:\s\\\x00-\x1f\x7f][^/?#@\s\\\x00-\x1f\x7f]*([/?#][^\s\\\x00-\x1f\x7f]*)?$/i.test(
     value
   );
 
