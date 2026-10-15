@@ -322,6 +322,9 @@ and returns `{ data, loading, error, refetch }`:
   latest request updates state, so an outdated response never overwrites a
   newer one.
 - `error` is an `ApiError` (`code`, `status`, `message`), or `null`.
+- `data` stays while `refetch()` reloads (`loading` is true, so a screen can
+  keep showing it), and goes back to `null` when `deps` change: it belonged
+  to the old ones.
 - `deps` works like a hook's dependency list; the latest `fetchFn` is always
   used, so an inline function is fine.
 

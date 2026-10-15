@@ -34,7 +34,8 @@ exact API.
 
 Screen views are reported automatically: `useScreenTracking()` in
 `app/_layout.tsx` calls `getAnalytics().screen(name)` on every route
-change. The name is the route pattern without groups, such as `/` or
+change, from the moment the stored session has been read (a launch URL that
+the session guards redirect is never reported). The name is the route pattern without groups, such as `/` or
 `/orders/[id]`, never the path itself, so ids and tokens in a URL don't
 reach the provider. A provider that throws is logged (`logger.error`) and
 doesn't break navigation. Call `track` for events, and `identify` when the signed-in user

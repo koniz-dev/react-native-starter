@@ -158,6 +158,27 @@ describe('useFetch', () => {
     });
   });
 
+  it("drops the old deps' data on a deps change, and keeps data on refetch", async () => {
+    const { fetchFn, calls } = controlledFetch<string>();
+    const { rerender, result } = renderHook(
+      ({ id }: { id: number }) => useFetch(fetchFn, [id]),
+      { initialProps: { id: 1 } }
+    );
+    await act(async () => calls[0]?.resolve('user 1'));
+    expect(result.current.data).toBe('user 1');
+
+    // The view for user 2 must not show user 1 while it loads.
+    rerender({ id: 2 });
+    expect(result.current).toMatchObject({ loading: true, data: null });
+    await act(async () => calls[1]?.resolve('user 2'));
+
+    // A reload of the same deps keeps showing what it has.
+    await act(async () => {
+      void result.current.refetch();
+    });
+    expect(result.current).toMatchObject({ loading: true, data: 'user 2' });
+  });
+
   it('keeps the latest response when an older one arrives later', async () => {
     const { fetchFn, calls } = controlledFetch<string>();
     const { rerender, result } = renderHook(

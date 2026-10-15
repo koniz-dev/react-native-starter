@@ -1,5 +1,5 @@
 import { Text } from 'react-native';
-import { act } from '@testing-library/react-native';
+import { act, waitFor } from '@testing-library/react-native';
 import { router, Slot } from 'expo-router';
 import { renderRouter, screen } from 'expo-router/testing-library';
 import { analyticsSeam, type Analytics } from '@/shared/integrations/analytics';
@@ -23,11 +23,26 @@ describe('screen tracking', () => {
 
     renderRouter('./app', { initialUrl: '/' });
     await screen.findByText('Not signed in');
-    expect(provider.screen).toHaveBeenLastCalledWith('/');
+    await waitFor(() => expect(provider.screen).toHaveBeenLastCalledWith('/'));
 
     act(() => router.push('/login'));
     await screen.findByText('Welcome Back');
-    expect(provider.screen).toHaveBeenLastCalledWith('/login');
+    await waitFor(() =>
+      expect(provider.screen).toHaveBeenLastCalledWith('/login')
+    );
+  });
+
+  it('reports only the screen the user sees, not a launch URL the guards redirect', async () => {
+    const provider = fakeAnalytics();
+    configureIntegrations();
+    analyticsSeam.set(provider);
+
+    // Signed out: /profile redirects to Home.
+    renderRouter('./app', { initialUrl: '/profile' });
+    await screen.findByText('Not signed in');
+
+    await waitFor(() => expect(provider.screen).toHaveBeenCalled());
+    expect(jest.mocked(provider.screen).mock.calls).toEqual([['/']]);
   });
 
   /** A small app with a dynamic route, tracked like app/_layout.tsx does. */
@@ -48,7 +63,9 @@ describe('screen tracking', () => {
     renderRouter(app, { initialUrl: '/reset/SECRET-RESET-TOKEN' });
     await screen.findByText('Reset');
 
-    expect(provider.screen).toHaveBeenCalledWith('/reset/[token]');
+    await waitFor(() =>
+      expect(provider.screen).toHaveBeenCalledWith('/reset/[token]')
+    );
     expect(JSON.stringify(jest.mocked(provider.screen).mock.calls)).not.toMatch(
       /SECRET/
     );
@@ -69,9 +86,11 @@ describe('screen tracking', () => {
     act(() => router.push('/reset/abc'));
 
     expect(await screen.findByText('Reset')).toBeTruthy();
-    expect(logError).toHaveBeenCalledWith(
-      'Analytics failed to record a screen view',
-      failure
+    await waitFor(() =>
+      expect(logError).toHaveBeenCalledWith(
+        'Analytics failed to record a screen view',
+        failure
+      )
     );
   });
 });

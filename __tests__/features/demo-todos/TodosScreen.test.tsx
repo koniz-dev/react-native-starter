@@ -42,19 +42,23 @@ describe('<TodosScreen /> (Explore)', () => {
     ).toBeTruthy();
     expect(screen.queryByText(/^Todos \(/)).toBeNull();
 
-    // With no data yet, retrying shows the full-screen loading state again.
+    // Retrying keeps the screen, so the screen reader's focus stays on the
+    // button, which reads as loading.
     fireEvent.press(screen.getByText('Retry'));
-    expect(await screen.findByText('Loading todos...')).toBeTruthy();
-    expect(screen.queryByText('Service unavailable')).toBeNull();
+    expect(await screen.findByText('Loading...')).toBeTruthy();
+    expect(screen.queryByText('Loading todos...')).toBeNull();
+    expect(screen.queryByText('Error')).toBeNull();
     await waitFor(() => expect(requests).toHaveLength(2));
 
     await act(async () => requests[1]?.resolve(ok(requests[1].config, todos)));
-    expect(await screen.findByText('Todos (10)')).toBeTruthy();
+    expect(
+      await screen.findByRole('header', { name: 'Todos (10)' })
+    ).toBeTruthy();
     expect(screen.queryByText('Error')).toBeNull();
     expect(screen.getByText('todo 1')).toBeTruthy();
     expect(screen.getByText('todo 10')).toBeTruthy();
     expect(screen.queryByText('todo 11')).toBeNull();
-    expect(screen.getAllByText('✓ Done')).toHaveLength(1);
+    expect(screen.getAllByText('Done')).toHaveLength(1);
     expect(screen.getByText('User ID: 1 • ID: 2')).toBeTruthy();
     // Done todos are struck through; open ones aren't.
     const decoration = (text: string) =>

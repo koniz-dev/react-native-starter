@@ -12,6 +12,7 @@ import {
 import { Stack } from 'expo-router';
 import { t } from '@/shared/i18n';
 import { DocumentTitle } from '@/shared/ui/DocumentTitle';
+import { useAnnouncement } from '@/shared/ui/useAnnouncement';
 
 /**
  * Demo: a tour of React Native Paper components under the app theme. Opened
@@ -22,6 +23,8 @@ export function ShowcaseScreen() {
   // The showcase buttons report presses through the snackbar.
   const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
   const notify = (message: string) => () => setSnackbarMessage(message);
+  // Paper's Snackbar is a live region, which iOS doesn't have.
+  useAnnouncement(snackbarMessage);
 
   return (
     <SafeAreaView
@@ -49,9 +52,12 @@ export function ShowcaseScreen() {
           </Text>
         </View>
 
-        {/* Text Variants */}
         <View style={styles.section}>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
+          <Text
+            variant="titleMedium"
+            style={styles.sectionTitle}
+            accessibilityRole="header"
+          >
             {t('showcase.textVariants')}
           </Text>
           <Text variant="headlineSmall">{t('showcase.headlineSmall')}</Text>
@@ -60,9 +66,12 @@ export function ShowcaseScreen() {
           <Text variant="bodyMedium">{t('showcase.bodyMedium')}</Text>
         </View>
 
-        {/* Buttons */}
         <View style={styles.section}>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
+          <Text
+            variant="titleMedium"
+            style={styles.sectionTitle}
+            accessibilityRole="header"
+          >
             {t('showcase.buttons')}
           </Text>
           <View style={styles.buttonRow}>
@@ -81,9 +90,12 @@ export function ShowcaseScreen() {
           </View>
         </View>
 
-        {/* Card */}
         <View style={styles.section}>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
+          <Text
+            variant="titleMedium"
+            style={styles.sectionTitle}
+            accessibilityRole="header"
+          >
             {t('showcase.card')}
           </Text>
           <Card>
@@ -112,9 +124,12 @@ export function ShowcaseScreen() {
           </Card>
         </View>
 
-        {/* Surface */}
         <View style={styles.section}>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
+          <Text
+            variant="titleMedium"
+            style={styles.sectionTitle}
+            accessibilityRole="header"
+          >
             {t('showcase.surface')}
           </Text>
           <Surface
@@ -130,9 +145,12 @@ export function ShowcaseScreen() {
           </Surface>
         </View>
 
-        {/* Snackbar Example */}
         <View style={styles.section}>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
+          <Text
+            variant="titleMedium"
+            style={styles.sectionTitle}
+            accessibilityRole="header"
+          >
             {t('showcase.snackbar')}
           </Text>
           <Text variant="bodyMedium" style={styles.snackbarDescription}>

@@ -545,6 +545,27 @@ describe('logger', () => {
       });
     });
 
+    it('logs URL strings under URL-like keys without the query or fragment', () => {
+      expect(
+        redact(
+          {
+            url: 'https://x.example.com/cb?access_token=abc#f',
+            redirectUri: 'myapp://auth?code=xyz',
+            href: '/reset#token=t',
+            endpoint: '/a?x=1',
+            title: 'What? Why?',
+          },
+          false
+        )
+      ).toEqual({
+        url: 'https://x.example.com/cb',
+        redirectUri: 'myapp://auth',
+        href: '/reset',
+        endpoint: '/a',
+        title: 'What? Why?',
+      });
+    });
+
     it('redacts what the logger writes outside development', () => {
       createLogger(() => PRODUCTION).warn('Request failed', {
         config: { headers: { Authorization: 'Bearer abc' } },

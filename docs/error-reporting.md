@@ -55,8 +55,10 @@ export async function saveSettings(
   - an `Error` in the context is reduced to its name, message, `code`, and
     `status` (development adds its stack);
   - a `Date` becomes its ISO string, a `Map` an object, a `Set` an array,
-    and a `URL` its address without the query string; a value whose
-    getter throws becomes `[unreadable]`, so logging never throws;
+    and a `URL` its address without the query string, as does a string
+    under a URL-like key (`url`, `uri`, `href`, `link`, `endpoint`,
+    `location`, such as `redirectUri`); a value whose getter throws becomes
+    `[unreadable]`, so logging never throws;
   - outside development: `data` and `body` values (response bodies) become
     `[redacted]`.
 

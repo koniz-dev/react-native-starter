@@ -1,4 +1,10 @@
-import { act, fireEvent, waitFor, within } from '@testing-library/react-native';
+import {
+  act,
+  fireEvent,
+  waitFor,
+  within,
+  screen,
+} from '@testing-library/react-native';
 import { ActivityIndicator } from 'react-native-paper';
 
 jest.mock('expo-router', () => {
@@ -31,6 +37,7 @@ describe('<HomeScreen /> session', () => {
     expect(await findByText('Not signed in')).toBeTruthy();
     expect(getByText('Sign in')).toBeTruthy();
     expect(queryByText('Log out')).toBeNull();
+    expect(screen.getByRole('header', { name: 'Session' })).toBeTruthy();
 
     fireEvent.press(getByText('Sign in'));
     expect(router.navigate).toHaveBeenCalledWith('/login');

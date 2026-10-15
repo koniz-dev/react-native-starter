@@ -2,10 +2,10 @@
  * Demo: the Explore tab. Loads todos from JSONPlaceholder with useFetch and
  * shows the loading, error (with retry), and success states.
  */
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Card, Text, Button, useTheme } from 'react-native-paper';
+import { Card, Text, Button, Icon, useTheme } from 'react-native-paper';
 import { todosApi } from '../api/todosApi';
 import { useFetch } from '@/shared/lib/useFetch';
 import { LoadingScreen } from '@/shared/ui/LoadingScreen';
@@ -19,7 +19,6 @@ import { useAnnouncement } from '@/shared/ui/useAnnouncement';
 export function TodosScreen() {
   const theme = useTheme();
 
-  // Use useFetch hook to simplify data fetching
   const {
     data: todos,
     loading,
@@ -42,8 +41,11 @@ export function TodosScreen() {
     if (error?.code === 'unknown') logger.error('Loading todos failed', error);
   }, [error]);
 
-  // Show full-screen loading on initial load
-  if (loading && !todos && !error) {
+  // Full-screen loading only until the first load settles. A retry after an
+  // error keeps the screen (and the screen reader's focus on Retry).
+  const [settled, setSettled] = useState(false);
+  if (!loading && !settled) setSettled(true);
+  if (loading && !settled) {
     return (
       <SafeAreaView
         style={[styles.container, { backgroundColor: theme.colors.background }]}
@@ -76,7 +78,6 @@ export function TodosScreen() {
           </Text>
         </View>
 
-        {/* Retry Button */}
         <View style={styles.buttonContainer}>
           <Button
             mode="contained"
@@ -122,7 +123,11 @@ export function TodosScreen() {
         {/* Success State - Todo List, kept while reloading */}
         {!error && todos && todos.length > 0 && (
           <View style={styles.todosContainer}>
-            <Text variant="titleMedium" style={styles.sectionTitle}>
+            <Text
+              variant="titleMedium"
+              style={styles.sectionTitle}
+              accessibilityRole="header"
+            >
               {t('explore.listTitle', { count: todos.length })}
             </Text>
             {todos.map(todo => (
@@ -139,15 +144,25 @@ export function TodosScreen() {
                       {todo.title}
                     </Text>
                     {todo.completed && (
-                      <Text
-                        variant="labelSmall"
-                        style={[
-                          styles.completedBadge,
-                          { color: theme.colors.primary },
-                        ]}
-                      >
-                        {t('explore.done')}
-                      </Text>
+                      <View style={styles.completedBadge}>
+                        {/* The check is decoration; the word says it. */}
+                        <View aria-hidden>
+                          <Icon
+                            source="check"
+                            size={14}
+                            color={theme.colors.primary}
+                          />
+                        </View>
+                        <Text
+                          variant="labelSmall"
+                          style={[
+                            styles.completedLabel,
+                            { color: theme.colors.primary },
+                          ]}
+                        >
+                          {t('explore.done')}
+                        </Text>
+                      </View>
                     )}
                   </View>
                   <Text variant="bodySmall" style={styles.todoMeta}>
@@ -162,7 +177,6 @@ export function TodosScreen() {
           </View>
         )}
 
-        {/* Empty State */}
         {!error && todos && todos.length === 0 && (
           <View style={styles.centerContainer}>
             <Text variant="bodyMedium">{t('explore.empty')}</Text>
@@ -231,6 +245,11 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   completedBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+  },
+  completedLabel: {
     fontWeight: '600',
   },
   todoMeta: {

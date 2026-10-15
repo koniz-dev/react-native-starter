@@ -15,6 +15,7 @@ import { Component, useEffect, type ErrorInfo, type ReactNode } from 'react';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Card, Text, useTheme } from 'react-native-paper';
 import { router, type ErrorBoundaryProps } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { t } from '@/shared/i18n';
 import { logger } from '@/shared/lib/logger';
 
@@ -51,6 +52,9 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   override componentDidCatch(error: unknown, errorInfo: ErrorInfo) {
+    // A startup error (before the session was read) would otherwise leave
+    // the fallback under the native splash screen for good.
+    SplashScreen.hideAsync().catch(() => {});
     logger.error(
       'Render error caught by the app error boundary',
       toError(error),

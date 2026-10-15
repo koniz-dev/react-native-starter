@@ -31,7 +31,9 @@ export function HomeScreen() {
 
         <Card mode="outlined" style={styles.card}>
           <Card.Content>
-            <Text variant="titleMedium">{t('home.session.title')}</Text>
+            <Text variant="titleMedium" accessibilityRole="header">
+              {t('home.session.title')}
+            </Text>
             <Text
               variant="bodyMedium"
               style={[styles.status, { color: theme.colors.onSurfaceVariant }]}

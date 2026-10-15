@@ -37,7 +37,6 @@ export const unstable_settings = {
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const theme = getTheme(colorScheme === 'dark' ? 'dark' : 'light');
-  useScreenTracking();
 
   useEffect(() => {
     // With invalid config there is no session to wait for.
@@ -75,6 +74,7 @@ export default function RootLayout() {
 function RootNavigator() {
   const { session } = useSession();
   const signedIn = session.status === 'signedIn';
+  useScreenTracking({ enabled: session.status !== 'loading' });
 
   useEffect(() => {
     if (session.status !== 'loading') {

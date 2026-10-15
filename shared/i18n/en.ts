@@ -90,7 +90,7 @@ export const en = {
   'explore.errorAnnouncement': 'Error. {message}',
   'explore.listTitle': 'Todos ({count})',
   'explore.empty': 'No todos found',
-  'explore.done': '✓ Done',
+  'explore.done': 'Done',
   'explore.todoMeta': 'User ID: {userId} • ID: {id}',
   // @demo remove-block-end
 

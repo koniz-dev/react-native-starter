@@ -8,6 +8,8 @@
  * - Only the latest request updates state, so a slow, outdated response can't
  *   overwrite a newer one (even if the server ignores the abort).
  * - `error` is an ApiError (`code`, `status`, `message`), or null.
+ * - `data` is kept while `refetch()` reloads, and reset to null when deps
+ *   change (it belonged to the old deps).
  *
  * For caching, background refetching, and mutations, use a data library
  * instead; see docs/api-and-storage.md#loading-data-in-screens.
@@ -57,9 +59,11 @@ export function useFetch<T>(
     setTrackedDeps(deps);
     setDepsVersion(version => version + 1);
     // Back to loading for the new deps, during render rather than in the
-    // effect (react-hooks/set-state-in-effect).
+    // effect (react-hooks/set-state-in-effect). The data was for the old
+    // deps (another user, another page): don't show it as the new one's.
     setLoading(true);
     setError(null);
+    setData(null);
   }
 
   // The latest fetchFn, without making it a dependency (callers usually pass

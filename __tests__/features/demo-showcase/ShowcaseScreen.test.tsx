@@ -1,3 +1,4 @@
+import { AccessibilityInfo, Platform } from 'react-native';
 import { fireEvent, screen, waitFor } from '@testing-library/react-native';
 import { ShowcaseScreen } from '@/features/demo-showcase/screens/ShowcaseScreen';
 import { renderWithProviders } from '@/testing';
@@ -38,6 +39,27 @@ describe('<ShowcaseScreen />', () => {
     expect(screen.UNSAFE_getByType(DocumentTitle).props.title).toBe(
       'Component showcase'
     );
+  });
+
+  it('announces the snackbar on iOS, which has no live regions', async () => {
+    const announce = jest.spyOn(AccessibilityInfo, 'announceForAccessibility');
+    const os = jest.replaceProperty(Platform, 'OS', 'ios');
+    renderWithProviders(<ShowcaseScreen />);
+
+    fireEvent.press(screen.getByText('Contained'));
+
+    await waitFor(() =>
+      expect(announce).toHaveBeenCalledWith('Contained pressed')
+    );
+    os.restore();
+    announce.mockRestore();
+  });
+
+  it('marks each section title as a heading', () => {
+    renderWithProviders(<ShowcaseScreen />);
+    for (const name of ['Buttons', 'Snackbar (Toast)']) {
+      expect(screen.getByRole('header', { name })).toBeTruthy();
+    }
   });
 
   it('closes the snackbar with Dismiss', async () => {

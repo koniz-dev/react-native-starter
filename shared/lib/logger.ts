@@ -58,6 +58,8 @@ const REDACTED = '[redacted]';
 const SECRET_KEY =
   /authoriz|authenticat|^auth|[-_]auth|cookie|pass(word|code|phrase)|passwd|^pwd$|secret|token|api[-_]?key|access[-_]?key|otp|mfa|^pin$|jwt|session[-_]?id|private[-_]?key|credential|refresh|verifier|signature|cvv|cvc/i;
 const BODY_KEY = /^(data|body)$/i;
+/** Keys whose string values are URLs: logged without the query or fragment. */
+const URL_KEY = /ur[il]$|href|link|endpoint|location/i;
 const MAX_DEPTH = 5;
 
 const UNREADABLE = '[unreadable]';
@@ -134,6 +136,9 @@ export function redact(value: unknown, development: boolean): unknown {
         result[key] = REDACTED;
       } else if (!development && BODY_KEY.test(key)) {
         result[key] = REDACTED;
+      } else if (typeof item === 'string' && URL_KEY.test(key)) {
+        // A query string can carry a token (?access_token=...).
+        result[key] = item.split(/[?#]/)[0];
       } else {
         result[key] = walk(item, depth + 1);
       }
