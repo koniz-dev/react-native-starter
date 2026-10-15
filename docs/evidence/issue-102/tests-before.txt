@@ -1,0 +1,26 @@
+FAIL __tests__/features/home/HomeScreen.test.tsx (5.214 s)
+    ✕ shows Log out loading and disabled while the backend signs out (1072 ms)
+FAIL __tests__/shared/session/authService.test.ts (5.241 s)
+    ✕ leaves a newer session alone when the session ended while the adapter signed out (4 ms)
+    ✕ keeps the session when the refreshed token cannot be stored (3 ms)
+FAIL __tests__/shared/session/SessionProvider.test.tsx (5.351 s)
+    ✕ is busy while signing out, and repeated calls share one sign-out (191 ms)
+    ✕ does not end a session that started while an earlier sign-out was pending (59 ms)
+    ✕ never rejects: a failure is logged and the user is signed out (55 ms)
+FAIL __tests__/shared/http/tokenSafety.test.ts (5.358 s)
+    ✕ keeps the session when the refresh fails with a 408 error (8 ms)
+    ✕ keeps the session when the refresh fails with a 429 (rate limited) error (2 ms)
+    ✕ keeps the session, and fails with an ApiError, when the token cannot be read after a 401 (2 ms)
+FAIL __tests__/shared/config/env.test.ts
+    ✕ rejects "https://@", a URL the token origin check cannot read (4 ms)
+    ✕ rejects "https://user@/v1", a URL the token origin check cannot read (1 ms)
+    ✕ rejects "https://:443", a URL the token origin check cannot read (1 ms)
+    ✕ rejects "https://a@b@auth.example.com", a URL the token origin check cannot read (1 ms)
+FAIL __tests__/shared/http/api.test.ts
+    ✕ https://:443 -> null (1 ms)
+FAIL __tests__/features/auth/LoginScreen.test.tsx (7.929 s)
+    ✕ sends a password of spaces as typed, and the username without outer spaces (1076 ms)
+Test Suites: 7 failed, 2 passed, 9 total
+Tests:       15 failed, 141 passed, 156 total
+    ✕ keeps the next session when a slow logout finishes after the user signed in again (5 ms)
+Tests:       1 failed, 12 passed, 13 total

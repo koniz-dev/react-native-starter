@@ -1,0 +1,9 @@
+    ✕ reports only the screen the user sees, not a launch URL the guards redirect (76 ms)
+    ✕ hides when the app error boundary catches a startup error (122 ms)
+    ✕ shows the signed-out state with the sign-in entry (65 ms)
+      ✕ logs URL strings under URL-like keys without the query or fragment (5 ms)
+    ✕ goes from loading to an error, then Retry loads the list (1244 ms)
+    ✕ drops the old deps' data on a deps change, and keeps data on refetch (3 ms)
+    ✕ announces the snackbar on iOS, which has no live regions (1040 ms)
+    ✕ marks each section title as a heading (21 ms)
+Tests:       8 failed, 141 passed, 149 total
