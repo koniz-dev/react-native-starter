@@ -21,6 +21,11 @@ name: Profile is protected and reloads the user
     visible: (Email, )?emily\.johnson@x\.dummyjson\.com
     timeout: 20000
 - assertVisible: (Name, )?Emily Johnson
+# The cached user shows first; check the reload's result once it is done.
+- extendedWaitUntil:
+    notVisible:
+      id: profile-refreshing
+    timeout: 20000
 - assertNotVisible:
     id: profile-error
 - takeScreenshot: 07-profile

@@ -3,8 +3,17 @@
  */
 import { execFileSync, spawnSync } from 'child_process';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { copyProject } from '@/testing/projectCopy';
+
+// Git in the temporary copies ignores the developer's own config (commit
+// signing, hooks), so their commits never prompt or fail.
+const GIT_ENV = {
+  ...process.env,
+  GIT_CONFIG_GLOBAL: os.devNull,
+  GIT_CONFIG_NOSYSTEM: '1',
+};
 
 /**
  * Anything that names the demo or its backends switch. Links to this
@@ -37,7 +46,7 @@ function makeCopy(): string {
 
 function commit(dir: string, message: string) {
   const git = (...args: string[]) =>
-    execFileSync('git', args, { cwd: dir, stdio: 'ignore' });
+    execFileSync('git', args, { cwd: dir, stdio: 'ignore', env: GIT_ENV });
   if (!fs.existsSync(path.join(dir, '.git'))) git('init', '-q');
   git('add', '-A');
   git(

@@ -3,8 +3,17 @@
  */
 import { execFileSync, spawnSync } from 'child_process';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { copyProject } from '@/testing/projectCopy';
+
+// Git in the temporary copies ignores the developer's own config (commit
+// signing, hooks), so their commits never prompt or fail.
+const GIT_ENV = {
+  ...process.env,
+  GIT_CONFIG_GLOBAL: os.devNull,
+  GIT_CONFIG_NOSYSTEM: '1',
+};
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const init = require('../../scripts/init-project.js') as {
@@ -119,7 +128,7 @@ describe('init-project input', () => {
 function makeCopy(): string {
   const dir = copyProject('init-project-');
   const git = (...args: string[]) =>
-    execFileSync('git', args, { cwd: dir, stdio: 'ignore' });
+    execFileSync('git', args, { cwd: dir, stdio: 'ignore', env: GIT_ENV });
   git('init', '-q');
   git('add', '-A');
   git(
@@ -292,7 +301,7 @@ describe('init-project on a copy of the template', () => {
     execFileSync('git', ['commit', '-qam', 'edit APP'], {
       cwd: dir,
       env: {
-        ...process.env,
+        ...GIT_ENV,
         GIT_AUTHOR_NAME: 't',
         GIT_AUTHOR_EMAIL: 't@example.com',
         GIT_COMMITTER_NAME: 't',
@@ -563,7 +572,7 @@ describe('init-project on a copy of the template', () => {
         '-qm',
         'init',
       ],
-      { cwd: dir }
+      { cwd: dir, env: GIT_ENV }
     );
     const again = run(dir, IDENTITY);
     expect(again.status).toBe(1);

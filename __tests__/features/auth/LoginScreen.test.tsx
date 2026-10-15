@@ -44,7 +44,10 @@ jest.mock('react-native-paper', () => {
         {
           onPress,
           testID,
-          accessibilityState: { disabled: !!disabled, busy: !!loading },
+          // Paper's Button sets only `disabled`; `loading` (its spinner) is
+          // passed through for the tests to read.
+          accessibilityState: { disabled: !!disabled },
+          loading: !!loading,
         },
         children
       ),
@@ -143,7 +146,7 @@ describe('<LoginScreen />', () => {
     expect(login).toHaveBeenCalledTimes(2);
   });
 
-  it('shows the button busy and disabled, and clears the last error, while signing in', async () => {
+  it('shows the button loading and disabled, and clears the last error, while signing in', async () => {
     let finish!: () => void;
     jest.spyOn(authService, 'login').mockImplementation(
       () =>
@@ -157,10 +160,8 @@ describe('<LoginScreen />', () => {
     );
     const { getByTestId, findByText, queryByText } = renderLogin();
     const submit = getByTestId('login-submit');
-    expect(submit.props.accessibilityState).toEqual({
-      disabled: false,
-      busy: false,
-    });
+    expect(submit.props.accessibilityState).toEqual({ disabled: false });
+    expect(submit.props.loading).toBe(false);
     fireEvent.press(submit);
     expect(await findByText('Please fill in all fields')).toBeTruthy();
 
@@ -171,9 +172,9 @@ describe('<LoginScreen />', () => {
     await waitFor(() =>
       expect(getByTestId('login-submit').props.accessibilityState).toEqual({
         disabled: true,
-        busy: true,
       })
     );
+    expect(getByTestId('login-submit').props.loading).toBe(true);
     expect(queryByText('Please fill in all fields')).toBeNull();
     finish();
     await waitFor(() =>
@@ -272,7 +273,9 @@ describe('<LoginScreen />', () => {
     await waitFor(() => {
       expect(getByText('Invalid credentials')).toBeTruthy();
     });
-    expect(getByTestId('session-probe').props.children).toBe('signedOut');
+    await waitFor(() =>
+      expect(getByTestId('session-probe').props.children).toBe('signedOut')
+    );
   });
 
   it.each([
@@ -396,7 +399,8 @@ describe('<LoginScreen />', () => {
     'names what is missing and does not sign in when %s',
     async (_case, username, password, message) => {
       const login = jest.spyOn(authService, 'login');
-      const { getByTestId, getByText, findByText } = renderLogin();
+      // Ready first: the probe must read the restored state, not 'loading'.
+      const { getByTestId, getByText, findByText } = await renderLoginReady();
 
       fireEvent.changeText(getByTestId('login-username'), username);
       fireEvent.changeText(getByTestId('login-password'), password);
@@ -409,6 +413,7 @@ describe('<LoginScreen />', () => {
   );
 
   it('moves from username to password with the next key', async () => {
+    const login = jest.spyOn(authService, 'login');
     const { getByTestId } = await renderLoginReady();
     const username = getByTestId('login-username');
 
@@ -416,7 +421,7 @@ describe('<LoginScreen />', () => {
     fireEvent(username, 'submitEditing');
 
     expect(mockFocus).toHaveBeenCalledWith('login-password');
-    expect(authService.login).not.toHaveBeenCalled();
+    expect(login).not.toHaveBeenCalled();
   });
 
   it('submits the form from the password return key', async () => {

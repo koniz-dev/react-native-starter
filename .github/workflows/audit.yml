@@ -17,8 +17,10 @@ on:
 permissions:
   contents: read
 
+# As in ci.yml: a pull request's newer push replaces its older run; every
+# other run (a push to main, the schedule) keeps its own result.
 concurrency:
-  group: audit-${{ github.ref }}
+  group: audit-${{ github.event_name == 'pull_request' && github.ref || format('{0}-{1}', github.event_name, github.sha) }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:

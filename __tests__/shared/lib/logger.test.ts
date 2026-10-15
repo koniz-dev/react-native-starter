@@ -412,7 +412,16 @@ describe('logger', () => {
       'accessKeyId',
       'access_key',
       'cvv',
+      'cvc',
       'signature',
+      'auth',
+      'x_auth',
+      'x-auth-token',
+      'authenticator',
+      'pwd',
+      'passwd',
+      'apiKey',
+      'api_key',
     ])('redacts %s', key => {
       expect(redact({ [key]: 'SECRET', pinned: true }, false)).toEqual({
         [key]: '[redacted]',

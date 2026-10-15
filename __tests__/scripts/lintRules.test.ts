@@ -133,6 +133,16 @@ const MODULE_REQUIRE: Fixture = [
   'features/home/Logo.ts',
   "export const helpers: unknown = require('./helpers');\n",
 ];
+const CONSOLE: Fixture = [
+  'console',
+  'shared/lib/x.ts',
+  "export const f = () => console.log('x');\n",
+];
+const ANY: Fixture = [
+  'any',
+  'shared/lib/x.ts',
+  'export const f = (value: any) => value;\n',
+];
 const DEFAULT_EXPORT: Fixture = [
   'a default export',
   'features/home/X.tsx',
@@ -179,6 +189,8 @@ beforeAll(() => {
     ...COLORS_REJECTED,
     ...COLORS_ALLOWED,
     THEME_COLOR,
+    CONSOLE,
+    ANY,
     ASSET_REQUIRE,
     MODULE_REQUIRE,
     DEFAULT_EXPORT,
@@ -247,5 +259,38 @@ describe('lint: ES imports, except require() of a local asset', () => {
     expect(messagesFor(MODULE_REQUIRE)).toEqual([
       expect.stringMatching(/^@typescript-eslint\/no-require-imports: /),
     ]);
+  });
+});
+
+describe('lint: logging, types, and promises', () => {
+  it('rejects console and any', () => {
+    expect(messagesFor(CONSOLE)).toEqual([
+      expect.stringMatching(/^no-console: /),
+    ]);
+    expect(messagesFor(ANY)).toEqual([
+      expect.stringMatching(/^@typescript-eslint\/no-explicit-any: /),
+    ]);
+  });
+
+  // Type-aware, so off for the fixtures above (the files don't exist): check
+  // the config that applies to a real source file instead.
+  it('makes floating and misused promises errors', () => {
+    const run = spawnSync(
+      process.execPath,
+      [
+        '-e',
+        `new (require('eslint').ESLint)()
+          .calculateConfigForFile('shared/lib/useFetch.ts')
+          .then(config => process.stdout.write(JSON.stringify(config.rules)))`,
+      ],
+      { cwd: ROOT, encoding: 'utf8' }
+    );
+    const rules = JSON.parse(run.stdout) as Record<string, unknown[]>;
+    for (const rule of [
+      '@typescript-eslint/no-floating-promises',
+      '@typescript-eslint/no-misused-promises',
+    ]) {
+      expect(rules[rule]?.[0]).toBe(2); // error
+    }
   });
 });
