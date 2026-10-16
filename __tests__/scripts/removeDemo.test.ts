@@ -142,8 +142,12 @@ describe('remove-demo on a copy of the template', () => {
       'open-app.yaml',
       'open-login.yaml',
       'sign-in.yaml',
+      'type-username.yaml',
     ]);
     expect(read(dir, '.maestro/subflows/sign-in.yaml')).toMatch(
+      /runFlow: type-username\.yaml/
+    );
+    expect(read(dir, '.maestro/subflows/type-username.yaml')).toMatch(
       /inputText: \$\{MAESTRO_E2E_USERNAME\}/
     );
     expect(read(dir, '.maestro/config.yaml')).not.toMatch(/Tab navigation/);
