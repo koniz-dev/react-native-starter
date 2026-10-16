@@ -1,0 +1,16 @@
+E2E (Android, manual) success cb566e4293f5b41f0021575e3491dbaab092c91f attempt 1 https://github.com/koniz-dev/react-native-starter/actions/runs/38937391551
+E2E (Android, manual) success cb566e4293f5b41f0021575e3491dbaab092c91f attempt 2 https://github.com/koniz-dev/react-native-starter/actions/runs/38937395558
+E2E (iOS, manual) success cb566e4293f5b41f0021575e3491dbaab092c91f attempt 2 https://github.com/koniz-dev/react-native-starter/actions/runs/38937399956
+
+First attempts (failed before any app step):
+  38937395558 attempt 1: 7/7 flows passed; dark-mode flow: Maestro made no progress for 2 min, no debug output (driver/connection)
+  38937399956 attempt 1: xcuitest IOSDriverTimeoutException (driver not ready in 10 min); no flow ran
+
+E2E (iOS, manual) workflow_dispatch success
+E2E (Android, manual) workflow_dispatch success
+E2E (Android, manual) workflow_dispatch success
+E2E (iOS, manual) workflow_dispatch success
+E2E (iOS, manual) workflow_dispatch success
+Audit push success
+CI push success
+Push on main dynamic success

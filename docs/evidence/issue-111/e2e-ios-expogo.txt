@@ -1,0 +1,11 @@
+Simulator: iPhone 16 Plus (E0ACAF33), iOS 18.6, Expo Go 57.0.9, Xcode 16.4, macOS 15.8.1; clone of tag v1.1.12 (cb566e4)
+[Passed] Cold start opens Home (1m)
+[Passed] Back from Login returns Home (45s)
+[Passed] Tab navigation (30s)
+[Passed] Sign-in session survives a relaunch; logout clears it (2m 2s)
+[Passed] Login keyboard return keys (57s)
+[Passed] Explore error state and Retry (45s)
+[Passed] Profile is protected and reloads the user (1m 27s)
+7/7 Flows Passed in 7m 26s
+Take screenshot dark-home... COMPLETED
+Take screenshot dark-explore... COMPLETED

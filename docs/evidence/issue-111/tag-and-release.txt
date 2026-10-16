@@ -1,0 +1,33 @@
+object cb566e4293f5b41f0021575e3491dbaab092c91f
+type commit
+tag v1.1.12
+tagger koniz-dev <kietna.work@gmail.com> 1792170508 +0700
+
+v1.1.12: audit fixes (#101-#110) and iOS native e2e
+
+Refs koniz-dev/react-native-starter#111
+
+release: v1.1.12, draft=false, prerelease=false, published 2026-10-16T18:39:46Z, https://github.com/koniz-dev/react-native-starter/releases/tag/v1.1.12
+latest: Latest	v1.1.12
+
+App code changed since v1.1.11 (app/ features/ shared/):
+ app/_layout.tsx                                   |  2 +-
+ features/auth/screens/LoginScreen.tsx             |  7 ++-
+ features/auth/screens/ProfileScreen.tsx           |  4 +-
+ features/demo-showcase/screens/ShowcaseScreen.tsx | 54 ++++++++++++++++++-----
+ features/demo-todos/screens/TodosScreen.tsx       | 53 +++++++++++++++-------
+ features/home/screens/HomeScreen.tsx              |  8 +++-
+ shared/config/env.ts                              | 10 ++---
+ shared/http/apiError.ts                           | 13 ++++++
+ shared/http/httpClient.ts                         | 14 +++++-
+ shared/i18n/en.ts                                 |  2 +-
+ shared/integrations/useScreenTracking.ts          | 24 ++++++----
+ shared/lib/logger.ts                              |  8 ++++
+ shared/lib/useFetch.ts                            |  6 ++-
+ shared/session/SessionProvider.tsx                | 45 ++++++++++++-------
+ shared/session/authService.ts                     | 25 +++++++++--
+ shared/session/session.ts                         | 25 ++++++++---
+ shared/ui/DocumentTitle.tsx                       | 14 +++---
+ shared/ui/DocumentTitle.web.tsx                   | 10 +++++
+ shared/ui/ErrorBoundary.tsx                       |  4 ++
+ 19 files changed, 242 insertions(+), 86 deletions(-)
