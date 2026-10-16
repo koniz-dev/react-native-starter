@@ -1,0 +1,25 @@
+== 38929767737 success cb566e4
+[Passed] Cold start opens Home (3m 33s)
+[Passed] Back from Login returns Home (1m 18s)
+[Passed] Tab navigation (34s)
+[Passed] Sign-in session survives a relaunch; logout clears it (3m 13s)
+[Passed] Login keyboard return keys (1m 20s)
+[Passed] Explore error state and Retry (40s)
+[Passed] Profile is protected and reloads the user (2m 5s)
+7/7 Flows Passed in 12m 44s
+== 38929783717 success cb566e4
+[Passed] Cold start opens Home (1m 43s)
+[Passed] Back from Login returns Home (54s)
+[Passed] Tab navigation (58s)
+[Passed] Sign-in session survives a relaunch; logout clears it (4m)
+[Passed] Login keyboard return keys (1m 37s)
+[Passed] Explore error state and Retry (47s)
+[Passed] Profile is protected and reloads the user (2m 14s)
+7/7 Flows Passed in 12m 13s
+E2E (iOS, manual) success
+E2E (iOS, manual) success
+Audit success
+CI success
+Push on main success
+
+[exited with code 0]

@@ -1,0 +1,3 @@
+    ✓ checks indented snippets, flow and public paths, and docs/ subfolder references (6680 ms)
+    ✓ checks every link form, typescript and ~~~ fences, inline-code anchors, and open fences (6504 ms)
+Tests:       2 passed, 2 total

@@ -1,0 +1,12 @@
+--- no iPhone:
+No available iPhone simulator on com.apple.CoreSimulator.SimRuntime.iOS-26-0
+exit 1
+--- no runtime:
+No available iPhone simulator on any iOS runtime
+exit 1
+--- normal:
+C
+exit 0
+--- real list on this Mac:
+71C5E776-C93D-467E-A1B2-4EFB92B9E588
+exit 0

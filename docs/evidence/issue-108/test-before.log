@@ -1,0 +1,4 @@
+    ✓ leaves a newer session alone when the session ended while the adapter signed out (1 ms)
+    ✕ still clears the session when the expiry failed to clear it while the adapter signed out (2 ms)
+    Received: "token-a"
+Tests:       1 failed, 16 passed, 17 total

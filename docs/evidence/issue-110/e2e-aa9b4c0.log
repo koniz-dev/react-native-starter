@@ -1,0 +1,25 @@
+== 38924217578 E2E (iOS, manual) failure aa9b4c0
+[Passed] Cold start opens Home (1m 24s)
+[Passed] Back from Login returns Home (1m 43s)
+[Passed] Tab navigation (35s)
+[Failed] Sign-in session survives a relaunch; logout clears it (2m 22s) (Assertion is false: "Signed in as Emily Johnson" is visible)
+1/4 Flow Failed
+== 38924222252 E2E (Android, manual) success aa9b4c0
+[Passed] Cold start opens Home (48s)
+[Passed] Back from Login returns Home (37s)
+[Passed] Tab navigation (21s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 26s)
+[Passed] Login keyboard return keys (48s)
+[Passed] Explore error state and Retry (25s)
+[Passed] Profile is protected and reloads the user (1m 2s)
+7/7 Flows Passed in 5m 27s
+1f3c372 Audit success
+1f3c372 Push on main success
+1f3c372 CI success
+aa9b4c0 E2E (Android, manual) success
+aa9b4c0 Audit success
+aa9b4c0 CI failure
+aa9b4c0 E2E (iOS, manual) failure
+aa9b4c0 Push on main success
+
+[exited with code 0]

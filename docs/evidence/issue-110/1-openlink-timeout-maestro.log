@@ -1,0 +1,19 @@
+14:37:48.370 [ INFO] maestro.cli.runner.CliConsoleListener.onCommandStart: Launch app "${APP_ID}" RUNNING
+14:37:50.086 [ INFO] maestro.Maestro.launchApp$lambda$5: Launching app com.example.rnstarter.dev
+14:37:50.086 [ INFO] maestro.Maestro.launchApp$lambda$5: Stopping com.example.rnstarter.dev app during launch
+14:37:52.398 [ INFO] maestro.cli.runner.CliConsoleListener.onCommandFinished: Launch app "${APP_ID}" COMPLETED
+14:37:52.402 [ INFO] maestro.cli.runner.CliConsoleListener.onCommandStart: Open ${APP_URL} RUNNING
+14:37:52.473 [ INFO] maestro.Maestro.openLink: Opening link rnstarter-dev:// for app: ${APP_ID} with autoVerify config as false
+14:38:06.278 [ INFO] maestro.Maestro.takeScreenshot: Taking screenshot
+14:38:06.281 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+14:38:06.496 [ INFO] maestro.cli.runner.CliConsoleListener.onCommandFinished: Open ${APP_URL} FAILED
+14:38:06.564 [ERROR] maestro.orchestra.Orchestra.executeCommands: [Command execution] CommandFailed: kotlin.Unit java.lang.IllegalStateException: An error was encountered processing the command (domain=NSPOSIXErrorDomain, code=60):
+Simulator device failed to open rnstarter-dev://.
+Operation timed out
+Underlying error (domain=NSPOSIXErrorDomain, code=60):
+	The operation couldn’t be completed. Operation timed out
+	Operation timed out
+
+14:38:06.571 [ INFO] maestro.Maestro.takeScreenshot: Taking screenshot
+14:38:06.575 [TRACE] maestro.utils.ScreenshotUtils.takeScreenshot: Taking screenshot to output sink
+14:38:06.762 [ INFO] maestro.cli.runner.CliConsoleListener.onCommandFinished: Run subflows/open-app.yaml FAILED

@@ -1,0 +1,17 @@
+    ✕ checks every link form, typescript and ~~~ fences, inline-code anchors, and open fences (5870 ms)
+    Expected substring: "broken link nope-(paren).md"
+    Received string:    "docs/forms.md:3: broken link nope-titled.md
+    docs/forms.md:4: broken link nope angle.md
+    docs/forms.md:7: broken link ./nope-ref.md
+    docs/forms.md:9: broken link nope-html.md
+    docs/forms.md:11: no heading for docs/testing.md#no-such-anchor
+    docs/forms.md:11: path does not exist: shared/nope.ts
+    docs/forms.md:13: npm run nope: no such script
+    docs/forms.md:17: no heading for #setext-title
+    docs/forms.md:17: broken link forms-(draft
+    docs/forms.md:19: broken link Footnote
+    docs/forms.md:24: broken link nope-(paren
+    docs/forms.md:40: code block is never closed
+    docs/forms.md:27: error TS2307: Cannot find module '@/shared/ui/NoSuchTypescript' or its corresponding type declarations.
+    docs/forms.md:31: error TS2307: Cannot find module '@/shared/ui/NoSuchTilde' or its corresponding type declarations.
+Tests:       1 failed, 1 skipped, 2 total

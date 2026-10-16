@@ -1,0 +1,3 @@
+    ✓ leaves a newer session alone when the session ended while the adapter signed out (1 ms)
+    ✓ still clears the session when the expiry failed to clear it while the adapter signed out (3 ms)
+Tests:       17 passed, 17 total

@@ -1,0 +1,32 @@
+== 38918689787 E2E (iOS, manual) failure 3abe4e8
+[Passed] Cold start opens Home (3m 43s)
+[Passed] Back from Login returns Home (1m 49s)
+[Passed] Tab navigation (56s)
+[Failed] Sign-in session survives a relaunch; logout clears it (2m 31s) (Assertion is false: "Welcome Back" is not visible)
+1/4 Flow Failed
+== 38918696349 E2E (Android, manual) success 3abe4e8
+[Passed] Cold start opens Home (54s)
+[Passed] Back from Login returns Home (43s)
+[Passed] Tab navigation (24s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 26s)
+[Passed] Login keyboard return keys (47s)
+[Passed] Explore error state and Retry (25s)
+[Passed] Profile is protected and reloads the user (8m 37s)
+7/7 Flows Passed in 13m 16s
+== 38918701713 E2E (Android, manual) success 3abe4e8
+[Passed] Cold start opens Home (54s)
+[Passed] Back from Login returns Home (55s)
+[Passed] Tab navigation (25s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 42s)
+[Passed] Login keyboard return keys (1m 2s)
+[Passed] Explore error state and Retry (27s)
+[Passed] Profile is protected and reloads the user (1m 14s)
+7/7 Flows Passed in 6m 39s
+E2E (Android, manual) success
+E2E (Android, manual) success
+E2E (iOS, manual) failure
+Audit success
+Push on main success
+CI success
+
+[exited with code 0]

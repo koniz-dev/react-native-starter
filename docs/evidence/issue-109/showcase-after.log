@@ -1,0 +1,10 @@
+    ✓ pressing Contained shows "Contained pressed" in the snackbar (216 ms)
+    ✓ pressing Outlined shows "Outlined pressed" in the snackbar (72 ms)
+    ✓ pressing Ok shows "Card: Ok pressed" in the snackbar (50 ms)
+    ✓ pressing Show Snackbar shows "This is a snackbar message!" in the snackbar (48 ms)
+    ✓ shows a header with a back button, and titles the browser tab (25 ms)
+    ✓ announces the snackbar on iOS, which has no live regions (52 ms)
+    ✓ announces the same message again when pressed again while it shows (174 ms)
+    ✓ marks each section title as a heading (24 ms)
+    ✓ closes the snackbar with Dismiss (64 ms)
+Tests:       9 passed, 9 total

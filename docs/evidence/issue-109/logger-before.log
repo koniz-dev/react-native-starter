@@ -1,0 +1,8 @@
+      ✕ logs URL strings under URL-like keys without the query or fragment (12 ms)
+    - Expected  - 2
+    + Received  + 2
+    -   "linkText": "Why? See #3",
+    -   "locationName": "Room 5?",
+    +   "linkText": "Why",
+    +   "locationName": "Room 5",
+Tests:       1 failed, 71 skipped, 72 total
