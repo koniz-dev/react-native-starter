@@ -175,6 +175,16 @@ inherit them):
   `.github/dependabot.yml`.
 - **CodeQL default setup** (actions, JavaScript/TypeScript): a new alert is
   a bug; open an issue for it.
+- **Check the alerts; nothing notifies you.** After a push that changes a
+  workflow, and before tagging a release, list the open alerts; a release
+  waits until each has an issue that is fixed or a recorded dismissal (v1.1.12
+  shipped with three open CodeQL highs, #112):
+
+  ```sh
+  gh api 'repos/koniz-dev/react-native-starter/code-scanning/alerts?state=open' -q 'length'
+  gh api 'repos/koniz-dev/react-native-starter/dependabot/alerts?state=open' -q 'length'
+  gh api 'repos/koniz-dev/react-native-starter/secret-scanning/alerts?state=open' -q 'length'
+  ```
 - **Actions must be pinned to a full commit SHA** (every workflow is).
 
 ## Dependencies held back
