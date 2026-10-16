@@ -22,7 +22,8 @@
  *    #anchors): inline links (with a title or in <angle brackets> too),
  *    reference definitions (`[ref]: path`), and HTML `href`/`src`; every repo
  *    path in inline code exists (a path in a known folder or a known root
- *    file, `./` allowed), with its heading for a `.md#anchor`. Anchors are
+ *    file, `./` allowed), with its heading for a `.md#anchor`. Headings are
+ *    `# Title` or underlined with `===` or `---`; anchors are
  *    compared as GitHub writes them (lowercase). Paths with placeholders
  *    (<name>, *, {a,b}, ...) are not checked.
  *
@@ -125,19 +126,30 @@ function anchorsOf(file) {
   const anchors = new Set();
   const counts = {};
   let fence = null;
+  // The previous line, if it could be a setext heading's text.
+  let paragraph = null;
   for (const line of text.split(/\r?\n/)) {
     const marker = fenceMarker(line);
     if (marker && !fence) {
       fence = marker;
+      paragraph = null;
       continue;
     }
     if (marker && closes(fence, marker)) {
       fence = null;
       continue;
     }
-    const match = !fence && /^#{1,6}\s+(.*)$/.exec(line);
-    if (!match) continue;
-    const base = match[1]
+    if (fence) continue;
+    // `# Title`, or `Title` underlined with `===` or `---`.
+    const atx = /^#{1,6}\s+(.*)$/.exec(line);
+    const setext = paragraph !== null && /^ {0,3}(=+|-+)\s*$/.test(line);
+    const heading = atx ? atx[1] : setext ? paragraph : null;
+    paragraph =
+      atx || setext || !line.trim() || /^\s*([-*+>|]|\d+[.)])\s/.test(line)
+        ? null
+        : line;
+    if (heading === null) continue;
+    const base = heading
       .trim()
       .toLowerCase()
       .replace(/[^\p{L}\p{N}\s_-]/gu, '')
@@ -336,16 +348,17 @@ function main() {
         return anchorCache[doc].has(anchor);
       };
       const targets = [
-        // [text](target) and [text](target "title"), images too.
+        // [text](target) and [text](target "title"), images too; a target
+        // may hold balanced parentheses, page-(draft).md.
         ...Array.from(
           line.matchAll(
-            /\]\(\s*(<[^>]*>|[^)\s]+)(?:\s+(?:"[^"]*"|'[^']*'))?\s*\)/g
+            /\]\(\s*(<[^>]*>|(?:[^()\s]|\([^()\s]*\))+)(?:\s+(?:"[^"]*"|'[^']*'))?\s*\)/g
           ),
           m => m[1]
         ),
-        // [ref]: target
+        // [ref]: target (not a [^footnote]: definition)
         ...Array.from(
-          line.matchAll(/^\s{0,3}\[[^\]]+\]:\s*(<[^>]*>|\S+)/g),
+          line.matchAll(/^\s{0,3}\[(?!\^)[^\]]+\]:\s*(<[^>]*>|\S+)/g),
           m => m[1]
         ),
         // <a href="target">, <img src="target">

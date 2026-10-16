@@ -89,8 +89,18 @@ describe('check-docs on a copy of the project', () => {
           '',
           'Run `npm run-script nope`.',
           '',
-          // Not problems: an encoded space, a real anchor.
+          // Not problems: an encoded space, a real anchor, a footnote, a
+          // setext heading, and parentheses in a target.
           '[space](forms%20ok.md) and [anchor](#forms)',
+          '',
+          'A claim.[^1] See [setext](#setext-title) and [draft](forms-(draft).md).',
+          '',
+          '[^1]: Footnote text',
+          '',
+          'Setext Title',
+          '------------',
+          '',
+          '[gone](nope-(paren).md)',
           '',
           '```typescript',
           "export { Missing } from '@/shared/ui/NoSuchTypescript';",
@@ -111,6 +121,7 @@ describe('check-docs on a copy of the project', () => {
         ].join('\n')
       );
       write('docs/forms ok.md', '# OK\n');
+      write('docs/forms-(draft).md', '# Draft\n');
       fs.writeFileSync(
         path.join(copy, 'scripts/audit-allowlist.json'),
         JSON.stringify({ $comment: 'See docs/nope-json.md.', advisories: [] })
@@ -131,6 +142,7 @@ describe('check-docs on a copy of the project', () => {
         'broken link nope angle.md',
         'broken link ./nope-ref.md',
         'broken link nope-html.md',
+        'broken link nope-(paren).md',
         'no heading for docs/testing.md#no-such-anchor',
         'path does not exist: shared/nope.ts',
         'npm run nope: no such script',
@@ -143,7 +155,7 @@ describe('check-docs on a copy of the project', () => {
         expect(result.stderr).toContain(problem);
       }
       expect(result.stderr).not.toMatch(
-        /forms%20ok|forms ok|#forms\b|Markdown, not code/
+        /forms%20ok|forms ok|#forms\b|Markdown, not code|Footnote|setext|draft/
       );
     } finally {
       fs.rmSync(copy, { recursive: true, force: true });
