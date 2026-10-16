@@ -14,11 +14,17 @@ appId: ${APP_ID}
           commands:
             - clearKeychain
 - launchApp
-# Optional: a busy simulator can time out opening the link (code 60) while
-# the app opens anyway; the loop below opens it again if still needed.
-- openLink:
-    link: ${APP_URL}
-    optional: true
+# Expo Go needs the link to load the project. A native debug build loads its
+# bundle from Metro by itself on launch, so it skips the link: a busy
+# simulator can time out opening one (code 60), which fails the flow even as
+# an optional step (Maestro skips an optional step only on its own errors,
+# not on a driver's).
+- runFlow:
+    when:
+      true: ${APP_URL.indexOf('exp://') === 0}
+    commands:
+      - openLink:
+          link: ${APP_URL}
 # Until Home is usable: reopen the link if Expo Go is still on its own home
 # screen (the link can arrive before Expo Go is ready), and dismiss overlays:
 # iOS's "Open in “Expo Go”?" prompt (shown for a link on a fresh simulator),
