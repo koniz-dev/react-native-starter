@@ -6,13 +6,12 @@ name: E2E (iOS, manual)
 # runs locally (npm run test:e2e:ios).
 # Manual only: a native build and a simulator run take far longer than the
 # verify job.
+# No input for another ref: the job would run that ref's code with the
+# dispatching branch's cache token (cache poisoning). To test another
+# branch or tag, run the workflow on it (gh workflow run e2e-ios.yml --ref
+# <branch>).
 on:
   workflow_dispatch:
-    inputs:
-      ref:
-        description: 'Commit, branch, or tag to test (default: the branch the run is for), e.g. to reproduce a bug before its fix'
-        type: string
-        default: ''
 
 permissions:
   contents: read
@@ -33,17 +32,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.ref }}
           persist-credentials: false
 
-      # No npm cache: this job runs the code of any `ref`, and a cache it
-      # saved would be restored by the dispatching branch's other workflows
-      # (cache poisoning). A run takes far longer than the install anyway.
       - name: Set up Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
-          package-manager-cache: false
+          cache: npm
 
       - name: Set up Java 17 (Maestro)
         uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
