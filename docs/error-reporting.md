@@ -56,8 +56,8 @@ export async function saveSettings(
     `status` (development adds its stack);
   - a `Date` becomes its ISO string, a `Map` an object, a `Set` an array,
     and a `URL` its address without the query string, as does a string
-    under a URL-like key (`url`, `uri`, `href`, `link`, `endpoint`,
-    `location`, such as `redirectUri`); a value whose getter throws becomes
+    under a key ending in `url`, `uri`, `href`, `link`, `endpoint`, or
+    `location` (such as `redirectUri`, but not `linkText`); a value whose getter throws becomes
     `[unreadable]`, so logging never throws;
   - outside development: `data` and `body` values (response bodies) become
     `[redacted]`.

@@ -562,7 +562,10 @@ describe('logger', () => {
             redirectUri: 'myapp://auth?code=xyz',
             href: '/reset#token=t',
             endpoint: '/a?x=1',
+            deepLink: 'myapp://open?t=1',
             title: 'What? Why?',
+            linkText: 'Why? See #3',
+            locationName: 'Room 5?',
           },
           false
         )
@@ -571,7 +574,10 @@ describe('logger', () => {
         redirectUri: 'myapp://auth',
         href: '/reset',
         endpoint: '/a',
+        deepLink: 'myapp://open',
         title: 'What? Why?',
+        linkText: 'Why? See #3',
+        locationName: 'Room 5?',
       });
     });
 
