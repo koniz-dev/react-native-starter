@@ -193,6 +193,27 @@ describe('authService with an adapter', () => {
     expect(storage.removeItem).toHaveBeenCalledTimes(1); // the expiry's
   });
 
+  it('still clears the session when the expiry failed to clear it while the adapter signed out', async () => {
+    secureStore.set('auth_token', 'token-a');
+    let finishLogout!: () => void;
+    setAuthAdapter(
+      fakeAdapter({
+        logout: () => new Promise<void>(resolve => (finishLogout = resolve)),
+      })
+    );
+
+    const signingOut = authService.logout();
+    // Meanwhile the session expires, but the Keychain is locked.
+    jest
+      .mocked(SecureStore.deleteItemAsync)
+      .mockRejectedValueOnce(new Error('locked'));
+    await expect(clearStoredSession()).rejects.toThrow('locked');
+    finishLogout();
+    await signingOut;
+
+    expect(secureStore.get('auth_token')).toBeUndefined();
+  });
+
   it('reloads the user with fetchUser when the adapter has it', async () => {
     setAuthAdapter(
       fakeAdapter({

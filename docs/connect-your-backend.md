@@ -264,8 +264,9 @@ there; replace that registration with yours.
 The service rejects a missing token, stores the token and the normalized
 user, and registers `refresh` (if any) as the HTTP client's refresh handler,
 which is tried once per 401 before signing out. On sign-out it calls `logout`
-(if any), then clears the stored session, unless that session ended while
-`logout` ran (it expired, and the user may have signed in again). Nothing in
+(if any), then clears the stored session, unless the user signed in again
+while `logout` ran (after the session expired); `logout` itself must leave
+that newer session's tokens alone, as the example does. Nothing in
 `shared/` changes.
 Until an adapter is registered, Login shows "Login failed. Please try
 again." and the reason, "Sign-in is not configured: register an AuthAdapter

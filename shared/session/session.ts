@@ -25,9 +25,21 @@ export function getSessionGeneration(): number {
   return sessionGeneration;
 }
 
+let sessionStarts = 0;
+
+/**
+ * A number that changes only when a session starts (sign-in), not when one
+ * ends: work that must not touch a newer session, such as a sign-out that
+ * finishes late, compares it.
+ */
+export function getSessionStarts(): number {
+  return sessionStarts;
+}
+
 /** Marks the start of a new session (sign-in). */
 export function startNewSession(): void {
   sessionGeneration += 1;
+  sessionStarts += 1;
 }
 
 /** Removes the stored token (token store) and profile (AsyncStorage). */

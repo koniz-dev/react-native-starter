@@ -18,6 +18,7 @@ import { getItem, setItem, STORAGE_KEYS } from '@/shared/storage/storage';
 import {
   clearStoredSession,
   getSessionGeneration,
+  getSessionStarts,
   setRefreshTokenHandler,
   startNewSession,
 } from './session';
@@ -76,7 +77,10 @@ export interface AuthAdapter {
    * Ends the session on the backend and drops what the adapter keeps, e.g.
    * revokes and deletes a refresh token. Called on sign-out while the access
    * token is still stored; if it fails, the failure is logged and the user is
-   * signed out anyway.
+   * signed out anyway. It can still be running after the session expired and
+   * the user signed in again: once its request returns, leave alone what a
+   * newer sign-in stored (the example in docs/connect-your-backend.md counts
+   * sign-ins for this).
    */
   logout?(clients: AuthClients): Promise<void>;
 }
@@ -187,11 +191,11 @@ export const authService = {
   /**
    * Signs out: lets the adapter end the session on the backend, then removes
    * the token and the stored profile, even if the adapter failed. If the
-   * session ended while the adapter ran (it expired, and maybe someone signed
-   * in again), it removes nothing: the stored session is a newer one.
+   * user signed in again while the adapter ran (after the session expired),
+   * it removes nothing: the stored session is the newer one.
    */
   logout: async (): Promise<void> => {
-    const generation = getSessionGeneration();
+    const starts = getSessionStarts();
     try {
       await adapter.logout?.(clients);
     } catch (error) {
@@ -200,7 +204,7 @@ export const authService = {
         error: toApiError(error).message,
       });
     }
-    if (generation !== getSessionGeneration()) return;
+    if (starts !== getSessionStarts()) return;
     await clearStoredSession();
   },
 
