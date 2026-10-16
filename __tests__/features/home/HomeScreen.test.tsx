@@ -22,6 +22,8 @@ import { logger } from '@/shared/lib/logger';
 import { renderWithProviders, secureStore } from '@/testing';
 
 describe('<HomeScreen /> session', () => {
+  afterEach(() => setAuthAdapter(null));
+
   const user = { id: 1, email: 'emily@example.com', name: 'Emily Johnson' };
 
   beforeEach(() => {
@@ -123,7 +125,6 @@ describe('<HomeScreen /> session', () => {
     ).toBeTruthy();
     await act(async () => finish());
     expect(await findByText('Not signed in')).toBeTruthy();
-    setAuthAdapter(null);
   });
 
   test('treats a secure storage failure as signed out', async () => {

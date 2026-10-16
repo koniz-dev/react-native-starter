@@ -433,7 +433,8 @@ its bundle from Metro and opens with `rnstarter-dev://`. The manual
 **E2E (iOS, manual)** workflow (`.github/workflows/e2e-ios.yml`) does the
 same on an iOS simulator with a native debug build (prebuild, then
 `xcodebuild`): it covers what Expo Go on iOS doesn't, the app's own native
-modules. Neither is part of the per-push checks, because a device run takes
+modules. Its `ref` input runs it on another branch, tag, or commit, such as
+one from before a fix, to see the failure. Neither is part of the per-push checks, because a device run takes
 much longer.
 
 ### Your backend or mock
