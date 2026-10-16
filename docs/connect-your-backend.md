@@ -130,6 +130,10 @@ export const refreshTokens =
     ? createMemoryTokenStore()
     : createSecureTokenStore('refresh_token');
 
+// Counts sign-ins, so a slow logout can tell whether the user signed in
+// again while it ran.
+let signIns = 0;
+
 export const myBackendAuthAdapter: AuthAdapter = {
   // Required: credentials -> access token + your backend's user payload.
   // The Login form's username field holds the email here.
@@ -148,6 +152,7 @@ export const myBackendAuthAdapter: AuthAdapter = {
         })
       ).data
     );
+    signIns += 1;
     await refreshTokens.set(tokens.refresh_token);
     return { token: tokens.access_token, user };
   },
@@ -213,15 +218,24 @@ export const myBackendAuthAdapter: AuthAdapter = {
   // throws, the user is signed out anyway. The refresh token is the
   // credential, so this works after the access token has expired.
   logout: async ({ public: http }) => {
+    const signInsAtStart = signIns;
     const refreshToken = await refreshTokens.get();
     try {
       if (refreshToken) {
         await http.post('/sessions/revoke', { refresh_token: refreshToken });
       }
     } finally {
-      // Unless someone signed in while the request ran: that refresh token
-      // is the new session's.
-      if ((await refreshTokens.get()) === refreshToken) {
+      // Unless someone signed in while the request ran: the stored refresh
+      // token is then the new session's.
+      if (signIns === signInsAtStart) {
+        // A refresh that finished meanwhile rotated the token: revoke that
+        // one too.
+        const current = await refreshTokens.get();
+        if (current && current !== refreshToken) {
+          await http
+            .post('/sessions/revoke', { refresh_token: current })
+            .catch(() => undefined);
+        }
         await refreshTokens.clear();
       }
     }
@@ -329,9 +343,12 @@ it sends the stored token, and there is none until `login` returns.
 - **Revocation.** Revoke and delete it in `logout`. Revoke with the refresh
   token through the `public` client, as the example does: the access token
   has often expired by the time the user signs out, and the refresh token
-  alone identifies the session. Delete it in `finally`, so a failed request doesn't leave it on the
-  device, but only if it is still the one you revoked: a slow sign-out can
-  finish after the user signed in again.
+  alone identifies the session. Delete it in `finally`, so a failed request
+  doesn't leave it on the device, unless the user signed in again while
+  the request ran (the example counts sign-ins): the stored token is then
+  the new session's. Don't compare refresh tokens for this: a refresh that
+  finishes during sign-out rotates the token, so revoke the rotated one
+  too, as the example does.
 - **Sessions that end without a sign-out.** When a session ends another
   way (a 401 that a successful refresh didn't fix, or a reinstall on iOS,
   where the service clears the access token the Keychain kept), `logout`

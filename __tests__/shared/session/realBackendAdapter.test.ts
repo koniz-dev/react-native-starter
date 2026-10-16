@@ -395,6 +395,33 @@ describe('the documented AuthAdapter against a backend of another shape', () => 
     });
   });
 
+  it('leaves no refresh token when a refresh rotates while logout revokes', async () => {
+    await signIn();
+    backend.state.validAccess.clear();
+    let answerRefresh!: () => void;
+    backend.state.refreshGate = new Promise(
+      resolve => (answerRefresh = resolve)
+    );
+    let answerRevoke!: () => void;
+    backend.state.revokeGate = new Promise(resolve => (answerRevoke = resolve));
+
+    // A 401 starts a refresh; the backend rotates refresh-1 to refresh-2.
+    const profile = authService.fetchProfile().catch((error: unknown) => error);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    // The user signs out: the revoke of refresh-1 is on its way when the
+    // refresh answer arrives and stores refresh-2.
+    const loggingOut = authService.logout();
+    await new Promise(resolve => setTimeout(resolve, 0));
+    answerRefresh();
+    await profile;
+    answerRevoke();
+    await loggingOut;
+
+    expect(secureStore.get(REFRESH_KEY)).toBeUndefined();
+    expect(secureStore.get('auth_token')).toBeUndefined();
+    expect(backend.state.validRefresh.size).toBe(0);
+  });
+
   it('signs out locally when the backend is unreachable on logout', async () => {
     await signIn();
     backend.state.down = true;
