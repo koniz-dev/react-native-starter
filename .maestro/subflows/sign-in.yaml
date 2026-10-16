@@ -7,9 +7,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: Welcome Back
     timeout: 20000
-- tapOn:
-    id: login-username
-- inputText: ${MAESTRO_E2E_USERNAME}
+- runFlow: type-username.yaml
 - tapOn:
     id: login-password
 - inputText: ${MAESTRO_E2E_PASSWORD}

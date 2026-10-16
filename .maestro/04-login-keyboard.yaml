@@ -26,9 +26,7 @@ name: Login keyboard return keys
 - extendedWaitUntil:
     visible: Welcome Back
     timeout: 20000
-- tapOn:
-    id: login-username
-- inputText: ${MAESTRO_E2E_USERNAME}
+- runFlow: subflows/type-username.yaml
 - pressKey: Enter
 - takeScreenshot: 04-password-focused
 - inputText: ${MAESTRO_E2E_PASSWORD}

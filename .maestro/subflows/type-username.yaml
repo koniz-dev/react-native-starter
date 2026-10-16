@@ -1,0 +1,17 @@
+# Types MAESTRO_E2E_USERNAME into Login's username field and checks that it
+# arrived: on a busy iOS simulator Maestro can drop the characters typed
+# while the keyboard is still appearing (run 38918689787 typed "e"). Up to
+# two more tries. The check reads the username as a pattern, so a username
+# with regex characters such as "+" needs them escaped here.
+appId: ${APP_ID}
+---
+- retry:
+    maxRetries: 2
+    commands:
+      - tapOn:
+          id: login-username
+      - eraseText
+      - inputText: ${MAESTRO_E2E_USERNAME}
+      - assertVisible:
+          id: login-username
+          text: ${MAESTRO_E2E_USERNAME}
