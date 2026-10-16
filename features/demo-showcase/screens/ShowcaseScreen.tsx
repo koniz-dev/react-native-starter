@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -22,7 +22,19 @@ export function ShowcaseScreen() {
   const theme = useTheme();
   // The showcase buttons report presses through the snackbar.
   const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
-  const notify = (message: string) => () => setSnackbarMessage(message);
+  const repeatRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(repeatRef.current), []);
+  const notify = (message: string) => () => {
+    clearTimeout(repeatRef.current);
+    if (message === snackbarMessage) {
+      // The same message again: clear it for a moment, so iOS announces it
+      // again.
+      setSnackbarMessage(null);
+      repeatRef.current = setTimeout(() => setSnackbarMessage(message), 100);
+    } else {
+      setSnackbarMessage(message);
+    }
+  };
   // Paper's Snackbar is a live region, which iOS doesn't have.
   useAnnouncement(snackbarMessage);
 

@@ -43,7 +43,7 @@ describe('<ShowcaseScreen />', () => {
 
   it('announces the snackbar on iOS, which has no live regions', async () => {
     const announce = jest.spyOn(AccessibilityInfo, 'announceForAccessibility');
-    const os = jest.replaceProperty(Platform, 'OS', 'ios');
+    jest.replaceProperty(Platform, 'OS', 'ios');
     renderWithProviders(<ShowcaseScreen />);
 
     fireEvent.press(screen.getByText('Contained'));
@@ -51,8 +51,19 @@ describe('<ShowcaseScreen />', () => {
     await waitFor(() =>
       expect(announce).toHaveBeenCalledWith('Contained pressed')
     );
-    os.restore();
-    announce.mockRestore();
+  });
+
+  it('announces the same message again when pressed again while it shows', async () => {
+    const announce = jest.spyOn(AccessibilityInfo, 'announceForAccessibility');
+    jest.replaceProperty(Platform, 'OS', 'ios');
+    renderWithProviders(<ShowcaseScreen />);
+
+    fireEvent.press(screen.getByText('Contained'));
+    await waitFor(() => expect(announce).toHaveBeenCalledTimes(1));
+    fireEvent.press(screen.getByText('Contained'));
+
+    await waitFor(() => expect(announce).toHaveBeenCalledTimes(2));
+    expect(announce).toHaveBeenLastCalledWith('Contained pressed');
   });
 
   it('marks each section title as a heading', () => {
