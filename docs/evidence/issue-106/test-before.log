@@ -1,0 +1,40 @@
+FAIL __tests__/shared/session/realBackendAdapter.test.ts
+  the documented AuthAdapter against a backend of another shape
+    ✕ leaves no refresh token when a refresh rotates while logout revokes (21 ms)
+    ○ skipped signs in with a tokens-only response, loading the user from /me
+    ○ skipped shows the envelope's message for a wrong password and stores nothing
+    ○ skipped rejects a login response without the envelope with a readable message and stores nothing
+    ○ skipped rejects a login response without a refresh token with a readable message and stores nothing
+    ○ skipped rejects a user payload without the required fields
+    ○ skipped refreshes on a 401 with rotation, keeping only the newest refresh token
+    ○ skipped signs out and drops the refresh token when the refresh is rejected
+    ○ skipped keeps the session and the refresh token when the refresh fails offline
+    ○ skipped revokes the refresh token on logout
+    ○ skipped revokes the refresh token on logout after the access token expired
+    ○ skipped keeps the next session when a slow logout finishes after the user signed in again
+    ○ skipped revokes, and keeps nothing from, a refresh that finishes after logout
+    ○ skipped signs out locally when the backend is unreachable on logout
+
+  ● the documented AuthAdapter against a backend of another shape › leaves no refresh token when a refresh rotates while logout revokes
+
+    expect(received).toBeUndefined()
+
+    Received: "refresh-2"
+
+      418 |     await loggingOut;
+      419 |
+    > 420 |     expect(secureStore.get(REFRESH_KEY)).toBeUndefined();
+          |                                          ^
+      421 |     expect(secureStore.get('auth_token')).toBeUndefined();
+      422 |     expect(backend.state.validRefresh.size).toBe(0);
+      423 |   });
+
+      at Object.toBeUndefined (__tests__/shared/session/realBackendAdapter.test.ts:420:42)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 13 skipped, 14 total
+Snapshots:   0 total
+Time:        4.301 s, estimated 28 s
+Ran all test suites matching /__tests__\/shared\/session\/realBackendAdapter.test.ts/i with tests matching "rotates while logout".
