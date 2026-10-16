@@ -1,0 +1,20 @@
+## CodeQL analyses (newest first)
+2026-10-16T19:18:59Z 16cc770 /language:javascript-typescript results=0
+2026-10-16T19:18:24Z 16cc770 /language:actions results=0
+2026-10-16T18:48:11Z ee703e3 /language:javascript-typescript results=0
+2026-10-16T18:47:45Z ee703e3 /language:actions results=3
+2026-10-16T16:11:11Z cb566e4 /language:javascript-typescript results=0
+2026-10-16T16:11:02Z cb566e4 /language:actions results=3
+2026-10-16T15:33:02Z 1f3c372 /language:javascript-typescript results=0
+2026-10-16T15:32:44Z 1f3c372 /language:actions results=3
+
+## Alerts
+#4 fixed fixed_at=2026-10-16T19:18:24Z actions/cache-poisoning/poisonable-step .github/workflows/e2e-ios.yml:103
+#3 fixed fixed_at=2026-10-16T19:18:24Z actions/cache-poisoning/poisonable-step .github/workflows/e2e-ios.yml:68
+#2 fixed fixed_at=2026-10-16T19:18:24Z actions/cache-poisoning/poisonable-step .github/workflows/e2e-ios.yml:54
+#1 fixed fixed_at=2026-10-13T16:52:46Z js/incomplete-sanitization scripts/init-project.js:484
+
+## Open alert counts (2026-10-16T19:57:50Z)
+code-scanning: 0
+dependabot: 0
+secret-scanning: 0

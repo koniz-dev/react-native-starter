@@ -1,0 +1,18 @@
+## Runs on 16cc770
+CI success 38953872708
+Audit success 38953872713
+Push on main success 38953872700
+E2E (iOS, manual) success 38953873433
+
+[Passed] Cold start opens Home (2m 10s)
+[Passed] Back from Login returns Home (49s)
+[Passed] Tab navigation (31s)
+[Passed] Sign-in session survives a relaunch; logout clears it (2m 50s)
+[Passed] Login keyboard return keys (1m 10s)
+[Passed] Explore error state and Retry (30s)
+[Passed] Profile is protected and reloads the user (1m 20s)
+7/7 Flows Passed in 9m 21s
+Take screenshot dark-home... COMPLETED
+Take screenshot dark-explore... COMPLETED
+
+## E2E iOS on ee703e3 (38950010246): failed in flow 01 with no debug output (Maestro: 'number of flows (0)'); the dark-mode flow in the same run passed and the last screenshot shows Home. Harness, not app.

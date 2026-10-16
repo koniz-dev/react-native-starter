@@ -1,0 +1,35 @@
+16cc770 fix(ci): the iOS e2e run tests only the ref it runs on
+
+ .github/workflows/e2e-ios.yml | 15 +++++----------
+ docs/testing.md               |  5 +++--
+ 2 files changed, 8 insertions(+), 12 deletions(-)
+diff --git a/.github/workflows/e2e-ios.yml b/.github/workflows/e2e-ios.yml
+index cbcb024..d4e6522 100644
+--- a/.github/workflows/e2e-ios.yml
++++ b/.github/workflows/e2e-ios.yml
+@@ -6,13 +6,12 @@ name: E2E (iOS, manual)
+ # runs locally (npm run test:e2e:ios).
+ # Manual only: a native build and a simulator run take far longer than the
+ # verify job.
++# No input for another ref: the job would run that ref's code with the
++# dispatching branch's cache token (cache poisoning). To test another
++# branch or tag, run the workflow on it (gh workflow run e2e-ios.yml --ref
++# <branch>).
+ on:
+   workflow_dispatch:
+-    inputs:
+-      ref:
+-        description: 'Commit, branch, or tag to test (default: the branch the run is for), e.g. to reproduce a bug before its fix'
+-        type: string
+-        default: ''
+ 
+ permissions:
+   contents: read
+@@ -33,7 +32,6 @@ jobs:
+       - name: Check out repository
+         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+         with:
+-          ref: ${{ inputs.ref }}
+           persist-credentials: false
+ 
+       - name: Set up Node.js
