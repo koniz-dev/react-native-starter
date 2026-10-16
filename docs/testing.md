@@ -24,15 +24,18 @@ __tests__/                    mirrors the source tree
 ├── features/
 │   └── auth/  home/  ...     screen tests
 ├── scripts/                  tests of the Node scripts and the lint rules
-└── shared/
-    ├── config/  http/  session/  storage/
-    ├── integrations/  lib/  ui/
-testing/                      shared helpers (import from '@/testing')
+├── shared/
+│   ├── config/  http/  session/  storage/
+│   ├── integrations/  lib/  ui/
+└── testing/                  tests of the helpers below
+testing/                      shared helpers
+├── index.ts                  what '@/testing' exports: the four below
 ├── render.tsx                renderWithProviders
 ├── secureStore.ts            in-memory expo-secure-store
 ├── colorScheme.ts            setColorScheme
 ├── http.ts                   holdRequests, ok, httpError
 └── projectCopy.ts            copies of the project, for script tests
+                              (import from '@/testing/projectCopy')
 jest.setup.env.js             env for every test file (URLs, log level)
 jest.setup.ts                 shared mocks, reset before each test
 ```

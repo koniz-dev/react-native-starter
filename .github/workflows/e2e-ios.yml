@@ -83,8 +83,13 @@ jobs:
             const ios = Object.keys(devices)
               .filter(runtime => runtime.includes("iOS"))
               .sort((a, b) => a.localeCompare(b, "en", { numeric: true }));
-            const phones = devices[ios.at(-1)].filter(d => d.name.startsWith("iPhone"));
-            console.log((phones.find(d => d.name === "iPhone 17") ?? phones[0]).udid);
+            const phones = (devices[ios.at(-1)] ?? []).filter(d => d.name.startsWith("iPhone"));
+            const phone = phones.find(d => d.name === "iPhone 17") ?? phones[0];
+            if (!phone) {
+              console.error(`No available iPhone simulator on ${ios.at(-1) ?? "any iOS runtime"}`);
+              process.exit(1);
+            }
+            console.log(phone.udid);
           ')"
           # Flows type with the software keyboard.
           defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool false
