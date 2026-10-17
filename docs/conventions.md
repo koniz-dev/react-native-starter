@@ -61,7 +61,9 @@ the navigator for its folder. The root layout:
 
 - keeps the native splash screen up until the stored session is read;
 - shows `(auth)` only while signed out and `(app)` only while signed in
-  (`Stack.Protected`), so deep links into a guarded group land on Home;
+  (`Stack.Protected`), so deep links into a guarded group land on Home (an
+  in-app link to one does nothing; see
+  [A link to a screen that needs sign-in](#a-link-to-a-screen-that-needs-sign-in));
 - anchors the stack on `(tabs)` (`unstable_settings.initialRouteName`), so
   Back from a deep-linked screen returns to Home;
 - shows `app/+not-found.tsx` for a URL no route matches (an outdated deep
@@ -69,7 +71,10 @@ the navigator for its folder. The root layout:
 
 The root stack hides headers. `(app)` and `(auth)` show their own, with a
 back button. Add your app's tabs as files in `app/(tabs)/`, next to Home's
-`index.tsx`.
+`index.tsx`, and give each a `<Tabs.Screen name="<file>">` in
+`app/(tabs)/_layout.tsx` with its `title` from `t()`, a `tabBarIcon`, and a
+`tabBarButtonTestID` (copy Home's); without one, the tab shows its file
+name and a placeholder icon.
 
 Navigate with `router.navigate('/settings')`, `router.replace`, or `<Link>` from
 `expo-router`. Route groups export a route-level error boundary
@@ -197,6 +202,30 @@ const styles = StyleSheet.create({
 
 After sign-in, the Login screen returns to the tab, which now renders the
 list.
+
+### A link to a screen that needs sign-in
+
+While the user is signed out, the `(app)` group isn't mounted, so
+`router.navigate()` to one of its screens does nothing: no screen, no error.
+(A deep link into it lands on Home instead.) A public screen that links to
+one checks the session and sends a signed-out user to Login:
+
+```tsx
+// features/home/components/ProfileLink.tsx
+import { router } from 'expo-router';
+import { List } from 'react-native-paper';
+import { useSession } from '@/shared/session/SessionProvider';
+
+export function ProfileLink({ title }: { title: string }) {
+  const { session } = useSession();
+  const open = () =>
+    router.navigate(session.status === 'signedIn' ? '/profile' : '/login');
+  return <List.Item title={title} onPress={open} />;
+}
+```
+
+After sign-in, Login returns to the screen with the link; the user taps it
+again.
 
 ## Where code goes
 
