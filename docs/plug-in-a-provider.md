@@ -12,7 +12,7 @@ configuration error screen still shows.
 
 | Seam               | Interface (module)                                               | Default                                            | Call it with                                 |
 | ------------------ | ---------------------------------------------------------------- | -------------------------------------------------- | -------------------------------------------- |
-| Analytics          | `Analytics` (`shared/integrations/analytics.ts`)                 | logs at debug level (development builds only)      | `getAnalytics().track('event', props)`       |
+| Analytics          | `Analytics` (`shared/integrations/analytics.ts`)                 | logs at debug level (shown in development)         | `getAnalytics().track('event', props)`       |
 | Feature flags      | `FeatureFlags` (`shared/integrations/featureFlags.ts`)           | static values from `shared/config/featureFlags.ts` | `getFeatureFlags().isEnabled('flag')`        |
 | Push notifications | `PushNotifications` (`shared/integrations/pushNotifications.ts`) | "not configured": no permission, no token          | `getPushNotifications().requestPermission()` |
 | OTA updates        | `Updates` (`shared/integrations/updates.ts`)                     | never finds an update                              | `getUpdates().checkForUpdate()`              |
@@ -41,11 +41,12 @@ reach the provider. A provider that throws is logged (`logger.error`) and
 doesn't break navigation. Call `track` for events, and `identify` when the signed-in user
 changes. The session is the place to watch: a hook that calls `identify` with
 the user's id on sign-in (and on a restored session), and `identify(null)` on
-sign-out. The session provider does the same for the error reporter.
+sign-out, but not on a launch that starts signed out: providers such as
+PostHog start a new anonymous user on each clear. The session provider does the same for the error reporter.
 
 ```ts
 // features/auth/hooks/useAnalyticsIdentity.ts
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { getAnalytics } from '@/shared/integrations/analytics';
 import { useSession } from '@/shared/session/SessionProvider';
 
@@ -53,8 +54,12 @@ import { useSession } from '@/shared/session/SessionProvider';
 export function useAnalyticsIdentity(): void {
   const { session } = useSession();
   const userId = session.user ? String(session.user.id) : null;
+  // Only a change: a launch that starts signed out calls nothing, since
+  // clearing (PostHog's reset()) would count each such launch as a new user.
+  const identified = useRef<string | null>(null);
   useEffect(() => {
-    if (session.status === 'loading') return;
+    if (session.status === 'loading' || userId === identified.current) return;
+    identified.current = userId;
     getAnalytics().identify(userId);
   }, [session.status, userId]);
 }
