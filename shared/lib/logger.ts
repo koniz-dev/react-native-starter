@@ -62,7 +62,7 @@ const SECRET_KEY =
  * (`authCode`, `otp_code`, `TOTPCode`, `smsOtp`, `refresh`) so `author`,
  * `rootPath`, `footprint`, and `refreshing` are kept.
  */
-const SECRET_WORD = /^(auth(?!or)[a-z0-9]*|otp[a-z0-9]*|[a-z]*otp|refresh)$/;
+const SECRET_WORD = /^(o?auth(?!or)[a-z0-9]*|otp[a-z0-9]*|[a-z]*otp|refresh)$/;
 
 /** The key's words: split at a lowercase-to-capital change and at - or _. */
 function wordsOf(key: string): string[] {

@@ -438,6 +438,10 @@ describe('logger', () => {
       'AUTHcode',
       'sessionKey',
       'session_key',
+      'oauthCode',
+      'oauth_code',
+      'OAUTH_CODE',
+      'oauthState',
     ])('redacts %s', key => {
       expect(redact({ [key]: 'SECRET', pinned: true }, false)).toEqual({
         [key]: '[redacted]',
