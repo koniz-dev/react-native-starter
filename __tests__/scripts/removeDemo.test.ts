@@ -101,6 +101,20 @@ describe('remove-demo on a copy of the template', () => {
     expect(gitStatus(dir)).toBe('');
   });
 
+  it('prints its usage on --help and refuses an unknown argument, changing nothing', () => {
+    const dir = copy();
+
+    const help = run(dir, ['--help']);
+    expect(help.status).toBe(0);
+    expect(help.stdout).toContain('Usage: npm run remove-demo');
+    expect(gitStatus(dir)).toBe('');
+
+    const typo = run(dir, ['--dryrun']);
+    expect(typo.status).toBe(2);
+    expect(typo.stderr).toContain('unknown argument: --dryrun');
+    expect(gitStatus(dir)).toBe('');
+  });
+
   it('leaves no mention of the demo in the code, docs, config, or flows', () => {
     const dir = copy();
     const result = run(dir);

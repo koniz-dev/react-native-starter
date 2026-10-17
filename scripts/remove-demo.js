@@ -25,8 +25,9 @@
  * It refuses to run on uncommitted changes unless --force, so a failure
  * part way can be undone with git.
  *
- * Usage: npm run remove-demo [-- --dry-run] [-- --force]
+ * Usage: npm run remove-demo [-- --dry-run] [-- --force] [-- --help]
  * (--no-summary skips the closing message, for a caller that prints its own.)
+ * Any other argument is refused, so a typo never runs the removal.
  * Exit codes: 0 done, 2 nothing was changed, 1 failed after changing files.
  */
 const { spawnSync } = require('child_process');
@@ -34,9 +35,17 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const DRY_RUN = process.argv.includes('--dry-run');
-const FORCE = process.argv.includes('--force');
-const SUMMARY = !process.argv.includes('--no-summary');
+const USAGE = `Usage: npm run remove-demo [-- options]
+
+  --dry-run     list every change without making it
+  --force       run on uncommitted changes
+  --help        show this help
+`;
+const ARGS = process.argv.slice(2);
+const KNOWN_ARGS = new Set(['--dry-run', '--force', '--no-summary', '--help']);
+const DRY_RUN = ARGS.includes('--dry-run');
+const FORCE = ARGS.includes('--force');
+const SUMMARY = !ARGS.includes('--no-summary');
 
 const DEMO_PATHS = [
   'features/demo-auth',
@@ -271,6 +280,19 @@ async function main() {
 let started = false;
 /** How to undo a failure part way, for the state the run started in. */
 let restoreHint = '';
+
+const unknownArg = ARGS.find(arg => !KNOWN_ARGS.has(arg));
+if (ARGS.includes('--help')) {
+  process.stdout.write(USAGE);
+  process.exit(0);
+}
+if (unknownArg) {
+  process.stderr.write(
+    `remove-demo: unknown argument: ${unknownArg}\n\n${USAGE}`
+  );
+  process.stderr.write('Nothing was changed.\n');
+  process.exit(2);
+}
 
 main().catch(error => {
   process.stderr.write(`remove-demo: ${error.message}\n`);

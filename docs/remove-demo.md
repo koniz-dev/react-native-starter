@@ -18,6 +18,9 @@ npm run remove-demo -- --dry-run   # list what would change
 npm run remove-demo
 ```
 
+`-- --help` lists the options; any other argument is refused and changes
+nothing.
+
 `scripts/remove-demo.js`:
 
 1. deletes the folders and routes above, the demo tests in
