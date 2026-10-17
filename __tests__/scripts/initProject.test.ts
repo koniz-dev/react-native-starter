@@ -13,6 +13,13 @@ const GIT_ENV = {
   ...process.env,
   GIT_CONFIG_GLOBAL: os.devNull,
   GIT_CONFIG_NOSYSTEM: '1',
+  // No background gc or maintenance that outlives a command and writes
+  // into a copy while a test reads or deletes it.
+  GIT_CONFIG_COUNT: '2',
+  GIT_CONFIG_KEY_0: 'gc.auto',
+  GIT_CONFIG_VALUE_0: '0',
+  GIT_CONFIG_KEY_1: 'maintenance.auto',
+  GIT_CONFIG_VALUE_1: 'false',
 };
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -197,9 +204,6 @@ function run(dir: string, args: string[]) {
     cwd: dir,
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe'],
-    // Git stops at the copy: a repository in a folder above it (such as the
-    // temporary folder on a CI runner) must not count as the project's.
-    env: { ...process.env, GIT_CEILING_DIRECTORIES: path.dirname(dir) },
   });
 }
 
@@ -547,8 +551,10 @@ describe('init-project on a copy of the template', () => {
   );
 
   it('without git, says it cannot check or undo, and never suggests git', () => {
-    const dir = copy();
-    fs.rmSync(path.join(dir, '.git'), { recursive: true, force: true });
+    // Never a repository: deleting .git after a commit races git's own
+    // background maintenance, which can write it back.
+    const dir = copyProject('init-project-');
+    copies.push(dir);
     fs.chmodSync(path.join(dir, 'app.config.ts'), 0o444);
     const result = run(dir, [...IDENTITY, '--keep-demo']);
     expect(result.stdout).toContain('this is not a git repository');

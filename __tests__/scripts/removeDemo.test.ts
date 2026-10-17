@@ -13,6 +13,13 @@ const GIT_ENV = {
   ...process.env,
   GIT_CONFIG_GLOBAL: os.devNull,
   GIT_CONFIG_NOSYSTEM: '1',
+  // No background gc or maintenance that outlives a command and writes
+  // into a copy while a test reads or deletes it.
+  GIT_CONFIG_COUNT: '2',
+  GIT_CONFIG_KEY_0: 'gc.auto',
+  GIT_CONFIG_VALUE_0: '0',
+  GIT_CONFIG_KEY_1: 'maintenance.auto',
+  GIT_CONFIG_VALUE_1: 'false',
 };
 
 /**
