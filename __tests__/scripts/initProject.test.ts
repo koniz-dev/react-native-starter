@@ -409,7 +409,7 @@ describe('init-project on a copy of the template', () => {
     }
     for (const workflow of ['e2e-android.yml', 'e2e-ios.yml']) {
       expect(read(dir, `.github/workflows/${workflow}`)).toContain(
-        'E2E_APP_URL=acmenotes-dev://'
+        'E2E_APP_ID=com.acme.notes.dev'
       );
     }
 

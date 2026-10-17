@@ -329,16 +329,17 @@ on a simulator or emulator. No account is needed.
 
 The demo adds flows that need it; `npm run remove-demo` deletes them with it:
 
-| Flow                          | Checks                                                                                      |
-| ----------------------------- | ------------------------------------------------------------------------------------------- |
-| `02-tabs.yaml`                | the tab bar switches between Home and Explore                                               |
-| `03-auth-session.yaml`        | sign in, relaunch (still signed in), log out, relaunch (still signed out)                   |
-| `04-login-keyboard.yaml`      | the username's return key moves to the password; the password's submits                     |
-| `05-explore-error-retry.yaml` | Explore shows the API error, then Retry loads the list (local mock API)                     |
-| `07-profile.yaml`             | View profile opens the protected screen, which reloads the user; Back, then Log out from it |
+| Flow                          | Checks                                                                                                                                 |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `02-tabs.yaml`                | the tab bar switches between Home and Explore                                                                                          |
+| `03-auth-session.yaml`        | sign in, relaunch (still signed in), log out, relaunch (still signed out)                                                              |
+| `04-login-keyboard.yaml`      | the username's return key moves to the password; the password's submits                                                                |
+| `05-explore-error-retry.yaml` | Explore shows the API error, then Retry loads the list (local mock API)                                                                |
+| `07-profile.yaml`             | View profile opens the protected screen, which reloads the user (the mock answers with another first name); Back, then Log out from it |
 
 They sign in with the demo account, which the e2e mock serves (`run.sh`
-uses it unless `MAESTRO_E2E_USERNAME` is set), and `dark-mode.yaml` also
+defaults `MAESTRO_E2E_USERNAME` and `MAESTRO_E2E_PASSWORD` to it, each on
+its own, so set both for another account), and `dark-mode.yaml` also
 screenshots Explore.
 
 <!-- @demo remove-block-end -->
@@ -418,8 +419,10 @@ Setup:
   Keyboard** (or run
   `defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool false`
   and restart the Simulator).
-- To run against a development build instead, set `E2E_APP_ID` (its bundle /
-  package ID) and `E2E_APP_URL` (its dev-client URL).
+- To run against a native debug build instead, set `E2E_APP_ID` (its bundle
+  / package ID): it loads the bundle from Metro when it launches, so the flows
+  open no link. With `expo-dev-client`, also set `E2E_APP_URL` (its dev-client
+  URL): the flows open it when the dev client lists its development servers.
 - Slow emulators: the runner allows Maestro 180 s to start its driver
   (`MAESTRO_DRIVER_STARTUP_TIMEOUT`, in ms), builds the bundle before the
   flows start, and on Android turns off system animations and the "isn't
@@ -432,7 +435,7 @@ boots an emulator, installs the Maestro release and the app, and uploads
 `e2e-results/android`. Its `app` input picks Expo Go (the default) or
 `native-debug`: a debug build of the development variant
 (`npm run prebuild:development`, then Gradle `assembleDebug`), which loads
-its bundle from Metro and opens with `rnstarter-dev://`. The manual
+its bundle from Metro when it launches. The manual
 **E2E (iOS, manual)** workflow (`.github/workflows/e2e-ios.yml`) does the
 same on an iOS simulator with a native debug build (prebuild, then
 `xcodebuild`): it covers what Expo Go on iOS doesn't, the app's own native
@@ -469,7 +472,7 @@ E2E_API_URL=http://localhost:4000 E2E_BACKEND_CMD="node scripts/<your-mock>.js" 
   flow, so the password never goes in the repository.
 - **The results contain the test account.** Maestro writes the values of
   those variables into `e2e-results/` (`commands.json` and its logs), and the
-  manual Android workflow uploads that folder as an artifact. Use an account
+  manual e2e workflows upload that folder as an artifact. Use an account
   that only reaches test data, and don't share the results publicly.
 - **A backend on another machine or HTTPS** works too: set the URL, and leave
   `E2E_BACKEND_CMD` unset. Only `localhost` URLs get `adb reverse`; see

@@ -67,8 +67,9 @@ jobs:
           curl -fsSL -o app.apk "https://github.com/expo/expo-go-releases/releases/download/Expo-Go-${EXPO_GO_VERSION}/Expo-Go-${EXPO_GO_VERSION}.apk"
           echo "${EXPO_GO_SHA256}  app.apk" | sha256sum -c -
 
-      # A debug build without a dev client: it loads the bundle from Metro on
-      # localhost:8081 (adb reverse) and opens with its own URL scheme.
+      # A debug build without a dev client: when it launches, it loads the
+      # bundle from Metro on localhost:8081 (adb reverse), so the flows open
+      # no link.
       - name: Build the native debug app (development variant)
         if: inputs.app == 'native-debug'
         run: |
@@ -79,7 +80,6 @@ jobs:
           build || { echo "Build failed; retrying once" >&2; build; }
           cp android/app/build/outputs/apk/debug/app-debug.apk app.apk
           echo "E2E_APP_ID=com.example.rnstarter.dev" >> "$GITHUB_ENV"
-          echo "E2E_APP_URL=rnstarter-dev://" >> "$GITHUB_ENV"
 
       - name: Enable KVM
         run: |
