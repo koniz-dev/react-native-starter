@@ -55,8 +55,8 @@ Native topics, the pages link to the official documentation.
 `npm run docs:check` compiles every TypeScript snippet (`ts`, `tsx`, or
 `typescript` blocks) in these pages against the code, lints it with the
 project's rules as the file its first line names
-(`// features/posts/api/postsApi.ts`; otherwise as a module in a feature, or
-a test if it reads like one), parses every `json` block, and checks every
+(`// features/posts/api/postsApi.ts`; otherwise as a test if it reads like
+one, a route if it only re-exports a default, or else a module in a feature), parses every `json` block, and checks every
 relative link and anchor, repo path in inline code, and `npm run` script
 they mention; CI runs it. Blocks in other languages (`sh`, `js`, `yaml`)
 aren't checked. Write anchors in lowercase, as GitHub generates them.

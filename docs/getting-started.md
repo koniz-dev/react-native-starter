@@ -59,7 +59,7 @@ you (icons, colors, backend, providers).
 What each template release was verified on (devices, OS versions, and
 builds) is in its
 [release notes](https://github.com/koniz-dev/react-native-starter/releases).
-Native iOS builds were not part of that verification.
+Since v1.1.12 that includes native iOS and Android debug builds.
 
 <!-- @init remove-block-end -->
 
@@ -106,11 +106,14 @@ npm's output looks worse than it is. These are expected:
 - **"1 package has install scripts not yet covered by allowScripts:
   fsevents"**: fsevents ships its prebuilt binary, so it works without its
   install script.
-- **"N vulnerabilities (… high)"** after `npm install` or `npx expo install`
-  counts every advisory in the tree, including development tools. `npm run
-audit:check` is the check that matters: it fails on an unreviewed high or
-  critical advisory in the app's runtime dependencies, and lists the
-  reviewed ones (see [Dependency advisories](#dependency-advisories)).
+- **"N vulnerabilities (… high)"** after `npm ci`, `npm install`, or `npx
+expo install` counts every advisory in the tree, including development
+  tools. `npm run audit:check` is the check that matters: it fails on an
+  unreviewed high or critical advisory in the app's runtime dependencies,
+  and lists the reviewed ones (see
+  [Dependency advisories](#dependency-advisories)). Don't run the suggested
+  `npm audit fix --force`: it moves packages off the versions the Expo SDK
+  needs; `npx expo install --fix` is the way to update them.
 
 Set your backend URLs in `.env` (`EXPO_PUBLIC_API_URL`,
 `EXPO_PUBLIC_AUTH_API_URL`); see

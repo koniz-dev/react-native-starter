@@ -148,6 +148,9 @@ the setting to revisit.
 
 ## Expired sessions (401)
 
+Any 401 on a request that carried the stored token means "this token is no
+longer accepted", so have your backend answer other rejections (such as a
+wrong current password on a change-password endpoint) with 400, 403, or 422.
 When a request that carried the stored token gets a 401:
 
 1. If the user signed out (or out and in again) while the request was in

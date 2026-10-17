@@ -68,7 +68,9 @@ that command would discard them too.
   [Connect Your Backend](connect-your-backend.md).
 - With `.env` copied from `.env.example`, the app opens on the configuration
   error screen until you set `EXPO_PUBLIC_API_URL` and
-  `EXPO_PUBLIC_AUTH_API_URL`.
+  `EXPO_PUBLIC_AUTH_API_URL`. A `.env` copied before you ran remove-demo
+  still has the demo's switch and comments (it isn't in git, so the script
+  doesn't edit it): copy it from `.env.example` again.
 - The docs keep a worked list screen (endpoint, loading, error with Try again)
   in [Connect Your Backend](connect-your-backend.md#3-add-endpoints-for-a-feature)
   and its test in [Testing](testing.md#network).
