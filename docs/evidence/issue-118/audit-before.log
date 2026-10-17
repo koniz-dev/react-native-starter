@@ -1,0 +1,7 @@
+    ✕ lists the most severe advisories first (19 ms)
+  ● check-audit › lists the most severe advisories first
+    - Expected  - 1
+    + Received  + 1
+    -   "moderate",
+    +   "moderate",
+Tests:       1 failed, 20 skipped, 21 total

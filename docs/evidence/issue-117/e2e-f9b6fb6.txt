@@ -1,0 +1,31 @@
+== 39006065357 E2E (iOS, manual) failure f9b6fb6 attempt 1
+[Failed] Cold start opens Home (1m 5s)
+1/1 Flow Failed
+== 39006067703 E2E (Android, manual) success f9b6fb6 attempt 1
+[Passed] Cold start opens Home (48s)
+[Passed] Back from Login returns Home (39s)
+[Passed] Tab navigation (22s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 20s)
+[Passed] Login keyboard return keys (49s)
+[Passed] Explore error state and Retry (24s)
+[Passed] Profile is protected and reloads the user (55s)
+7/7 Flows Passed in 5m 17s
+Take screenshot dark-home... COMPLETED
+Take screenshot dark-explore... COMPLETED
+== 39006069558 E2E (Android, manual) success f9b6fb6 attempt 1
+[Passed] Cold start opens Home (45s)
+[Passed] Back from Login returns Home (52s)
+[Passed] Tab navigation (22s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 34s)
+[Passed] Login keyboard return keys (1m 3s)
+[Passed] Explore error state and Retry (25s)
+[Passed] Profile is protected and reloads the user (1m 8s)
+7/7 Flows Passed in 6m 8s
+Take screenshot dark-home... COMPLETED
+Take screenshot dark-explore... COMPLETED
+f828271 Audit success
+f828271 Push on main success
+f828271 CI success
+alerts: 0
+
+[exited with code 0]

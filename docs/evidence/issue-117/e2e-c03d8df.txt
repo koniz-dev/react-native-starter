@@ -1,0 +1,30 @@
+== 39007926531 E2E (iOS, manual) success c03d8df attempt 1
+[Passed] Cold start opens Home (3m 15s)
+[Passed] Back from Login returns Home (55s)
+[Passed] Tab navigation (28s)
+[Passed] Sign-in session survives a relaunch; logout clears it (2m 45s)
+[Passed] Login keyboard return keys (1m 9s)
+[Passed] Explore error state and Retry (41s)
+[Passed] Profile is protected and reloads the user (1m 35s)
+7/7 Flows Passed in 10m 52s
+Take screenshot dark-home... COMPLETED
+Take screenshot dark-explore... COMPLETED
+== 39007928268 E2E (Android, manual) success c03d8df attempt 1
+[Passed] Cold start opens Home (53s)
+[Passed] Back from Login returns Home (43s)
+[Passed] Tab navigation (21s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 17s)
+[Passed] Login keyboard return keys (48s)
+[Passed] Explore error state and Retry (24s)
+[Passed] Profile is protected and reloads the user (54s)
+7/7 Flows Passed in 5m 20s
+Take screenshot dark-home... COMPLETED
+Take screenshot dark-explore... COMPLETED
+c03d8df E2E (Android, manual) success
+c03d8df Audit success
+c03d8df Push on main success
+c03d8df CI success
+c03d8df E2E (iOS, manual) success
+alerts: 0
+
+[exited with code 0]

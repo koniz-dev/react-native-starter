@@ -1,0 +1,146 @@
+[
+ {
+  "id": "st-parse-leak",
+  "file": "shared/storage/storage.ts",
+  "from": "  } catch {\n    // The parser's message",
+  "to": "  } catch (e) {\n    logger.error(`Error retrieving ${key}`, e);\n    // The parser's message",
+  "tests": [
+   "__tests__/shared/storage/storage.test.ts"
+  ]
+ },
+ {
+  "id": "ae-url-query",
+  "file": "shared/http/apiError.ts",
+  "from": "url: error.config.url.split(/[?#]/)[0]",
+  "to": "url: error.config.url",
+  "tests": [
+   "__tests__/shared/http/tokenSafety.test.ts"
+  ]
+ },
+ {
+  "id": "lg-error-extras",
+  "file": "shared/lib/logger.ts",
+  "from": "        ...(code !== undefined && { code }),\n",
+  "to": "        ...(current as object),\n        ...(code !== undefined && { code }),\n",
+  "tests": [
+   "__tests__/shared/lib/logger.test.ts"
+  ]
+ },
+ {
+  "id": "rd-import-check",
+  "file": "scripts/remove-demo.js",
+  "from": "      problems.push(`${rel}: still imports a demo feature`);",
+  "to": "",
+  "tests": [
+   "__tests__/scripts/removeDemo.test.ts"
+  ]
+ },
+ {
+  "id": "rd-unhandled-marker",
+  "file": "scripts/remove-demo.js",
+  "from": "      problems.push(`${rel}: unhandled @demo marker`);",
+  "to": "",
+  "tests": [
+   "__tests__/scripts/removeDemo.test.ts"
+  ]
+ },
+ {
+  "id": "rd-nested",
+  "file": "scripts/remove-demo.js",
+  "from": "      if (block) throw new Error(`${file}: nested @demo block`);",
+  "to": "",
+  "tests": [
+   "__tests__/scripts/removeDemo.test.ts"
+  ]
+ },
+ {
+  "id": "rd-end-wo-start",
+  "file": "scripts/remove-demo.js",
+  "from": "      if (block !== end[1])\n        throw new Error(`${file}: @demo ${end[1]}-block end without start`);",
+  "to": "",
+  "tests": [
+   "__tests__/scripts/removeDemo.test.ts"
+  ]
+ },
+ {
+  "id": "cd-json",
+  "file": "scripts/check-docs.js",
+  "from": "              report(\n                file,\n                fence.line,\n                `JSON block does not parse: ${error.message}`\n              );",
+  "to": "",
+  "tests": [
+   "__tests__/scripts/checkDocs.test.ts"
+  ]
+ },
+ {
+  "id": "cd-anchor-self",
+  "file": "scripts/check-docs.js",
+  "from": "            report(file, lineNo, `no heading for ${target}`);\n          }\n          continue;",
+  "to": "          }\n          continue;",
+  "tests": [
+   "__tests__/scripts/checkDocs.test.ts"
+  ]
+ },
+ {
+  "id": "cd-anchor-other",
+  "file": "scripts/check-docs.js",
+  "from": "          if (!hasHeading(resolved, anchor)) {\n            report(file, lineNo, `no heading for ${target}`);\n          }",
+  "to": "",
+  "tests": [
+   "__tests__/scripts/checkDocs.test.ts"
+  ]
+ },
+ {
+  "id": "cd-tsc-unmatched",
+  "file": "scripts/check-docs.js",
+  "from": "      if (raw.trim()) problems.push(`tsc: ${raw.trim()}`);",
+  "to": "",
+  "tests": [
+   "__tests__/scripts/checkDocs.test.ts"
+  ]
+ },
+ {
+  "id": "cd-lint-fail-silent",
+  "file": "scripts/check-docs.js",
+  "from": "  if (run.status !== 0) return [`eslint did not run: ${run.stderr}`];",
+  "to": "  if (run.status !== 0) return [];",
+  "tests": [
+   "__tests__/scripts/checkDocs.test.ts"
+  ]
+ },
+ {
+  "id": "cd-requires-skip-all",
+  "file": "scripts/check-docs.js",
+  "from": "          const missing = fence.requires.filter(pkg => !isInstalled(pkg));",
+  "to": "          const missing = fence.requires;",
+  "tests": [
+   "__tests__/scripts/checkDocs.test.ts"
+  ]
+ },
+ {
+  "id": "cd-tsx-skip",
+  "file": "scripts/check-docs.js",
+  "from": "} else if (fence.lang === 'ts' || fence.lang === 'tsx') {",
+  "to": "} else if (fence.lang === 'ts') {",
+  "tests": [
+   "__tests__/scripts/checkDocs.test.ts"
+  ]
+ },
+ {
+  "id": "cd-dup-anchor",
+  "file": "scripts/check-docs.js",
+  "from": "    anchors.add(n === 0 ? base : `${base}-${n}`);",
+  "to": "    anchors.add(base);",
+  "tests": [
+   "__tests__/scripts/checkDocs.test.ts"
+  ]
+ },
+ {
+  "id": "ip-remove-demo-fail",
+  "file": "scripts/init-project.js",
+  "from": "  if (result.status === 2) return false;\n  throw new Error('remove-demo failed');",
+  "to": "  return result.status === 2 ? false : true;",
+  "tests": [
+   "__tests__/scripts/initProject.test.ts"
+  ]
+ }
+]

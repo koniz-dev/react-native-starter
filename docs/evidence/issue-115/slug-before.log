@@ -1,0 +1,4 @@
+    ✕ checks every link form, typescript and ~~~ fences, inline-code anchors, and open fences (25619 ms)
+    Expected pattern: not /forms%20ok|forms ok|#forms\b|Markdown, not code|Footnote|setext|draft|see-expo/
+    docs/forms.md:26: no heading for #see-expo
+      162 |         /forms%20ok|forms ok|#forms\b|Markdown, not code|Footnote|setext|draft|see-expo/

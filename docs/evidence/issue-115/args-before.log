@@ -1,0 +1,5 @@
+    ✕ prints its usage on --help and refuses an unknown argument, changing nothing (5349 ms)
+  ● remove-demo on a copy of the template › prints its usage on --help and refuses an unknown argument, changing nothing
+    Expected substring: "Usage: npm run remove-demo"
+    Received string:    "Removing the demo...
+Tests:       1 failed, 8 skipped, 9 total

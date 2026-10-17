@@ -1,0 +1,22 @@
+    ✓ fails on a high advisory that is not reviewed (3 ms)
+    ✓ passes an allowlisted advisory without a fix in range (2 ms)
+    ✓ fails once npm can fix an allowlisted advisory within the ranges (1 ms)
+    ✓ fails when an allowlist review has expired (1 ms)
+    ✓ fails when an allowlist entry has reviewBy undefined, not a YYYY-MM-DD date (1 ms)
+    ✓ fails when an allowlist entry has reviewBy "2027-1-9", not a YYYY-MM-DD date
+    ✓ fails when an allowlist entry has reviewBy "2027/01/09", not a YYYY-MM-DD date
+    ✓ fails when an allowlist entry has reviewBy "Jan 9 2027", not a YYYY-MM-DD date
+    ✓ fails when an allowlist entry has reviewBy "2027-02-30", not a YYYY-MM-DD date
+    ✓ fails when an advisory is re-scored above its review
+    ✓ fails when npm reports the advisory on another package
+    ✓ accepts a reviewBy at most 183 days away (9999-12-31)
+    ✓ accepts a reviewBy at most 183 days away (2027-04-14)
+    ✓ accepts a reviewBy at most 183 days away (2027-04-13) (1 ms)
+    ✓ fails when an entry has no severity, or not high or critical
+    ✓ fails when an allowlist entry has no id, package, or tracking link (1 ms)
+    ✓ lists the most severe advisories first
+    ✓ reports moderate advisories without failing (1 ms)
+    ✓ fails on an npm error instead of reporting nothing
+    ✓ fails on a report without results instead of reporting nothing (1 ms)
+    ✓ notes an allowlisted advisory that npm no longer reports
+Tests:       21 passed, 21 total

@@ -1,0 +1,23 @@
+    ✓ uses APP_BUILD_NUMBER for the iOS build number and Android version code (4 ms)
+    ✓ rejects an unknown variant or an invalid build number (5 ms)
+    ✕ rejects the build number "1e3", which Number() would read (2 ms)
+    ✕ rejects the build number "0x10", which Number() would read
+    ✕ rejects the build number " 42 ", which Number() would read
+    ✕ rejects the build number "4.0", which Number() would read
+    ✕ rejects the build number "2100000001", which Number() would read (1 ms)
+  ● app.config.ts variants › rejects the build number "1e3", which Number() would read
+    Expected pattern: /APP_BUILD_NUMBER/
+    Received function did not throw
+  ● app.config.ts variants › rejects the build number "0x10", which Number() would read
+    Expected pattern: /APP_BUILD_NUMBER/
+    Received function did not throw
+  ● app.config.ts variants › rejects the build number " 42 ", which Number() would read
+    Expected pattern: /APP_BUILD_NUMBER/
+    Received function did not throw
+  ● app.config.ts variants › rejects the build number "4.0", which Number() would read
+    Expected pattern: /APP_BUILD_NUMBER/
+    Received function did not throw
+  ● app.config.ts variants › rejects the build number "2100000001", which Number() would read
+    Expected pattern: /APP_BUILD_NUMBER/
+    Received function did not throw
+Tests:       5 failed, 8 skipped, 2 passed, 15 total

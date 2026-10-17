@@ -1,0 +1,60 @@
+      ✓ writes only messages at or above the minimum level (28 ms)
+      ✓ writes every level in development (4 ms)
+      ✓ writes nothing to the console when silent (2 ms)
+      ✓ reads the settings on every call (1 ms)
+      ✓ uses the configured level from shared/config/env.ts (1 ms)
+      ✓ a client failure is logged with logger.info (15 ms)
+      ✓ a server failure is logged with logger.info (3 ms)
+      ✓ a unauthorized failure is logged with logger.info (3 ms)
+      ✓ a network failure is logged with logger.warn (5 ms)
+      ✓ a timeout failure is logged with logger.warn (5 ms)
+      ✓ a unknown failure is logged with logger.warn (4 ms)
+      ✓ a canceled failure is logged with logger.debug (3 ms)
+      ✓ a client failure is shown in development: true, preview: true, production: false (1 ms)
+      ✓ a server failure is shown in development: true, preview: true, production: false
+      ✓ a unauthorized failure is shown in development: true, preview: true, production: false (1 ms)
+      ✓ a network failure is shown in development: true, preview: true, production: true (1 ms)
+      ✓ a timeout failure is shown in development: true, preview: true, production: true (1 ms)
+      ✓ a unknown failure is shown in development: true, preview: true, production: true (1 ms)
+      ✓ a canceled failure is shown in development: true, preview: false, production: false (1 ms)
+      ✓ reports an Error with the message and redacted context (1 ms)
+      ✓ reports a message when there is no Error (1 ms)
+      ✓ reports a thrown non-Error value as a message with the value
+      ✓ does not forward warnings (1 ms)
+      ✓ also forwards in development (1 ms)
+      ✓ setErrorReporter registers a provider (1 ms)
+      ✓ keeps working when the reporter throws (1 ms)
+      ✓ the default reporter writes one console line in development builds (1 ms)
+      ✓ the default reporter writes nothing in release builds, so silent is silent (1 ms)
+      ✓ sends an ApiError without its response body as an own enumerable field (1 ms)
+      ✓ never throws on a context it cannot read (2 ms)
+      ✓ always redacts auth headers, cookies, tokens, and passwords (1 ms)
+      ✓ redacts credential
+      ✓ redacts idCredential
+      ✓ redacts pin (1 ms)
+      ✓ redacts totp
+      ✓ redacts mfaCode
+      ✓ redacts refresh (1 ms)
+      ✓ redacts code_verifier (2 ms)
+      ✓ redacts accessKeyId (15 ms)
+      ✓ redacts access_key (3 ms)
+      ✓ redacts cvv (1 ms)
+      ✓ redacts cvc (1 ms)
+      ✓ redacts signature
+      ✓ redacts auth
+      ✓ redacts x_auth (1 ms)
+      ✓ redacts x-auth-token
+      ✓ redacts authenticator (1 ms)
+      ✓ redacts pwd (1 ms)
+      ✓ redacts passwd (1 ms)
+      ✓ redacts apiKey (1 ms)
+      ✓ redacts api_key
+      ✓ redacts otpCode (1 ms)
+      ✓ redacts otp_code
+      ✓ redacts userOtp
+      ✓ redacts otpcode
+      ✓ redacts hotp (1 ms)
+      ✓ redacts authCode
+      ✓ redacts authcode (1 ms)
+      ✓ redacts basic_auth
+      ✓ keeps rootPath, an ordinary key that contains a secret word (1 ms)

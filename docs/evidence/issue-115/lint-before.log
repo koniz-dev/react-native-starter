@@ -1,0 +1,57 @@
+    ✓ rejects shared/ (4 ms)
+    ✓ rejects shared/, relatively (1 ms)
+    ✓ rejects shared/ to a route
+    ✓ rejects a feature (1 ms)
+    ✓ rejects a feature, relatively (1 ms)
+    ✓ rejects a feature to a route
+    ✓ rejects a relative path out of the module (1 ms)
+    ✓ rejects a dynamic import
+    ✓ rejects its own feature through @/ (1 ms)
+    ✕ rejects a feature through @/ with .. (5 ms)
+    ✓ allows the composition root
+    ✓ allows a relative path in the feature (1 ms)
+    ✓ allows shared/ through @/
+    ✓ allows a relative path in the area (1 ms)
+    ✓ allows a package
+    ✓ rejects a string in features/home/X.tsx (3 ms)
+    ✓ rejects a string in app/x.tsx
+    ✓ rejects an expression in features/home/X.tsx (1 ms)
+    ✓ rejects an expression in app/x.tsx
+    ✓ rejects a conditional in features/home/X.tsx (1 ms)
+    ✓ rejects a conditional in app/x.tsx
+    ✓ rejects a template literal in features/home/X.tsx (1 ms)
+    ✓ rejects a template literal in app/x.tsx
+    ✓ rejects Paper's iconColor in features/home/X.tsx
+    ✓ rejects Paper's iconColor in app/x.tsx (1 ms)
+    ✓ rejects a color name in features/home/X.tsx
+    ✓ rejects a color name in app/x.tsx
+    ✓ rejects a list of colors in features/home/X.tsx (1 ms)
+    ✓ rejects a list of colors in app/x.tsx (1 ms)
+    ✓ rejects a navigator option in features/home/X.tsx
+    ✓ rejects a navigator option in app/x.tsx (1 ms)
+    ✓ rejects a color constant
+    ✓ allows transparent
+    ✓ allows a string passed to a function
+    ✓ allows the palette in shared/ui/theme.ts
+    ✓ allows a theme color, and still rejects default exports (1 ms)
+    ✓ rejects process.env
+    ✕ rejects globalThis.process.env (1 ms)
+    ✓ allows require() of an image, font, or media file (1 ms)
+    ✓ rejects require() of a module (1 ms)
+    ✓ rejects console and any
+    ✓ makes floating and misused promises errors (8265 ms)
+  ● lint: imports follow the dependency direction › rejects a feature through @/ with ..
+    - Expected  - 3
+    + Received  + 1
+    - Array [
+    -   StringMatching /^project\/import-boundaries: /,
+    - ]
+    + Array []
+  ● lint: environment values come from shared/config/env.ts › rejects globalThis.process.env
+    - Expected  - 3
+    + Received  + 1
+    - Array [
+    -   StringMatching /^no-restricted-properties: /,
+    - ]
+    + Array []
+Tests:       2 failed, 40 passed, 42 total

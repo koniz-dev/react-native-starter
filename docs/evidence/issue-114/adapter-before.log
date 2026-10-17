@@ -1,0 +1,13 @@
+    ✕ keeps the session when the refresh token cannot be read (a locked Keychain) (81 ms)
+    ✕ keeps the session when the refresh token cannot be stored (a locked Keychain) (108 ms)
+    ✕ leaves the next session's refresh token alone when it signs in while logout reads the token (11 ms)
+  ● the documented AuthAdapter against a backend of another shape › keeps the session when the refresh token cannot be read (a locked Keychain)
+    Expected number of calls: 0
+    Received number of calls: 1
+  ● the documented AuthAdapter against a backend of another shape › keeps the session when the refresh token cannot be stored (a locked Keychain)
+    Expected number of calls: 0
+    Received number of calls: 1
+  ● the documented AuthAdapter against a backend of another shape › leaves the next session's refresh token alone when it signs in while logout reads the token
+    Expected: "refresh-2"
+    Received: undefined
+Tests:       3 failed, 14 skipped, 17 total

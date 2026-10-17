@@ -1,0 +1,10 @@
+    ✓ lists the changes on --dry-run and changes nothing (5589 ms)
+    ✓ prints its usage on --help and refuses an unknown argument, changing nothing (1200 ms)
+    ✓ leaves no mention of the demo in the code, docs, config, or flows (32372 ms)
+    ✓ fails when a doc still names a deleted file (1292 ms)
+    ✓ removes marked blocks anywhere in the project, not only in source folders (4752 ms)
+    ✓ keeps itself and the demo, and says how to restore, when a write fails (4890 ms)
+    ✓ refuses uncommitted changes unless --force, and then never suggests discarding them (4436 ms)
+    ✓ changes nothing when Prettier can't format a result (4689 ms)
+    ✓ changes nothing when a marker is malformed, and says so without a stack trace (1297 ms)
+Tests:       9 passed, 9 total

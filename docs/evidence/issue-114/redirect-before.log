@@ -1,0 +1,6 @@
+    ✕ keeps the session when the 401 came after a redirect, which iOS follows without the token (42 ms)
+    ✓ still ends the session for a 401 at the requested URL (89 ms)
+  ● token safety › keeps the session when the 401 came after a redirect, which iOS follows without the token
+    Expected number of calls: 0
+    Received number of calls: 1
+Tests:       1 failed, 30 skipped, 1 passed, 32 total

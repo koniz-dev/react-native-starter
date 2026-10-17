@@ -1,0 +1,19 @@
+st-parse-leak KILLED Tests:       1 failed, 7 passed, 8 total __tests__/shared/storage/storage.test.ts
+ae-url-query KILLED Tests:       1 failed, 32 passed, 33 total __tests__/shared/http/tokenSafety.test.ts (19.694 s)
+lg-error-extras KILLED Tests:       2 failed, 88 passed, 90 total __tests__/shared/lib/logger.test.ts
+rd-import-check KILLED Tests:       1 failed, 12 passed, 13 total __tests__/scripts/removeDemo.test.ts (26.737 s)
+rd-unhandled-marker KILLED Tests:       1 failed, 12 passed, 13 total __tests__/scripts/removeDemo.test.ts (23.48 s)
+rd-nested KILLED Tests:       1 failed, 12 passed, 13 total __tests__/scripts/removeDemo.test.ts (28.306 s)
+rd-end-wo-start KILLED Tests:       1 failed, 12 passed, 13 total __tests__/scripts/removeDemo.test.ts (31.333 s)
+cd-json KILLED Tests:       1 failed, 2 passed, 3 total __tests__/scripts/checkDocs.test.ts (16.675 s)
+cd-anchor-self KILLED Tests:       1 failed, 2 passed, 3 total __tests__/scripts/checkDocs.test.ts (19.593 s)
+cd-anchor-other KILLED Tests:       1 failed, 2 passed, 3 total __tests__/scripts/checkDocs.test.ts (16.464 s)
+cd-tsc-unmatched KILLED Tests:       1 failed, 2 passed, 3 total __tests__/scripts/checkDocs.test.ts (17.45 s)
+cd-lint-fail-silent KILLED Tests:       1 failed, 2 passed, 3 total __tests__/scripts/checkDocs.test.ts (18.84 s)
+cd-requires-skip-all KILLED Tests:       1 failed, 2 passed, 3 total __tests__/scripts/checkDocs.test.ts (18.513 s)
+cd-tsx-skip KILLED Tests:       1 failed, 2 passed, 3 total __tests__/scripts/checkDocs.test.ts (12.639 s)
+cd-dup-anchor KILLED Tests:       1 failed, 2 passed, 3 total __tests__/scripts/checkDocs.test.ts (15.291 s)
+ip-remove-demo-fail KILLED Tests:       2 failed, 60 passed, 62 total __tests__/scripts/initProject.test.ts (31.829 s)
+
+[exited with code 0]
+ip-tsstring KILLED (initProject.test.ts, after the tsString test)

@@ -1,0 +1,3 @@
+  ✓ keeps PostHog's anonymous id on a launch that starts signed out (150 ms)
+  ✓ identifies a restored user, and resets once on sign-out (112 ms)
+Tests:       2 passed, 2 total

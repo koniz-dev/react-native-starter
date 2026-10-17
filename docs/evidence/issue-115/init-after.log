@@ -1,0 +1,60 @@
+    ✓ accepts slug "acme-notes" (5 ms)
+    ✓ accepts slug "notes2"
+    ✓ accepts scheme "acmenotes" (1 ms)
+    ✓ accepts scheme "acme-notes.app" (1 ms)
+    ✓ accepts bundleId "com.acme.notes" (1 ms)
+    ✓ accepts bundleId "io.acme.notesApp2" (1 ms)
+    ✓ accepts name "Acme Notes"
+    ✓ accepts name "Bob's Ghi Chú" (1 ms)
+    ✓ accepts owner "Acme Inc." (1 ms)
+    ✓ rejects slug "Acme-Notes" (4 ms)
+    ✓ rejects slug "acme_notes"
+    ✓ rejects slug "-acme"
+    ✓ rejects slug "acme--notes" (1 ms)
+    ✓ rejects scheme "AcmeNotes" (1 ms)
+    ✓ rejects scheme "1acme" (1 ms)
+    ✓ rejects scheme "acme notes" (1 ms)
+    ✓ rejects bundleId "acme" (3 ms)
+    ✓ rejects bundleId "com.acme-corp.notes"
+    ✓ rejects bundleId "com.1acme.notes"
+    ✓ rejects bundleId "com.acme."
+    ✓ rejects bundleId "com.example.notes"
+    ✓ rejects bundleId "com.example" (1 ms)
+    ✓ rejects bundleId "io.acme.notes_app" (3 ms)
+    ✓ rejects bundleId "com.acme.new" (2 ms)
+    ✓ rejects bundleId "com.class.notes"
+    ✓ rejects scheme "exp" (1 ms)
+    ✓ rejects scheme "exps"
+    ✓ rejects scheme "https"
+    ✓ rejects scheme "http" (1 ms)
+    ✓ rejects scheme "file"
+    ✓ rejects name "" (1 ms)
+    ✓ rejects name " Acme" (1 ms)
+    ✓ rejects name "Acme | Notes"
+    ✓ rejects name "Acme
+    ✓ rejects owner ""
+    ✓ rejects name "Acme‮Notes" (2 ms)
+    ✓ rejects name "Acme​Notes" (1 ms)
+    ✓ rejects owner "Acme‮Inc."
+    ✓ rejects owner " Acme Inc. "
+    ✓ rejects scheme "exp+acme"
+    ✓ rejects slug "react" (1 ms)
+    ✓ rejects slug "expo" (1 ms)
+    ✓ parses flags and options (1 ms)
+    ✓ rejects unknown arguments, missing values, and conflicting flags (122 ms)
+    ✓ derives a slug and quotes strings the way Prettier does (3 ms)
+    ✓ writes the name into the README as literal Markdown text (2 ms)
+    ✓ lists the changes on --dry-run and changes nothing (7686 ms)
+    ✓ refuses invalid input without a terminal (1333 ms)
+    ✓ names the empty app name as the problem (1232 ms)
+    ✓ writes $ in the name and owner literally (3211 ms)
+    ✓ on --force, changes the old scheme only where it is the scheme (5405 ms)
+    ✓ on --force after the APP block was edited, replaces the template identity too (4376 ms)
+    ✓ refuses a dirty working tree unless --force (1358 ms)
+    ✓ sets the identity and deletes itself (12946 ms)
+    ✓ keeps the recipes with --keep-recipes, without their markers (2940 ms)
+    ✓ after a failure on uncommitted changes, never suggests discarding them (3065 ms)
+    ✓ after a failure on a clean tree, prints a restore command for the project root (3123 ms)
+    ✓ changes nothing, and keeps itself, when Prettier cannot format a result (1808 ms)
+    ✓ says nothing was changed when remove-demo stops before changing anything (1425 ms)
+    ✓ without git, says it cannot check or undo, and never suggests git (2767 ms)

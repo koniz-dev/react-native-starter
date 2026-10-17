@@ -1,0 +1,16 @@
+    ✓ APP_VARIANT=undefined (5 ms)
+    ✓ APP_VARIANT=development (1 ms)
+    ✓ APP_VARIANT=preview (1 ms)
+    ✓ APP_VARIANT=production
+    ✓ gives each variant a distinct bundle ID and scheme (1 ms)
+    ✓ uses APP_BUILD_NUMBER for the iOS build number and Android version code (1 ms)
+    ✓ rejects an unknown variant or an invalid build number (3 ms)
+    ✓ rejects the build number "1e3", which Number() would read (1 ms)
+    ✓ rejects the build number "0x10", which Number() would read (1 ms)
+    ✓ rejects the build number " 42 ", which Number() would read (1 ms)
+    ✓ rejects the build number "4.0", which Number() would read (1 ms)
+    ✓ rejects the build number "2100000001", which Number() would read
+    ✓ declares only exempt encryption, so iOS builds need no compliance answer
+    ✓ blocks the permissions its libraries add that the app does not use, and Face ID (2 ms)
+    ✓ configures the splash screen with light and dark backgrounds (1 ms)
+Tests:       15 passed, 15 total

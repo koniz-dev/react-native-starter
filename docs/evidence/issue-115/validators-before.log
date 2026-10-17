@@ -1,0 +1,60 @@
+    ✓ accepts slug "acme-notes" (6 ms)
+    ✓ accepts slug "notes2" (1 ms)
+    ✓ accepts scheme "acmenotes" (1 ms)
+    ✓ accepts scheme "acme-notes.app"
+    ✓ accepts bundleId "com.acme.notes" (1 ms)
+    ✓ accepts bundleId "io.acme.notesApp2" (1 ms)
+    ✓ accepts name "Acme Notes" (2 ms)
+    ✓ accepts name "Bob's Ghi Chú" (1 ms)
+    ✓ accepts owner "Acme Inc." (1 ms)
+    ✓ rejects slug "Acme-Notes" (2 ms)
+    ✓ rejects slug "acme_notes"
+    ✓ rejects slug "-acme" (1 ms)
+    ✓ rejects slug "acme--notes"
+    ✓ rejects scheme "AcmeNotes" (2 ms)
+    ✓ rejects scheme "1acme" (1 ms)
+    ✓ rejects scheme "acme notes"
+    ✓ rejects bundleId "acme"
+    ✓ rejects bundleId "com.acme-corp.notes"
+    ✓ rejects bundleId "com.1acme.notes" (1 ms)
+    ✓ rejects bundleId "com.acme."
+    ✓ rejects bundleId "com.example.notes"
+    ✓ rejects bundleId "com.example"
+    ✓ rejects bundleId "io.acme.notes_app" (1 ms)
+    ✓ rejects bundleId "com.acme.new" (1 ms)
+    ✓ rejects bundleId "com.class.notes" (1 ms)
+    ✓ rejects scheme "exp" (1 ms)
+    ✓ rejects scheme "exps"
+    ✓ rejects scheme "https" (1 ms)
+    ✓ rejects scheme "http"
+    ✓ rejects scheme "file" (1 ms)
+    ✓ rejects name ""
+    ✓ rejects name " Acme" (1 ms)
+    ✓ rejects name "Acme | Notes"
+    ✓ rejects name "Acme
+    ✓ rejects owner ""
+    ✕ rejects name "Acme‮Notes" (4 ms)
+    ✕ rejects name "Acme​Notes" (63 ms)
+    ✕ rejects owner "Acme‮Inc." (1 ms)
+    ✕ rejects owner " Acme Inc. " (1 ms)
+    ✕ rejects scheme "exp+acme" (1 ms)
+    ✓ rejects slug "react" (7 ms)
+    ✓ rejects slug "expo" (3 ms)
+    ✓ parses flags and options (2 ms)
+    ✓ rejects unknown arguments, missing values, and conflicting flags (81 ms)
+    ✓ derives a slug and quotes strings the way Prettier does (2 ms)
+  ● init-project input › rejects name "Acme‮Notes"
+    Expected: Any<String>
+    Received: null
+  ● init-project input › rejects name "Acme​Notes"
+    Expected: Any<String>
+    Received: null
+  ● init-project input › rejects owner "Acme‮Inc."
+    Expected: Any<String>
+    Received: null
+  ● init-project input › rejects owner " Acme Inc. "
+    Expected: Any<String>
+    Received: null
+  ● init-project input › rejects scheme "exp+acme"
+    Expected: Any<String>
+    Received: null

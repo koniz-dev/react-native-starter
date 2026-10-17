@@ -1,0 +1,5 @@
+    ✕ rejects a key the real module rejects, as it would on a device (6 ms)
+    ✓ stores, reads, and deletes a valid key (8 ms)
+  ● the expo-secure-store mock › rejects a key the real module rejects, as it would on a device
+    Received promise resolved instead of rejected
+Tests:       1 failed, 1 passed, 2 total

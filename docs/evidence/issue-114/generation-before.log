@@ -1,0 +1,6 @@
+    ✕ doesn't replay a request as the next user when the session changed while its token was read (177 ms)
+  ● work that outlives its session › doesn't replay a request as the next user when the session changed while its token was read
+    - Expected  - 0
+    + Received  + 1
+    +   "Bearer token-B",
+Tests:       1 failed, 32 skipped, 33 total
