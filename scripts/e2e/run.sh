@@ -85,6 +85,8 @@ current_mode() {
   fi
 }
 WAS_MODE="$(current_mode)"
+# Unreadable: assume light, the mode the flows start in.
+WAS_MODE="${WAS_MODE:-no}"
 
 # A server already on either port (your own `npm start`, an earlier run) would
 # answer the readiness checks below in place of this run's, without the e2e
@@ -112,12 +114,22 @@ API_URL="${E2E_API_URL:-$MOCK_API_URL}"
 AUTH_API_URL="${E2E_AUTH_API_URL:-$API_URL}"
 APP_ENV=(EXPO_PUBLIC_API_URL="$API_URL" EXPO_PUBLIC_AUTH_API_URL="$AUTH_API_URL")
 
+# Whether a URL is this run's mock: localhost or 127.0.0.1 on MOCK_PORT.
+is_mock_url() {
+  local authority="${1#http://}"
+  authority="${authority%%/*}"
+  case "$authority" in
+    "localhost:$MOCK_PORT" | "127.0.0.1:$MOCK_PORT") return 0 ;;
+  esac
+  return 1
+}
+
 if [ -n "${E2E_BACKEND_CMD:-}" ]; then
   # A server already answering there (an earlier run's) would pass the
   # readiness check below in place of the one this run starts.
   for url in "$API_URL" "$AUTH_API_URL"; do
     # This run's e2e mock (the default for a URL you didn't set) answers too.
-    [ "$url" = "$MOCK_API_URL" ] && continue
+    is_mock_url "$url" && continue
     if curl -s -o /dev/null --max-time 2 "$url"; then
       echo "$url already answers; stop that server before E2E_BACKEND_CMD starts yours" >&2
       exit 1
