@@ -194,7 +194,7 @@ describe('token safety', () => {
     expect(expired).not.toHaveBeenCalled();
     expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('t1');
     expect(logger.warn).toHaveBeenCalledWith(
-      expect.stringContaining('redirected'),
+      expect.stringContaining('after a redirect that drops the token'),
       expect.anything()
     );
   });
@@ -253,6 +253,46 @@ describe('token safety', () => {
 
     await client.get('https://bücher.example/notes');
     expect(refresh).toHaveBeenCalledTimes(1);
+  });
+
+  it.each(['android', 'web'] as const)(
+    'on %s, keeps the session for a 401 from another origin after a redirect (the token was dropped)',
+    async os => {
+      jest.replaceProperty(Platform, 'OS', os);
+      await signIn('t1');
+      const refresh = jest.fn(async () => 't2');
+      setRefreshTokenHandler(refresh);
+      const client = authenticatedClient(async config => {
+        const error = httpError(config, 401);
+        error.request = { responseURL: 'https://api2.example.org/notes' };
+        throw error;
+      });
+
+      await client.get('/notes').catch(() => undefined);
+      expect(refresh).not.toHaveBeenCalled();
+      expect(expired).not.toHaveBeenCalled();
+    }
+  );
+
+  it('on iOS, sees a redirect from an IDN host to an unrelated host', async () => {
+    jest.replaceProperty(Platform, 'OS', 'ios');
+    const config = getConfig();
+    jest.spyOn(env, 'getConfig').mockReturnValue({
+      ...config,
+      apiTrustedOrigins: ['https://bücher.example'],
+    });
+    await signIn('t1');
+    const refresh = jest.fn(async () => 't2');
+    setRefreshTokenHandler(refresh);
+    const client = authenticatedClient(async requestConfig => {
+      const error = httpError(requestConfig, 401);
+      error.request = { responseURL: 'https://elsewhere.example/notes' };
+      throw error;
+    });
+
+    await client.get('https://bücher.example/notes').catch(() => undefined);
+    expect(refresh).not.toHaveBeenCalled();
+    expect(expired).not.toHaveBeenCalled();
   });
 
   it('on Android, ends the session for a 401 after a same-origin redirect (the token was sent)', async () => {

@@ -169,14 +169,13 @@ A 401 on the auth backend's `public` client (a wrong password), on a request
 sent without the stored token, or on a request to an untrusted origin does
 not touch the session.
 
-On iOS, neither does a 401 for a request that was redirected (its response
-came from another URL than the one requested): iOS drops the
-`Authorization` header when it follows a redirect, even to the same origin,
-so the server never saw the token. The request fails and `API <method>
-<path> got a 401 after it was redirected` is logged as a warning. Android
-and the web keep the header on a same-origin redirect, so there such a 401
-is handled like any other. Either way, authenticated endpoints should not
-redirect: request the final URL (for example with its trailing slash).
+Neither does a 401 for a request that a redirect stripped of its token.
+Every platform drops the `Authorization` header when a redirect goes to
+another origin, and iOS also drops it on a same-origin redirect (Android and
+the web keep it there, so such a 401 is handled like any other). The request
+fails, and `API <method> <path> got a 401 after a redirect that drops the token` is logged
+as a warning. Either way, authenticated endpoints should not redirect:
+request the final URL (for example with its trailing slash).
 
 A refresh or a profile load (`fetchProfile`) that finishes after the user
 signed out is discarded, and a retry whose session ended before it was sent

@@ -169,24 +169,29 @@ function pathOf(url: string): string {
   return `/${segments.join('/')}`;
 }
 
-/** An internationalized host, which the platform may report as punycode. */
-const isIdn = (origin: string) => /[^ -~]|xn--/i.test(origin);
+/** A host with non-ASCII characters, which the platform may report as punycode. */
+const isUnicodeHost = (origin: string) => /[^ -~]/.test(origin);
 
 /**
- * Whether an iOS request followed a redirect: its response came from another
- * URL than the one requested. iOS drops the Authorization header when it
- * follows a redirect, even to the same origin, so such a 401 says nothing
- * about the token. Android and the web keep the header on a same-origin
- * redirect (and a cross-origin one never had it), so their 401s count.
+ * Whether a request followed a redirect that dropped the Authorization
+ * header, so its 401 says nothing about the token. Every platform drops it
+ * when a redirect changes origin. iOS also drops it on a same-origin
+ * redirect, so there the path is compared too (Android and the web keep it,
+ * and their same-origin 401s count).
  */
 function followedRedirect(error: AxiosError, requested: string): boolean {
-  if (Platform.OS !== 'ios') return false;
   const final = (error.request as { responseURL?: unknown } | undefined)
     ?.responseURL;
   if (typeof final !== 'string' || !final) return false;
   const [from, to] = [getOrigin(requested), getOrigin(final)];
   if (!from || !to) return false;
-  if (from !== to && !isIdn(from) && !isIdn(to)) return true;
+  // An internationalized host comes back in its punycode (xn--) form, which
+  // can't be matched to it here: only that pair counts as the same origin.
+  const idnPair =
+    (isUnicodeHost(from) && to.includes('xn--')) ||
+    (isUnicodeHost(to) && from.includes('xn--'));
+  if (from !== to && !idnPair) return true;
+  if (Platform.OS !== 'ios') return false;
   return pathOf(final) !== pathOf(requested);
 }
 
@@ -272,7 +277,7 @@ export function createHttpClient(options: HttpClientOptions): AxiosInstance {
     if (!sameSession()) return fail(error, config);
     if (followedRedirect(error, client.getUri(config))) {
       logger.warn(
-        `API ${describe(config)} got a 401 after it was redirected; the session is kept (iOS drops the token on redirects)`,
+        `API ${describe(config)} got a 401 after a redirect that drops the token; the session is kept`,
         { status: 401 }
       );
       return fail(error, config);
