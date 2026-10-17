@@ -387,6 +387,43 @@ describe('the documented AuthAdapter against a backend of another shape', () => 
     expect(backend.state.validRefresh).toEqual(new Set(['refresh-2']));
   });
 
+  it('keeps no refresh token when a refresh stores its rotated token after logout cleared', async () => {
+    await signIn();
+    backend.state.validAccess.clear();
+    const setItem = jest.mocked(SecureStore.setItemAsync);
+    const real = setItem.getMockImplementation()!;
+    let releaseWrite: (() => void) | undefined;
+    setItem.mockImplementation((async (key: string, value: string) => {
+      if (key === REFRESH_KEY && value === 'refresh-2') {
+        // The refresh passed its checks; its write is slow...
+        await new Promise<void>(resolve => (releaseWrite = resolve));
+      }
+      return real(key, value);
+    }) as never);
+
+    const profile = authService.fetchProfile().catch((e: unknown) => e);
+    for (let i = 0; i < 20 && !releaseWrite; i++) {
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
+    // ...and meanwhile the user signs out completely.
+    await authService.logout();
+    releaseWrite!();
+    await profile;
+
+    expect(secureStore.get(REFRESH_KEY)).toBeUndefined();
+    expect(backend.state.validRefresh.size).toBe(0);
+  });
+
+  it('signs out, revoking nothing, when the Keychain is locked at logout', async () => {
+    await signIn();
+    jest
+      .mocked(SecureStore.getItemAsync)
+      .mockRejectedValueOnce(new Error('User interaction is not allowed.'));
+
+    await expect(authService.logout()).resolves.toBeUndefined();
+    expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
+  });
+
   it('revokes the refresh token on logout', async () => {
     await signIn();
 
@@ -476,8 +513,9 @@ describe('the documented AuthAdapter against a backend of another shape', () => 
     const loggingOut = authService.logout();
     await new Promise(resolve => setTimeout(resolve, 0));
     answerRefresh();
-    await profile;
+    // The refresh sees the sign-out and revokes its rotated token too.
     answerRevoke();
+    await profile;
     await loggingOut;
 
     expect(secureStore.get(REFRESH_KEY)).toBeUndefined();

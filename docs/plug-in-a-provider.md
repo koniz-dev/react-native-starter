@@ -42,7 +42,10 @@ doesn't break navigation. Call `track` for events, and `identify` when the signe
 changes. The session is the place to watch: a hook that calls `identify` with
 the user's id on sign-in (and on a restored session), and `identify(null)` on
 sign-out, but not on a launch that starts signed out: providers such as
-PostHog start a new anonymous user on each clear. The session provider does the same for the error reporter.
+PostHog start a new anonymous user on each clear. (If a session ends while the
+app isn't running, such as a Keychain the app couldn't read at launch, the
+provider keeps the last user until the next sign-in or sign-out.) The
+session provider does the same for the error reporter.
 
 ```ts
 // features/auth/hooks/useAnalyticsIdentity.ts

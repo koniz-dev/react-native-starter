@@ -133,9 +133,10 @@ export const refreshTokens =
     ? createMemoryTokenStore()
     : createSecureTokenStore('refresh_token');
 
-// Counts sign-ins, so a slow logout can tell whether the user signed in
-// again while it ran.
+// Counts sign-ins and sign-outs, so work that outlives them (a slow logout,
+// a refresh) can tell that the session changed while it ran.
 let signIns = 0;
+let signOuts = 0;
 
 // The Keychain can't be read or written while the device is locked (a
 // request finishing in the background): that says nothing about the
@@ -194,6 +195,7 @@ export const myBackendAuthAdapter: AuthAdapter = {
   // Throwing a transient error (network, timeout, server, canceled, 408, or
   // 429) keeps the session; any other error signs the user out.
   refresh: async ({ public: http }) => {
+    const signOutsAtStart = signOuts;
     const refreshToken = await refreshTokens.get().catch(storageFailed);
     if (!refreshToken) return null;
     try {
@@ -217,6 +219,16 @@ export const myBackendAuthAdapter: AuthAdapter = {
       // If it can't be stored, still use the new access token: the user
       // signs in again when it expires, not now.
       await refreshTokens.set(tokens.refresh_token).catch(() => undefined);
+      // A sign-out ran while it was stored: revoke and drop it.
+      if (signOuts !== signOutsAtStart) {
+        await http
+          .post('/sessions/revoke', { refresh_token: tokens.refresh_token })
+          .catch(() => undefined);
+        if ((await refreshTokens.get()) === tokens.refresh_token) {
+          await refreshTokens.clear();
+        }
+        return null;
+      }
       return tokens.access_token;
     } catch (error) {
       const apiError = toApiError(error);
@@ -233,6 +245,7 @@ export const myBackendAuthAdapter: AuthAdapter = {
   // throws, the user is signed out anyway. The refresh token is the
   // credential, so this works after the access token has expired.
   logout: async ({ public: http }) => {
+    signOuts += 1;
     const signInsAtStart = signIns;
     const refreshToken = await refreshTokens.get();
     try {
