@@ -1,0 +1,21 @@
+FAIL __tests__/docs/testingSnippets.test.tsx (5.504 s)
+  docs/testing.md: a seam or adapter in a full-app test
+    ✕ reports a screen view for each route (1510 ms)
+
+  ● docs/testing.md: a seam or adapter in a full-app test › reports a screen view for each route
+
+    expect(jest.fn()).toHaveBeenLastCalledWith(...expected)
+
+    Expected: "/"
+
+    Number of calls: 0
+
+      at Object.toHaveBeenLastCalledWith (../../../../private/var/folders/pt/95h6qj2s155fz6f9vsk5gfkw0000gn/T/testing-doc-ReK2DL/analyticsProvider.test.tsx:23:27)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        5.773 s
+Ran all test suites matching /__tests__\/docs/i.

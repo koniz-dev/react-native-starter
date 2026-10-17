@@ -1,0 +1,111 @@
+  console.warn
+    API POST /sessions/refresh failed: network
+
+      205 |     const args = [message, ...details.filter(item => item !== undefined)];
+      206 |     if (level === 'error') console.error(...args);
+    > 207 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      208 |     else if (level === 'info') console.info(...args);
+      209 |     else console.debug(...args);
+      210 |   };
+
+      at warn (shared/lib/logger.ts:207:40)
+      at Object.write [as warn] (shared/lib/logger.ts:218:33)
+      at fail (shared/http/httpClient.ts:255:50)
+      at fail (shared/http/httpClient.ts:272:14)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12
+      at apply (shared/http/httpClient.ts:335:4)
+      at Axios.request (node_modules/axios/dist/browser/axios.cjs:5245:14)
+
+  console.warn
+    API GET /me failed: network
+
+      205 |     const args = [message, ...details.filter(item => item !== undefined)];
+      206 |     if (level === 'error') console.error(...args);
+    > 207 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      208 |     else if (level === 'info') console.info(...args);
+      209 |     else console.debug(...args);
+      210 |   };
+
+      at warn (shared/lib/logger.ts:207:40)
+      at Object.write [as warn] (shared/lib/logger.ts:218:33)
+      at fail (shared/http/httpClient.ts:255:50)
+      at fail (shared/http/httpClient.ts:317:16)
+          at Generator.throw (<anonymous>)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/@babel/runtime/helpers/asyncToGenerator.js:20:9)
+
+  console.warn
+    API POST /sessions/revoke failed: network
+
+      205 |     const args = [message, ...details.filter(item => item !== undefined)];
+      206 |     if (level === 'error') console.error(...args);
+    > 207 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      208 |     else if (level === 'info') console.info(...args);
+      209 |     else console.debug(...args);
+      210 |   };
+
+      at warn (shared/lib/logger.ts:207:40)
+      at Object.write [as warn] (shared/lib/logger.ts:218:33)
+      at fail (shared/http/httpClient.ts:255:50)
+      at fail (shared/http/httpClient.ts:272:14)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12
+      at apply (shared/http/httpClient.ts:335:4)
+      at Axios.request (node_modules/axios/dist/browser/axios.cjs:5245:14)
+
+  console.warn
+    Signing out on the auth backend failed { error: 'Network error: check your connection' }
+
+      205 |     const args = [message, ...details.filter(item => item !== undefined)];
+      206 |     if (level === 'error') console.error(...args);
+    > 207 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      208 |     else if (level === 'info') console.info(...args);
+      209 |     else console.debug(...args);
+      210 |   };
+
+      at warn (shared/lib/logger.ts:207:40)
+      at Object.write [as warn] (shared/lib/logger.ts:218:33)
+      at Object.warn (shared/session/authService.ts:203:14)
+          at Generator.throw (<anonymous>)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/@babel/runtime/helpers/asyncToGenerator.js:20:9)
+
+PASS __tests__/shared/session/realBackendAdapter.test.ts (8.581 s)
+  the documented AuthAdapter against a backend of another shape
+    ✓ signs in with a tokens-only response, loading the user from /me (34 ms)
+    ✓ shows the envelope's message for a wrong password and stores nothing (9 ms)
+    ✓ rejects a login response without the envelope with a readable message and stores nothing (6 ms)
+    ✓ rejects a login response without a refresh token with a readable message and stores nothing (2 ms)
+    ✓ rejects a user payload without the required fields (7 ms)
+    ✓ refreshes on a 401 with rotation, keeping only the newest refresh token (20 ms)
+    ✓ keeps the session with a backend that does not rotate refresh tokens (12 ms)
+    ✓ signs out and drops the refresh token when the refresh is rejected (8 ms)
+    ✓ keeps the session and the refresh token when the refresh fails offline (100 ms)
+    ✓ keeps the session when the refresh token cannot be read (a locked Keychain) (5 ms)
+    ✓ keeps the session when the refresh token cannot be stored (a locked Keychain) (4 ms)
+    ✓ leaves the next session's refresh token alone when it signs in while logout reads the token (8 ms)
+    ✓ keeps no refresh token when a refresh stores its rotated token after logout cleared (5 ms)
+    ✓ signs out and still clears the refresh token while the Keychain stays locked for reads (2 ms)
+    ✓ a refresh rejected after a sign-out + sign-in keeps the new session's refresh token (74 ms)
+    ✓ revokes the refresh token on logout (3 ms)
+    ✓ revokes the refresh token on logout after the access token expired (3 ms)
+    ✓ keeps the next session when a slow logout finishes after the user signed in again (3 ms)
+    ✓ revokes, and keeps nothing from, a refresh that finishes after logout (4 ms)
+    ✓ leaves no refresh token when a refresh rotates while logout revokes (6 ms)
+    ✓ leaves no live refresh token when a refresh starts while logout is running (193 ms)
+    ✓ signs out locally when the backend is unreachable on logout (10 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       22 passed, 22 total
+Snapshots:   0 total
+Time:        8.901 s, estimated 9 s
+Ran all test suites matching /__tests__\/shared\/session\/realBackendAdapter.test.ts/i.

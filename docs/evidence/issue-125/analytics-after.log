@@ -1,0 +1,9 @@
+PASS __tests__/docs/testingSnippets.test.tsx (5.81 s)
+  docs/testing.md: a seam or adapter in a full-app test
+    ✓ reports a screen view for each route (1172 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        5.97 s, estimated 6 s
+Ran all test suites matching /__tests__\/docs/i.

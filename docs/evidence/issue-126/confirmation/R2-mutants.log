@@ -1,0 +1,31 @@
+eb-no-dismiss KILLED Tests:       2 failed, 18 passed, 20 total __tests__/shared/ui/ErrorBoundary.test.tsx (7.354 s)
+eb-no-replace KILLED Tests:       2 failed, 18 passed, 20 total __tests__/shared/ui/ErrorBoundary.test.tsx
+eb-navigate KILLED Tests:       5 failed, 15 passed, 20 total __tests__/shared/ui/ErrorBoundary.test.tsx
+sm-desc-off KILLED Tests:       1 failed, 54 passed, 55 total __tests__/shared/http/httpClient.test.ts
+sm-desc-first KILLED Tests:       1 failed, 54 passed, 55 total __tests__/shared/http/httpClient.test.ts
+sm-desc-empty SURVIVED Tests:       100 passed, 100 total 
+ad-schema KILLED Tests:       1 failed, 22 passed, 23 total __tests__/shared/session/realBackendAdapter.test.ts
+ad-next-nofallback SURVIVED Tests:       23 passed, 23 total 
+ad-set-always SURVIVED Tests:       23 passed, 23 total 
+ad-set-never KILLED Tests:       4 failed, 19 passed, 23 total __tests__/shared/session/realBackendAdapter.test.ts
+ad-mismatch-check KILLED Tests:       1 failed, 22 passed, 23 total __tests__/shared/session/realBackendAdapter.test.ts
+ad-mismatch-revoke-old SURVIVED Tests:       23 passed, 23 total 
+ad-mismatch-revoke-off KILLED Tests:       2 failed, 21 passed, 23 total __tests__/shared/session/realBackendAdapter.test.ts
+ad-mismatch-return-off KILLED Tests:       1 failed, 22 passed, 23 total __tests__/shared/session/realBackendAdapter.test.ts
+ad-signout-revoke-old SURVIVED Tests:       23 passed, 23 total 
+ad-signout-clear-old SURVIVED Tests:       23 passed, 23 total 
+ss-value-off KILLED Tests:       1 failed, 2 passed, 3 total __tests__/testing/secureStore.test.ts
+ss-value-first SURVIVED Tests:       5 passed, 5 total 
+hc-ios-android KILLED Tests:       1 failed, 65 passed, 66 total __tests__/shared/http/tokenSafety.test.ts
+hc-ios-web KILLED Tests:       1 failed, 65 passed, 66 total __tests__/shared/http/tokenSafety.test.ts
+ip-readme-raw KILLED Tests:       1 failed, 74 passed, 75 total __tests__/scripts/initProject.test.ts (23.875 s)
+ip-md-plus KILLED Tests:       0 total __tests__/scripts/initProject.test.ts
+ip-md-hash KILLED Tests:       0 total __tests__/scripts/initProject.test.ts
+ip-md-underscore KILLED Tests:       0 total __tests__/scripts/initProject.test.ts
+rd-nogit-always KILLED Tests:       1 failed, 88 passed, 89 total __tests__/scripts/removeDemo.test.ts (29.604 s)
+rd-nogit-never KILLED Tests:       1 failed, 88 passed, 89 total __tests__/scripts/removeDemo.test.ts (29.634 s)
+rd-nogit-inverted KILLED Tests:       1 failed, 88 passed, 89 total __tests__/scripts/removeDemo.test.ts (30.241 s)
+td-nowait-1 KILLED Tests:       1 failed, 1 total __tests__/docs/testingSnippets.test.tsx
+td-nowait-2 KILLED Tests:       1 failed, 1 total __tests__/docs/testingSnippets.test.tsx
+td-wrong-route KILLED Tests:       1 failed, 1 total __tests__/docs/testingSnippets.test.tsx
+td-it-skip SURVIVED Tests:       1 skipped, 1 total 

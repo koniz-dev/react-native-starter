@@ -1,0 +1,4 @@
+    ✓ rejects a key the real module rejects, as it would on a device (36 ms)
+    ✕ rejects a value that is not a string, as the real module does (9 ms)
+    ✓ stores, reads, and deletes a valid key (1 ms)
+Tests:       1 failed, 2 passed, 3 total

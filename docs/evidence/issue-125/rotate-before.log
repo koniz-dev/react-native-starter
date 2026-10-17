@@ -1,0 +1,50 @@
+FAIL __tests__/shared/session/realBackendAdapter.test.ts (8.07 s)
+  the documented AuthAdapter against a backend of another shape
+    ✓ refreshes on a 401 with rotation, keeping only the newest refresh token (33 ms)
+    ✕ keeps the session with a backend that does not rotate refresh tokens (17 ms)
+    ○ skipped signs in with a tokens-only response, loading the user from /me
+    ○ skipped shows the envelope's message for a wrong password and stores nothing
+    ○ skipped rejects a login response without the envelope with a readable message and stores nothing
+    ○ skipped rejects a login response without a refresh token with a readable message and stores nothing
+    ○ skipped rejects a user payload without the required fields
+    ○ skipped signs out and drops the refresh token when the refresh is rejected
+    ○ skipped keeps the session and the refresh token when the refresh fails offline
+    ○ skipped keeps the session when the refresh token cannot be read (a locked Keychain)
+    ○ skipped keeps the session when the refresh token cannot be stored (a locked Keychain)
+    ○ skipped leaves the next session's refresh token alone when it signs in while logout reads the token
+    ○ skipped keeps no refresh token when a refresh stores its rotated token after logout cleared
+    ○ skipped signs out and still clears the refresh token while the Keychain stays locked for reads
+    ○ skipped a refresh rejected after a sign-out + sign-in keeps the new session's refresh token
+    ○ skipped revokes the refresh token on logout
+    ○ skipped revokes the refresh token on logout after the access token expired
+    ○ skipped keeps the next session when a slow logout finishes after the user signed in again
+    ○ skipped revokes, and keeps nothing from, a refresh that finishes after logout
+    ○ skipped leaves no refresh token when a refresh rotates while logout revokes
+    ○ skipped leaves no live refresh token when a refresh starts while logout is running
+    ○ skipped signs out locally when the backend is unreachable on logout
+
+  ● the documented AuthAdapter against a backend of another shape › keeps the session with a backend that does not rotate refresh tokens
+
+    expect(received).resolves.toMatchObject()
+
+    Received promise rejected instead of resolved
+    Rejected to value: [ApiError: Token expired]
+
+      309 |     backend.state.validAccess.clear();
+      310 |
+    > 311 |     await expect(authService.fetchProfile()).resolves.toMatchObject({
+          |           ^
+      312 |       id: 'u-1',
+      313 |     });
+      314 |     expect(expired).not.toHaveBeenCalled();
+
+      at expect (node_modules/expect/build/index.js:113:15)
+      at Object.expect (__tests__/shared/session/realBackendAdapter.test.ts:311:11)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 20 skipped, 1 passed, 22 total
+Snapshots:   0 total
+Time:        8.467 s
+Ran all test suites matching /__tests__\/shared\/session\/realBackendAdapter.test.ts/i with tests matching "does not rotate|rotation, keeping".

@@ -1,0 +1,16 @@
+OLD tabs deep /tboom {"url":"/","histLen":"2->2","fallback":false,"home":true,"afterBack":"about:blank","afterBack2":"about:blank"}
+NEW tabs deep /tboom {"url":"/","histLen":"2->2","fallback":false,"home":true,"afterBack":"about:blank","afterBack2":"about:blank"}
+OLD tabs Home->explore->tboom {"url":"/","histLen":"3->3","fallback":false,"home":true,"afterBack":"/ [Home]","afterBack2":"about:blank"}
+NEW tabs Home->explore->tboom {"url":"/","histLen":"3->3","fallback":false,"home":true,"afterBack":"/ [Home]","afterBack2":"about:blank"}
+OLD auth deep /aboom {"url":"/","histLen":"2->2","fallback":false,"home":true,"afterBack":"about:blank","afterBack2":"about:blank"}
+NEW auth deep /aboom {"url":"/","histLen":"2->2","fallback":false,"home":true,"afterBack":"about:blank","afterBack2":"about:blank"}
+OLD auth Home->aboom {"url":"/","histLen":"3->3","fallback":false,"home":true,"afterBack":"/ [Home]","afterBack2":"about:blank"}
+NEW auth Home->aboom {"url":"/","histLen":"3->3","fallback":false,"home":true,"afterBack":"about:blank","afterBack2":"about:blank"}
+OLD auth Home->login->aboom {"url":"/","histLen":"3->3","fallback":false,"home":true,"afterBack":"/ [Home]","afterBack2":"about:blank"}
+NEW auth Home->login->aboom {"url":"/","histLen":"3->3","fallback":false,"home":true,"afterBack":"about:blank","afterBack2":"about:blank"}
+OLD auth Explore->aboom {"url":"/","histLen":"3->3","fallback":false,"home":true,"afterBack":"/explore","afterBack2":"about:blank"}
+NEW auth Explore->aboom {"url":"/","histLen":"3->3","fallback":false,"home":true,"afterBack":"about:blank","afterBack2":"about:blank"}
+OLD root Home->rboom {"url":"/","histLen":"2->2","fallback":false,"home":true,"afterBack":"about:blank","afterBack2":"about:blank"}
+NEW root Home->rboom {"url":"/","histLen":"2->2","fallback":false,"home":true,"afterBack":"about:blank","afterBack2":"about:blank"}
+OLD root deep /rboom {"url":"/","histLen":"2->2","fallback":false,"home":true,"afterBack":"about:blank","afterBack2":"about:blank"}
+NEW root deep /rboom {"url":"/","histLen":"2->2","fallback":false,"home":true,"afterBack":"about:blank","afterBack2":"about:blank"}

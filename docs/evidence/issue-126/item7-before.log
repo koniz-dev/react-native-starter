@@ -1,0 +1,2 @@
+    ✕ without git, says it cannot check or undo, unless init-project already did (5049 ms)
+Tests:       1 failed, 13 skipped, 14 total

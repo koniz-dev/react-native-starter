@@ -1,0 +1,4 @@
+    ✕ a refresh that succeeds after a sign-out + sign-in keeps the new session's refresh token (264 ms)
+    Expected: "refresh-3"
+    Received: undefined
+Tests:       1 failed, 22 skipped, 23 total

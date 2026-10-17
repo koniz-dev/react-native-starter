@@ -1,0 +1,169 @@
+  console.info
+    [error-reporter] exception: Error: Boom from a screen (Render error caught by a route error boundary)
+
+
+  console.info
+    [error-reporter] exception: Error: Boom from a screen (Render error caught by a route error boundary)
+
+
+  console.info
+    [error-reporter] exception: ApiError: Unexpected response from the server (Loading todos failed)
+
+
+  console.info
+    [error-reporter] exception: Error: Boom from a screen (Render error caught by a route error boundary)
+
+
+  console.info
+    [error-reporter] exception: Error: Boom from a screen (Render error caught by a route error boundary)
+
+
+  console.info
+    [error-reporter] exception: Error: Boom from a screen (Render error caught by a route error boundary)
+
+
+  console.info
+    [error-reporter] exception: Error: Boom from a screen (Render error caught by a route error boundary)
+
+
+  console.info
+    [error-reporter] exception: Error: Boom from a screen (Render error caught by a route error boundary)
+
+
+  console.info
+    [error-reporter] exception: Error: The authentication response did not include user information (Refreshing the profile failed)
+
+
+  console.info
+    [error-reporter] exception: Error: Boom from a screen (Render error caught by a route error boundary)
+
+
+  console.info
+    [error-reporter] exception: Error: The authentication response did not include user information (Refreshing the profile failed)
+
+
+  console.info
+    [error-reporter] exception: ApiError: Unexpected response from the server (Loading todos failed)
+
+
+  console.info
+    [error-reporter] exception: Error: The authentication response did not include user information (Refreshing the profile failed)
+
+
+  console.info
+    [error-reporter] exception: Error: Boom from a screen (Render error caught by a route error boundary)
+
+
+  console.info
+    [error-reporter] exception: Error: The authentication response did not include user information (Refreshing the profile failed)
+
+
+  console.info
+    [error-reporter] exception: Error: Boom from a screen (Render error caught by a route error boundary)
+
+
+  console.info
+    [error-reporter] exception: Error: Boom from a screen (Render error caught by a route error boundary)
+
+
+  console.info
+    [error-reporter] exception: Error: Boom from a screen (Render error caught by a route error boundary)
+
+
+  console.info
+    [error-reporter] exception: Error: Boom from a screen (Render error caught by a route error boundary)
+
+
+  console.info
+    [error-reporter] exception: Error: Boom from a screen (Render error caught by a route error boundary)
+
+
+  console.info
+    [error-reporter] exception: Error: Boom from a screen (Render error caught by a route error boundary)
+
+
+  console.info
+    [error-reporter] exception: Error: Boom from a screen (Render error caught by the app error boundary)
+
+
+  console.info
+    [error-reporter] exception: Error: Boom from a screen (Render error caught by the app error boundary)
+
+
+  console.info
+    [error-reporter] exception: Error: Boom from a screen (Render error caught by the app error boundary)
+
+
+  console.info
+    [error-reporter] exception: ApiError: Unexpected response from the server (Loading todos failed)
+
+
+  console.info
+    [error-reporter] exception: Error: Boom from a screen (Render error caught by the app error boundary)
+
+
+  console.info
+    [error-reporter] exception: Error: Session provider exploded (Render error caught by the app error boundary)
+
+
+  console.log
+    OLD
+    1 tabs /boom deep link: path=/ state=[*__root[*(tabs)[*index,explore,boom]]] canGoBack=false fallback=false errs=["%o\n\n%s\n\n%s\n"]
+       back threw Error: The action 'GO_BACK' was not handled by any navigator.
+    
+    Is there any scre
+    2 tabs explore->boom: path=/ state=[*__root[*(tabs)[*index,explore,boom]]] canGoBack=false fallback=false errs=[]
+       back threw Error: The action 'GO_BACK' was not handled by any navigator.
+    
+    Is there any scre
+    3 app Home->boom: path=/ state=[*__root[(tabs)[*index,explore],*(tabs)[*index,explore]]] canGoBack=true fallback=false errs=["%o\n\n%s\n\n%s\n"]
+       after back: path=/ state=[*__root[*(tabs)[*index,explore]]]
+    4 app deep /boom: path=/ state=[*__root[(tabs)[*index,explore],*(tabs)[*index,explore]]] canGoBack=true fallback=false errs=["%o\n\n%s\n\n%s\n"]
+       after back: path=/ state=[*__root[*(tabs)[*index,explore]]]
+    5 app Home->profile->boom: path=/ state=[*__root[(tabs)[*index,explore],*(tabs)[*index,explore]]] canGoBack=true fallback=false errs=["Refreshing the profile failed"]
+       after back: path=/ state=[*__root[*(tabs)[*index,explore]]]
+    5b app Explore->profile->boom: path=/ state=[*__root[(tabs)[index,*explore],*(tabs)[*index,explore]]] canGoBack=true fallback=false errs=["Refreshing the profile failed"]
+       after back: path=/explore state=[*__root[*(tabs)[index,*explore]]]
+    6 auth Home->boom: path=/ state=[*__root[(tabs)[*index,explore],*(tabs)[*index,explore]]] canGoBack=true fallback=false errs=["%o\n\n%s\n\n%s\n"]
+       after back: path=/ state=[*__root[*(tabs)[*index,explore]]]
+    7 auth deep /boom: path=/ state=[*__root[(tabs)[*index,explore],*(tabs)[*index,explore]]] canGoBack=true fallback=false errs=["%o\n\n%s\n\n%s\n"]
+       after back: path=/ state=[*__root[*(tabs)[*index,explore]]]
+    8 auth Home->login->boom: path=/ state=[*__root[(tabs)[*index,explore],*(tabs)[*index,explore]]] canGoBack=true fallback=false errs=["%o\n\n%s\n\n%s\n"]
+       after back: path=/ state=[*__root[*(tabs)[*index,explore]]]
+    9 root Home->boom (app boundary): path=/ state=[*__root[*(tabs)[*index,explore]]] canGoBack=false fallback=false errs=[]
+       back threw Error: The action 'GO_BACK' was not handled by any navigator.
+    
+    Is there any scre
+    9b root Home->boom recover: path=/ state=[*__root[*(tabs)[*index,explore]]] canGoBack=false fallback=false errs=[]
+    10 root deep /boom (app boundary): path=/ state=[*__root[*(tabs)[*index,explore]]] canGoBack=false fallback=false errs=[]
+       back threw Error: The action 'GO_BACK' was not handled by any navigator.
+    
+    Is there any scre
+    11 root Explore->showcase->boom: path=/ state=[*__root[*(tabs)[*index,explore]]] canGoBack=false fallback=false errs=[]
+       back threw Error: The action 'GO_BACK' was not handled by any navigator.
+    
+    Is there any scre
+    12 app-boundary before ready: path=/ fallback=false home=true threw= errs=[]
+
+
+PASS __tests__/scratch/goHome.test.tsx (10.986 s)
+  ✓ 1 tabs deeplink (999 ms)
+  ✓ 2 tabs from explore (442 ms)
+  ✓ 3 app pushed (546 ms)
+  ✓ 4 app deeplink (499 ms)
+  ✓ 5 app profile->boom (613 ms)
+  ✓ 5b app explore->profile->boom (559 ms)
+  ✓ 6 auth pushed (440 ms)
+  ✓ 7 auth deep (450 ms)
+  ✓ 8 auth login->boom (611 ms)
+  ✓ 9 root pushed (app boundary), keeps throwing (276 ms)
+  ✓ 9b root pushed, recover (316 ms)
+  ✓ 10 root deep (287 ms)
+  ✓ 11 root explore->showcase->boom (372 ms)
+  ✓ 12 app boundary before nav ready (177 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       14 passed, 14 total
+Snapshots:   0 total
+Time:        11.2 s, estimated 13 s
+Ran all test suites matching /__tests__\/scratch\/goHome.test.tsx/i.
