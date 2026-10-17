@@ -80,6 +80,8 @@ jobs:
           build || { echo "Build failed; retrying once" >&2; build; }
           cp android/app/build/outputs/apk/debug/app-debug.apk app.apk
           echo "E2E_APP_ID=com.example.rnstarter.dev" >> "$GITHUB_ENV"
+          # Its own scheme, not exp://: the flows open the link only for Expo Go.
+          echo "E2E_APP_URL=rnstarter-dev://" >> "$GITHUB_ENV"
 
       - name: Enable KVM
         run: |

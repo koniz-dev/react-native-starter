@@ -420,9 +420,11 @@ Setup:
   `defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool false`
   and restart the Simulator).
 - To run against a native debug build instead, set `E2E_APP_ID` (its bundle
-  / package ID): it loads the bundle from Metro when it launches, so the flows
-  open no link. With `expo-dev-client`, also set `E2E_APP_URL` (its dev-client
-  URL): the flows open it when the dev client lists its development servers.
+  / package ID) and `E2E_APP_URL` to its own scheme (such as
+  `rnstarter-dev://`). The flows open the link only when it is an Expo Go
+  `exp://` URL: a debug build loads the bundle from Metro when it launches.
+  With `expo-dev-client`, set `E2E_APP_URL` to its dev-client URL: the flows
+  open it when the dev client lists its development servers.
 - Slow emulators: the runner allows Maestro 180 s to start its driver
   (`MAESTRO_DRIVER_STARTUP_TIMEOUT`, in ms), builds the bundle before the
   flows start, and on Android turns off system animations and the "isn't

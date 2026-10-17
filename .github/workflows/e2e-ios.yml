@@ -71,6 +71,8 @@ jobs:
             -derivedDataPath ios/build -quiet build \
             CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM=""
           echo "E2E_APP_ID=com.example.rnstarter.dev" >> "$GITHUB_ENV"
+          # Its own scheme, not exp://: the flows open the link only for Expo Go.
+          echo "E2E_APP_URL=rnstarter-dev://" >> "$GITHUB_ENV"
 
       - name: Boot a simulator and install the app
         run: |
