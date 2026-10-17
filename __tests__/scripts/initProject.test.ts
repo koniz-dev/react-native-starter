@@ -130,6 +130,8 @@ describe('init-project input', () => {
     expect(init.slugify("Bob's App")).toBe('bobs-app');
     expect(init.tsString('Acme')).toBe("'Acme'");
     expect(init.tsString("Bob's")).toBe(`"Bob's"`);
+    // Both kinds of quote: single quotes, with the ' escaped.
+    expect(init.tsString(`Mom's "Best"`)).toBe(`'Mom\\'s "Best"'`);
   });
 
   it('writes the name into the README as literal Markdown text', () => {
