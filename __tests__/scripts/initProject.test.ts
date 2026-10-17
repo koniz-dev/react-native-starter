@@ -97,6 +97,11 @@ describe('init-project input', () => {
     ['name', 'Acme\u200ENotes'],
     ['name', 'Acme\u2066Notes'],
     ['name', 'Acme\uFEFFNotes'],
+    ['name', 'Acme\u2060Notes'],
+    ['name', 'Ac\u00ADme Notes'],
+    ['name', 'Acme\u180ENotes'],
+    ['name', 'Acme\uFFF9Notes'],
+    ['owner', 'Acme\u2060Inc.'],
     ['owner', 'Acme\u202EInc.'],
     ['owner', ' Acme Inc. '],
     // Expo's development client registers exp+<slug>.

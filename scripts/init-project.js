@@ -149,12 +149,13 @@ const RESERVED_SCHEMES = new Set([
 ]);
 
 /**
- * Characters that change how text reads without being seen: bidi controls
- * (U+061C, U+200E-U+200F, U+202A-U+202E, U+2066-U+2069), a zero-width
- * space, and a byte-order mark. Not the joiners (U+200C, U+200D) or emoji
- * tag characters, which ordinary text uses.
+ * Invisible formatting characters (Unicode \p{Cf}): bidi controls, zero-width
+ * spaces, word joiners, soft hyphens, and the like change how a name reads
+ * or slugifies without being seen. Except the joiners (U+200C, U+200D) and
+ * emoji tag characters (U+E0020-U+E007F), which emoji and Persian or Indic
+ * spelling use.
  */
-const INVISIBLE = /[\u061C\u200B\u200E\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/;
+const INVISIBLE = /(?!\u200C|\u200D|[\u{E0020}-\u{E007F}])\p{Cf}/u;
 
 /** Each validator returns an error message, or null when the value is valid. */
 const validators = {
