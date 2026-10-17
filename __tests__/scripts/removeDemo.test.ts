@@ -288,6 +288,46 @@ describe('remove-demo on a copy of the template', () => {
     expect(exists(dir, 'features/demo-todos')).toBe(true);
   }, 60000);
 
+  it.each([
+    [
+      'a nested block',
+      'README.md',
+      `\n<!-- @${'demo'} remove-block-start -->\n<!-- @${'demo'} remove-block-start -->\nx\n<!-- @${'demo'} remove-block-end -->\n`,
+      'README.md: nested @demo block',
+    ],
+    [
+      'an end without a start',
+      'README.md',
+      `\n<!-- @${'demo'} remove-block-end -->\n`,
+      'README.md: @demo remove-block end without start',
+    ],
+    [
+      'a misspelled marker',
+      'shared/lib/x.ts',
+      `// @${'demo'} remove-blok-start\nexport const x = 1;\n`,
+      'shared/lib/x.ts: unhandled @demo marker',
+    ],
+    [
+      'an unmarked import of a demo feature',
+      'shared/lib/x.ts',
+      `// @${'demo'} remove-current-line\nexport { fetchTodos } from '@/features/demo-todos/api/todosApi';\n`,
+      'shared/lib/x.ts: still imports a demo feature',
+    ],
+  ])(
+    'changes nothing on %s',
+    (_case, file, text, problem) => {
+      const dir = copy();
+      fs.appendFileSync(path.join(dir, file), text);
+      commit(dir, _case);
+      const result = run(dir);
+      expect(result.status).toBe(2);
+      expect(result.stderr).toContain(problem);
+      expect(result.stderr).toContain('Nothing was changed.');
+      expect(gitStatus(dir)).toBe('');
+    },
+    60000
+  );
+
   it('changes nothing when a marker is malformed, and says so without a stack trace', () => {
     const dir = copy();
     fs.appendFileSync(

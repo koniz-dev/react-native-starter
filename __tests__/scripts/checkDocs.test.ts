@@ -104,6 +104,27 @@ describe('check-docs on a copy of the project', () => {
           '',
           '[linked heading](#see-expo)',
           '',
+          '## Twice',
+          '',
+          '## Twice',
+          '',
+          '[second](#twice-1) [gone here](#no-such-here) [gone there](testing.md#no-such-there)',
+          '',
+          '```json',
+          '{ "unquoted": yes }',
+          '```',
+          '',
+          '```tsx',
+          "export { Missing } from '@/shared/ui/NoSuchTsx';",
+          '```',
+          '',
+          // zod is installed, so a block that requires it is still compiled.
+          '<!-- docs-check: requires zod -->',
+          '',
+          '```ts',
+          "export { Missing } from '@/shared/ui/NoSuchRequired';",
+          '```',
+          '',
           '[gone](nope-(paren).md)',
           '',
           '```typescript',
@@ -150,6 +171,11 @@ describe('check-docs on a copy of the project', () => {
         'no heading for docs/testing.md#no-such-anchor',
         'path does not exist: shared/nope.ts',
         'npm run nope: no such script',
+        'no heading for #no-such-here',
+        'no heading for testing.md#no-such-there',
+        'JSON block does not parse',
+        'NoSuchTsx',
+        'NoSuchRequired',
         'NoSuchTypescript',
         'NoSuchTilde',
         'code block is never closed',
@@ -159,8 +185,34 @@ describe('check-docs on a copy of the project', () => {
         expect(result.stderr).toContain(problem);
       }
       expect(result.stderr).not.toMatch(
-        /forms%20ok|forms ok|#forms\b|Markdown, not code|Footnote|setext|draft|see-expo/
+        /forms%20ok|forms ok|#forms\b|Markdown, not code|Footnote|setext|draft|see-expo|twice-1/
       );
+    } finally {
+      fs.rmSync(copy, { recursive: true, force: true });
+    }
+  }, 120000);
+
+  it('fails when tsc or ESLint fails without reporting a snippet', () => {
+    const copy = makeCopy();
+    try {
+      // A tsconfig error: tsc fails before it reads a snippet.
+      const tsconfig = path.join(copy, 'tsconfig.tools.json');
+      const config = JSON.parse(fs.readFileSync(tsconfig, 'utf8'));
+      config.compilerOptions = { ...config.compilerOptions, target: 'nope' };
+      fs.writeFileSync(tsconfig, JSON.stringify(config));
+      // An ESLint config that throws: the lint subprocess crashes.
+      fs.appendFileSync(
+        path.join(copy, 'eslint.config.js'),
+        "\nthrow new Error('broken config');\n"
+      );
+
+      const result = spawnSync(process.execPath, ['scripts/check-docs.js'], {
+        cwd: copy,
+        encoding: 'utf8',
+      });
+      expect(result.status).toBe(1);
+      expect(result.stderr).toMatch(/tsc: .*target/);
+      expect(result.stderr).toContain('eslint did not run');
     } finally {
       fs.rmSync(copy, { recursive: true, force: true });
     }

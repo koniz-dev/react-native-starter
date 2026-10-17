@@ -488,6 +488,7 @@ function main() {
   if (tsc.error) {
     problems.push(`tsc did not run: ${tsc.error.message}`);
   }
+  const problemsBeforeTsc = problems.length;
   for (const raw of `${tsc.stdout ?? ''}${tsc.stderr ?? ''}`.split(/\r?\n/)) {
     const m = /\.docs-check\/([^(]+)\((\d+),\d+\): (.*)$/.exec(raw);
     if (!m) {
@@ -499,6 +500,12 @@ function main() {
       ? `${snippet.file}:${snippet.line + Number(m[2])}`
       : m[1];
     problems.push(`${where}: ${m[3]}`);
+  }
+  // A failing tsc that printed nothing this script could read still fails.
+  if (tsc.status !== 0 && !tsc.error && problems.length === problemsBeforeTsc) {
+    problems.push(
+      `tsc failed (exit ${tsc.status}) without reporting a problem`
+    );
   }
 
   problems.push(...lintSnippets(snippets));

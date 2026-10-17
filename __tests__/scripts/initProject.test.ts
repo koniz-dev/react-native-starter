@@ -534,6 +534,22 @@ describe('init-project on a copy of the template', () => {
     expect(result.stderr).not.toMatch(/git -C|checkout|clean -fd/);
   });
 
+  (HAS_DEMO ? it : it.skip)(
+    'stops, and keeps itself, when remove-demo fails after changing files',
+    () => {
+      const dir = copy();
+      // remove-demo rewrites this file, then fails on the write (exit 1).
+      fs.chmodSync(path.join(dir, 'shared/i18n/en.ts'), 0o444);
+      const result = run(dir, [...IDENTITY, '--remove-demo']);
+      expect(result.status).toBe(1);
+      expect(result.stderr).toContain('remove-demo failed');
+      expect(exists(dir, 'scripts/init-project.js')).toBe(true);
+      // The identity was not written.
+      expect(read(dir, 'app.config.ts')).not.toContain('com.acme.notes');
+    },
+    60000
+  );
+
   it('removes the demo with --remove-demo and refuses a second run', () => {
     const dir = copy();
     // Keep the script around after the run to try it a second time.
