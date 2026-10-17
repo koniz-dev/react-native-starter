@@ -50,6 +50,13 @@ describe('init-project input', () => {
     ['name', 'Acme Notes'],
     ['name', "Bob's Ghi Chú"],
     ['owner', 'Acme Inc.'],
+    // Joiners are part of ordinary text: emoji built with a ZWJ, a flag
+    // made of tag characters, Persian words and names written with a ZWNJ.
+    ['name', 'Dev 👩‍💻'],
+    ['name', '🏳️‍🌈 Pride'],
+    ['name', '🏴󠁧󠁢󠁥󠁮󠁧󠁿 Notes'],
+    ['name', 'یادداشت‌ها'],
+    ['owner', 'حسن‌زاده'],
   ])('accepts %s %p', (key, value) => {
     expect(init.validators[key]!(value)).toBeNull();
   });
@@ -87,6 +94,9 @@ describe('init-project input', () => {
     // zero-width space.
     ['name', 'Acme\u202ENotes'],
     ['name', 'Acme\u200BNotes'],
+    ['name', 'Acme\u200ENotes'],
+    ['name', 'Acme\u2066Notes'],
+    ['name', 'Acme\uFEFFNotes'],
     ['owner', 'Acme\u202EInc.'],
     ['owner', ' Acme Inc. '],
     // Expo's development client registers exp+<slug>.
@@ -139,6 +149,9 @@ describe('init-project input', () => {
       'Café \\& \\<Co\\> \\*x\\* \\[y\\]'
     );
     expect(init.markdownText('Acme Notes')).toBe('Acme Notes');
+    // A name that starts like a list item stays a paragraph.
+    expect(init.markdownText('1. Notes')).toBe('1\\. Notes');
+    expect(init.markdownText('- Notes')).toBe('\\- Notes');
   });
 });
 
@@ -545,6 +558,8 @@ describe('init-project on a copy of the template', () => {
       const result = run(dir, [...IDENTITY, '--remove-demo']);
       expect(result.status).toBe(1);
       expect(result.stderr).toContain('remove-demo failed');
+      // The command that undoes both (getting-started promises it).
+      expect(result.stderr).toContain('checkout -- .');
       expect(exists(dir, 'scripts/init-project.js')).toBe(true);
       // The identity was not written.
       expect(read(dir, 'app.config.ts')).not.toContain('com.acme.notes');

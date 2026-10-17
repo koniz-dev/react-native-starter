@@ -148,6 +148,14 @@ const RESERVED_SCHEMES = new Set([
   'intent',
 ]);
 
+/**
+ * Characters that change how text reads without being seen: bidi controls
+ * (U+061C, U+200E-U+200F, U+202A-U+202E, U+2066-U+2069), a zero-width
+ * space, and a byte-order mark. Not the joiners (U+200C, U+200D) or emoji
+ * tag characters, which ordinary text uses.
+ */
+const INVISIBLE = /[\u061C\u200B\u200E\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/;
+
 /** Each validator returns an error message, or null when the value is valid. */
 const validators = {
   name(value) {
@@ -155,9 +163,10 @@ const validators = {
     if (value !== value.trim())
       return 'the app name has leading or trailing spaces';
     if (value.length > 50) return 'the app name is longer than 50 characters';
-    // \p{Cf}: invisible formatting characters, such as a right-to-left
-    // override that makes the name read differently than it is.
-    if (/[\p{Cc}\p{Cf}`\\|]/u.test(value)) {
+    // Bidi controls (a right-to-left override makes the name read
+    // differently than it is) and invisible spaces; joiners stay, since
+    // emoji and Persian or Indic spelling use them.
+    if (/[\p{Cc}`\\|]/u.test(value) || INVISIBLE.test(value)) {
       return 'the app name contains a control or invisible character, backtick, backslash, or |';
     }
     return null;
@@ -206,7 +215,7 @@ const validators = {
     if (!value || !value.trim()) return 'the LICENSE holder is required';
     if (value !== value.trim())
       return 'the LICENSE holder has leading or trailing spaces';
-    return /[\p{Cc}\p{Cf}]/u.test(value)
+    return /\p{Cc}/u.test(value) || INVISIBLE.test(value)
       ? 'the LICENSE holder contains a control or invisible character'
       : null;
   },
@@ -463,7 +472,13 @@ function dropMarkerLines(text, tag) {
 
 /** Text shown as written in Markdown: `<Co>` and `*x*` stay literal. */
 function markdownText(text) {
-  return text.replace(/[\\`*_{}[\]<>()#+!~&]/g, '\\$&');
+  return (
+    text
+      .replace(/[\\`*_{}[\]<>()#+!~&]/g, '\\$&')
+      // At the start of a line, `1.` or `-` would make a list.
+      .replace(/^(\d+)([.)])/, '$1\\$2')
+      .replace(/^-/, '\\-')
+  );
 }
 
 /** The project's README, replacing the template's. */
