@@ -40,8 +40,8 @@ own name, bundle ID, and scheme, so all three install side by side:
   (release). Building from Xcode or Android Studio, start it from a shell
   that exports both variables. `APP_BUILD_NUMBER` is written into the native
   projects by prebuild, so for a local build set it when you run prebuild.
-  Local release builds are signed with the debug key; store builds come from
-  EAS, or set up your own upload key.
+  Local Android release builds are signed with the debug key; store builds
+  come from EAS, or set up your own upload key.
 - `eas.json` has matching `development`, `preview`, and `production` build
   profiles for [EAS Build](https://docs.expo.dev/build/introduction/), which
   needs your own Expo account; nothing else in the project does. See
