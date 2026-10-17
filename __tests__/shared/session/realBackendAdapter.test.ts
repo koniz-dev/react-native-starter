@@ -78,6 +78,8 @@ function fakeBackend() {
     refreshGate: null as Promise<void> | null,
     /** Holds the revoke endpoint's answer until it resolves. */
     revokeGate: null as Promise<void> | null,
+    /** False for a backend that keeps the refresh token on a refresh. */
+    rotate: true,
   };
   const issue = () => {
     state.issued += 1;
@@ -161,6 +163,13 @@ function fakeBackend() {
       }
       if (!state.validRefresh.delete(refresh_token ?? '')) {
         return respond(config, 401, failure('invalid_refresh', 'Revoked'));
+      }
+      if (!state.rotate) {
+        // No rotation: a new access token only; the refresh token stays valid.
+        state.validRefresh.add(refresh_token!);
+        const { access_token } = issue();
+        await state.refreshGate;
+        return respond(config, 200, { access_token });
       }
       const tokens = issue();
       // The backend has rotated the tokens; the answer is still on its way.
@@ -292,6 +301,25 @@ describe('the documented AuthAdapter against a backend of another shape', () => 
     backend.state.validAccess.clear();
     await authService.fetchProfile();
     expect(secureStore.get(REFRESH_KEY)).toBe('refresh-3');
+  });
+
+  it('keeps the session with a backend that does not rotate refresh tokens', async () => {
+    backend.state.rotate = false;
+    await signIn();
+    backend.state.validAccess.clear();
+
+    await expect(authService.fetchProfile()).resolves.toMatchObject({
+      id: 'u-1',
+    });
+    expect(expired).not.toHaveBeenCalled();
+    expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('access-2');
+    expect(secureStore.get(REFRESH_KEY)).toBe('refresh-1');
+
+    // The next expiry refreshes with the same refresh token.
+    backend.state.validAccess.clear();
+    await authService.fetchProfile();
+    expect(secureStore.get(REFRESH_KEY)).toBe('refresh-1');
+    expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('access-3');
   });
 
   it('signs out and drops the refresh token when the refresh is rejected', async () => {

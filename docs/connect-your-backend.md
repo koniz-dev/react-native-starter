@@ -19,8 +19,9 @@ EXPO_PUBLIC_API_TRUSTED_ORIGINS=https://api.example.com
 ```
 
 The values are validated at startup; outside development they must be
-`https`. When the API and the auth backend are the same server, leave
-`EXPO_PUBLIC_API_TRUSTED_ORIGINS` empty. All variables:
+`https`. When the API and the auth backend share an origin (scheme, host,
+and port), leave `EXPO_PUBLIC_API_TRUSTED_ORIGINS` empty; the same host on
+another port is another origin. All variables:
 [Environment Variables](environment-variables.md).
 
 Both URLs may include a path prefix, such as
@@ -106,6 +107,11 @@ import {
 const TokensSchema = z.object({
   access_token: z.string().min(1),
   refresh_token: z.string().min(1),
+});
+// A refresh answers with a new refresh token only if your backend rotates
+// them; without one, the stored refresh token stays valid.
+const RefreshSchema = TokensSchema.extend({
+  refresh_token: z.string().min(1).optional(),
 });
 
 const UserSchema = z.object({
@@ -202,31 +208,34 @@ export const myBackendAuthAdapter: AuthAdapter = {
     if (!refreshToken) return null;
     try {
       const tokens = unwrap(
-        TokensSchema,
+        RefreshSchema,
         (
           await http.post('/sessions/refresh', {
             refresh_token: refreshToken,
           })
         ).data
       );
+      const next = tokens.refresh_token ?? refreshToken;
       // Signed out (or in again) while this ran: the new tokens belong to
       // no session. Revoke the refresh token instead of keeping it.
       if ((await refreshTokens.get().catch(storageFailed)) !== refreshToken) {
         await http
-          .post('/sessions/revoke', { refresh_token: tokens.refresh_token })
+          .post('/sessions/revoke', { refresh_token: next })
           .catch(() => undefined);
         return null;
       }
       // Rotation: keep the new refresh token; the old one no longer works.
       // If it can't be stored, still use the new access token: the user
       // signs in again when it expires, not now.
-      await refreshTokens.set(tokens.refresh_token).catch(() => undefined);
+      if (next !== refreshToken) {
+        await refreshTokens.set(next).catch(() => undefined);
+      }
       // A sign-out ran while it was stored: revoke and drop it.
       if (signOuts !== signOutsAtStart) {
         await http
-          .post('/sessions/revoke', { refresh_token: tokens.refresh_token })
+          .post('/sessions/revoke', { refresh_token: next })
           .catch(() => undefined);
-        if ((await refreshTokens.get()) === tokens.refresh_token) {
+        if ((await refreshTokens.get()) === next) {
           await refreshTokens.clear();
         }
         return null;
@@ -362,10 +371,15 @@ it sends the stored token, and there is none until `login` returns.
   `shared/storage/secureStorage.ts` can't store anything (`setSecureItem`
   throws). Use a key other than the access token's.
 - **Rotation.** If your backend issues a new refresh token on every refresh,
-  store it in `refresh`, as the example does. The HTTP client shares one
-  refresh between concurrent 401s, and a 401 for a request sent with an older
-  access token is retried with the current one instead of refreshing again,
-  so a rotated token is used only once.
+  store it in `refresh`, as the example does. If it doesn't (a refresh
+  answers with an access token only), keep the stored one: the example's
+  `RefreshSchema` makes `refresh_token` optional for that. The HTTP client
+  shares one refresh between concurrent 401s, and a 401 for a request sent
+  with an older access token is retried with the current one instead of
+  refreshing again, so a rotated token is used only once. A refresh answer
+  lost in transit (the app suspended or the connection dropped after the
+  server rotated) leaves the stored token dead; turn on your provider's
+  reuse grace interval if it has one.
 - **Failures.** Throw a transient error (`isTransient` in
   `shared/http/apiError.ts`: its `code` is `network`, `timeout`, `server`
   (a 5xx), or `canceled`, or its status is 408 or 429) and the session is
