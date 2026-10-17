@@ -167,7 +167,14 @@ When a request that carried the stored token gets a 401:
 
 A 401 on the auth backend's `public` client (a wrong password), on a request
 sent without the stored token, or on a request to an untrusted origin does
-not touch the session. A refresh or a profile load (`fetchProfile`) that
+not touch the session.
+
+Neither does a 401 for a request that was redirected (its response URL is
+not the one requested): iOS drops the `Authorization` header when it follows
+a redirect, even to the same origin, so the server never saw the token. The
+request fails and `API <method> <path> got a 401 after it was redirected` is
+logged as a warning. Authenticated endpoints must not redirect: request the
+final URL (for example with its trailing slash) instead. A refresh or a profile load (`fetchProfile`) that
 finishes after the user signed out is discarded, and a retry whose session
 ended before it was sent is canceled (`code: 'canceled'`).
 
@@ -215,6 +222,14 @@ AsyncStorage throws), the app starts signed out and logs `Restoring the
 session failed` with `logger.error`, so it is reported. The stored session
 is kept, and the next launch tries again.
 
+On iOS the Keychain items use Expo SecureStore's default accessibility
+(`WHEN_UNLOCKED`): readable while the device is unlocked, and included in
+encrypted backups, so a restored or transferred device stays signed in. To
+keep tokens on this device only, pass `keychainAccessible:
+SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY` in `shared/storage/secureStorage.ts`.
+It applies to items created after the change: a token already stored keeps
+its accessibility until it is deleted, at the user's next sign-out.
+
 ### After a reinstall
 
 iOS keeps Keychain items when an app is deleted, but deletes its AsyncStorage.
@@ -260,14 +275,24 @@ const cookieSessionStore: TokenStore = {
   get: async () => ((await hasCookieSession()) ? 'cookie-session' : null),
   set: async () => {}, // the server sets the cookie
   clear: async () => {
-    await callLogoutEndpoint(); // the server clears the cookie
+    // Also runs at every signed-out launch: end only a session that exists.
+    if (await hasCookieSession()) await callLogoutEndpoint();
   },
 };
 setTokenStore(cookieSessionStore);
 ```
 
-With a cookie session there is no bearer token to attach, so also adjust the
-`authenticated` clients.
+This is a sketch, not a drop-in; the rest of the token flow assumes a bearer
+token, so also:
+
+- have your adapter's `login` return a placeholder token (any non-empty
+  string, such as `'cookie-session'`): the session service rejects a login
+  without one;
+- stop the `authenticated` clients from sending `Authorization: Bearer
+cookie-session` (your backend can also ignore it);
+- send the cookie: the auth clients set `withCredentials: false`
+  (`shared/session/authService.ts`), so pass `withCredentials: true` on the
+  requests that need it.
 
 ## Storage
 

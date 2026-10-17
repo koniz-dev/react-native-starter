@@ -15,6 +15,7 @@ import type {
   InternalAxiosRequestConfig,
 } from 'axios';
 import { AxiosError, AxiosHeaders } from 'axios';
+import * as SecureStore from 'expo-secure-store';
 import {
   authClients,
   authRefreshClients,
@@ -322,6 +323,68 @@ describe('the documented AuthAdapter against a backend of another shape', () => 
       email: expect.any(String),
     });
     expect(secureStore.get(REFRESH_KEY)).toBe('refresh-2');
+  });
+
+  it.each([
+    ['read', 'getItemAsync'],
+    ['stored', 'setItemAsync'],
+  ] as const)(
+    'keeps the session when the refresh token cannot be %s (a locked Keychain)',
+    async (_case, call) => {
+      await signIn();
+      backend.state.validAccess.clear();
+      const mock = jest.mocked(SecureStore[call]);
+      const real = mock.getMockImplementation()!;
+      mock.mockImplementation((async (key: string, value?: string) => {
+        if (key === REFRESH_KEY)
+          throw new Error('User interaction is not allowed.');
+        return (real as (k: string, v?: string) => Promise<unknown>)(
+          key,
+          value
+        );
+      }) as never);
+
+      await authService.fetchProfile().catch(() => undefined);
+      mock.mockImplementation(real as never);
+
+      expect(expired).not.toHaveBeenCalled();
+      expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(true);
+      expect(secureStore.get(REFRESH_KEY)).toBe('refresh-1');
+    }
+  );
+
+  it("leaves the next session's refresh token alone when it signs in while logout reads the token", async () => {
+    await signIn();
+    let answerRevoke!: () => void;
+    backend.state.revokeGate = new Promise(resolve => (answerRevoke = resolve));
+    const getItem = jest.mocked(SecureStore.getItemAsync);
+    const real = getItem.getMockImplementation()!;
+    let holdRead = false;
+    let releaseRead: (() => void) | undefined;
+    getItem.mockImplementation((async (key: string) => {
+      if (key === REFRESH_KEY && holdRead) {
+        holdRead = false;
+        await new Promise<void>(resolve => (releaseRead = resolve));
+      }
+      return real(key);
+    }) as never);
+
+    const loggingOut = authService.logout();
+    await new Promise(resolve => setTimeout(resolve, 0));
+    // The revoke returns; logout reads the stored token again, slowly...
+    holdRead = true;
+    answerRevoke();
+    for (let i = 0; i < 20 && !releaseRead; i++) {
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
+    // ...and meanwhile the session expires and the user signs in again.
+    await defaultUnauthorizedHandler();
+    await signIn();
+    releaseRead!();
+    await loggingOut;
+
+    expect(secureStore.get(REFRESH_KEY)).toBe('refresh-2');
+    expect(backend.state.validRefresh).toEqual(new Set(['refresh-2']));
   });
 
   it('revokes the refresh token on logout', async () => {

@@ -91,7 +91,7 @@ less useful error.
 // features/auth/myBackendAdapter.ts
 import { Platform } from 'react-native';
 import { z } from 'zod';
-import { isTransient, toApiError } from '@/shared/http/apiError';
+import { ApiError, isTransient, toApiError } from '@/shared/http/apiError';
 import type { AuthAdapter } from '@/shared/session/authService';
 import {
   createMemoryTokenStore,
@@ -133,6 +133,16 @@ export const refreshTokens =
 // Counts sign-ins, so a slow logout can tell whether the user signed in
 // again while it ran.
 let signIns = 0;
+
+// The Keychain can't be read or written while the device is locked (a
+// request finishing in the background): that says nothing about the
+// session, so fail the refresh as transient and the session is kept.
+function storageFailed(error: unknown): never {
+  throw new ApiError('The refresh token store is unavailable', {
+    code: 'canceled',
+    cause: error,
+  });
+}
 
 export const myBackendAuthAdapter: AuthAdapter = {
   // Required: credentials -> access token + your backend's user payload.
@@ -181,7 +191,7 @@ export const myBackendAuthAdapter: AuthAdapter = {
   // Throwing a transient error (network, timeout, server, canceled, 408, or
   // 429) keeps the session; any other error signs the user out.
   refresh: async ({ public: http }) => {
-    const refreshToken = await refreshTokens.get();
+    const refreshToken = await refreshTokens.get().catch(storageFailed);
     if (!refreshToken) return null;
     try {
       const tokens = unwrap(
@@ -194,14 +204,16 @@ export const myBackendAuthAdapter: AuthAdapter = {
       );
       // Signed out (or in again) while this ran: the new tokens belong to
       // no session. Revoke the refresh token instead of keeping it.
-      if ((await refreshTokens.get()) !== refreshToken) {
+      if ((await refreshTokens.get().catch(storageFailed)) !== refreshToken) {
         await http
           .post('/sessions/revoke', { refresh_token: tokens.refresh_token })
           .catch(() => undefined);
         return null;
       }
       // Rotation: keep the new refresh token; the old one no longer works.
-      await refreshTokens.set(tokens.refresh_token);
+      // If it can't be stored, still use the new access token: the user
+      // signs in again when it expires, not now.
+      await refreshTokens.set(tokens.refresh_token).catch(() => undefined);
       return tokens.access_token;
     } catch (error) {
       const apiError = toApiError(error);
@@ -225,18 +237,19 @@ export const myBackendAuthAdapter: AuthAdapter = {
         await http.post('/sessions/revoke', { refresh_token: refreshToken });
       }
     } finally {
-      // Unless someone signed in while the request ran: the stored refresh
-      // token is then the new session's.
-      if (signIns === signInsAtStart) {
+      // Unless someone signed in meanwhile: the stored refresh token is then
+      // the new session's. Checked again after every wait.
+      const signedInAgain = () => signIns !== signInsAtStart;
+      if (!signedInAgain()) {
         // A refresh that finished meanwhile rotated the token: revoke that
         // one too.
         const current = await refreshTokens.get();
-        if (current && current !== refreshToken) {
+        if (current && current !== refreshToken && !signedInAgain()) {
           await http
             .post('/sessions/revoke', { refresh_token: current })
             .catch(() => undefined);
         }
-        await refreshTokens.clear();
+        if (!signedInAgain()) await refreshTokens.clear();
       }
     }
   },
