@@ -174,6 +174,41 @@ describe('token safety', () => {
     }
   );
 
+  it('keeps the session when the 401 came after a redirect, which iOS follows without the token', async () => {
+    await signIn('t1');
+    const refresh = jest.fn(async () => 't2');
+    setRefreshTokenHandler(refresh);
+    const client = authenticatedClient(async config => {
+      const error = httpError(config, 401);
+      // What XMLHttpRequest reports after following /notes -> /notes/.
+      error.request = { responseURL: `${client.getUri(config)}/` };
+      throw error;
+    });
+
+    const error = await client.get('/notes').catch((e: unknown) => e);
+    expect(error).toMatchObject({ code: 'unauthorized' });
+    expect(refresh).not.toHaveBeenCalled();
+    expect(expired).not.toHaveBeenCalled();
+    expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('t1');
+    expect(logger.warn).toHaveBeenCalledWith(
+      expect.stringContaining('redirected'),
+      expect.anything()
+    );
+  });
+
+  it('still ends the session for a 401 at the requested URL', async () => {
+    await signIn('t1');
+    const client = authenticatedClient(async config => {
+      const error = httpError(config, 401);
+      error.request = { responseURL: client.getUri(config) };
+      throw error;
+    });
+
+    await client.get('/notes').catch(() => undefined);
+    expect(expired).toHaveBeenCalledTimes(1);
+    expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBeUndefined();
+  });
+
   it('keeps the session, and fails with an ApiError, when the token cannot be read after a 401', async () => {
     await signIn('t1');
     const refresh = jest.fn(async () => 't2');
@@ -480,6 +515,38 @@ describe('work that outlives its session', () => {
 
     await expect(client.get('/me')).rejects.toMatchObject({ code: 'canceled' });
     expect(seen).toEqual(['Bearer token-A']);
+  });
+
+  it("doesn't replay a request as the next user when the session changed while its token was read", async () => {
+    useAdapter({});
+    await signInAs('A');
+    const store = getTokenStore();
+    const read = deferred<string | null>();
+    let first = true;
+    setTokenStore({
+      ...store,
+      get: () => {
+        if (!first) return store.get();
+        first = false;
+        return read.promise;
+      },
+    });
+    const seen: unknown[] = [];
+    const client = authenticatedClient(async config => {
+      seen.push(config.headers.Authorization);
+      throw httpError(config, 401);
+    });
+
+    const request = client.get('/me').catch((e: unknown) => e);
+    // While A's token is being read, A signs out and B signs in.
+    await new Promise(resolve => setTimeout(resolve, 0));
+    await authService.logout();
+    await signInAs('B');
+    read.resolve('token-A');
+
+    await expect(request).resolves.toMatchObject({ code: 'unauthorized' });
+    expect(seen).toEqual(['Bearer token-A']);
+    expect(expired).not.toHaveBeenCalled();
   });
 
   it('sends a retry without a token as just that, not with the old header', async () => {

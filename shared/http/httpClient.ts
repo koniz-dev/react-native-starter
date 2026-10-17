@@ -144,6 +144,29 @@ type RetriableConfig = InternalAxiosRequestConfig & {
 };
 
 /** `METHOD path` for logs, without the query string or fragment. */
+/** A URL without its query string and fragment, its origin normalized. */
+function resourceOf(url: string): string | null {
+  const origin = getOrigin(url);
+  if (!origin) return null;
+  const path = url
+    .split(/[?#]/)[0]!
+    .replace(/^[a-z][a-z0-9+.-]*:\/\/[^/]*/i, '');
+  return origin + (path || '/');
+}
+
+/**
+ * Whether the response came from another URL than the one requested: the
+ * request followed a redirect. iOS drops the Authorization header when it
+ * follows one, even to the same origin, so such a 401 says nothing about
+ * the token.
+ */
+function followedRedirect(error: AxiosError, requested: string): boolean {
+  const final = (error.request as { responseURL?: unknown } | undefined)
+    ?.responseURL;
+  if (typeof final !== 'string' || !final) return false;
+  return resourceOf(final) !== resourceOf(requested);
+}
+
 function describe(config: InternalAxiosRequestConfig | undefined): string {
   if (!config) return 'request';
   const path = (config.url ?? '').split(/[?#]/)[0];
@@ -179,10 +202,13 @@ export function createHttpClient(options: HttpClientOptions): AxiosInstance {
     if (!origin || !getTrustedTokenOrigins().has(origin)) {
       return config;
     }
+    // Before the token is read: if the session changes during the read,
+    // the request belongs to the session it started in, not the next one.
+    const generation = getSessionGeneration();
     const token = retriable._retryToken ?? (await getTokenStore().get());
     retriable._retryToken = undefined;
     if (!retriable._retried) {
-      retriable._generation = getSessionGeneration();
+      retriable._generation = generation;
     } else if (retriable._generation !== getSessionGeneration()) {
       // The session this request belongs to ended before its retry was sent
       // (signed out, or in as someone else): don't send it for the new one.
@@ -220,6 +246,13 @@ export function createHttpClient(options: HttpClientOptions): AxiosInstance {
     // current one, and the request must not run on its behalf.
     const sameSession = () => config._generation === getSessionGeneration();
     if (!sameSession()) return fail(error, config);
+    if (followedRedirect(error, client.getUri(config))) {
+      logger.warn(
+        `API ${describe(config)} got a 401 after it was redirected; the session is kept (iOS drops the token on redirects)`,
+        { status: 401 }
+      );
+      return fail(error, config);
+    }
 
     // Only the current token can be refreshed or ended. If the stored token
     // changed meanwhile (another request refreshed it), retry with it; if
