@@ -25,6 +25,7 @@ import {
   setAuthAdapter,
 } from '@/shared/session/authService';
 import { getItem, setItem, STORAGE_KEYS } from '@/shared/storage/storage';
+import * as env from '@/shared/config/env';
 import { getConfig } from '@/shared/config/env';
 import { logger } from '@/shared/lib/logger';
 import { secureStore } from '@/testing';
@@ -198,9 +199,18 @@ describe('token safety', () => {
     );
   });
 
-  it.each([['/users/José'], ['/notes/a b'], ['/notes/{id}'], ['/a/./b']])(
-    'on iOS, still refreshes a 401 at %s that the platform reports encoded (no redirect)',
-    async path => {
+  // Each path as written, and as iOS reports it (NSURL absoluteString,
+  // checked with Foundation): encoded, with dot segments kept.
+  it.each([
+    ['/users/José', '/users/Jos%C3%A9'],
+    ['/notes/a b', '/notes/a%20b'],
+    ['/notes/{id}', '/notes/%7Bid%7D'],
+    ['/a/./b', '/a/./b'],
+    ['/files/a\\b', '/files/a%5Cb'],
+    ['/emoji/😀', '/emoji/%F0%9F%98%80'],
+  ])(
+    'on iOS, still refreshes a 401 at %s that iOS reports as %s (no redirect)',
+    async (path, reported) => {
       jest.replaceProperty(Platform, 'OS', 'ios');
       await signIn('t1');
       const refresh = jest.fn(async () => 't2');
@@ -210,8 +220,9 @@ describe('token safety', () => {
           return response(config, 200);
         }
         const error = httpError(config, 401);
-        // The same URL, serialized the way the platform reports it.
-        error.request = { responseURL: new URL(client.getUri(config)).href };
+        error.request = {
+          responseURL: client.getUri(config).replace(path, reported),
+        };
         throw error;
       });
 
@@ -219,6 +230,30 @@ describe('token safety', () => {
       expect(refresh).toHaveBeenCalledTimes(1);
     }
   );
+
+  it('on iOS, reads an IDN host and its punycode form as the same host', async () => {
+    jest.replaceProperty(Platform, 'OS', 'ios');
+    const config = getConfig();
+    jest.spyOn(env, 'getConfig').mockReturnValue({
+      ...config,
+      apiTrustedOrigins: ['https://bücher.example'],
+    });
+    await signIn('t1');
+    const refresh = jest.fn(async () => 't2');
+    setRefreshTokenHandler(refresh);
+    const client = authenticatedClient(async requestConfig => {
+      if (requestConfig.headers.Authorization === 'Bearer t2') {
+        return response(requestConfig, 200);
+      }
+      const error = httpError(requestConfig, 401);
+      // iOS reports the host in its punycode form.
+      error.request = { responseURL: 'https://xn--bcher-kva.example/notes' };
+      throw error;
+    });
+
+    await client.get('https://bücher.example/notes');
+    expect(refresh).toHaveBeenCalledTimes(1);
+  });
 
   it('on Android, ends the session for a 401 after a same-origin redirect (the token was sent)', async () => {
     jest.replaceProperty(Platform, 'OS', 'android');

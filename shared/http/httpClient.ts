@@ -146,15 +146,15 @@ type RetriableConfig = InternalAxiosRequestConfig & {
 
 /**
  * A URL's path as the server reads it: no query or fragment, percent-decoded
- * segment by segment, `.` and `..` resolved. The platform reports the
- * response's URL serialized (`/users/José` as `/users/Jos%C3%A9`), so both
- * sides are compared in this form.
+ * segment by segment, `.` and `..` resolved. iOS reports the response's URL
+ * serialized (`/users/José` as `/users/Jos%C3%A9`, `\` as `%5C`), so both
+ * sides are compared in this form. A redirect that changes only the query
+ * isn't seen; authenticated endpoints shouldn't redirect at all.
  */
 function pathOf(url: string): string {
   const raw = url
     .split(/[?#]/)[0]!
-    .replace(/^[a-z][a-z0-9+.-]*:\/\/[^/]*/i, '')
-    .replace(/\\/g, '/');
+    .replace(/^[a-z][a-z0-9+.-]*:\/\/[^/]*/i, '');
   const segments: string[] = [];
   for (const segment of raw.split('/').slice(1)) {
     if (segment === '..') segments.pop();
