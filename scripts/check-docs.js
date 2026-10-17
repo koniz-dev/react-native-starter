@@ -150,6 +150,8 @@ function anchorsOf(file) {
         : line;
     if (heading === null) continue;
     const base = heading
+      // A link in a heading: GitHub's anchor uses its text, not its URL.
+      .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
       .trim()
       .toLowerCase()
       .replace(/[^\p{L}\p{N}\s_-]/gu, '')

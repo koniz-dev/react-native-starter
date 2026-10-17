@@ -89,7 +89,8 @@ const project = {
           if (typeof source !== 'string') return;
           let target;
           if (source.startsWith('@/')) {
-            target = source.slice(2);
+            // Normalized, so `@/shared/../features/x` counts as features/x.
+            target = path.posix.normalize(source.slice(2));
           } else if (source.startsWith('.')) {
             target = path.posix.normalize(
               path.posix.join(path.posix.dirname(file), source)
@@ -333,6 +334,12 @@ module.exports = [
         {
           object: 'process',
           property: 'env',
+          message:
+            'Read environment values through shared/config/env.ts (getConfig / configResult).',
+        },
+        {
+          object: 'globalThis',
+          property: 'process',
           message:
             'Read environment values through shared/config/env.ts (getConfig / configResult).',
         },

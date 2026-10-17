@@ -28,9 +28,10 @@ Then it:
 `npm run init-project -- --dry-run` lists every change first. It refuses to
 run on uncommitted changes or a second time unless you pass `--force`. It
 formats its changes before writing any, and deletes itself last, so a
-problem (such as a syntax error in a file it rewrites) changes nothing;
-without git (a downloaded ZIP), keep a copy first, since it can't check for
-or undo changes.
+problem (such as a syntax error in a file it rewrites) changes nothing. With
+`--remove-demo`, the demo is removed first; if a later step fails, it prints
+the command that undoes both. Without git (a downloaded ZIP), keep a copy
+first, since it can't check for or undo changes.
 [Make It Yours](make-it-yours.md) lists what it changes and what is left for
 you (icons, colors, backend, providers).
 
@@ -131,25 +132,25 @@ emulator), or `w` (web), or scan the QR code with Expo Go.
 
 ## Scripts
 
-| Script                                                            | What it does                                                                                                  |
-| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `npm start`                                                       | Metro for the development variant                                                                             |
-| `npm run ios` / `npm run android` / `npm run web`                 | Metro and open that platform                                                                                  |
-| `npm run start:preview`, `npm run start:production`               | Metro for another variant (production without dev mode); see [App Config](app-config.md#build-variants)       |
-| `npm run prebuild:development` (or `:preview`, `:production`)     | Generate the native `ios/` and `android/` projects for a variant (gitignored)                                 |
-| `npm run build:preview:android` (or `:ios`, `build:production:*`) | Build and run a release build of that variant on a device or emulator, after its prebuild                     |
-| `npm run export:web`                                              | Export the web app (production variant) to `dist/`                                                            |
-| `npm run config:print`                                            | Print the resolved app config (`APP_VARIANT=preview npm run config:print` for another variant)                |
-| `npm run lint` / `npm run lint:fix`                               | ESLint, failing on any warning                                                                                |
-| `npm run format` / `npm run format:check`                         | Prettier                                                                                                      |
-| `npm run type-check`                                              | `tsc --noEmit` for the app, then for tests, scripts, and config (`tsconfig.tools.json`)                       |
-| `npm test`                                                        | Jest in watch mode                                                                                            |
-| `npm run test:ci`                                                 | Jest once, with coverage and its threshold                                                                    |
-| `npm run test:coverage`                                           | Jest with an HTML coverage report in `coverage/`                                                              |
-| `npm run test:e2e:ios` / `npm run test:e2e:android`               | Maestro end-to-end flows on a simulator or emulator ([Testing](testing.md#end-to-end-flows-maestro))          |
-| `npm run docs:check`                                              | Compile and lint the docs' TypeScript snippets, and check their paths and scripts                             |
-| `npm run doctor`                                                  | Expo Doctor against the installed Expo SDK (see below)                                                        |
-| `npm run audit:check`                                             | `npm audit --omit=dev`, failing on a high or critical advisory not reviewed in `scripts/audit-allowlist.json` |
+| Script                                                            | What it does                                                                                                                         |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `npm start`                                                       | Metro for the development variant                                                                                                    |
+| `npm run ios` / `npm run android` / `npm run web`                 | Metro and open that platform                                                                                                         |
+| `npm run start:preview`, `npm run start:production`               | Metro for another variant (production without dev mode); see [App Config](app-config.md#build-variants)                              |
+| `npm run prebuild:development` (or `:preview`, `:production`)     | Generate the native `ios/` and `android/` projects for a variant (gitignored)                                                        |
+| `npm run build:preview:android` (or `:ios`, `build:production:*`) | Build and run a release build of that variant on a device or emulator, after its prebuild                                            |
+| `npm run export:web`                                              | Export the web app (production variant) to `dist/`                                                                                   |
+| `npm run config:print`                                            | Print the resolved app config (`APP_VARIANT=preview npm run config:print` for another variant)                                       |
+| `npm run lint` / `npm run lint:fix`                               | ESLint, failing on any warning                                                                                                       |
+| `npm run format` / `npm run format:check`                         | Prettier                                                                                                                             |
+| `npm run type-check`                                              | `tsc --noEmit` for the app, then for tests and TypeScript config (`tsconfig.tools.json`; `.js` scripts are parsed, not type-checked) |
+| `npm test`                                                        | Jest in watch mode                                                                                                                   |
+| `npm run test:ci`                                                 | Jest once, with coverage and its threshold                                                                                           |
+| `npm run test:coverage`                                           | Jest with an HTML coverage report in `coverage/`                                                                                     |
+| `npm run test:e2e:ios` / `npm run test:e2e:android`               | Maestro end-to-end flows on a simulator or emulator ([Testing](testing.md#end-to-end-flows-maestro))                                 |
+| `npm run docs:check`                                              | Compile and lint the docs' TypeScript snippets, and check their paths and scripts                                                    |
+| `npm run doctor`                                                  | Expo Doctor against the installed Expo SDK (see below)                                                                               |
+| `npm run audit:check`                                             | `npm audit --omit=dev`, failing on a high or critical advisory not reviewed in `scripts/audit-allowlist.json`                        |
 
 <!-- @demo remove-block-start -->
 
@@ -184,7 +185,8 @@ GitHub turns off scheduled runs in a public repository after 60 days without
 activity; turn the workflow back on in the Actions tab
 ([GitHub: disabling and enabling a workflow](https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-workflow-runs/disabling-and-enabling-a-workflow)).
 
-The variant scripts use POSIX `VAR=value command` syntax (macOS, Linux, WSL).
+The variant scripts and `npm run doctor` use POSIX `VAR=value command`
+syntax (macOS, Linux, WSL).
 `npm run android` and `npm run ios` use `expo start -a` and `expo start -i`
 because `expo prebuild` rewrites the long forms (`--android`, `--ios`) to
 `expo run:*`. With the short forms, a prebuild leaves `package.json`

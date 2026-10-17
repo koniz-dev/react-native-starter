@@ -100,6 +100,10 @@ describe('check-docs on a copy of the project', () => {
           'Setext Title',
           '------------',
           '',
+          '## See [Expo](https://expo.dev)',
+          '',
+          '[linked heading](#see-expo)',
+          '',
           '[gone](nope-(paren).md)',
           '',
           '```typescript',
@@ -155,7 +159,7 @@ describe('check-docs on a copy of the project', () => {
         expect(result.stderr).toContain(problem);
       }
       expect(result.stderr).not.toMatch(
-        /forms%20ok|forms ok|#forms\b|Markdown, not code|Footnote|setext|draft/
+        /forms%20ok|forms ok|#forms\b|Markdown, not code|Footnote|setext|draft|see-expo/
       );
     } finally {
       fs.rmSync(copy, { recursive: true, force: true });

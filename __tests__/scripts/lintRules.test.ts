@@ -42,6 +42,20 @@ const IMPORTS_REJECTED: Fixture[] = [
     'features/home/screens/x.ts',
     "export * from '@/features/home/api/y';",
   ],
+  [
+    'a feature through @/ with ..',
+    'shared/lib/x.ts',
+    "export * from '@/shared/../features/home/x';",
+  ],
+];
+
+const ENV_REJECTED: Fixture[] = [
+  ['process.env', 'shared/lib/x.ts', 'export const a = process.env.X;'],
+  [
+    'globalThis.process.env',
+    'shared/lib/x.ts',
+    'export const a = globalThis.process.env.X;',
+  ],
 ];
 
 const IMPORTS_ALLOWED: Fixture[] = [
@@ -188,6 +202,7 @@ beforeAll(() => {
     ...IMPORTS_ALLOWED,
     ...COLORS_REJECTED,
     ...COLORS_ALLOWED,
+    ...ENV_REJECTED,
     THEME_COLOR,
     CONSOLE,
     ANY,
@@ -246,6 +261,14 @@ describe('lint: colors come from the theme', () => {
     expect(messagesFor(THEME_COLOR)).toEqual([]);
     expect(messagesFor(DEFAULT_EXPORT)).toEqual([
       expect.stringMatching(/^no-restricted-syntax: Use a named export/),
+    ]);
+  });
+});
+
+describe('lint: environment values come from shared/config/env.ts', () => {
+  it.each(ENV_REJECTED)('rejects %s', (...fixture) => {
+    expect(messagesFor(fixture)).toEqual([
+      expect.stringMatching(/^no-restricted-properties: /),
     ]);
   });
 });
