@@ -450,6 +450,26 @@ describe('logger', () => {
       expect(redact({ [key]: 'value' }, false)).toEqual({ [key]: 'value' });
     });
 
+    it.each([true, false])(
+      'reduces an Error to its name, message, code, and status (development: %s)',
+      development => {
+        const error = Object.assign(new Error('Request failed'), {
+          code: 'ERR_BAD_REQUEST',
+          status: 401,
+          config: { headers: { Authorization: 'Bearer LEAKED' } },
+          request: { _header: 'Authorization: Bearer LEAKED' },
+          response: { data: { email: 'pii@example.com' } },
+        });
+
+        const out = JSON.stringify(redact({ error }, development));
+        expect(out).not.toMatch(
+          /LEAKED|pii@example\.com|config|request|response/
+        );
+        expect(out).toContain('Request failed');
+        expect(out).toContain('ERR_BAD_REQUEST');
+      }
+    );
+
     it('redacts response bodies outside development only', () => {
       const input = { status: 500, data: { user: 'emily' }, body: '{}' };
 

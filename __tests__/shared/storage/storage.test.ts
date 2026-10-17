@@ -66,7 +66,12 @@ describe('storage', () => {
         'Error retrieving bad-json',
         new Error('not valid JSON')
       );
-      expect(JSON.stringify(logError.mock.calls)).not.toContain('4111');
+      // An Error stringifies to {}: read the messages of what was logged.
+      const logged = logError.mock.calls
+        .flat()
+        .map(arg => (arg instanceof Error ? arg.message : JSON.stringify(arg)))
+        .join(' ');
+      expect(logged).not.toContain('4111');
     });
 
     it('hasItem rejects instead of reporting an unreadable key as absent', async () => {

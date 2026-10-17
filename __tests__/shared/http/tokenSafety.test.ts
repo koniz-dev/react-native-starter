@@ -615,17 +615,17 @@ describe('request failure logs', () => {
 });
 
 describe('ApiError cause', () => {
-  it('keeps no headers or request body', () => {
+  it('keeps no headers, request body, or query string', () => {
     const config = {
       method: 'post',
-      url: '/auth/login?next=%2Fhome',
+      url: '/auth/login?access_token=SECRET-QUERY&next=%2Fhome#frag',
       headers: { Authorization: 'Bearer SECRET-TOKEN' },
       data: '{"username":"u","password":"hunter2"}',
     } as unknown as InternalAxiosRequestConfig;
 
     for (const error of [httpError(config, 400), networkError(config)]) {
       const dump = inspect(toApiError(error), { depth: 20, showHidden: true });
-      expect(dump).not.toMatch(/SECRET-TOKEN|hunter2/);
+      expect(dump).not.toMatch(/SECRET-TOKEN|hunter2|SECRET-QUERY|frag/);
       expect(dump).toContain('/auth/login');
     }
   });
