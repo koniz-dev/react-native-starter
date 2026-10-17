@@ -126,7 +126,8 @@ there, that call replaces a mock the test set before rendering. Call
 file), then set the test's mock:
 
 ```tsx
-import { act } from '@testing-library/react-native';
+// __tests__/shared/integrations/analyticsProvider.test.tsx
+import { act, waitFor } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import { renderRouter, screen } from 'expo-router/testing-library';
 import { analyticsSeam, type Analytics } from '@/shared/integrations/analytics';
@@ -147,13 +148,19 @@ afterEach(() => analyticsSeam.reset());
 it('reports a screen view for each route', async () => {
   renderRouter('./app', { initialUrl: '/' });
   await screen.findByText('Not signed in');
-  expect(provider.screen).toHaveBeenLastCalledWith('/');
+  // A screen view is reported just after navigation settles: wait for it.
+  await waitFor(() => expect(provider.screen).toHaveBeenLastCalledWith('/'));
 
   act(() => router.push('/login'));
   await screen.findByText('Welcome Back');
-  expect(provider.screen).toHaveBeenLastCalledWith('/login');
+  await waitFor(() =>
+    expect(provider.screen).toHaveBeenLastCalledWith('/login')
+  );
 });
 ```
+
+`__tests__/docs/testingSnippets.test.tsx` runs this example from this page,
+so it keeps passing.
 
 The same goes for `setAuthAdapter()` and the error reporter. The
 full-app tests that set a seam do this
@@ -363,8 +370,10 @@ report go to `e2e-results/<platform>/` (gitignored).
 
 Two subflows in `.maestro/subflows/` cover what most flows start with:
 
-- `open-app.yaml` opens the app and waits for Home; with
-  `CLEAR_STATE: 'true'` it starts from a fresh install, signed out.
+- `open-app.yaml` opens the app and waits for Home (the `tab-home` tab and
+  the text "Session" on Home); keep both, or change the subflow, when you
+  rewrite Home. With `CLEAR_STATE: 'true'` it starts from a fresh install,
+  signed out.
 - `open-login.yaml` opens Login from Home, and `sign-in.yaml` signs in on
   it with `MAESTRO_E2E_USERNAME` and `MAESTRO_E2E_PASSWORD`. It handles
   what iOS adds around a sign-in (the keyboard's Go key submitting the form,
@@ -474,8 +483,13 @@ E2E_API_URL=http://localhost:4000 E2E_BACKEND_CMD="node scripts/<your-mock>.js" 
   flow, so the password never goes in the repository.
 - **The results contain the test account.** Maestro writes the values of
   those variables into `e2e-results/` (`commands.json` and its logs), and the
-  manual e2e workflows upload that folder as an artifact. Use an account
-  that only reaches test data, and don't share the results publicly.
+  manual e2e workflows upload that folder as an artifact, which anyone who
+  can read a public repository can download. Use an account that only
+  reaches test data; on a public repository, don't upload `commands.json`
+  (or the results at all) when flows sign in. To run signed-in flows in
+  those workflows, pass the account from repository secrets in the run
+  step's `env:` (`MAESTRO_E2E_USERNAME: ${{ secrets.E2E_USERNAME }}`), and
+  your backend's URLs as `E2E_API_URL` / `E2E_AUTH_API_URL`.
 - **A backend on another machine or HTTPS** works too: set the URL, and leave
   `E2E_BACKEND_CMD` unset. Only `localhost` URLs get `adb reverse`; see
   [A backend on your computer](connect-your-backend.md#a-backend-on-your-computer).
