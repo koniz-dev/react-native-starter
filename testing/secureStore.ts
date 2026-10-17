@@ -17,6 +17,17 @@ export const secureStoreModule = {
   deleteItemAsync: jest.fn(),
 };
 
+/** expo-secure-store's own key check, which runs before the native module. */
+function checkKey(key: string): Promise<void> {
+  return /^[\w.-]+$/.test(key)
+    ? Promise.resolve()
+    : Promise.reject(
+        new Error(
+          'Invalid key provided to SecureStore. Keys must not be empty and contain only alphanumeric characters, ".", "-", and "_".'
+        )
+      );
+}
+
 /** Empties the store and restores the default (available, stateful) behavior. */
 export function resetSecureStore(): void {
   secureStore.clear();
@@ -25,19 +36,21 @@ export function resetSecureStore(): void {
     .mockImplementation(() => Promise.resolve(true));
   secureStoreModule.setItemAsync
     .mockReset()
-    .mockImplementation((key: string, value: string) => {
-      secureStore.set(key, value);
-      return Promise.resolve();
-    });
+    .mockImplementation((key: string, value: string) =>
+      checkKey(key).then(() => {
+        secureStore.set(key, value);
+      })
+    );
   secureStoreModule.getItemAsync
     .mockReset()
     .mockImplementation((key: string) =>
-      Promise.resolve(secureStore.get(key) ?? null)
+      checkKey(key).then(() => secureStore.get(key) ?? null)
     );
   secureStoreModule.deleteItemAsync
     .mockReset()
-    .mockImplementation((key: string) => {
-      secureStore.delete(key);
-      return Promise.resolve();
-    });
+    .mockImplementation((key: string) =>
+      checkKey(key).then(() => {
+        secureStore.delete(key);
+      })
+    );
 }

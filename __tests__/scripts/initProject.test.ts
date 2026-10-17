@@ -24,6 +24,7 @@ const init = require('../../scripts/init-project.js') as {
   validators: Record<string, (value: string) => string | null>;
   slugify(name: string): string;
   tsString(value: string): string;
+  markdownText(text: string): string;
 };
 
 const ROOT = path.resolve(__dirname, '../..');
@@ -82,6 +83,14 @@ describe('init-project input', () => {
     ['name', 'Acme | Notes'],
     ['name', 'Acme\nNotes'],
     ['owner', ''],
+    // Invisible formatting characters: a right-to-left override, a
+    // zero-width space.
+    ['name', 'Acme\u202ENotes'],
+    ['name', 'Acme\u200BNotes'],
+    ['owner', 'Acme\u202EInc.'],
+    ['owner', ' Acme Inc. '],
+    // Expo's development client registers exp+<slug>.
+    ['scheme', 'exp+acme'],
     // npm and Expo Doctor reject a package named after its own dependency.
     ['slug', 'react'],
     ['slug', 'expo'],
@@ -121,6 +130,13 @@ describe('init-project input', () => {
     expect(init.slugify("Bob's App")).toBe('bobs-app');
     expect(init.tsString('Acme')).toBe("'Acme'");
     expect(init.tsString("Bob's")).toBe(`"Bob's"`);
+  });
+
+  it('writes the name into the README as literal Markdown text', () => {
+    expect(init.markdownText('Café & <Co> *x* [y]')).toBe(
+      'Café \\& \\<Co\\> \\*x\\* \\[y\\]'
+    );
+    expect(init.markdownText('Acme Notes')).toBe('Acme Notes');
   });
 });
 

@@ -155,8 +155,10 @@ const validators = {
     if (value !== value.trim())
       return 'the app name has leading or trailing spaces';
     if (value.length > 50) return 'the app name is longer than 50 characters';
-    if (/[\p{Cc}`\\|]/u.test(value)) {
-      return 'the app name contains a control character, backtick, backslash, or |';
+    // \p{Cf}: invisible formatting characters, such as a right-to-left
+    // override that makes the name read differently than it is.
+    if (/[\p{Cc}\p{Cf}`\\|]/u.test(value)) {
+      return 'the app name contains a control or invisible character, backtick, backslash, or |';
     }
     return null;
   },
@@ -181,7 +183,7 @@ const validators = {
     if (!/^[a-z][a-z0-9+.-]*$/.test(value ?? '')) {
       return `scheme "${value}" must start with a lowercase letter and use only a-z, 0-9, +, ., - (e.g. acmenotes)`;
     }
-    if (RESERVED_SCHEMES.has(value)) {
+    if (RESERVED_SCHEMES.has(value) || /^exps?\+/.test(value)) {
       return `scheme "${value}" belongs to Expo Go, the web, or the OS; pick one for your app (e.g. acmenotes)`;
     }
     return null;
@@ -202,8 +204,10 @@ const validators = {
   },
   owner(value) {
     if (!value || !value.trim()) return 'the LICENSE holder is required';
-    return /\p{Cc}/u.test(value)
-      ? 'the LICENSE holder contains a control character'
+    if (value !== value.trim())
+      return 'the LICENSE holder has leading or trailing spaces';
+    return /[\p{Cc}\p{Cf}]/u.test(value)
+      ? 'the LICENSE holder contains a control or invisible character'
       : null;
   },
 };
@@ -306,7 +310,7 @@ async function collectInput(args) {
         await question(fallback ? `${label} (${fallback}): ` : `${label}: `)
       ).trim();
       const value = answer || fallback;
-      const error = validators[key](value);
+      const error = value ? validators[key](value) : 'a value is required';
       if (!error) return value;
       process.stdout.write(`  ${error}\n`);
     }
@@ -457,8 +461,14 @@ function dropMarkerLines(text, tag) {
     .replace(/\n{3,}/g, '\n\n');
 }
 
+/** Text shown as written in Markdown: `<Co>` and `*x*` stay literal. */
+function markdownText(text) {
+  return text.replace(/[\\`*_{}[\]<>()#+!~&]/g, '\\$&');
+}
+
 /** The project's README, replacing the template's. */
-function appReadme(name) {
+function appReadme(rawName) {
+  const name = markdownText(rawName);
   const expo = JSON.parse(read('package.json')).dependencies?.expo ?? '';
   const sdk = /\d+/.exec(expo)?.[0];
   return `# ${name}
@@ -849,4 +859,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { parseArgs, validators, slugify, tsString };
+module.exports = { parseArgs, validators, slugify, tsString, markdownText };

@@ -5,6 +5,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { resetSecureStore } from '@/testing/secureStore';
 import { setColorScheme } from '@/testing/colorScheme';
+import { STORAGE_KEYS } from '@/shared/storage/storage';
 
 // AsyncStorage: the library's in-memory mock.
 jest.mock('@react-native-async-storage/async-storage', () =>
@@ -30,6 +31,6 @@ beforeEach(async () => {
   await AsyncStorage.clear();
   // Each test is an app that has launched before; a test of the first launch
   // after an install removes the marker (see clearSessionFromPreviousInstall).
-  await AsyncStorage.setItem('install_marker', 'true');
+  await AsyncStorage.setItem(STORAGE_KEYS.INSTALL_MARKER, 'true');
   setColorScheme('light');
 });
