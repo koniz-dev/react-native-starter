@@ -56,7 +56,22 @@ const REDACTED = '[redacted]';
  * of redacting.
  */
 const SECRET_KEY =
-  /authoriz|authenticat|^auth|[-_]auth|cookie|pass(word|code|phrase)|passwd|^pwd$|secret|token|api[-_]?key|access[-_]?key|otp|mfa|^pin$|jwt|session[-_]?id|private[-_]?key|credential|refresh|verifier|signature|cvv|cvc/i;
+  /authoriz|authenticat|cookie|pass(word|code|phrase)|passwd|^pwd$|secret|token|api[-_]?key|access[-_]?key|mfa|^pin$|jwt|session[-_]?id|private[-_]?key|credential|verifier|signature|cvv|cvc/i;
+/**
+ * Secret words too short to match inside a key, matched against its words
+ * (`authCode`, `otp_code`, `refresh`) so `author`, `rootPath`, and
+ * `refreshing` are kept.
+ */
+const SECRET_WORD = /^(auth(?!or)[a-z0-9]*|otp[a-z0-9]*|[th]otp|refresh)$/;
+
+function isSecretKey(key: string): boolean {
+  if (SECRET_KEY.test(key)) return true;
+  return key
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .some(word => SECRET_WORD.test(word));
+}
 const BODY_KEY = /^(data|body)$/i;
 /**
  * Keys whose string values are URLs (by how the key ends, so `linkText` is
@@ -135,7 +150,7 @@ export function redact(value: unknown, development: boolean): unknown {
 
     const result: Record<string, unknown> = {};
     for (const [key, item] of entries) {
-      if (SECRET_KEY.test(key)) {
+      if (isSecretKey(key)) {
         result[key] = REDACTED;
       } else if (!development && BODY_KEY.test(key)) {
         result[key] = REDACTED;

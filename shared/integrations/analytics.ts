@@ -1,6 +1,6 @@
 /**
- * Analytics seam. The default logs events at debug level (development builds
- * only) and sends nothing anywhere. Plug a provider in shared/integrations/setup.ts;
+ * Analytics seam. The default logs events at debug level (shown by default
+ * only in development; see EXPO_PUBLIC_LOG_LEVEL) and sends nothing anywhere. Plug a provider in shared/integrations/setup.ts;
  * see docs/plug-in-a-provider.md.
  */
 import { logger } from '@/shared/lib/logger';

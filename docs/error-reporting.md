@@ -48,10 +48,12 @@ export async function saveSettings(
   - always: values whose key names a secret, matched anywhere in the key and
     in any case: `Authorization`, `Cookie`, any key containing `password`,
     `passcode`, `secret`, `token`, `apiKey`, `accessKey`, `jwt`, `sessionId`,
-    `privateKey`, `credential`, `refresh`, `verifier`, `signature`, `otp`,
-    `mfa`, `cvv`, or `cvc`, keys starting with `auth`, and `pin` (so
-    `newPassword`, `x-auth-token`, `client_secret`, `totp`, and
-    `code_verifier` too) become `[redacted]`, also inside arrays;
+    `privateKey`, `credential`, `verifier`, `signature`, `mfa`, `cvv`, or
+    `cvc`; a key with the word `auth`, `otp` (or `totp`), or `refresh` in it,
+    such as `authCode`, `otp_code`, or `refresh` (but not `author`,
+    `footprint`, or `refreshing`); and `pin`. So `newPassword`,
+    `x-auth-token`, `client_secret`, and `code_verifier` become `[redacted]`
+    too, also inside arrays;
   - an `Error` in the context is reduced to its name, message, `code`, and
     `status` (development adds its stack);
   - a `Date` becomes its ISO string, a `Map` an object, a `Set` an array,

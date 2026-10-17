@@ -422,11 +422,32 @@ describe('logger', () => {
       'passwd',
       'apiKey',
       'api_key',
+      'otpCode',
+      'otp_code',
+      'userOtp',
+      'otpcode',
+      'hotp',
+      'authCode',
+      'authcode',
+      'basic_auth',
     ])('redacts %s', key => {
       expect(redact({ [key]: 'SECRET', pinned: true }, false)).toEqual({
         [key]: '[redacted]',
         pinned: true,
       });
+    });
+
+    it.each([
+      'rootPath',
+      'screenshotPath',
+      'footprint',
+      'notPresent',
+      'author',
+      'authorName',
+      'refreshing',
+      'refreshedAt',
+    ])('keeps %s, an ordinary key that contains a secret word', key => {
+      expect(redact({ [key]: 'value' }, false)).toEqual({ [key]: 'value' });
     });
 
     it('redacts response bodies outside development only', () => {
