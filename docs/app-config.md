@@ -86,6 +86,9 @@ own, so check them in a build (`npm run prebuild:preview`, then build). The
 native splash stays up until the stored session has been read
 (`app/_layout.tsx`). See
 [Expo: splash screen and app icon](https://docs.expo.dev/develop/user-interface/splash-screen-and-app-icon/).
+Android 13 and later can tint icons to the wallpaper (themed icons): add a
+single-color `android.adaptiveIcon.monochromeImage` in `app.config.ts` for
+that; without one, the launcher shows the regular icon.
 
 ## Permissions
 

@@ -45,8 +45,11 @@ itself:
 Restart Metro after changing `.env`.
 
 **Preview and production builds** reject `http` URLs, and Android release
-builds also block cleartext traffic. To try such a build against a backend
-that isn't deployed yet:
+builds also block cleartext traffic. iOS builds keep Expo's App Transport
+Security default, which allows cleartext only on the local network
+(`NSAllowsLocalNetworking`); set it to `false` under `ios.infoPlist.NSAppTransportSecurity`
+in `app.config.ts` if your release builds never talk to it. To try such a
+build against a backend that isn't deployed yet:
 
 - **Use an HTTPS tunnel** to your local server (a tunneling service gives it
   a public `https` URL with a trusted certificate). This is the simplest
