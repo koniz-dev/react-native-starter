@@ -64,14 +64,22 @@ const SECRET_KEY =
  */
 const SECRET_WORD = /^(auth(?!or)[a-z0-9]*|otp[a-z0-9]*|[a-z]*otp|refresh)$/;
 
-function isSecretKey(key: string): boolean {
-  if (SECRET_KEY.test(key)) return true;
+/** The key's words: split at a lowercase-to-capital change and at - or _. */
+function wordsOf(key: string): string[] {
   return key
     .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
-    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
     .toLowerCase()
-    .split(/[^a-z0-9]+/)
-    .some(word => SECRET_WORD.test(word));
+    .split(/[^a-z0-9]+/);
+}
+
+function isSecretKey(key: string): boolean {
+  if (SECRET_KEY.test(key)) return true;
+  // Also split a run of capitals before a word (`TOTPCode` -> TOTP Code).
+  // Both ways, since that split also cuts `OTPs` into `OT Ps`.
+  const runSplit = key.replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2');
+  return [...wordsOf(key), ...wordsOf(runSplit)].some(word =>
+    SECRET_WORD.test(word)
+  );
 }
 const BODY_KEY = /^(data|body)$/i;
 /**

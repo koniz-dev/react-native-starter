@@ -432,6 +432,10 @@ describe('logger', () => {
       'basic_auth',
       'TOTPCode',
       'SMSOTP',
+      'OTPs',
+      'backupOTPs',
+      'OTPcode',
+      'AUTHcode',
       'sessionKey',
       'session_key',
     ])('redacts %s', key => {
