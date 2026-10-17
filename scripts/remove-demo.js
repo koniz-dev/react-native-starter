@@ -25,7 +25,7 @@
  * It refuses to run on uncommitted changes unless --force, so a failure
  * part way can be undone with git.
  *
- * Usage: npm run remove-demo [-- --dry-run] [-- --force] [-- --help]
+ * Usage: npm run remove-demo [-- [--dry-run] [--force] [--help]]
  * (--no-summary skips the closing message, for a caller that prints its own.)
  * Any other argument is refused, so a typo never runs the removal.
  * Exit codes: 0 done, 2 nothing was changed, 1 failed after changing files.

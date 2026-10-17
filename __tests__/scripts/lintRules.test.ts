@@ -56,6 +56,11 @@ const ENV_REJECTED: Fixture[] = [
     'shared/lib/x.ts',
     'export const a = globalThis.process.env.X;',
   ],
+  [
+    'global.process.env',
+    'shared/lib/x.ts',
+    'export const a = global.process.env.X;',
+  ],
 ];
 
 const IMPORTS_ALLOWED: Fixture[] = [

@@ -338,6 +338,12 @@ module.exports = [
             'Read environment values through shared/config/env.ts (getConfig / configResult).',
         },
         {
+          object: 'global',
+          property: 'process',
+          message:
+            'Read environment values through shared/config/env.ts (getConfig / configResult).',
+        },
+        {
           object: 'globalThis',
           property: 'process',
           message:

@@ -61,12 +61,13 @@ kill_tree() {
 cleanup() {
   # Back to the appearance the device had before the run (unset if it
   # stopped before that was read: nothing changed it yet).
-  if [ -n "${WAS_DARK:-}" ]; then set_dark_mode "$WAS_DARK" || true; fi
+  if [ -n "${WAS_MODE:-}" ]; then set_dark_mode "$WAS_MODE" || true; fi
   # (An empty array is "unbound" to macOS's bash 3.2 under set -u.)
   for pid in ${PIDS[@]+"${PIDS[@]}"}; do kill_tree "$pid"; done
 }
 trap cleanup EXIT
 
+# yes or no (or, on Android, the device's own mode, such as auto).
 set_dark_mode() {
   if [ "$PLATFORM" = android ]; then
     adb shell cmd uimode night "$1" >/dev/null
@@ -74,15 +75,16 @@ set_dark_mode() {
     xcrun simctl ui booted appearance "$([ "$1" = yes ] && echo dark || echo light)"
   fi
 }
-# yes or no: whether the device is in dark mode now.
-is_dark() {
+# The device's mode now, to restore at the end: Android's night mode (yes,
+# no, auto, ...), or yes/no from the simulator's appearance.
+current_mode() {
   if [ "$PLATFORM" = android ]; then
-    adb shell cmd uimode night 2>/dev/null | grep -q 'Night mode: yes' && echo yes || echo no
+    { adb shell cmd uimode night 2>/dev/null || true; } | tr -d '\r' | sed -n 's/^Night mode: //p'
   else
     [ "$(xcrun simctl ui booted appearance 2>/dev/null)" = dark ] && echo yes || echo no
   fi
 }
-WAS_DARK="$(is_dark)"
+WAS_MODE="$(current_mode)"
 
 # A server already on either port (your own `npm start`, an earlier run) would
 # answer the readiness checks below in place of this run's, without the e2e
@@ -114,6 +116,8 @@ if [ -n "${E2E_BACKEND_CMD:-}" ]; then
   # A server already answering there (an earlier run's) would pass the
   # readiness check below in place of the one this run starts.
   for url in "$API_URL" "$AUTH_API_URL"; do
+    # This run's e2e mock (the default for a URL you didn't set) answers too.
+    [ "$url" = "$MOCK_API_URL" ] && continue
     if curl -s -o /dev/null --max-time 2 "$url"; then
       echo "$url already answers; stop that server before E2E_BACKEND_CMD starts yours" >&2
       exit 1
