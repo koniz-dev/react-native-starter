@@ -307,6 +307,7 @@ describe('the documented AuthAdapter against a backend of another shape', () => 
     backend.state.rotate = false;
     await signIn();
     backend.state.validAccess.clear();
+    jest.mocked(SecureStore.setItemAsync).mockClear();
 
     await expect(authService.fetchProfile()).resolves.toMatchObject({
       id: 'u-1',
@@ -320,6 +321,15 @@ describe('the documented AuthAdapter against a backend of another shape', () => 
     await authService.fetchProfile();
     expect(secureStore.get(REFRESH_KEY)).toBe('refresh-1');
     expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('access-3');
+    // Nothing to store: on the web, writing the missing token would clear it.
+    expect(SecureStore.setItemAsync).not.toHaveBeenCalledWith(
+      REFRESH_KEY,
+      expect.anything()
+    );
+    expect(SecureStore.setItemAsync).not.toHaveBeenCalledWith(
+      REFRESH_KEY,
+      undefined
+    );
   });
 
   it('signs out and drops the refresh token when the refresh is rejected', async () => {
