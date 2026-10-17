@@ -156,5 +156,6 @@ describe('auth flow with the web token store', () => {
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     // The profile left in AsyncStorage (localStorage on web) is removed too.
     expect(await getItem(STORAGE_KEYS.USER_DATA)).toBeNull();
-  });
+    // Three app renders: under a loaded machine this nears the 15 s default.
+  }, 30000);
 });

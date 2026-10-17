@@ -482,6 +482,33 @@ describe('the documented AuthAdapter against a backend of another shape', () => 
     expect(secureStore.get(REFRESH_KEY)).toBe('refresh-2');
   });
 
+  it("a refresh that succeeds after a sign-out + sign-in keeps the new session's refresh token", async () => {
+    await signIn();
+    backend.state.validAccess.clear();
+    const realAdapter = backend.adapter;
+    let releaseRefresh!: () => void;
+    const held = new Promise<void>(r => (releaseRefresh = r));
+    const delayed: typeof realAdapter = async config => {
+      const response = await realAdapter(config);
+      if (config.url === '/sessions/refresh') await held; // answer still on the wire
+      return response;
+    };
+    for (const client of allClients) client.defaults.adapter = delayed;
+
+    const profile = authService.fetchProfile().catch((e: unknown) => e);
+    for (let i = 0; i < 20; i++) await new Promise(r => setTimeout(r, 0));
+    await authService.logout();
+    await signIn();
+    const newSession = secureStore.get(REFRESH_KEY);
+    expect(newSession).toBeDefined();
+    releaseRefresh(); // the old session's rotated tokens arrive
+    await profile;
+    for (let i = 0; i < 20; i++) await new Promise(r => setTimeout(r, 0));
+    expect(secureStore.get(REFRESH_KEY)).toBe(newSession);
+    // The rotated token belongs to no session: it is revoked, not kept.
+    expect([...backend.state.validRefresh]).toEqual([newSession]);
+  });
+
   it('revokes the refresh token on logout', async () => {
     await signIn();
 
