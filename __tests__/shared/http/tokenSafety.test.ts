@@ -8,6 +8,7 @@ import {
   type InternalAxiosRequestConfig,
 } from 'axios';
 import { inspect } from 'util';
+import { Platform } from 'react-native';
 import { ApiError, toApiError } from '@/shared/http/apiError';
 import { createHttpClient, getOrigin } from '@/shared/http/httpClient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -175,6 +176,7 @@ describe('token safety', () => {
   );
 
   it('keeps the session when the 401 came after a redirect, which iOS follows without the token', async () => {
+    jest.replaceProperty(Platform, 'OS', 'ios');
     await signIn('t1');
     const refresh = jest.fn(async () => 't2');
     setRefreshTokenHandler(refresh);
@@ -194,6 +196,41 @@ describe('token safety', () => {
       expect.stringContaining('redirected'),
       expect.anything()
     );
+  });
+
+  it.each([['/users/José'], ['/notes/a b'], ['/notes/{id}'], ['/a/./b']])(
+    'on iOS, still refreshes a 401 at %s that the platform reports encoded (no redirect)',
+    async path => {
+      jest.replaceProperty(Platform, 'OS', 'ios');
+      await signIn('t1');
+      const refresh = jest.fn(async () => 't2');
+      setRefreshTokenHandler(refresh);
+      const client = authenticatedClient(async config => {
+        if (config.headers.Authorization === 'Bearer t2') {
+          return response(config, 200);
+        }
+        const error = httpError(config, 401);
+        // The same URL, serialized the way the platform reports it.
+        error.request = { responseURL: new URL(client.getUri(config)).href };
+        throw error;
+      });
+
+      await client.get(path);
+      expect(refresh).toHaveBeenCalledTimes(1);
+    }
+  );
+
+  it('on Android, ends the session for a 401 after a same-origin redirect (the token was sent)', async () => {
+    jest.replaceProperty(Platform, 'OS', 'android');
+    await signIn('t1');
+    const client = authenticatedClient(async config => {
+      const error = httpError(config, 401);
+      error.request = { responseURL: `${client.getUri(config)}/` };
+      throw error;
+    });
+
+    await client.get('/notes').catch(() => undefined);
+    expect(expired).toHaveBeenCalledTimes(1);
   });
 
   it('still ends the session for a 401 at the requested URL', async () => {

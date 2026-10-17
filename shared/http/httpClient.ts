@@ -22,6 +22,7 @@ import axios, {
   type AxiosInstance,
   type InternalAxiosRequestConfig,
 } from 'axios';
+import { Platform } from 'react-native';
 import { getConfig } from '@/shared/config/env';
 import { logger } from '@/shared/lib/logger';
 import { toApiError, type ApiErrorCode } from './apiError';
@@ -143,30 +144,53 @@ type RetriableConfig = InternalAxiosRequestConfig & {
   _generation?: number;
 };
 
-/** `METHOD path` for logs, without the query string or fragment. */
-/** A URL without its query string and fragment, its origin normalized. */
-function resourceOf(url: string): string | null {
-  const origin = getOrigin(url);
-  if (!origin) return null;
-  const path = url
+/**
+ * A URL's path as the server reads it: no query or fragment, percent-decoded
+ * segment by segment, `.` and `..` resolved. The platform reports the
+ * response's URL serialized (`/users/José` as `/users/Jos%C3%A9`), so both
+ * sides are compared in this form.
+ */
+function pathOf(url: string): string {
+  const raw = url
     .split(/[?#]/)[0]!
-    .replace(/^[a-z][a-z0-9+.-]*:\/\/[^/]*/i, '');
-  return origin + (path || '/');
+    .replace(/^[a-z][a-z0-9+.-]*:\/\/[^/]*/i, '')
+    .replace(/\\/g, '/');
+  const segments: string[] = [];
+  for (const segment of raw.split('/').slice(1)) {
+    if (segment === '..') segments.pop();
+    else if (segment !== '.') {
+      try {
+        segments.push(decodeURIComponent(segment));
+      } catch {
+        segments.push(segment);
+      }
+    }
+  }
+  return `/${segments.join('/')}`;
 }
 
+/** An internationalized host, which the platform may report as punycode. */
+const isIdn = (origin: string) => /[^ -~]|xn--/i.test(origin);
+
 /**
- * Whether the response came from another URL than the one requested: the
- * request followed a redirect. iOS drops the Authorization header when it
- * follows one, even to the same origin, so such a 401 says nothing about
- * the token.
+ * Whether an iOS request followed a redirect: its response came from another
+ * URL than the one requested. iOS drops the Authorization header when it
+ * follows a redirect, even to the same origin, so such a 401 says nothing
+ * about the token. Android and the web keep the header on a same-origin
+ * redirect (and a cross-origin one never had it), so their 401s count.
  */
 function followedRedirect(error: AxiosError, requested: string): boolean {
+  if (Platform.OS !== 'ios') return false;
   const final = (error.request as { responseURL?: unknown } | undefined)
     ?.responseURL;
   if (typeof final !== 'string' || !final) return false;
-  return resourceOf(final) !== resourceOf(requested);
+  const [from, to] = [getOrigin(requested), getOrigin(final)];
+  if (!from || !to) return false;
+  if (from !== to && !isIdn(from) && !isIdn(to)) return true;
+  return pathOf(final) !== pathOf(requested);
 }
 
+/** `METHOD path` for logs, without the query string or fragment. */
 function describe(config: InternalAxiosRequestConfig | undefined): string {
   if (!config) return 'request';
   const path = (config.url ?? '').split(/[?#]/)[0];
