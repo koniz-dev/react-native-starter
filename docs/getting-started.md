@@ -217,6 +217,11 @@ bundles), so the Audit workflow starts green. Make the review yours:
    what npm reports or whose `severity` npm has raised (an advisory
    re-scored to critical needs a new review).
 
+Moderate and low advisories are listed as `reported (not gated)` and never
+fail the check. Read the ones in packages your app ships (not only build
+tools): `decode-uri-component`, for example, comes through expo-router and
+parses deep-link URLs.
+
 New advisories fail the check until you fix or review them the same way. The
 Audit workflow fails, and CI doesn't, so a new advisory doesn't block work on
 unrelated changes; treat a red Audit run as a task.

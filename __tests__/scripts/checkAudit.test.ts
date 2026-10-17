@@ -191,6 +191,34 @@ describe('check-audit', () => {
     );
   });
 
+  it('lists the most severe advisories first', () => {
+    const merged = (...reports: ReturnType<typeof report>[]) => ({
+      vulnerabilities: Object.assign(
+        {},
+        ...reports.map(r => r.vulnerabilities)
+      ),
+      metadata: { vulnerabilities: {} },
+    });
+    const { lines } = evaluate(
+      merged(
+        report('alpha', 'low'),
+        report('bravo', 'moderate'),
+        report('charlie', 'critical'),
+        report('delta', 'high')
+      ),
+      [entry('charlie'), entry('delta')].map(e =>
+        e.package === 'charlie' ? { ...e, severity: 'critical' } : e
+      ),
+      TODAY
+    );
+    expect(lines.slice(0, 4).map(line => line.split(/\s+/)[0])).toEqual([
+      'critical',
+      'high',
+      'moderate',
+      'low',
+    ]);
+  });
+
   it('reports moderate advisories without failing', () => {
     const { problems, lines } = evaluate(
       report('query', 'moderate', true),

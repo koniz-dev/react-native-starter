@@ -126,8 +126,11 @@ function evaluate(report, allowlist, today) {
   const problems = [];
   const lines = [];
 
-  for (const advisory of [...advisories.values()].sort((a, b) =>
-    a.severity.localeCompare(b.severity)
+  // Most severe first, then by package.
+  for (const advisory of [...advisories.values()].sort(
+    (a, b) =>
+      (SEVERITY_RANK[b.severity] ?? -1) - (SEVERITY_RANK[a.severity] ?? -1) ||
+      a.package.localeCompare(b.package)
   )) {
     const entry = allowed.get(advisory.id);
     const status = !GATED.has(advisory.severity)
