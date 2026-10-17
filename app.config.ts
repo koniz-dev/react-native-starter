@@ -64,12 +64,16 @@ function getVariant(): Variant {
  * APP_BUILD_NUMBER in CI or the build profile and increase it for every
  * store upload.
  */
+/** Android's largest versionCode. */
+const MAX_BUILD_NUMBER = 2100000000;
+
 function getBuildNumber(): number {
   const value = process.env.APP_BUILD_NUMBER ?? '1';
-  const buildNumber = Number(value);
-  if (!Number.isInteger(buildNumber) || buildNumber < 1) {
+  // Digits only: Number() would also read "1e3", "0x10", or " 42 ".
+  const buildNumber = /^\d+$/.test(value) ? Number(value) : NaN;
+  if (!(buildNumber >= 1 && buildNumber <= MAX_BUILD_NUMBER)) {
     throw new Error(
-      `APP_BUILD_NUMBER must be a positive integer (got "${value}")`
+      `APP_BUILD_NUMBER must be a whole number from 1 to ${MAX_BUILD_NUMBER} (got "${value}")`
     );
   }
   return buildNumber;

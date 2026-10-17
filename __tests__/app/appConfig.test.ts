@@ -64,6 +64,15 @@ describe('app.config.ts variants', () => {
     ).toThrow(/APP_BUILD_NUMBER/);
   });
 
+  it.each(['1e3', '0x10', ' 42 ', '4.0', '2100000001'])(
+    'rejects the build number %p, which Number() would read',
+    value => {
+      expect(() =>
+        resolve({ APP_VARIANT: 'production', APP_BUILD_NUMBER: value })
+      ).toThrow(/APP_BUILD_NUMBER/);
+    }
+  );
+
   it('declares only exempt encryption, so iOS builds need no compliance answer', () => {
     expect(resolve({}).ios?.config?.usesNonExemptEncryption).toBe(false);
   });
