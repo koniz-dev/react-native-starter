@@ -875,4 +875,11 @@ if (require.main === module) {
   });
 }
 
-module.exports = { parseArgs, validators, slugify, tsString, markdownText };
+module.exports = {
+  parseArgs,
+  validators,
+  slugify,
+  tsString,
+  markdownText,
+  appReadme,
+};

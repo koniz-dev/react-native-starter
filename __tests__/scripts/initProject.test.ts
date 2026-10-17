@@ -32,6 +32,7 @@ const init = require('../../scripts/init-project.js') as {
   slugify(name: string): string;
   tsString(value: string): string;
   markdownText(text: string): string;
+  appReadme(name: string): string;
 };
 
 const ROOT = path.resolve(__dirname, '../..');
@@ -164,6 +165,11 @@ describe('init-project input', () => {
     // A name that starts like a list item stays a paragraph.
     expect(init.markdownText('1. Notes')).toBe('1\\. Notes');
     expect(init.markdownText('- Notes')).toBe('\\- Notes');
+    expect(init.markdownText('C++ #1 my_app')).toBe('C\\+\\+ \\#1 my\\_app');
+    // The README's heading and first line use it.
+    const readme = init.appReadme('C# *Notes*');
+    expect(readme).toMatch(/^# C\\# \\\*Notes\\\*\n/);
+    expect(readme).toContain('\nC\\# \\*Notes\\* is an Expo');
   });
 });
 
