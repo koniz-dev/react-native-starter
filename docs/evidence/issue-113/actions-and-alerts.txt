@@ -1,0 +1,20 @@
+E2E (Android, manual) success 16cc770b80ece010a8ca658f1769cbf87a34db81 attempt 1 https://github.com/koniz-dev/react-native-starter/actions/runs/39000160143
+E2E (Android, manual) success 16cc770b80ece010a8ca658f1769cbf87a34db81 attempt 1 https://github.com/koniz-dev/react-native-starter/actions/runs/39000162342
+E2E (iOS, manual) success 16cc770b80ece010a8ca658f1769cbf87a34db81 attempt 1 https://github.com/koniz-dev/react-native-starter/actions/runs/39000164677
+
+E2E (iOS, manual) workflow_dispatch success
+E2E (Android, manual) workflow_dispatch success
+E2E (Android, manual) workflow_dispatch success
+Audit push success
+Push on main dynamic success
+E2E (iOS, manual) workflow_dispatch success
+CI push success
+
+CodeQL analyses on 16cc770:
+2026-10-16T19:18:59Z /language:javascript-typescript results=0
+2026-10-16T19:18:24Z /language:actions results=0
+
+Open alerts before the release (2026-10-17T04:16:24Z):
+code-scanning: 0
+dependabot: 0
+secret-scanning: 0

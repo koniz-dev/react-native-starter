@@ -1,0 +1,16 @@
+object 16cc770b80ece010a8ca658f1769cbf87a34db81
+type commit
+tag v1.1.13
+tagger koniz-dev <kietna.work@gmail.com> 1792208878 +0700
+
+v1.1.13: fix CodeQL cache-poisoning alerts in the iOS e2e workflow (#112)
+
+Refs koniz-dev/react-native-starter#113
+
+release: v1.1.13, draft=false, prerelease=false, published 2026-10-17T04:16:07Z, https://github.com/koniz-dev/react-native-starter/releases/tag/v1.1.13
+latest: Latest	v1.1.13
+
+Changed since v1.1.12:
+ .github/workflows/e2e-ios.yml | 10 ++++------
+ docs/testing.md               |  5 +++--
+ 2 files changed, 7 insertions(+), 8 deletions(-)

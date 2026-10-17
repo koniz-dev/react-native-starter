@@ -1,0 +1,138 @@
+
+== Part 1: clean clone of tag v1.1.13 (2026-10-17T03:48:36Z), node v24.21.0, npm 11.19.0
+16cc770b80ece010a8ca658f1769cbf87a34db81 fix(ci): the iOS e2e run tests only the ref it runs on
+npm ci exit 0
+recipes npm ci exit 0
+$ npm run lint
+> react-native-starter@1.0.0 lint
+> eslint . --max-warnings 0
+
+exit 0
+$ npm run type-check
+> react-native-starter@1.0.0 type-check
+> tsc --noEmit && tsc --noEmit -p tsconfig.tools.json
+
+exit 0
+$ npm run format:check
+
+Checking formatting...
+All matched files use Prettier code style!
+exit 0
+$ npm run docs:check
+
+Checked 19 files: 45 TypeScript snippets compiled with tsc.
+No problems.
+exit 0
+$ npm run test:ci
+
+Test Suites: 44 passed, 44 total
+Tests:       582 passed, 582 total
+Snapshots:   0 total
+Time:        70.446 s
+Ran all test suites.
+exit 0
+$ npm run audit:check
+high     node-forge GHSA-86w9-cpqp-85rv: allowlisted until 2027-01-09 (https://github.com/advisories/GHSA-86w9-cpqp-85rv)
+moderate decode-uri-component GHSA-vcc3-ghjq-m6fr: reported (not gated)
+moderate sprintf-js GHSA-hp3w-g68c-fv3c: reported (not gated)
+moderate uuid GHSA-w5hq-g745-h8pq: reported (not gated)
+npm audit --omit=dev: 5 advisories (records: 0 critical, 45 high, 16 moderate, 0 low).
+No unreviewed high or critical advisories.
+exit 0
+$ npm run doctor
+
+Running 21 checks on your project...
+21/21 checks passed. No issues detected!
+exit 0
+$ web export
+Exported: $SCRATCH/rel113/dist1
+exit 0
+$ native bundles
+Exported: $SCRATCH/rel113/dist1-native
+exit 0
+$ web export with .env.example (demo backends), for the web smoke
+Exported: $SCRATCH/rel113/dist-web-demo
+exit 0
+git status after the gates:
+(0 entries)
+
+== Part 2: clean clone of tag v1.1.13 (2026-10-17T03:52:12Z), node v24.21.0, npm 11.19.0
+16cc770b80ece010a8ca658f1769cbf87a34db81 fix(ci): the iOS e2e run tests only the ref it runs on
+npm ci exit 0
+$ init-project --remove-demo --remove-recipes
+     (docs/app-config.md, docs/ui-and-theming.md).
+  4. Run npm run lint, npm run type-check, and npm run test:ci, then commit.
+exit 0
+leftovers (outside tests and the lockfile):
+(git grep exit 1; 1 = nothing found)
+docs/:
+README.md
+api-and-storage.md
+app-config.md
+connect-your-backend.md
+conventions.md
+environment-variables.md
+error-reporting.md
+getting-started.md
+plug-in-a-provider.md
+testing.md
+ui-and-theming.md
+.maestro/subflows:
+open-app.yaml
+open-login.yaml
+sign-in.yaml
+type-username.yaml
+$ npm run lint
+> acme-notes@1.0.0 lint
+> eslint . --max-warnings 0
+
+exit 0
+$ npm run type-check
+> acme-notes@1.0.0 type-check
+> tsc --noEmit && tsc --noEmit -p tsconfig.tools.json
+
+exit 0
+$ npm run format:check
+
+Checking formatting...
+All matched files use Prettier code style!
+exit 0
+$ npm run docs:check
+
+Checked 16 files: 39 TypeScript snippets compiled with tsc.
+No problems.
+exit 0
+$ npm run test:ci
+
+Test Suites: 38 passed, 38 total
+Tests:       488 passed, 488 total
+Snapshots:   0 total
+Time:        47.846 s
+Ran all test suites.
+exit 0
+$ npm run audit:check
+high     node-forge GHSA-86w9-cpqp-85rv: allowlisted until 2027-01-09 (https://github.com/advisories/GHSA-86w9-cpqp-85rv)
+moderate decode-uri-component GHSA-vcc3-ghjq-m6fr: reported (not gated)
+moderate sprintf-js GHSA-hp3w-g68c-fv3c: reported (not gated)
+moderate uuid GHSA-w5hq-g745-h8pq: reported (not gated)
+npm audit --omit=dev: 5 advisories (records: 0 critical, 45 high, 16 moderate, 0 low).
+No unreviewed high or critical advisories.
+exit 0
+$ npm run doctor
+
+Running 21 checks on your project...
+21/21 checks passed. No issues detected!
+exit 0
+$ web export
+Exported: $SCRATCH/rel113/dist2
+exit 0
+$ native bundles
+Exported: $SCRATCH/rel113/dist2-native
+exit 0
+git status after the gates:
+ M .env.example
+ M .github/workflows/ci.yml
+ M .github/workflows/e2e-android.yml
+ M .github/workflows/e2e-ios.yml
+ D .maestro/02-tabs.yaml
+(65 entries)
