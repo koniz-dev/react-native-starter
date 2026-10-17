@@ -26,7 +26,8 @@
  * part way can be undone with git.
  *
  * Usage: npm run remove-demo [-- [--dry-run] [--force] [--help]]
- * (--no-summary skips the closing message, for a caller that prints its own.)
+ * (--no-summary skips the closing message and the no-git note, for a caller
+ * that prints its own.)
  * Any other argument is refused, so a typo never runs the removal.
  * Exit codes: 0 done, 2 nothing was changed, 1 failed after changing files.
  */
@@ -190,6 +191,13 @@ async function main() {
           // -C: npm runs scripts from the root, the shell may be elsewhere.
           `  git -C ${JSON.stringify(ROOT)} checkout -- . && git -C ${JSON.stringify(ROOT)} clean -fd\n` +
           'then fix the problem above and run npm run remove-demo again.\n';
+  // A caller (--no-summary) prints this note itself.
+  if (status === null && SUMMARY) {
+    log(
+      'Note: this is not a git repository, so remove-demo cannot check for\n' +
+        'uncommitted changes or tell you how to undo a failure. Keep a copy.'
+    );
+  }
   log(DRY_RUN ? 'Dry run: nothing is changed.' : 'Removing the demo...');
 
   // First work out every change and check the result, without touching a

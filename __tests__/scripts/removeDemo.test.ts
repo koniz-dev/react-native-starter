@@ -276,6 +276,21 @@ describe('remove-demo on a copy of the template', () => {
     expect(read(dir, 'NOTES.md')).toBe('my notes\n');
   }, 60000);
 
+  it('without git, says it cannot check or undo, unless its caller already did', () => {
+    // Never a repository, as a project downloaded as a ZIP.
+    const dir = copyProject('remove-demo-');
+    copies.push(dir);
+    const result = run(dir, ['--dry-run']);
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain(
+      'Note: this is not a git repository, so remove-demo cannot check for'
+    );
+    // A caller runs it with --no-summary, after printing its own note.
+    const quiet = run(dir, ['--dry-run', '--no-summary']);
+    expect(quiet.status).toBe(0);
+    expect(quiet.stdout).not.toContain('not a git repository');
+  }, 60000);
+
   it("changes nothing when Prettier can't format a result", () => {
     const dir = copy();
     // Parses only with the marked line in: it opens the comment that the
