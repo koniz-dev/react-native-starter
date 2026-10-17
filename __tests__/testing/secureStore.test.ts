@@ -17,6 +17,17 @@ describe('the expo-secure-store mock', () => {
     expect(secureStore.size).toBe(0);
   });
 
+  it('rejects a value that is not a string, as the real module does', async () => {
+    for (const value of [null, undefined, 42, { token: 'abc' }]) {
+      await expect(
+        SecureStore.setItemAsync('auth_token', value as unknown as string)
+      ).rejects.toThrow(
+        'Invalid value provided to SecureStore. Values must be strings'
+      );
+    }
+    expect(secureStore.size).toBe(0);
+  });
+
   it('stores, reads, and deletes a valid key', async () => {
     await SecureStore.setItemAsync('auth_token.v-2', 'abc');
     await expect(SecureStore.getItemAsync('auth_token.v-2')).resolves.toBe(

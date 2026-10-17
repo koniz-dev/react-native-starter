@@ -28,6 +28,17 @@ function checkKey(key: string): Promise<void> {
       );
 }
 
+/** expo-secure-store's value check, which runs after the key check. */
+function checkValue(value: unknown): Promise<void> {
+  return typeof value === 'string'
+    ? Promise.resolve()
+    : Promise.reject(
+        new Error(
+          'Invalid value provided to SecureStore. Values must be strings; consider JSON-encoding your values if they are serializable.'
+        )
+      );
+}
+
 /** Empties the store and restores the default (available, stateful) behavior. */
 export function resetSecureStore(): void {
   secureStore.clear();
@@ -37,9 +48,11 @@ export function resetSecureStore(): void {
   secureStoreModule.setItemAsync
     .mockReset()
     .mockImplementation((key: string, value: string) =>
-      checkKey(key).then(() => {
-        secureStore.set(key, value);
-      })
+      checkKey(key)
+        .then(() => checkValue(value))
+        .then(() => {
+          secureStore.set(key, value);
+        })
     );
   secureStoreModule.getItemAsync
     .mockReset()
