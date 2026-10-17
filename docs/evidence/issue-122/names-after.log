@@ -1,0 +1,40 @@
+    ✓ accepts slug "acme-notes" (4 ms)
+    ✓ accepts slug "notes2" (1 ms)
+    ✓ accepts scheme "acmenotes"
+    ✓ accepts scheme "acme-notes.app"
+    ✓ accepts bundleId "com.acme.notes"
+    ✓ accepts bundleId "io.acme.notesApp2" (1 ms)
+    ✓ accepts name "Acme Notes" (1 ms)
+    ✓ accepts name "Bob's Ghi Chú" (1 ms)
+    ✓ accepts owner "Acme Inc."
+    ✓ accepts name "Dev 👩‍💻"
+    ✓ accepts name "🏳️‍🌈 Pride"
+    ✓ accepts name "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Notes"
+    ✓ accepts name "یادداشت‌ها"
+    ✓ accepts owner "حسن‌زاده"
+    ✓ rejects slug "Acme-Notes" (1 ms)
+    ✓ rejects slug "acme_notes" (1 ms)
+    ✓ rejects slug "-acme"
+    ✓ rejects slug "acme--notes" (1 ms)
+    ✓ rejects scheme "AcmeNotes"
+    ✓ rejects scheme "1acme" (1 ms)
+    ✓ rejects scheme "acme notes" (1 ms)
+    ✓ rejects bundleId "acme"
+    ✓ rejects bundleId "com.acme-corp.notes" (1 ms)
+    ✓ rejects bundleId "com.1acme.notes"
+    ✓ rejects bundleId "com.acme."
+    ✓ rejects bundleId "com.example.notes"
+    ✓ rejects bundleId "com.example" (9 ms)
+    ✓ rejects bundleId "io.acme.notes_app"
+    ✓ rejects bundleId "com.acme.new"
+    ✓ rejects bundleId "com.class.notes"
+    ✓ rejects scheme "exp"
+    ✓ rejects scheme "exps"
+    ✓ rejects scheme "https"
+    ✓ rejects scheme "http"
+    ✓ rejects scheme "file" (1 ms)
+    ✓ rejects name ""
+    ✓ rejects name " Acme"
+    ✓ rejects name "Acme | Notes" (1 ms)
+    ✓ rejects name "Acme
+    ✓ rejects owner ""

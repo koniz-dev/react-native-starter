@@ -1,0 +1,88 @@
+label | os | expected | HEAD | d091228 | c03d8df
+no redirect | ios | expire | expire | expire | expire
+no redirect | android | expire | expire | expire | expire
+no redirect | web | expire | expire | expire | expire
+no redirect, query | ios | expire | expire | expire | expire
+no redirect, query | android | expire | expire | expire | expire
+no redirect, query | web | expire | expire | expire | expire
+no redirect, case+default port | ios | expire | expire | expire | expire
+no redirect, case+default port | android | expire | expire | expire | expire
+no redirect, case+default port | web | expire | expire | expire | expire
+no redirect, http default port | ios | expire | expire | expire | expire
+no redirect, http default port | android | expire | expire | expire | expire
+no redirect, http default port | web | expire | expire | expire | expire
+same-origin redirect (slash) | ios | KEPT | KEPT | KEPT | KEPT
+same-origin redirect (slash) | android | expire | expire | expire | KEPT
+same-origin redirect (slash) | web | expire | expire | expire | KEPT
+same-origin redirect (other path) | ios | KEPT | KEPT | KEPT | KEPT
+same-origin redirect (other path) | android | expire | expire | expire | KEPT
+same-origin redirect (other path) | web | expire | expire | expire | KEPT
+cross-origin host | ios | KEPT | KEPT | KEPT | KEPT
+cross-origin host | android | KEPT | KEPT | expire | KEPT
+cross-origin host | web | KEPT | KEPT | expire | KEPT
+cross-origin subdomain | ios | KEPT | KEPT | KEPT | KEPT
+cross-origin subdomain | android | KEPT | KEPT | expire | KEPT
+cross-origin subdomain | web | KEPT | KEPT | expire | KEPT
+https->http | ios | KEPT | KEPT | KEPT | KEPT
+https->http | android | KEPT | KEPT | expire | KEPT
+https->http | web | KEPT | KEPT | expire | KEPT
+http->https | ios | KEPT | KEPT | KEPT | KEPT
+http->https | android | KEPT | KEPT | expire | KEPT
+http->https | web | KEPT | KEPT | expire | KEPT
+port change | ios | KEPT | KEPT | KEPT | KEPT
+port change | android | KEPT | KEPT | expire | KEPT
+port change | web | KEPT | KEPT | expire | KEPT
+requested userinfo, no redirect | ios | expire | expire | expire | expire
+requested userinfo, no redirect | android | expire | expire | expire | expire
+requested userinfo, no redirect | web | expire | expire | expire | expire
+requested userinfo, resp none | ios | expire | expire | expire | expire
+requested userinfo, resp none | android | expire | expire | expire | expire
+requested userinfo, resp none | web | expire | expire | expire | expire
+resp userinfo, no redirect | ios | expire | expire | expire | expire
+resp userinfo, no redirect | android | expire | expire | expire | expire
+resp userinfo, no redirect | web | expire | expire | expire | expire
+IPv6 no redirect | ios | expire | expire | expire | expire
+IPv6 no redirect | android | expire | expire | expire | expire
+IPv6 no redirect | web | expire | expire | expire | expire
+IDN -> punycode, no redirect | ios | expire | expire | expire | KEPT
+IDN -> punycode, no redirect | android | expire | expire | expire | KEPT
+IDN -> punycode, no redirect | web | expire | expire | expire | KEPT
+IDN upper -> punycode, no redirect | ios | expire | expire | expire | KEPT
+IDN upper -> punycode, no redirect | android | expire | expire | expire | KEPT
+IDN upper -> punycode, no redirect | web | expire | expire | expire | KEPT
+IDN -> IDN, no redirect | ios | expire | expire | expire | expire
+IDN -> IDN, no redirect | android | expire | expire | expire | expire
+IDN -> IDN, no redirect | web | expire | expire | expire | expire
+punycode -> IDN, no redirect | ios | expire | expire | expire | KEPT
+punycode -> IDN, no redirect | android | expire | expire | expire | KEPT
+punycode -> IDN, no redirect | web | expire | expire | expire | KEPT
+punycode -> punycode, no redirect | ios | expire | expire | expire | expire
+punycode -> punycode, no redirect | android | expire | expire | expire | expire
+punycode -> punycode, no redirect | web | expire | expire | expire | expire
+IDN -> punycode, same-origin redirect | ios | KEPT | KEPT | KEPT | KEPT
+IDN -> punycode, same-origin redirect | android | expire | expire | expire | KEPT
+IDN -> punycode, same-origin redirect | web | expire | expire | expire | KEPT
+IDN -> ascii other host | ios | KEPT | KEPT | expire | KEPT
+IDN -> ascii other host | android | KEPT | KEPT | expire | KEPT
+IDN -> ascii other host | web | KEPT | KEPT | expire | KEPT
+punycode -> ascii other host | ios | KEPT | KEPT | expire | KEPT
+punycode -> ascii other host | android | KEPT | KEPT | expire | KEPT
+punycode -> ascii other host | web | KEPT | KEPT | expire | KEPT
+ascii -> punycode other host | ios | KEPT | KEPT | expire | KEPT
+ascii -> punycode other host | android | KEPT | KEPT | expire | KEPT
+ascii -> punycode other host | web | KEPT | KEPT | expire | KEPT
+IDN -> other punycode host | ios | KEPT | expire | expire | KEPT  <-- HEAD wrong
+IDN -> other punycode host | android | KEPT | expire | expire | KEPT  <-- HEAD wrong
+IDN -> other punycode host | web | KEPT | expire | expire | KEPT  <-- HEAD wrong
+IDN -> punycode, https->http | ios | KEPT | expire | expire | KEPT  <-- HEAD wrong
+IDN -> punycode, https->http | android | KEPT | expire | expire | KEPT  <-- HEAD wrong
+IDN -> punycode, https->http | web | KEPT | expire | expire | KEPT  <-- HEAD wrong
+IDN -> punycode, port change | ios | KEPT | expire | expire | KEPT  <-- HEAD wrong
+IDN -> punycode, port change | android | KEPT | expire | expire | KEPT  <-- HEAD wrong
+IDN -> punycode, port change | web | KEPT | expire | expire | KEPT  <-- HEAD wrong
+IDN -> unrelated xn-- host | ios | KEPT | expire | expire | KEPT  <-- HEAD wrong
+IDN -> unrelated xn-- host | android | KEPT | expire | expire | KEPT  <-- HEAD wrong
+IDN -> unrelated xn-- host | web | KEPT | expire | expire | KEPT  <-- HEAD wrong
+fullwidth host -> ascii (IDNA maps) | ios | expire | KEPT | expire | KEPT  <-- HEAD wrong
+fullwidth host -> ascii (IDNA maps) | android | expire | KEPT | expire | KEPT  <-- HEAD wrong
+fullwidth host -> ascii (IDNA maps) | web | expire | KEPT | expire | KEPT  <-- HEAD wrong
