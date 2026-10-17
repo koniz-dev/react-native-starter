@@ -32,6 +32,9 @@ const DEMO_USER = {
   lastName: 'Johnson',
 };
 const DEMO_TOKEN = 'e2e-demo-token';
+// What GET /auth/me returns: another first name than the login's, so a flow
+// can tell the user was reloaded rather than read from the cache.
+const RELOADED_USER = { ...DEMO_USER, firstName: 'Em' };
 // @demo remove-block-end
 
 /**
@@ -55,7 +58,7 @@ const ROUTES = {
       : [400, { message: 'Invalid credentials' }],
   'GET /auth/me': req =>
     req.headers.authorization === `Bearer ${DEMO_TOKEN}`
-      ? [200, DEMO_USER]
+      ? [200, RELOADED_USER]
       : [401, { message: 'Invalid or expired token' }],
   // @demo remove-block-end
 };

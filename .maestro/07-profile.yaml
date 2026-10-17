@@ -20,19 +20,20 @@ name: Profile is protected and reloads the user
 - extendedWaitUntil:
     visible: (Email, )?emily\.johnson@x\.dummyjson\.com
     timeout: 20000
-- assertVisible: (Name, )?Emily Johnson
-# The cached user shows first; check the reload's result once it is done.
+# The cached user shows first; the reload (the mock answers with another
+# first name, "Em") replaces it, on Profile and then on Home.
 - extendedWaitUntil:
     notVisible:
       id: profile-refreshing
     timeout: 20000
 - assertNotVisible:
     id: profile-error
+- assertVisible: (Name, )?Em Johnson
 - takeScreenshot: 07-profile
 - tapOn:
     id: protected-back
 - extendedWaitUntil:
-    visible: Signed in as Emily Johnson
+    visible: Signed in as Em Johnson
     timeout: 10000
 - tapOn:
     id: profile-button
