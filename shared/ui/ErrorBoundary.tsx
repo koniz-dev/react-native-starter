@@ -22,6 +22,10 @@ import { logger } from '@/shared/lib/logger';
 /** Navigates to Home. Safe to call before navigation is ready. */
 function goHome() {
   try {
+    // From a screen stacked above the tabs, dismissTo pops back to the Home
+    // below instead of stacking a second one; replace covers a boundary
+    // inside the tabs, where there is no stack to dismiss.
+    router.dismissTo('/');
     router.replace('/');
   } catch (error) {
     logger.warn('Go home failed', { error });

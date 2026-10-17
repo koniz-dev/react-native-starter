@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
-import { fireEvent, render } from '@testing-library/react-native';
+import { act, fireEvent, render } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import { renderRouter, screen } from 'expo-router/testing-library';
 import { ErrorBoundary } from '@/shared/ui/ErrorBoundary';
@@ -11,7 +11,8 @@ import {
   type ErrorReporter,
 } from '@/shared/integrations/errorReporter';
 import { configureIntegrations } from '@/shared/integrations/setup';
-import { setColorScheme } from '@/testing';
+import { secureStore, setColorScheme } from '@/testing';
+import { setItem, STORAGE_KEYS } from '@/shared/storage/storage';
 
 // Lets a test make the root layout's session provider throw while rendering,
 // to reach the app-level boundary instead of a route boundary.
@@ -148,6 +149,47 @@ describe('error boundaries', () => {
 
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     expect(app.getPathname()).toBe('/');
+  });
+
+  describe('signed in, from a screen stacked above the tabs', () => {
+    beforeEach(async () => {
+      secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
+      await setItem(STORAGE_KEYS.USER_DATA, {
+        id: 1,
+        email: 'e@x.com',
+        name: 'E',
+      });
+    });
+
+    it('"Go home" returns to the Home below it instead of stacking a second one', async () => {
+      const app = renderRouter(
+        { appDir: './app', overrides: { '(app)/boom': Bomb } },
+        { initialUrl: '/' }
+      );
+      await screen.findByText('Signed in as E');
+      act(() => router.push('/boom'));
+      await screen.findByText('Something went wrong');
+
+      fireEvent.press(screen.getByTestId('error-go-home'));
+
+      expect(await screen.findByText('Signed in as E')).toBeTruthy();
+      expect(app.getPathname()).toBe('/');
+      expect(router.canGoBack()).toBe(false);
+    });
+
+    it('"Go home" after a deep link to the screen leaves only Home', async () => {
+      const app = renderRouter(
+        { appDir: './app', overrides: { '(app)/boom': Bomb } },
+        { initialUrl: '/boom' }
+      );
+      await screen.findByText('Something went wrong');
+
+      fireEvent.press(screen.getByTestId('error-go-home'));
+
+      expect(await screen.findByText('Signed in as E')).toBeTruthy();
+      expect(app.getPathname()).toBe('/');
+      expect(router.canGoBack()).toBe(false);
+    });
   });
 
   it('"Go home" on a route boundary still clears the error when navigation fails', async () => {
