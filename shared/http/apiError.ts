@@ -59,14 +59,22 @@ export function isTransient(error: ApiError): boolean {
 }
 
 /**
- * The message in a JSON error body, if any: a string `message` or `error`
- * field, or the `message` of an envelope such as
+ * The message in a JSON error body, if any: a string `message`, an OAuth2
+ * `error_description` (whose `error` is a code such as `invalid_grant`), a
+ * string `error`, or the `message` of an envelope such as
  * `{ "error": { "code": "invalid_credentials", "message": "..." } }`.
  */
 export function serverMessage(data: unknown): string | undefined {
   if (data && typeof data === 'object') {
-    const body = data as { message?: unknown; error?: unknown };
+    const body = data as {
+      message?: unknown;
+      error?: unknown;
+      error_description?: unknown;
+    };
     if (typeof body.message === 'string' && body.message) return body.message;
+    if (typeof body.error_description === 'string' && body.error_description) {
+      return body.error_description;
+    }
     if (typeof body.error === 'string' && body.error) return body.error;
     if (body.error && typeof body.error === 'object') {
       const nested = (body.error as { message?: unknown }).message;

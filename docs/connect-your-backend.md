@@ -415,8 +415,9 @@ it sends the stored token, and there is none until `login` returns.
 ### Error messages
 
 A failed request rejects with an `ApiError` whose message comes from the
-response body when it has one: a string `message` or `error` field, or the
-`message` of an envelope like `{ "error": { "code": "...", "message": "..." } }`.
+response body when it has one: a string `message`, an OAuth2
+`error_description`, a string `error`, or the `message` of an envelope like
+`{ "error": { "code": "...", "message": "..." } }`.
 The Login screen shows that message, for example on a wrong password. For
 another shape, map it in your adapter: catch the error and throw one with the
 message you want.

@@ -411,6 +411,27 @@ describe('toApiError', () => {
     ).toBe('Request failed with status code 422');
   });
 
+  it("reads an OAuth2 error's description, not its code", () => {
+    // Keycloak's body for a wrong password at the token endpoint (RFC 6749 5.2).
+    const oauth = {
+      error: 'invalid_grant',
+      error_description: 'Invalid user credentials',
+    };
+    expect(toApiError(httpError(config, 401, oauth)).message).toBe(
+      'Invalid user credentials'
+    );
+    // Without a description, the code is all there is.
+    expect(
+      toApiError(httpError(config, 400, { error: 'invalid_grant' })).message
+    ).toBe('invalid_grant');
+    // A message still comes first.
+    expect(
+      toApiError(
+        httpError(config, 400, { message: 'Wrong password', ...oauth })
+      ).message
+    ).toBe('Wrong password');
+  });
+
   it('wraps non-axios errors as unknown and returns ApiErrors unchanged', () => {
     const existing = new ApiError('x', { code: 'timeout' });
     expect(toApiError(existing)).toBe(existing);
