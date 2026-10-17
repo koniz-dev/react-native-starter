@@ -18,7 +18,11 @@ import {
   setRefreshTokenHandler,
   setUnauthorizedHandler,
 } from '@/shared/session/session';
-import { getTokenStore, setTokenStore } from '@/shared/session/tokenStore';
+import {
+  createTokenStore,
+  getTokenStore,
+  setTokenStore,
+} from '@/shared/session/tokenStore';
 import {
   authRefreshClients,
   authService,
@@ -67,7 +71,13 @@ function authenticatedClient(adapter: AxiosAdapter) {
 }
 
 async function signIn(token = 't1') {
-  secureStore.set(STORAGE_KEYS.AUTH_TOKEN, token);
+  // The web keeps the token in memory, not in secure storage.
+  if (Platform.OS === 'web') {
+    setTokenStore(createTokenStore('web'));
+    await getTokenStore().set(token);
+  } else {
+    secureStore.set(STORAGE_KEYS.AUTH_TOKEN, token);
+  }
   await setItem(STORAGE_KEYS.USER_DATA, { id: 1, email: 'e@x.com', name: 'E' });
 }
 
@@ -90,7 +100,10 @@ describe('token safety', () => {
     unsubscribe = onSessionExpired(expired);
   });
 
-  afterEach(() => unsubscribe());
+  afterEach(() => {
+    unsubscribe();
+    setTokenStore(null);
+  });
 
   it('ignores a 401 from an untrusted origin that got its own Authorization header', async () => {
     await signIn('t1');
@@ -271,6 +284,7 @@ describe('token safety', () => {
       await client.get('/notes').catch(() => undefined);
       expect(refresh).not.toHaveBeenCalled();
       expect(expired).not.toHaveBeenCalled();
+      expect(await getTokenStore().get()).toBe('t1');
     }
   );
 
@@ -295,18 +309,21 @@ describe('token safety', () => {
     expect(expired).not.toHaveBeenCalled();
   });
 
-  it('on Android, ends the session for a 401 after a same-origin redirect (the token was sent)', async () => {
-    jest.replaceProperty(Platform, 'OS', 'android');
-    await signIn('t1');
-    const client = authenticatedClient(async config => {
-      const error = httpError(config, 401);
-      error.request = { responseURL: `${client.getUri(config)}/` };
-      throw error;
-    });
+  it.each(['android', 'web'] as const)(
+    'on %s, ends the session for a 401 after a same-origin redirect (the token was sent)',
+    async os => {
+      jest.replaceProperty(Platform, 'OS', os);
+      await signIn('t1');
+      const client = authenticatedClient(async config => {
+        const error = httpError(config, 401);
+        error.request = { responseURL: `${client.getUri(config)}/` };
+        throw error;
+      });
 
-    await client.get('/notes').catch(() => undefined);
-    expect(expired).toHaveBeenCalledTimes(1);
-  });
+      await client.get('/notes').catch(() => undefined);
+      expect(expired).toHaveBeenCalledTimes(1);
+    }
+  );
 
   it('still ends the session for a 401 at the requested URL', async () => {
     await signIn('t1');
