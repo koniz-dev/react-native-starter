@@ -430,6 +430,10 @@ describe('logger', () => {
       'authCode',
       'authcode',
       'basic_auth',
+      'TOTPCode',
+      'SMSOTP',
+      'sessionKey',
+      'session_key',
     ])('redacts %s', key => {
       expect(redact({ [key]: 'SECRET', pinned: true }, false)).toEqual({
         [key]: '[redacted]',

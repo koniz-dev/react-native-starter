@@ -59,14 +59,14 @@ function getVariant(): Variant {
   return value as Variant;
 }
 
+/** Android's largest versionCode. */
+const MAX_BUILD_NUMBER = 2100000000;
+
 /**
  * Store build number: iOS buildNumber and Android versionCode. Set
  * APP_BUILD_NUMBER in CI or the build profile and increase it for every
  * store upload.
  */
-/** Android's largest versionCode. */
-const MAX_BUILD_NUMBER = 2100000000;
-
 function getBuildNumber(): number {
   const value = process.env.APP_BUILD_NUMBER ?? '1';
   // Digits only: Number() would also read "1e3", "0x10", or " 42 ".

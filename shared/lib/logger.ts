@@ -56,18 +56,19 @@ const REDACTED = '[redacted]';
  * of redacting.
  */
 const SECRET_KEY =
-  /authoriz|authenticat|cookie|pass(word|code|phrase)|passwd|^pwd$|secret|token|api[-_]?key|access[-_]?key|mfa|^pin$|jwt|session[-_]?id|private[-_]?key|credential|verifier|signature|cvv|cvc/i;
+  /authoriz|authenticat|cookie|pass(word|code|phrase)|passwd|^pwd$|secret|token|api[-_]?key|access[-_]?key|mfa|^pin$|jwt|session[-_]?(id|key)|private[-_]?key|credential|verifier|signature|cvv|cvc/i;
 /**
  * Secret words too short to match inside a key, matched against its words
- * (`authCode`, `otp_code`, `refresh`) so `author`, `rootPath`, and
- * `refreshing` are kept.
+ * (`authCode`, `otp_code`, `TOTPCode`, `smsOtp`, `refresh`) so `author`,
+ * `rootPath`, `footprint`, and `refreshing` are kept.
  */
-const SECRET_WORD = /^(auth(?!or)[a-z0-9]*|otp[a-z0-9]*|[th]otp|refresh)$/;
+const SECRET_WORD = /^(auth(?!or)[a-z0-9]*|otp[a-z0-9]*|[a-z]*otp|refresh)$/;
 
 function isSecretKey(key: string): boolean {
   if (SECRET_KEY.test(key)) return true;
   return key
     .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
     .toLowerCase()
     .split(/[^a-z0-9]+/)
     .some(word => SECRET_WORD.test(word));

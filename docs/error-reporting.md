@@ -47,7 +47,7 @@ export async function saveSettings(
   reported:
   - always: values whose key names a secret, matched anywhere in the key and
     in any case: `Authorization`, `Cookie`, any key containing `password`,
-    `passcode`, `secret`, `token`, `apiKey`, `accessKey`, `jwt`, `sessionId`,
+    `passcode`, `secret`, `token`, `apiKey`, `accessKey`, `jwt`, `sessionId`, `sessionKey`,
     `privateKey`, `credential`, `verifier`, `signature`, `mfa`, `cvv`, or
     `cvc`; a key with the word `auth`, `otp` (or `totp`), or `refresh` in it,
     such as `authCode`, `otp_code`, or `refresh` (but not `author`,
