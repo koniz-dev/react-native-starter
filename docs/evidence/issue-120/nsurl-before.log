@@ -1,0 +1,8 @@
+    ✓ on iOS, still refreshes a 401 at /users/José that iOS reports as /users/Jos%C3%A9 (no redirect) (11 ms)
+    ✓ on iOS, still refreshes a 401 at /notes/a b that iOS reports as /notes/a%20b (no redirect) (8 ms)
+    ✓ on iOS, still refreshes a 401 at /notes/{id} that iOS reports as /notes/%7Bid%7D (no redirect) (3 ms)
+    ✓ on iOS, still refreshes a 401 at /a/./b that iOS reports as /a/./b (no redirect) (2 ms)
+    ✕ on iOS, still refreshes a 401 at /files/a\b that iOS reports as /files/a%5Cb (no redirect) (6 ms)
+    ✓ on iOS, still refreshes a 401 at /emoji/😀 that iOS reports as /emoji/%F0%9F%98%80 (no redirect) (2 ms)
+    ✓ on iOS, reads an IDN host and its punycode form as the same host (2 ms)
+Tests:       1 failed, 34 skipped, 6 passed, 41 total

@@ -1,0 +1,27 @@
+== 39031701721 E2E (iOS, manual) success 3464020
+7/7 Flows Passed in 9m 43s
+Take screenshot dark-explore... COMPLETED
+== 39031703816 E2E (Android, manual) success 3464020
+7/7 Flows Passed in 5m 11s
+Take screenshot dark-explore... COMPLETED
+== 39031706224 E2E (Android, manual) success 3464020
+7/7 Flows Passed in 49m 23s
+Take screenshot dark-explore... COMPLETED
+== 39033015717 E2E (iOS, manual) success d091228
+7/7 Flows Passed in 7m 8s
+Take screenshot dark-explore... COMPLETED
+== 39033017851 E2E (Android, manual) success d091228
+7/7 Flows Passed in 4m 45s
+Take screenshot dark-explore... COMPLETED
+== 39033020017 E2E (Android, manual) success d091228
+7/7 Flows Passed in 6m 45s
+Take screenshot dark-explore... COMPLETED
+d091228 E2E (Android, manual) success
+d091228 E2E (Android, manual) success
+d091228 E2E (iOS, manual) success
+d091228 Audit success
+d091228 Push on main success
+d091228 CI success
+alerts: 0
+
+[exited with code 0]

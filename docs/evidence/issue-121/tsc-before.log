@@ -1,0 +1,5 @@
+    ✓ fails when tsc exits 2 without printing anything (2530 ms)
+    ✕ fails when tsc is killed without printing anything (2639 ms)
+    Expected substring: "tsc failed (killed by SIGKILL) without reporting a problem"
+    Received string:    "tsc failed (exit null) without reporting a problem
+Tests:       1 failed, 3 skipped, 1 passed, 5 total

@@ -1,0 +1,3 @@
+    ✕ fails when tsc exits 2 without printing anything (2224 ms)
+    ✕ fails when tsc is killed without printing anything (2235 ms)
+Tests:       2 failed, 3 skipped, 5 total
