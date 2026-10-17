@@ -1,0 +1,14 @@
+object ecf24d6263cb0dc1d136ac87e1e19a38b4babf2e
+type commit
+tag v1.1.14
+tagger koniz-dev <kietna.work@gmail.com> 1792249299 +0700
+
+v1.1.14: sixth deep audit fixes (#114-#123)
+
+Refs koniz-dev/react-native-starter#124
+
+release: v1.1.14, draft=false, prerelease=false, published 2026-10-17T15:35:59Z, https://github.com/koniz-dev/react-native-starter/releases/tag/v1.1.14
+latest: Latest	v1.1.14
+
+Changed since v1.1.13:
+ 39 files changed, 1309 insertions(+), 163 deletions(-)

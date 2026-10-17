@@ -1,0 +1,19 @@
+E2E (Android, manual) success ecf24d6263cb0dc1d136ac87e1e19a38b4babf2e attempt 1 https://github.com/koniz-dev/react-native-starter/actions/runs/39043252087
+E2E (Android, manual) success ecf24d6263cb0dc1d136ac87e1e19a38b4babf2e attempt 1 https://github.com/koniz-dev/react-native-starter/actions/runs/39043254350
+E2E (iOS, manual) success ecf24d6263cb0dc1d136ac87e1e19a38b4babf2e attempt 1 https://github.com/koniz-dev/react-native-starter/actions/runs/39043256528
+
+E2E (iOS, manual) workflow_dispatch success
+E2E (Android, manual) workflow_dispatch success
+E2E (Android, manual) workflow_dispatch success
+Audit push success
+CI push success
+Push on main dynamic success
+
+CodeQL analyses on ecf24d6:
+2026-10-17T14:11:17Z /language:javascript-typescript results=0
+2026-10-17T14:10:35Z /language:actions results=0
+
+Open alerts (2026-10-17T15:36:17Z):
+code-scanning: 0
+dependabot: 0
+secret-scanning: 0
