@@ -237,8 +237,11 @@ export const myBackendAuthAdapter: AuthAdapter = {
       // Offline, timed out, canceled, rate limited, or a server error: the
       // session is kept, so keep the refresh token and try again later.
       if (isTransient(apiError)) throw apiError;
-      // Anything else signs the user out next: drop the refresh token.
-      await refreshTokens.clear();
+      // Anything else signs the user out next: drop the refresh token, if it
+      // is still this one (not a newer sign-in's).
+      if ((await refreshTokens.get().catch(() => null)) === refreshToken) {
+        await refreshTokens.clear();
+      }
       return null;
     }
   },
@@ -262,7 +265,7 @@ export const myBackendAuthAdapter: AuthAdapter = {
       if (!signedInAgain()) {
         // A refresh that finished meanwhile rotated the token: revoke that
         // one too.
-        const current = await refreshTokens.get();
+        const current = await refreshTokens.get().catch(() => null);
         if (current && current !== refreshToken && !signedInAgain()) {
           await http
             .post('/sessions/revoke', { refresh_token: current })

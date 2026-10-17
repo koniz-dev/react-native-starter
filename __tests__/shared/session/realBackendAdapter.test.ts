@@ -414,16 +414,44 @@ describe('the documented AuthAdapter against a backend of another shape', () => 
     expect(backend.state.validRefresh.size).toBe(0);
   });
 
-  it('signs out, revoking nothing, when the Keychain is locked at logout', async () => {
+  it('signs out and still clears the refresh token while the Keychain stays locked for reads', async () => {
     await signIn();
-    jest
-      .mocked(SecureStore.getItemAsync)
-      .mockRejectedValueOnce(new Error('User interaction is not allowed.'));
+    const getItem = jest.mocked(SecureStore.getItemAsync);
+    const real = getItem.getMockImplementation()!;
+    getItem.mockImplementation((async (key: string) => {
+      if (key === REFRESH_KEY) {
+        throw new Error('User interaction is not allowed.');
+      }
+      return real(key);
+    }) as never);
 
     await expect(authService.logout()).resolves.toBeUndefined();
+    getItem.mockImplementation(real);
     expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
-    // The refresh token is cleared too, once the Keychain answers again.
     expect(secureStore.has(REFRESH_KEY)).toBe(false);
+  });
+
+  it("a refresh rejected after a sign-out + sign-in keeps the new session's refresh token", async () => {
+    await signIn();
+    backend.state.validAccess.clear();
+    const realAdapter = backend.adapter;
+    let releaseRefresh!: () => void;
+    const held = new Promise<void>(r => (releaseRefresh = r));
+    const delayed: typeof realAdapter = async config => {
+      if (config.url === '/sessions/refresh') await held; // request still on the wire
+      return realAdapter(config);
+    };
+    for (const client of allClients) client.defaults.adapter = delayed;
+
+    const profile = authService.fetchProfile().catch((e: unknown) => e);
+    for (let i = 0; i < 20; i++) await new Promise(r => setTimeout(r, 0));
+    await authService.logout(); // revokes refresh-1
+    await signIn(); // refresh-2 stored
+    expect(secureStore.get(REFRESH_KEY)).toBe('refresh-2');
+    releaseRefresh(); // server: refresh-1 revoked -> 401 -> adapter clears
+    await profile;
+    for (let i = 0; i < 20; i++) await new Promise(r => setTimeout(r, 0));
+    expect(secureStore.get(REFRESH_KEY)).toBe('refresh-2');
   });
 
   it('revokes the refresh token on logout', async () => {
