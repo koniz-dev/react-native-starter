@@ -197,6 +197,9 @@ function run(dir: string, args: string[]) {
     cwd: dir,
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe'],
+    // Git stops at the copy: a repository in a folder above it (such as the
+    // temporary folder on a CI runner) must not count as the project's.
+    env: { ...process.env, GIT_CEILING_DIRECTORIES: path.dirname(dir) },
   });
 }
 
