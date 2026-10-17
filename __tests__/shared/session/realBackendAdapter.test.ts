@@ -422,6 +422,8 @@ describe('the documented AuthAdapter against a backend of another shape', () => 
 
     await expect(authService.logout()).resolves.toBeUndefined();
     expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
+    // The refresh token is cleared too, once the Keychain answers again.
+    expect(secureStore.has(REFRESH_KEY)).toBe(false);
   });
 
   it('revokes the refresh token on logout', async () => {
@@ -520,6 +522,62 @@ describe('the documented AuthAdapter against a backend of another shape', () => 
 
     expect(secureStore.get(REFRESH_KEY)).toBeUndefined();
     expect(secureStore.get('auth_token')).toBeUndefined();
+    expect(backend.state.validRefresh.size).toBe(0);
+  });
+
+  it('leaves no live refresh token when a refresh starts while logout is running', async () => {
+    await signIn();
+    backend.state.validAccess.clear();
+    const getItem = jest.mocked(SecureStore.getItemAsync);
+    const realGet = getItem.getMockImplementation()!;
+    const holds: Promise<void>[] = [];
+    getItem.mockImplementation((async (key: string, options: unknown) => {
+      if (key === REFRESH_KEY && holds.length) await holds.shift();
+      return (realGet as (k: string, o: unknown) => Promise<string | null>)(
+        key,
+        options
+      );
+    }) as never);
+    const gate = () => {
+      let open!: () => void;
+      const p = new Promise<void>(r => (open = r));
+      return { p, open };
+    };
+    const tick = async () => {
+      for (let i = 0; i < 20; i++) await new Promise(r => setTimeout(r, 0));
+    };
+
+    const logoutGet = gate();
+    const refreshGet = gate();
+    holds.push(logoutGet.p, refreshGet.p);
+    const refreshAnswer = gate();
+    backend.state.refreshGate = refreshAnswer.p;
+    const revokeAnswer = gate();
+    backend.state.revokeGate = revokeAnswer.p;
+
+    // The user taps sign out (signOuts += 1; reading the refresh token).
+    const loggingOut = authService.logout();
+    await tick();
+    // Meanwhile a screen's request gets a 401: a refresh starts.
+    const profile = authService.fetchProfile().catch((e: unknown) => e);
+    await tick();
+    refreshGet.open();
+    await tick(); // the refresh reaches the server first: refresh-1 -> refresh-2
+    logoutGet.open();
+    await tick(); // then logout revokes refresh-1
+    // Both now re-read the stored refresh token at about the same time.
+    const reads = gate();
+    holds.push(reads.p, reads.p);
+    revokeAnswer.open();
+    await tick();
+    refreshAnswer.open();
+    await tick();
+    reads.open();
+    await loggingOut;
+    await profile;
+    await tick();
+
+    expect(secureStore.get(REFRESH_KEY)).toBeUndefined();
     expect(backend.state.validRefresh.size).toBe(0);
   });
 

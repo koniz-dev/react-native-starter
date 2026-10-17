@@ -85,4 +85,7 @@ it('identifies a restored user, and resets once on sign-out', async () => {
   fireEvent.press(screen.getByText('signedIn'));
   await screen.findByText('signedOut');
   await waitFor(() => expect(posthog.reset).toHaveBeenCalledTimes(1));
+  // And only once: the signed-out state that follows doesn't reset again.
+  await new Promise(resolve => setTimeout(resolve, 0));
+  expect(posthog.reset).toHaveBeenCalledTimes(1);
 });

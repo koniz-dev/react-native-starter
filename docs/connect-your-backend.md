@@ -247,7 +247,8 @@ export const myBackendAuthAdapter: AuthAdapter = {
   logout: async ({ public: http }) => {
     signOuts += 1;
     const signInsAtStart = signIns;
-    const refreshToken = await refreshTokens.get();
+    // Unreadable (a locked Keychain): nothing to revoke, but still clear below.
+    const refreshToken = await refreshTokens.get().catch(() => null);
     try {
       if (refreshToken) {
         await http.post('/sessions/revoke', { refresh_token: refreshToken });
@@ -267,6 +268,9 @@ export const myBackendAuthAdapter: AuthAdapter = {
         }
         if (!signedInAgain()) await refreshTokens.clear();
       }
+      // Again after clearing: a refresh that started while this ran sees it
+      // and drops the token it stores.
+      signOuts += 1;
     }
   },
 };
