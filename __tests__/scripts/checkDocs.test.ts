@@ -192,6 +192,42 @@ describe('check-docs on a copy of the project', () => {
     }
   }, 120000);
 
+  it.each([
+    [
+      'exits 2',
+      'process.exit(2)',
+      'tsc failed (exit 2) without reporting a problem',
+    ],
+    [
+      'is killed',
+      "process.kill(process.pid, 'SIGKILL')",
+      'tsc failed (killed by SIGKILL) without reporting a problem',
+    ],
+  ])(
+    'fails when tsc %s without printing anything',
+    (_case, stop, message) => {
+      const copy = makeCopy();
+      try {
+        // Loaded into every node process the check starts; acts only in tsc.
+        const stub = path.join(copy, 'silent-tsc.js');
+        fs.writeFileSync(
+          stub,
+          `if (/typescript[\\\\/]bin[\\\\/]tsc$/.test(process.argv[1] ?? '')) ${stop};\n`
+        );
+        const result = spawnSync(process.execPath, ['scripts/check-docs.js'], {
+          cwd: copy,
+          encoding: 'utf8',
+          env: { ...process.env, NODE_OPTIONS: `--require ${stub}` },
+        });
+        expect(result.status).toBe(1);
+        expect(result.stderr).toContain(message);
+      } finally {
+        fs.rmSync(copy, { recursive: true, force: true });
+      }
+    },
+    120000
+  );
+
   it('fails when tsc or ESLint fails without reporting a snippet', () => {
     const copy = makeCopy();
     try {

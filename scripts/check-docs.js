@@ -503,9 +503,8 @@ function main() {
   }
   // A failing tsc that printed nothing this script could read still fails.
   if (tsc.status !== 0 && !tsc.error && problems.length === problemsBeforeTsc) {
-    problems.push(
-      `tsc failed (exit ${tsc.status}) without reporting a problem`
-    );
+    const how = tsc.signal ? `killed by ${tsc.signal}` : `exit ${tsc.status}`;
+    problems.push(`tsc failed (${how}) without reporting a problem`);
   }
 
   problems.push(...lintSnippets(snippets));
