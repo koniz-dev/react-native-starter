@@ -43,59 +43,67 @@ appId: ${APP_ID}
             id: tab-home
           timeout: 15000
           optional: true
+      # Only while Home isn't there yet: a loaded Home may have its own
+      # "Continue" or "Wait".
       - runFlow:
           when:
-            platform: iOS
-            visible: Open in .*
+            notVisible:
+              id: tab-home
           commands:
-            - tapOn:
-                text: Open
-      - runFlow:
-          when:
-            visible: Development servers
-          commands:
-            - openLink:
-                link: ${APP_URL}
-                optional: true
-      - runFlow:
-          when:
-            platform: Android
-            visible: .*Launcher isn't responding
-          commands:
-            - tapOn:
-                text: Close app
-                optional: true
-      - tapOn:
-          text: Wait
-          optional: true
-      - tapOn:
-          text: Continue
-          optional: true
-      # Expo Go's menu has "Go home". So does the app's own error screen,
-      # next to "Try again": leave that one alone, so a crash fails fast.
-      - runFlow:
-          when:
-            platform: Android
-            visible: Go home
-            notVisible: Try again
-          commands:
-            - back
-      - runFlow:
-          when:
-            platform: iOS
-            visible: Go home
-            notVisible: Try again
-          commands:
-            - tapOn:
-                point: 50%, 8%
             - runFlow:
                 when:
-                  visible: Go home
+                  platform: iOS
+                  visible: Open in .*
                 commands:
-                  - swipe:
-                      start: 50%, 45%
-                      end: 50%, 98%
-                      duration: 300
+                  - tapOn:
+                      text: Open
+            - runFlow:
+                when:
+                  visible: Development servers
+                commands:
+                  - openLink:
+                      link: ${APP_URL}
+                      optional: true
+            - runFlow:
+                when:
+                  platform: Android
+                  visible: .*Launcher isn't responding
+                commands:
+                  - tapOn:
+                      text: Close app
+                      optional: true
+            - tapOn:
+                text: Wait
+                optional: true
+            - tapOn:
+                text: Continue
+                optional: true
+            # Expo Go's menu has "Go home". So does the app's own error screen,
+            # next to "Try again": leave that one alone, so the flow fails on
+            # it (once the loop and the wait below run out) instead of hiding it.
+            - runFlow:
+                when:
+                  platform: Android
+                  visible: Go home
+                  notVisible: Try again
+                commands:
+                  - back
+            - runFlow:
+                when:
+                  platform: iOS
+                  visible: Go home
+                  notVisible: Try again
+                commands:
+                  - tapOn:
+                      point: 50%, 8%
+                  - runFlow:
+                      when:
+                        visible: Go home
+                      commands:
+                        - swipe:
+                            start: 50%, 45%
+                            end: 50%, 98%
+                            duration: 300
       - waitForAnimationToEnd
 - extendedWaitUntil:
     visible: Session

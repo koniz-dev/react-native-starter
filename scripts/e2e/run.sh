@@ -59,7 +59,9 @@ kill_tree() {
   kill "$1" 2>/dev/null || true
 }
 cleanup() {
-  set_dark_mode no || true
+  # Back to the appearance the device had before the run (unset if it
+  # stopped before that was read: nothing changed it yet).
+  if [ -n "${WAS_DARK:-}" ]; then set_dark_mode "$WAS_DARK" || true; fi
   # (An empty array is "unbound" to macOS's bash 3.2 under set -u.)
   for pid in ${PIDS[@]+"${PIDS[@]}"}; do kill_tree "$pid"; done
 }
@@ -72,6 +74,15 @@ set_dark_mode() {
     xcrun simctl ui booted appearance "$([ "$1" = yes ] && echo dark || echo light)"
   fi
 }
+# yes or no: whether the device is in dark mode now.
+is_dark() {
+  if [ "$PLATFORM" = android ]; then
+    adb shell cmd uimode night 2>/dev/null | grep -q 'Night mode: yes' && echo yes || echo no
+  else
+    [ "$(xcrun simctl ui booted appearance 2>/dev/null)" = dark ] && echo yes || echo no
+  fi
+}
+WAS_DARK="$(is_dark)"
 
 # A server already on either port (your own `npm start`, an earlier run) would
 # answer the readiness checks below in place of this run's, without the e2e
@@ -100,6 +111,14 @@ AUTH_API_URL="${E2E_AUTH_API_URL:-$API_URL}"
 APP_ENV=(EXPO_PUBLIC_API_URL="$API_URL" EXPO_PUBLIC_AUTH_API_URL="$AUTH_API_URL")
 
 if [ -n "${E2E_BACKEND_CMD:-}" ]; then
+  # A server already answering there (an earlier run's) would pass the
+  # readiness check below in place of the one this run starts.
+  for url in "$API_URL" "$AUTH_API_URL"; do
+    if curl -s -o /dev/null --max-time 2 "$url"; then
+      echo "$url already answers; stop that server before E2E_BACKEND_CMD starts yours" >&2
+      exit 1
+    fi
+  done
   (cd "$ROOT" && exec bash -c "$E2E_BACKEND_CMD") >"$OUT/backend.log" 2>&1 &
   BACKEND_PID=$!
   PIDS+=("$BACKEND_PID")
