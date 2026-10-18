@@ -1,0 +1,15 @@
+== FAKE_MODE=pass
+call 1: maestro
+call 2: maestro-dark
+== FAKE_MODE=once
+call 1: maestro
+call 2: maestro-dark
+call 3: maestro-retry
+call 4: maestro-dark-retry
+E2E RETRY: a flow failed (see <repo>/e2e-results/ios/maestro.log); running the flows once more.
+== FAKE_MODE=always
+call 1: maestro
+call 2: maestro-dark
+call 3: maestro-retry
+call 4: maestro-dark-retry
+E2E RETRY: a flow failed (see <repo>/e2e-results/ios/maestro.log); running the flows once more.

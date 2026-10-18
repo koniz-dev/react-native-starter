@@ -1,0 +1,22 @@
+Taps by Maestro vs touch events in the app (UIKit:EventDispatch 'Sending UIEvent type: 0 ... to window'), run 39053221530 attempt 1
+== Tab navigation
+maestro taps: 17:53:55.595 17:54:10.395 
+app touch events: 17:53:58.403 17:53:58.479 17:54:11.977 17:54:12.091 
+== Explore error state and Retry
+maestro taps: 17:59:38.840 
+app touch events: 
+
+Attempt 2, flow 03, the Log out tap (touch delivered, no press):
+18:37:18.605515 [com.apple.UIKit:EventDispatch] Evaluating dispatch of UIEvent: 0x10255d400; type: 0; subtype: 0; backing type: 11; shouldSend: 1; ignoreInteractionEvents
+18:37:18.606144 [com.apple.UIKit:EventDispatch] Sending UIEvent type: 0; subtype: 0; to windows: 1
+18:37:18.607105 [com.apple.UIKit:EventDispatch] Sending UIEvent type: 0; subtype: 0; to window: <UIWindow: 0x102608800>; contextId: 0x1A2D4448
+18:37:18.729501 [com.apple.UIKit:EventDispatch] Evaluating dispatch of UIEvent: 0x10255d400; type: 0; subtype: 0; backing type: 11; shouldSend: 0; ignoreInteractionEvents
+18:37:18.795911 [com.apple.UIKit:EventDispatch] Evaluating dispatch of UIEvent: 0x10255d400; type: 0; subtype: 0; backing type: 11; shouldSend: 1; ignoreInteractionEvents
+18:37:18.795998 [com.apple.UIKit:EventDispatch] Sending UIEvent type: 0; subtype: 0; to windows: 1
+18:37:18.796022 [com.apple.UIKit:EventDispatch] Sending UIEvent type: 0; subtype: 0; to window: <UIWindow: 0x102608800>; contextId: 0x1A2D4448
+
+Safari WebView hierarchy fetch durations (count, max s):
+e2e-39043256528: 806 0.6419869661331177
+e2e-39053221530: 791 3.475090980529785
+e2e-39053221530-a2: 587 0.8593599796295166
+e2e-39102492110: 1043 92.42237293720245
