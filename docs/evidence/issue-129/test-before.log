@@ -1,0 +1,25 @@
+    -   "code": "timeout",
+    +   "code": "network",
+      }
+
+      223 |       throw new AxiosError('Network Error', 'ERR_NETWORK', config, request);
+      224 |     });
+    > 225 |     await expect(client.get('/slow')).rejects.toMatchObject({ code });
+          |                                               ^
+      226 |   });
+      227 |
+      228 |   it('maps ETIMEDOUT to code "timeout"', async () => {
+
+      at Object.toMatchObject (node_modules/expect/build/index.js:218:22)
+      at toMatchObject (__tests__/shared/http/httpClient.test.ts:225:47)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12
+      at apply (__tests__/shared/http/httpClient.test.ts:226:4)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 27 skipped, 7 passed, 35 total
+Snapshots:   0 total
+Time:        15.838 s
+Ran all test suites matching /__tests__\/shared\/http\/httpClient.test.ts/i with tests matching "without a response|ETIMEDOUT".

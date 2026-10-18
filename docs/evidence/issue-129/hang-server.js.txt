@@ -1,0 +1,5 @@
+// Accepts requests and never answers, for 40 minutes at most.
+const http = require('http');
+const s = http.createServer((req) => console.log(new Date().toISOString(), req.method, req.url));
+s.listen(9999, () => console.log('hang server on 9999'));
+setTimeout(() => process.exit(0), 40 * 60 * 1000);

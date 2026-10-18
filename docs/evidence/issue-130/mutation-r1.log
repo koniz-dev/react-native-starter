@@ -1,0 +1,11 @@
+H3 drop 'text': KILLED
+H4 includes: KILLED
+H6 drop !response: KILLED
+S1 drop key: KILLED
+R0 default light: KILLED
+drop eth: KILLED
+drop dotless i: KILLED
+collectInput old scheme: KILLED
+drop typealias: KILLED
+drop val: KILLED
+useAnnouncement no repeatKey: KILLED

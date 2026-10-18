@@ -1,0 +1,28 @@
+import { Platform } from 'react-native';
+
+const notifications = {
+  requestPermissionsAsync: jest.fn(async () => ({ granted: true })),
+  getExpoPushTokenAsync: jest.fn(async () => {
+    throw new Error('ERR_NOTIFICATIONS_PUSH_WEB_MISSING_CONFIG');
+  }),
+  addNotificationReceivedListener: jest.fn(() => ({ remove() {} })),
+};
+const updates = {
+  isEnabled: true,
+  checkForUpdateAsync: jest.fn(async () => {
+    throw new Error('ERR_UPDATES_DISABLED');
+  }),
+  fetchUpdateAsync: jest.fn(),
+  reloadAsync: jest.fn(),
+};
+Object.assign(globalThis, { Notifications: notifications, ExpoUpdates: updates });
+
+it.each(['web', 'ios'] as const)('push and OTA adapters from the docs on %s', async os => {
+  jest.replaceProperty(Platform, 'OS', os);
+  const { expoPush } = jest.requireActual('./pushSnippet');
+  const { expoUpdates } = jest.requireActual('./otaSnippet');
+  const permission = await expoPush.requestPermission();
+  const token = await expoPush.getToken().catch((e: Error) => `rejected: ${e.message}`);
+  const update = await expoUpdates.checkForUpdate().catch((e: Error) => `rejected: ${e.message}`);
+  process.stdout.write(`${os}: permission=${JSON.stringify(permission)} token=${JSON.stringify(token)} update=${JSON.stringify(update)}\n`);
+});

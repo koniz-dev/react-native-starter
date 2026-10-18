@@ -1,0 +1,11 @@
+const [oldPath, newPath] = process.argv.slice(2);
+const o = require(oldPath), n = require(newPath);
+const names = ['Acme Notes!', 'Ghi Chú: Acme Notes!', "Mom's Recipes", 'Đọc Sách', 'Đà Nẵng Food', 'Straße', 'Ødegaard', 'Łódź', 'Æsop', 'Œuvre', 'Þór', 'Iğdır Notlar', 'Café Notes 2', 'Notes – Pro', '日本語メモ', '🦄', '2048 Game', '1. Notes', 'São Paulo', 'Zoë', 'Ångström', 'ﬁle Manager', 'ＡＢＣ'];
+const oldScheme = s => (s ? s.replace(/-/g, '') : undefined);
+console.log('| Name | Old slug | New slug | Old default scheme | New default scheme |\n|---|---|---|---|---|');
+for (const name of names) {
+  const a = o.slugify(name), b = n.slugify(name);
+  const sa = oldScheme(a) ?? '(none)', sb = n.defaultScheme(b) ?? '(none)';
+  const mark = a !== b || sa !== sb ? ' **changed**' : '';
+  console.log(`| ${name} | ${a || '(empty)'} | ${b || '(empty)'} | ${sa} | ${sb}${mark} |`);
+}

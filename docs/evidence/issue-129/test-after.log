@@ -1,0 +1,6 @@
+
+Test Suites: 4 passed, 4 total
+Tests:       107 passed, 107 total
+Snapshots:   0 total
+Time:        4.556 s, estimated 16 s
+Ran all test suites matching /__tests__\/shared\/http/i.

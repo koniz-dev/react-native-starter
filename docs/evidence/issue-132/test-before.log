@@ -1,0 +1,46 @@
+    ✓ rejects slug "Acme-Notes" (3 ms)
+    ✓ rejects slug "acme_notes"
+    ✓ rejects slug "-acme" (1 ms)
+    ✓ rejects slug "acme--notes"
+    ✓ rejects scheme "AcmeNotes"
+    ✓ rejects scheme "1acme"
+    ✓ rejects scheme "acme notes"
+    ✓ rejects bundleId "acme" (1 ms)
+    ✓ rejects bundleId "com.acme-corp.notes"
+    ✓ rejects bundleId "com.1acme.notes"
+    ✓ rejects bundleId "com.acme." (1 ms)
+    ✓ rejects bundleId "com.example.notes"
+    ✓ rejects bundleId "com.example"
+    ✓ rejects bundleId "io.acme.notes_app"
+    ✓ rejects bundleId "com.acme.new" (1 ms)
+    ✓ rejects bundleId "com.class.notes"
+    ✕ rejects bundleId "com.acme.object" (1 ms)
+    ✕ rejects bundleId "com.when.notes"
+    ✓ rejects scheme "exp"
+    ✓ rejects scheme "exps"
+    ✓ rejects scheme "https"
+    ✓ rejects scheme "http"
+    ✓ rejects scheme "file"
+    ✓ rejects name ""
+    ✓ rejects name " Acme"
+    ✓ rejects name "Acme | Notes"
+    ✓ rejects name "Acme
+    ✓ rejects owner ""
+    ✓ rejects name "Acme‮Notes"
+    ✓ rejects name "Acme​Notes"
+    ✓ rejects name "Acme‎Notes" (1 ms)
+    ✓ rejects name "Acme⁦Notes"
+    ✓ rejects name "Acme﻿Notes"
+    ✓ rejects name "Acme⁠Notes"
+    ✓ rejects name "Ac­me Notes" (1 ms)
+    ✓ rejects name "Acme᠎Notes"
+    ✓ rejects name "Acme￹Notes"
+    ✓ rejects owner "Acme⁠Inc."
+    ✓ rejects owner "Acme‮Inc."
+    ✓ rejects owner " Acme Inc. " (1 ms)
+    ✓ rejects scheme "exp+acme"
+    ✓ rejects slug "react"
+    ✓ rejects slug "expo"
+    ✓ rejects unknown arguments, missing values, and conflicting flags (17 ms)
+    ✕ derives a slug and quotes strings the way Prettier does (2 ms)
+Tests:       3 failed, 32 skipped, 42 passed, 77 total

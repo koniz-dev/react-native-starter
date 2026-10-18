@@ -1,0 +1,506 @@
+
+> react-native-starter@1.0.0 lint
+> eslint . --max-warnings 0
+
+
+> react-native-starter@1.0.0 type-check
+> tsc --noEmit && tsc --noEmit -p tsconfig.tools.json
+
+
+> react-native-starter@1.0.0 test:ci
+> jest --coverage
+
+PASS __tests__/scripts/lintRules.test.ts (10.292 s)
+PASS __tests__/shared/session/realBackendAdapter.test.ts
+  ● Console
+
+    console.warn
+      API POST /sessions/refresh failed: network
+
+      205 |     const args = [message, ...details.filter(item => item !== undefined)];
+      206 |     if (level === 'error') console.error(...args);
+    > 207 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      208 |     else if (level === 'info') console.info(...args);
+      209 |     else console.debug(...args);
+      210 |   };
+
+      at warn (shared/lib/logger.ts:207:40)
+      at Object.write [as warn] (shared/lib/logger.ts:218:33)
+      at fail (shared/http/httpClient.ts:255:50)
+      at fail (shared/http/httpClient.ts:272:14)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12
+      at apply (shared/http/httpClient.ts:335:4)
+      at Axios.request (node_modules/axios/dist/browser/axios.cjs:5245:14)
+
+    console.warn
+      API GET /me failed: network
+
+      205 |     const args = [message, ...details.filter(item => item !== undefined)];
+      206 |     if (level === 'error') console.error(...args);
+    > 207 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      208 |     else if (level === 'info') console.info(...args);
+      209 |     else console.debug(...args);
+      210 |   };
+
+      at warn (shared/lib/logger.ts:207:40)
+      at Object.write [as warn] (shared/lib/logger.ts:218:33)
+      at fail (shared/http/httpClient.ts:255:50)
+      at fail (shared/http/httpClient.ts:317:16)
+          at Generator.throw (<anonymous>)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/@babel/runtime/helpers/asyncToGenerator.js:20:9)
+
+    console.warn
+      API POST /sessions/revoke failed: network
+
+      205 |     const args = [message, ...details.filter(item => item !== undefined)];
+      206 |     if (level === 'error') console.error(...args);
+    > 207 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      208 |     else if (level === 'info') console.info(...args);
+      209 |     else console.debug(...args);
+      210 |   };
+
+      at warn (shared/lib/logger.ts:207:40)
+      at Object.write [as warn] (shared/lib/logger.ts:218:33)
+      at fail (shared/http/httpClient.ts:255:50)
+      at fail (shared/http/httpClient.ts:272:14)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12
+      at apply (shared/http/httpClient.ts:335:4)
+      at Axios.request (node_modules/axios/dist/browser/axios.cjs:5245:14)
+
+    console.warn
+      Signing out on the auth backend failed { error: 'Network error: check your connection' }
+
+      205 |     const args = [message, ...details.filter(item => item !== undefined)];
+      206 |     if (level === 'error') console.error(...args);
+    > 207 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      208 |     else if (level === 'info') console.info(...args);
+      209 |     else console.debug(...args);
+      210 |   };
+
+      at warn (shared/lib/logger.ts:207:40)
+      at Object.write [as warn] (shared/lib/logger.ts:218:33)
+      at Object.warn (shared/session/authService.ts:203:14)
+          at Generator.throw (<anonymous>)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/@babel/runtime/helpers/asyncToGenerator.js:20:9)
+
+PASS __tests__/shared/http/tokenSafety.test.ts
+  ● Console
+
+    console.error
+      Error removing user_data Error: disk full
+          at Object.<anonymous> (/Users/nguyenanhkiet/Playground/react-native-starter/__tests__/shared/http/tokenSafety.test.ts:531:30)
+          at Generator.next (<anonymous>)
+          at asyncGeneratorStep (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+          at _next (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+      204 |     if (LEVEL_ORDER[level] < LEVEL_ORDER[minLevel]) return;
+      205 |     const args = [message, ...details.filter(item => item !== undefined)];
+    > 206 |     if (level === 'error') console.error(...args);
+          |                                    ^
+      207 |     else if (level === 'warn') console.warn(...args);
+      208 |     else if (level === 'info') console.info(...args);
+      209 |     else console.debug(...args);
+
+      at error (shared/lib/logger.ts:206:36)
+      at Object.write (shared/lib/logger.ts:230:7)
+      at error (shared/storage/storage.ts:68:12)
+          at Generator.throw (<anonymous>)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/@babel/runtime/helpers/asyncToGenerator.js:20:9)
+
+    console.info
+      [error-reporter] exception: Error: disk full (Error removing user_data)
+
+      at Object.info [as captureException] (shared/integrations/errorReporter.ts:55:13)
+          at Generator.throw (<anonymous>)
+
+    console.error
+      Error storing user_data Error: storage full
+          at Object.<anonymous> (/Users/nguyenanhkiet/Playground/react-native-starter/__tests__/shared/http/tokenSafety.test.ts:723:30)
+          at Generator.next (<anonymous>)
+          at asyncGeneratorStep (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+          at _next (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+          at /Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+          at new Promise (<anonymous>)
+          at Object.<anonymous> (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+          at Promise.then.completed (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/jest-circus/build/utils.js:298:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/jest-circus/build/utils.js:231:10)
+          at _callCircusTest (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/jest-circus/build/run.js:316:40)
+          at _runTest (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/jest-circus/build/run.js:252:3)
+          at _runTestsForDescribeBlock (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/jest-circus/build/run.js:126:9)
+          at _runTestsForDescribeBlock (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/jest-circus/build/run.js:121:9)
+          at run (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/jest-circus/build/run.js:71:3)
+          at runAndTransformResultsToJestFormat (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+          at jestAdapter (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+          at runTestInternal (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/jest-runner/build/runTest.js:367:16)
+          at runTest (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/jest-runner/build/runTest.js:444:34)
+          at Object.worker (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/jest-runner/build/testWorker.js:106:12)
+
+      204 |     if (LEVEL_ORDER[level] < LEVEL_ORDER[minLevel]) return;
+      205 |     const args = [message, ...details.filter(item => item !== undefined)];
+    > 206 |     if (level === 'error') console.error(...args);
+          |                                    ^
+      207 |     else if (level === 'warn') console.warn(...args);
+      208 |     else if (level === 'info') console.info(...args);
+      209 |     else console.debug(...args);
+
+      at error (shared/lib/logger.ts:206:36)
+      at Object.write (shared/lib/logger.ts:230:7)
+      at error (shared/storage/storage.ts:24:12)
+          at Generator.throw (<anonymous>)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/@babel/runtime/helpers/asyncToGenerator.js:20:9)
+
+    console.info
+      [error-reporter] exception: Error: storage full (Error storing user_data)
+
+      at Object.info [as captureException] (shared/integrations/errorReporter.ts:55:13)
+          at Generator.throw (<anonymous>)
+
+PASS __tests__/shared/http/httpClient.test.ts
+PASS __tests__/app/sessionRoutes.test.tsx (19.257 s)
+PASS __tests__/features/auth/LoginScreen.test.tsx
+PASS __tests__/shared/ui/ErrorBoundary.test.tsx (6.425 s)
+  ● Console
+
+    console.warn
+      Go home failed {
+        error: {
+          name: 'Error',
+          message: 'navigation is not ready',
+          stack: 'Error: navigation is not ready\n' +
+            '    at Object.<anonymous> (/Users/nguyenanhkiet/Playground/react-native-starter/__tests__/shared/ui/ErrorBoundary.test.tsx:202:13)\n' +
+            '    at /Users/nguyenanhkiet/Playground/react-native-starter/node_modules/jest-mock/build/index.js:397:39\n' +
+            '    at Object.<anonymous> (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/jest-mock/build/index.js:404:13)\n' +
+            '    at Object.mockConstructor [as replace] (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/jest-mock/build/index.js:148:19)\n' +
+            '    at replace (/Users/nguyenanhkiet/Playground/react-native-starter/shared/ui/ErrorBoundary.tsx:29:12)\n' +
+            '    at goHome (/Users/nguyenanhkiet/Playground/react-native-starter/shared/ui/ErrorBoundary.tsx:110:9)\n' +
+            '    at handler (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@testing-library/react-native/src/fire-event.ts:123:19)\n' +
+            '    at callback (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@testing-library/react-native/src/act.ts:31:24)\n' +
+            '    at Object.<anonymous>.process.env.NODE_ENV.exports.act (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/react/cjs/react.development.js:814:22)\n' +
+            '    at actImplementation (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@testing-library/react-native/src/act.ts:30:25)\n' +
+            '    at fireEvent (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@testing-library/react-native/src/fire-event.ts:122:11)\n' +
+            '    at fireEvent [as press] (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@testing-library/react-native/src/fire-event.ts:130:3)\n' +
+            '    at Object.press (/Users/nguyenanhkiet/Playground/react-native-starter/__tests__/shared/ui/ErrorBoundary.test.tsx:206:15)\n' +
+            '    at Generator.next (<anonymous>)\n' +
+            '    at asyncGeneratorStep (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)\n' +
+            '    at _next (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)'
+        }
+      }
+
+      205 |     const args = [message, ...details.filter(item => item !== undefined)];
+      206 |     if (level === 'error') console.error(...args);
+    > 207 |     else if (level === 'warn') console.warn(...args);
+          |                                        ^
+      208 |     else if (level === 'info') console.info(...args);
+      209 |     else console.debug(...args);
+      210 |   };
+
+      at warn (shared/lib/logger.ts:207:40)
+      at Object.write [as warn] (shared/lib/logger.ts:218:33)
+      at warn (shared/ui/ErrorBoundary.tsx:31:12)
+      at goHome (shared/ui/ErrorBoundary.tsx:110:9)
+      at handler (node_modules/@testing-library/react-native/src/fire-event.ts:123:19)
+      at callback (node_modules/@testing-library/react-native/src/act.ts:31:24)
+      at Object.<anonymous>.process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:814:22)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:30:25)
+      at fireEvent (node_modules/@testing-library/react-native/src/fire-event.ts:122:11)
+      at fireEvent [as press] (node_modules/@testing-library/react-native/src/fire-event.ts:130:3)
+      at Object.press (__tests__/shared/ui/ErrorBoundary.test.tsx:206:15)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+PASS __tests__/shared/http/errorMessage.test.ts
+PASS __tests__/shared/http/api.test.ts
+PASS __tests__/shared/session/tokenStore.test.tsx
+PASS __tests__/app/nativeHead.test.tsx
+  ● Console
+
+    console.error
+      Loading todos failed ApiError: Unexpected response from the server
+          at toApiError (/Users/nguyenanhkiet/Playground/react-native-starter/shared/http/apiError.ts:186:12)
+          at /Users/nguyenanhkiet/Playground/react-native-starter/shared/lib/useFetch.ts:95:28
+          at Generator.throw (<anonymous>)
+          at asyncGeneratorStep (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+          at _throw (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@babel/runtime/helpers/asyncToGenerator.js:20:9)
+          at processTicksAndRejections (node:internal/process/task_queues:104:5) {
+        code: 'unknown',
+        status: undefined,
+        [cause]: Error: Unexpected response from the server
+            at Object.<anonymous> (/Users/nguyenanhkiet/Playground/react-native-starter/features/demo-todos/api/todosApi.ts:24:13)
+            at Generator.next (<anonymous>)
+            at asyncGeneratorStep (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+            at _next (/Users/nguyenanhkiet/Playground/react-native-starter/node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+            at processTicksAndRejections (node:internal/process/task_queues:104:5) {
+          [cause]: [ZodError: [
+            {
+              "expected": "array",
+              "code": "invalid_type",
+              "path": [],
+              "message": "Invalid input: expected array, received undefined"
+            }
+          ]]
+        }
+      }
+
+      204 |     if (LEVEL_ORDER[level] < LEVEL_ORDER[minLevel]) return;
+      205 |     const args = [message, ...details.filter(item => item !== undefined)];
+    > 206 |     if (level === 'error') console.error(...args);
+          |                                    ^
+      207 |     else if (level === 'warn') console.warn(...args);
+      208 |     else if (level === 'info') console.info(...args);
+      209 |     else console.debug(...args);
+
+      at error (shared/lib/logger.ts:206:36)
+      at Object.write (shared/lib/logger.ts:230:7)
+      at error (features/demo-todos/screens/TodosScreen.tsx:41:43)
+      at Object.react_stack_bottom_frame (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15755:20)
+      at runWithFiberInDEV (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2315:13)
+      at commitHookEffectListMount (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9530:29)
+      at commitHookPassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9617:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11205:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11197:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11387:17)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11354:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11197:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11439:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11439:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11439:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11197:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11197:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11197:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11439:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11439:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11197:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11439:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11439:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11197:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11439:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11439:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11439:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11197:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11439:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11439:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11439:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11439:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11225:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11439:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11225:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11197:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11197:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11197:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11439:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11439:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11225:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11197:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11197:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11387:17)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11354:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11197:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11197:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11197:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11197:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11197:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11439:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11225:11)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11160:11)
+      at commitPassiveMountOnFiber (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11197:11)
+
+    console.info
+      [error-reporter] exception: ApiError: Unexpected response from the server (Loading todos failed)
+
+      at Object.info [as captureException] (shared/integrations/errorReporter.ts:55:13)
+
+PASS __tests__/shared/integrations/i18n.test.tsx
+PASS __tests__/features/not-found/NotFoundScreen.test.tsx
+PASS __tests__/features/demo-showcase/ShowcaseScreen.test.tsx
+PASS __tests__/features/auth/ProfileScreen.test.tsx
+PASS __tests__/features/demo-todos/TodosScreen.test.tsx
+PASS __tests__/app/initialRoute.test.tsx
+PASS __tests__/features/home/HomeScreen.test.tsx
+PASS __tests__/app/tabBarTheme.test.tsx
+PASS __tests__/app/routeGroups.test.ts
+PASS __tests__/shared/integrations/screenTracking.test.tsx
+PASS __tests__/app/statusBar.test.tsx
+PASS __tests__/docs/testingSnippets.test.tsx
+PASS __tests__/app/splashScreen.test.tsx
+PASS __tests__/shared/integrations/analyticsRecipe.test.tsx
+PASS __tests__/app/integrationSetup.test.tsx
+PASS __tests__/shared/ui/LoadingScreen.test.tsx
+PASS __tests__/testing/http.test.ts
+PASS __tests__/features/demo-auth/DemoCredentialsHint.test.tsx
+PASS __tests__/shared/session/SessionProvider.test.tsx
+PASS __tests__/shared/session/authService.test.ts
+PASS __tests__/testing/secureStore.test.ts
+PASS __tests__/app/appConfig.test.ts
+PASS __tests__/app/configError.test.tsx
+PASS __tests__/scripts/checkDocs.test.ts (44.025 s)
+PASS __tests__/shared/lib/useFetch.test.tsx
+PASS __tests__/shared/ui/theme.test.ts
+PASS __tests__/shared/lib/logger.test.ts
+PASS __tests__/scripts/projectCopy.test.ts
+PASS __tests__/shared/config/env.test.ts
+PASS __tests__/shared/ui/DocumentTitle.test.tsx
+PASS __tests__/scripts/checkAudit.test.ts
+PASS __tests__/features/demo-auth/dummyJsonAdapter.test.ts
+PASS __tests__/shared/storage/storage.test.ts
+PASS __tests__/shared/integrations/seams.test.ts
+PASS __tests__/scripts/initProject.test.ts (46.661 s)
+PASS __tests__/scripts/removeDemo.test.ts (50.339 s)
+-----------------------------------|---------|----------|---------|---------|-------------------
+File                               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-----------------------------------|---------|----------|---------|---------|-------------------
+All files                          |   98.77 |       95 |   97.68 |   99.14 |                   
+ app                               |     100 |      100 |   57.14 |     100 |                   
+  +not-found.tsx                   |       0 |        0 |       0 |       0 |                   
+  _layout.tsx                      |     100 |      100 |   57.14 |     100 |                   
+  showcase.tsx                     |       0 |        0 |       0 |       0 |                   
+ app/(app)                         |    87.5 |       75 |     100 |     100 |                   
+  _layout.tsx                      |    87.5 |       75 |     100 |     100 | 26                
+  profile.tsx                      |       0 |        0 |       0 |       0 |                   
+ app/(auth)                        |     100 |      100 |     100 |     100 |                   
+  _layout.tsx                      |     100 |      100 |     100 |     100 |                   
+  login.tsx                        |       0 |        0 |       0 |       0 |                   
+ app/(tabs)                        |     100 |      100 |     100 |     100 |                   
+  _layout.tsx                      |     100 |      100 |     100 |     100 |                   
+  explore.tsx                      |       0 |        0 |       0 |       0 |                   
+  index.tsx                        |       0 |        0 |       0 |       0 |                   
+ features/auth/screens             |     100 |    97.36 |     100 |     100 |                   
+  LoginScreen.tsx                  |     100 |      100 |     100 |     100 |                   
+  ProfileScreen.tsx                |     100 |    94.44 |     100 |     100 | 50                
+ features/demo-auth                |     100 |     87.5 |     100 |     100 |                   
+  DemoCredentialsHint.tsx          |     100 |      100 |     100 |     100 |                   
+  dummyJsonAdapter.ts              |     100 |    83.33 |     100 |     100 | 33                
+ features/demo-showcase/components |     100 |      100 |     100 |     100 |                   
+  ExampleLinks.tsx                 |     100 |      100 |     100 |     100 |                   
+ features/demo-showcase/screens    |     100 |      100 |     100 |     100 |                   
+  ShowcaseScreen.tsx               |     100 |      100 |     100 |     100 |                   
+ features/demo-todos               |       0 |        0 |       0 |       0 |                   
+  types.ts                         |       0 |        0 |       0 |       0 |                   
+ features/demo-todos/api           |     100 |      100 |     100 |     100 |                   
+  todosApi.ts                      |     100 |      100 |     100 |     100 |                   
+ features/demo-todos/screens       |     100 |      100 |     100 |     100 |                   
+  TodosScreen.tsx                  |     100 |      100 |     100 |     100 |                   
+ features/home/screens             |     100 |      100 |     100 |     100 |                   
+  HomeScreen.tsx                   |     100 |      100 |     100 |     100 |                   
+ features/not-found/screens        |     100 |      100 |     100 |     100 |                   
+  NotFoundScreen.tsx               |     100 |      100 |     100 |     100 |                   
+ shared/config                     |     100 |    97.95 |     100 |     100 |                   
+  env.ts                           |     100 |    97.95 |     100 |     100 | 148               
+  featureFlags.ts                  |     100 |      100 |     100 |     100 |                   
+ shared/http                       |   97.77 |    96.13 |     100 |   98.75 |                   
+  api.ts                           |     100 |      100 |     100 |     100 |                   
+  apiError.ts                      |   98.03 |    97.14 |     100 |   97.67 | 91                
+  errorMessage.ts                  |     100 |      100 |     100 |     100 |                   
+  httpClient.ts                    |    97.5 |    95.09 |     100 |   99.07 | 165               
+ shared/i18n                       |     100 |    83.33 |     100 |     100 |                   
+  en.ts                            |     100 |      100 |     100 |     100 |                   
+  index.ts                         |     100 |    83.33 |     100 |     100 | 38                
+ shared/integrations               |   96.87 |    80.76 |     100 |   96.22 |                   
+  analytics.ts                     |     100 |     87.5 |     100 |     100 | 25                
+  errorReporter.ts                 |   88.23 |    63.63 |     100 |   83.33 | 41,63             
+  featureFlags.ts                  |     100 |      100 |     100 |     100 |                   
+  pushNotifications.ts             |     100 |      100 |     100 |     100 |                   
+  seam.ts                          |     100 |      100 |     100 |     100 |                   
+  setup.ts                         |     100 |      100 |     100 |     100 |                   
+  updates.ts                       |     100 |      100 |     100 |     100 |                   
+  useScreenTracking.ts             |     100 |      100 |     100 |     100 |                   
+ shared/lib                        |   98.49 |    93.97 |     100 |   98.33 |                   
+  logger.ts                        |   97.77 |    92.85 |     100 |    97.5 | 187-188           
+  useFetch.ts                      |     100 |      100 |     100 |     100 |                   
+ shared/session                    |   98.89 |    94.44 |   96.42 |    99.4 |                   
+  SessionProvider.tsx              |     100 |    86.66 |     100 |     100 | 95,140,154,167    
+  authService.ts                   |   96.36 |      100 |   84.61 |   98.03 | 96                
+  session.ts                       |     100 |      100 |     100 |     100 |                   
+  tokenStore.ts                    |     100 |      100 |     100 |     100 |                   
+ shared/storage                    |     100 |      100 |     100 |     100 |                   
+  secureStorage.ts                 |     100 |      100 |     100 |     100 |                   
+  storage.ts                       |     100 |      100 |     100 |     100 |                   
+ shared/ui                         |     100 |    92.59 |   96.55 |     100 |                   
+  ConfigErrorScreen.tsx            |     100 |      100 |     100 |     100 |                   
+  DocumentTitle.tsx                |     100 |      100 |     100 |     100 |                   
+  DocumentTitle.web.tsx            |     100 |      100 |     100 |     100 |                   
+  ErrorBoundary.tsx                |     100 |    93.33 |    92.3 |     100 | 66                
+  LoadingScreen.tsx                |     100 |      100 |     100 |     100 |                   
+  theme.ts                         |     100 |    83.33 |     100 |     100 | 66                
+  useAnnouncement.ts               |     100 |      100 |     100 |     100 |                   
+-----------------------------------|---------|----------|---------|---------|-------------------
+
+Test Suites: 47 passed, 47 total
+Tests:       692 passed, 692 total
+Snapshots:   0 total
+Time:        51.874 s
+Ran all test suites.
+
+> react-native-starter@1.0.0 format:check
+> prettier --check "**/*.{ts,tsx,js,jsx,json,md}"
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> react-native-starter@1.0.0 docs:check
+> node scripts/check-docs.js
+
+Checked 19 files: 42 TypeScript snippets compiled with tsc.
+Skipped docs/api-and-storage.md:418: needs @tanstack/react-query (not installed).
+Skipped docs/recipes/state-management.md:41: needs zustand (not installed).
+Skipped docs/recipes/state-management.md:96: needs @reduxjs/toolkit, react-redux (not installed).
+Skipped docs/recipes/state-management.md:171: needs jotai (not installed).
+No problems.

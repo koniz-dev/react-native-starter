@@ -1,0 +1,4 @@
+web: permission={"granted":false,"reason":"unsupported"} token=null update={"available":false,"reason":"not-configured"}
+ios: permission={"granted":true} token="rejected: ERR_NOTIFICATIONS_PUSH_WEB_MISSING_CONFIG" update="rejected: ERR_UPDATES_DISABLED"
+  ● Test suite failed to run
+  ● Test suite failed to run

@@ -1,0 +1,5 @@
+    ✕ keeps the list on screen while it reloads (352 ms)
+    expect(received).toHaveLength(expected)
+    Expected length: 2
+    Received length: 3
+    > 106 |     expect(requests).toHaveLength(2);
