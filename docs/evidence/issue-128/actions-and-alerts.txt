@@ -1,0 +1,18 @@
+E2E (Android, manual) success 521a8535252ae7414d5636512aef5934f353297f attempt 1 https://github.com/koniz-dev/react-native-starter/actions/runs/39120315573
+E2E (Android, manual) success 521a8535252ae7414d5636512aef5934f353297f attempt 1 https://github.com/koniz-dev/react-native-starter/actions/runs/39120317873
+E2E (iOS, manual) success 521a8535252ae7414d5636512aef5934f353297f attempt 1 https://github.com/koniz-dev/react-native-starter/actions/runs/39120320195
+iOS run 39120320195: E2E RETRY lines: 0
+
+CI push success 39110184050
+CodeQL dynamic success 39110184043
+Audit push success 39110184001
+
+CodeQL analyses on 521a853:
+2026-10-18T08:07:41Z /language:javascript-typescript results=0
+2026-10-18T08:07:10Z /language:actions results=0
+
+Open alerts (2026-10-18T11:37:42Z):
+code-scanning: 0
+dependabot: 0
+secret-scanning: 0
+open issues: #128 Release v1.1.15: seventh deep audit fixes and iOS e2e retry (#125-#127)

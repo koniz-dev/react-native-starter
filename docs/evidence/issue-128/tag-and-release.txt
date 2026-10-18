@@ -1,0 +1,14 @@
+object 521a8535252ae7414d5636512aef5934f353297f
+type commit
+tag v1.1.15
+tagger koniz-dev <kietna.work@gmail.com> 1792320132 +0700
+
+v1.1.15: seventh deep audit fixes and iOS e2e retry (#125-#127)
+
+Refs koniz-dev/react-native-starter#128
+
+release: v1.1.15, draft=false, prerelease=false, published 2026-10-18T11:37:19Z, https://github.com/koniz-dev/react-native-starter/releases/tag/v1.1.15
+latest: Latest	v1.1.15
+
+Changed since v1.1.14:
+ 30 files changed, 467 insertions(+), 93 deletions(-)

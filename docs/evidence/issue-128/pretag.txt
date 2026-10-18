@@ -1,0 +1,6 @@
+Pre-tag check (2026-10-18T10:42:09Z)
+open issues: #128 Release v1.1.15: seventh deep audit fixes and iOS e2e retry (#125-#127)
+code-scanning: 0
+dependabot: 0
+secret-scanning: 0
+HEAD 521a8535252ae7414d5636512aef5934f353297f, origin/main 521a8535252ae7414d5636512aef5934f353297f
