@@ -41,6 +41,19 @@ name: Login keyboard return keys
 - extendedWaitUntil:
     visible: Signed in as Emily Johnson
     timeout: 10000
+# The sheet can also come a few seconds after Home shows (as in
+# subflows/sign-in.yaml): wait for it briefly before tapping under it.
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - extendedWaitUntil:
+          visible: Save Password\?
+          timeout: 5000
+          optional: true
+      - tapOn:
+          text: Not Now
+          optional: true
 - tapOn:
     id: logout-button
 - extendedWaitUntil:

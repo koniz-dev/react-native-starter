@@ -195,6 +195,8 @@ COMMON=(-e "APP_ID=$APP_ID" -e "APP_URL=$APP_URL" -e "MOCK_API_URL=$MOCK_API_URL
 # (maestro, report.xml, maestro-dark; with a -retry suffix the second time).
 run_flows() {
   local suffix="$1" result=0
+  # A flow that failed in the middle may have left the mock failing requests.
+  curl -s -X POST "$MOCK_API_URL/__mode/ok" >/dev/null
   set_dark_mode no
   "$MAESTRO" test "${COMMON[@]}" --exclude-tags dark --format junit \
     --output "$OUT/report$suffix.xml" --test-output-dir "$OUT/maestro$suffix" \
@@ -213,6 +215,10 @@ run_flows "" || status=$?
 # failure, so the later ones haven't run); a real failure fails both times.
 if [ "$status" -ne 0 ] && [ "$PLATFORM" = ios ]; then
   echo "E2E RETRY: a flow failed (see $OUT/maestro.log); running the flows once more." >&2
+  # Shown on the run's summary page, so a pass that needed the retry is seen.
+  if [ -n "${GITHUB_ACTIONS:-}" ]; then
+    echo "::warning::E2E RETRY: a flow failed on the first attempt; see maestro.log in the results artifact."
+  fi
   status=0
   run_flows -retry || status=$?
 fi
