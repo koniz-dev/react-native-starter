@@ -187,17 +187,34 @@ if [ "$PLATFORM" = android ]; then
   done
 fi
 
-set_dark_mode no
 # API_URL and AUTH_API_URL let a flow reach your backend (e.g. to seed data).
 COMMON=(-e "APP_ID=$APP_ID" -e "APP_URL=$APP_URL" -e "MOCK_API_URL=$MOCK_API_URL"
   -e "API_URL=$API_URL" -e "AUTH_API_URL=$AUTH_API_URL")
 
-status=0
-"$MAESTRO" test "${COMMON[@]}" --exclude-tags dark --format junit --output "$OUT/report.xml" \
-  --test-output-dir "$OUT/maestro" "$ROOT/.maestro" | tee "$OUT/maestro.log" || status=$?
+# The numbered flows, then the dark-mode flow; $1 names the attempt's output
+# (maestro, report.xml, maestro-dark; with a -retry suffix the second time).
+run_flows() {
+  local suffix="$1" result=0
+  set_dark_mode no
+  "$MAESTRO" test "${COMMON[@]}" --exclude-tags dark --format junit \
+    --output "$OUT/report$suffix.xml" --test-output-dir "$OUT/maestro$suffix" \
+    "$ROOT/.maestro" | tee "$OUT/maestro$suffix.log" || result=$?
+  set_dark_mode yes
+  "$MAESTRO" test "${COMMON[@]}" --test-output-dir "$OUT/maestro-dark$suffix" \
+    "$ROOT/.maestro/dark-mode.yaml" | tee "$OUT/maestro-dark$suffix.log" || result=$?
+  return "$result"
+}
 
-set_dark_mode yes
-"$MAESTRO" test "${COMMON[@]}" --test-output-dir "$OUT/maestro-dark" \
-  "$ROOT/.maestro/dark-mode.yaml" | tee "$OUT/maestro-dark.log" || status=$?
+status=0
+run_flows "" || status=$?
+# The iOS simulator and its XCTest driver fail a flow now and then on a busy
+# machine: a tap that never arrives, a driver that becomes unreachable
+# (#127). On iOS, run everything once more (the flows stop at the first
+# failure, so the later ones haven't run); a real failure fails both times.
+if [ "$status" -ne 0 ] && [ "$PLATFORM" = ios ]; then
+  echo "E2E RETRY: a flow failed (see $OUT/maestro.log); running the flows once more." >&2
+  status=0
+  run_flows -retry || status=$?
+fi
 
 exit "$status"

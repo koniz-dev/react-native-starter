@@ -366,9 +366,16 @@ and no network access. On Android it sets up `adb reverse` for Metro and for eve
 to dark mode for `dark-mode.yaml` and back. Results, screenshots, and a JUnit
 report go to `e2e-results/<platform>/` (gitignored).
 
+On iOS, when a flow fails, it runs all the flows once more and prints
+`E2E RETRY`; the second attempt's output has a `-retry` suffix. The
+simulator and its XCTest driver fail a flow now and then on a busy machine
+(a tap that never arrives, a driver that stops answering); a flow that
+fails both times fails the run. Look at the first attempt's output too: a
+flow that keeps needing the retry is worth fixing.
+
 ### Writing a flow
 
-Two subflows in `.maestro/subflows/` cover what most flows start with:
+The subflows in `.maestro/subflows/` cover what most flows start with:
 
 - `open-app.yaml` opens the app and waits for Home (the `tab-home` tab and
   the text "Session" on Home); keep both, or change the subflow, when you
@@ -377,7 +384,12 @@ Two subflows in `.maestro/subflows/` cover what most flows start with:
 - `open-login.yaml` opens Login from Home, and `sign-in.yaml` signs in on
   it with `MAESTRO_E2E_USERNAME` and `MAESTRO_E2E_PASSWORD`. It handles
   what iOS adds around a sign-in (the keyboard's Go key submitting the form,
-  the "Save Password?" sheet), and ends once Login has closed:
+  the "Save Password?" sheet), and ends once Login has closed.
+- `tap-after-launch.yaml` taps an element (`TAP_ID`) and taps it once more
+  if a text (`EXPECT`) hasn't appeared: use it for the first tap after
+  `open-app.yaml`, which a slow iOS simulator can lose.
+
+Signing in from a fresh install:
 
 ```yaml
 - runFlow:
