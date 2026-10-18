@@ -16,8 +16,11 @@ onFlowComplete:
     file: subflows/open-app.yaml
     env:
       CLEAR_STATE: 'false'
-- tapOn:
-    id: tab-explore
+- runFlow:
+    file: subflows/tap-after-launch.yaml
+    env:
+      TAP_ID: tab-explore
+      EXPECT: 'The server had a problem.*'
 - extendedWaitUntil:
     visible: The server had a problem.*
     timeout: 30000

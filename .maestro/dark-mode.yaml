@@ -12,8 +12,11 @@ tags:
       CLEAR_STATE: 'false'
 - takeScreenshot: dark-home
 # @demo remove-block-start
-- tapOn:
-    id: tab-explore
+- runFlow:
+    file: subflows/tap-after-launch.yaml
+    env:
+      TAP_ID: tab-explore
+      EXPECT: API Example
 - extendedWaitUntil:
     visible: API Example
     timeout: 20000

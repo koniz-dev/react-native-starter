@@ -163,6 +163,7 @@ describe('remove-demo on a copy of the template', () => {
       'open-app.yaml',
       'open-login.yaml',
       'sign-in.yaml',
+      'tap-after-launch.yaml',
       'type-username.yaml',
     ]);
     expect(read(dir, '.maestro/subflows/sign-in.yaml')).toMatch(

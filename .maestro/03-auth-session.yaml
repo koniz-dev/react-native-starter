@@ -19,8 +19,11 @@ name: Sign-in session survives a relaunch; logout clears it
       CLEAR_STATE: 'false'
 - assertVisible: Signed in as Emily Johnson
 - takeScreenshot: 03-relaunch-signed-in
-- tapOn:
-    id: logout-button
+- runFlow:
+    file: subflows/tap-after-launch.yaml
+    env:
+      TAP_ID: logout-button
+      EXPECT: Not signed in
 - extendedWaitUntil:
     visible: Not signed in
     timeout: 10000
