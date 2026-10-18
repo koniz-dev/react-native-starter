@@ -33,8 +33,8 @@ exact API.
 ## Analytics
 
 Screen views are reported automatically: `useScreenTracking()` in
-`app/_layout.tsx` calls `getAnalytics().screen(name)` on every route
-change, from the moment the stored session has been read (a launch URL that
+`app/_layout.tsx` calls `getAnalytics().screen(name)` whenever the route
+pattern changes (going from `/orders/1` to `/orders/2` is not a new screen), from the moment the stored session has been read (a launch URL that
 the session guards redirect is never reported). The name is the route pattern without groups, such as `/` or
 `/orders/[id]`, never the path itself, so ids and tokens in a URL don't
 reach the provider. A provider that throws is logged (`logger.error`) and
@@ -45,7 +45,9 @@ sign-out, but not on a launch that starts signed out: providers such as
 PostHog start a new anonymous user on each clear. (If a session ends while the
 app isn't running, such as a Keychain the app couldn't read at launch, the
 provider keeps the last user until the next sign-in or sign-out.) The
-session provider does the same for the error reporter.
+session provider sets the error reporter's user from the session in the same
+way, but also on a launch that starts signed out, which is harmless for error
+reporters: they don't create users.
 
 ```ts
 // features/auth/hooks/useAnalyticsIdentity.ts
@@ -141,9 +143,13 @@ offline starts.
 ## Push notifications
 
 Needs `expo-notifications`, its config plugin, and push credentials, so it
-only works in a development or store build, not Expo Go.
+only works in a development or store build, not Expo Go. On the web, push
+also needs a VAPID key and a service worker (`notification.vapidPublicKey`
+and `serviceWorkerPath` in the app config), so this adapter reports it as
+unsupported there.
 
 ```ts
+import { Platform } from 'react-native';
 import {
   pushNotificationsSeam,
   type PushNotifications,
@@ -169,10 +175,14 @@ declare const Notifications: {
 
 export const expoPush: PushNotifications = {
   requestPermission: async () => {
+    if (Platform.OS === 'web') return { granted: false, reason: 'unsupported' };
     const { granted } = await Notifications.requestPermissionsAsync();
     return granted ? { granted: true } : { granted: false, reason: 'denied' };
   },
-  getToken: async () => (await Notifications.getExpoPushTokenAsync()).data,
+  getToken: async () =>
+    Platform.OS === 'web'
+      ? null
+      : (await Notifications.getExpoPushTokenAsync()).data,
   onNotification: listener => {
     const subscription = Notifications.addNotificationReceivedListener(n =>
       listener({
@@ -191,9 +201,13 @@ pushNotificationsSeam.set(expoPush);
 ## OTA updates
 
 Needs `expo-updates`, `runtimeVersion` and `updates.url` in `app.config.ts`,
-and an update service such as EAS Update.
+and an update service such as EAS Update. An update is bundled with the
+environment variables of the `eas update` run, not the build profile's: see
+[Environment Variables](environment-variables.md#files-and-precedence)
+before publishing one.
 
 ```ts
+import { Platform } from 'react-native';
 import { updatesSeam, type Updates } from '@/shared/integrations/updates';
 
 /** The part of expo-updates this adapter uses
@@ -207,7 +221,8 @@ declare const ExpoUpdates: {
 
 export const expoUpdates: Updates = {
   checkForUpdate: async () => {
-    if (!ExpoUpdates.isEnabled) {
+    // On the web, expo-updates reports itself enabled but can't update.
+    if (!ExpoUpdates.isEnabled || Platform.OS === 'web') {
       return { available: false, reason: 'not-configured' };
     }
     const result = await ExpoUpdates.checkForUpdateAsync();
