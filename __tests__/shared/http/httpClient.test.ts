@@ -204,25 +204,48 @@ describe('createHttpClient', () => {
   it.each([
     // OkHttp's call timeout on Android: React Native dispatches `error`, not
     // `timeout`, and leaves the exception's message as the response text.
-    ['an Android call timeout', failedXhr('timeout'), 'timeout'],
+    ['an Android call timeout', 'timeout', failedXhr('timeout')],
+    ['a text request timeout', 'timeout', failedXhr('timeout', 'text')],
     [
       'an Android closed port',
-      failedXhr('unexpected end of stream on http://localhost:9999/...'),
       'network',
+      failedXhr('unexpected end of stream on http://localhost:9999/...'),
+    ],
+    [
+      'an error that only mentions a timeout',
+      'network',
+      failedXhr('unexpected end of stream on http://timeout.example.com/'),
     ],
     [
       'an iOS offline error',
-      failedXhr('The Internet connection appears to be offline.'),
       'network',
+      failedXhr('The Internet connection appears to be offline.'),
     ],
-    ['a browser network error', failedXhr(''), 'network'],
-    ['a blob request', failedXhr('timeout', 'blob'), 'network'],
-    ['no request', undefined, 'network'],
-  ])('maps %s without a response to "%s"', async (_, request, code) => {
+    ['a browser network error', 'network', failedXhr('')],
+    // React Native keeps no message for other response types.
+    ['a blob request', 'network', failedXhr('timeout', 'blob')],
+    ['no request', 'network', undefined],
+  ])('maps %s without a response to "%s"', async (_, code, request) => {
     const client = authenticatedClient(async config => {
       throw new AxiosError('Network Error', 'ERR_NETWORK', config, request);
     });
     await expect(client.get('/slow')).rejects.toMatchObject({ code });
+  });
+
+  it('maps a response whose body is "timeout" by its status', async () => {
+    const client = authenticatedClient(async config => {
+      throw new AxiosError(
+        'Request failed with status code 504',
+        'ERR_BAD_RESPONSE',
+        config,
+        failedXhr('timeout'),
+        response(config, 504, 'timeout')
+      );
+    });
+    await expect(client.get('/slow')).rejects.toMatchObject({
+      code: 'server',
+      status: 504,
+    });
   });
 
   it('maps ETIMEDOUT to code "timeout"', async () => {

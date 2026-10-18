@@ -91,6 +91,10 @@ describe('init-project input', () => {
     // Kotlin keywords that Expo doesn't escape in the generated sources.
     ['bundleId', 'com.acme.object'],
     ['bundleId', 'com.when.notes'],
+    ['bundleId', 'com.acme.val'],
+    ['bundleId', 'com.acme.var'],
+    ['bundleId', 'com.acme.typealias'],
+    ['bundleId', 'com.acme.typeof'],
     // Schemes that belong to Expo Go, the web, or the OS.
     ['scheme', 'exp'],
     ['scheme', 'exps'],
@@ -159,6 +163,7 @@ describe('init-project input', () => {
     expect(init.slugify('Đọc Sách')).toBe('doc-sach');
     expect(init.slugify('Straße Ødegaard Łódź')).toBe('strasse-odegaard-lodz');
     expect(init.slugify('Æsop Œuvre Þór')).toBe('aesop-oeuvre-thor');
+    expect(init.slugify('Ðorð Ilık')).toBe('dord-ilik');
     expect(init.defaultScheme('acme-notes')).toBe('acmenotes');
     // A scheme must start with a letter.
     expect(init.defaultScheme('2048-game')).toBe('game');
@@ -275,6 +280,23 @@ describe('init-project on a copy of the template', () => {
       /--bundle-id is required/
     );
     expect(gitStatus(dir)).toBe('');
+  });
+
+  it('derives a scheme that starts with a letter from a name that starts with a digit', () => {
+    const dir = copy();
+    const result = run(dir, [
+      '--name',
+      '2048 Game',
+      '--bundle-id',
+      'com.acme.game',
+      '--owner',
+      'Acme',
+      '--keep-demo',
+      '--keep-recipes',
+      '--dry-run',
+    ]);
+    expect(result.stderr).toBe('');
+    expect(result.status).toBe(0);
   });
 
   it('names the empty app name as the problem', () => {

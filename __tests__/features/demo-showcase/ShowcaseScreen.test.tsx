@@ -123,6 +123,19 @@ describe('<ShowcaseScreen />', () => {
       expect(shown('Outlined pressed')).toBe(true);
     });
 
+    it('shows a notice pressed while the last one fades out', async () => {
+      renderWithProviders(<ShowcaseScreen />);
+      await wait(300);
+      fireEvent.press(screen.getByText('Show Snackbar'));
+      await wait(400);
+      fireEvent.press(screen.getByText('Dismiss'));
+      await wait(50);
+
+      fireEvent.press(screen.getByText('Contained'));
+      await wait(600);
+      expect(shown('Contained pressed')).toBe(true);
+    });
+
     it('closes the snackbar with Dismiss', async () => {
       renderWithProviders(<ShowcaseScreen />);
       await wait(300);
