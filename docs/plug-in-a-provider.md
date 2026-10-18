@@ -145,8 +145,8 @@ offline starts.
 Needs `expo-notifications`, its config plugin, and push credentials, so it
 only works in a development or store build, not Expo Go. On the web, push
 also needs a VAPID key and a service worker (`notification.vapidPublicKey`
-and `serviceWorkerPath` in the app config), so this adapter reports it as
-unsupported there.
+and `notification.serviceWorkerPath` in the app config), so this adapter
+reports it as unsupported there.
 
 ```ts
 import { Platform } from 'react-native';
@@ -184,6 +184,7 @@ export const expoPush: PushNotifications = {
       ? null
       : (await Notifications.getExpoPushTokenAsync()).data,
   onNotification: listener => {
+    if (Platform.OS === 'web') return () => {};
     const subscription = Notifications.addNotificationReceivedListener(n =>
       listener({
         title: n.request.content.title ?? undefined,

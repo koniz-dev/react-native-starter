@@ -4,7 +4,8 @@ import { logger } from '@/shared/lib/logger';
 import { getAnalytics } from './analytics';
 
 /**
- * Reports a screen view to the analytics seam whenever the route changes.
+ * Reports a screen view to the analytics seam whenever the route pattern
+ * changes (not for a change of params only).
  * Mounted once in app/_layout.tsx, disabled until the stored session has been
  * read: until then the route is the launch URL, which the session guards may
  * still redirect (a signed-out cold start at /profile shows Home).

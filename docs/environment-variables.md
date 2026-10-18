@@ -104,8 +104,9 @@ For builds made with EAS Build, set the same variables in the build profile's
 
 An over-the-air update is bundled again, and `eas update` doesn't read a build
 profile's `env`. With `--environment <name>` it uses that EAS environment's
-variables and ignores `.env`; without the flag it bundles with your local
-`.env`. If you ship updates, keep every `EXPO_PUBLIC_*` value and
+variables and ignores `.env`; without the flag it bundles the JavaScript with
+your local `.env` (choosing an environment when it asks doesn't load that
+environment's variables). If you ship updates, keep every `EXPO_PUBLIC_*` value and
 `APP_VARIANT` in EAS environment variables (`eas env:create`) and always
 publish with `--environment`, or users who download an update get its missing
 or local values (the configuration error screen, or the backends your `.env`

@@ -410,7 +410,8 @@ or [SWR](https://swr.vercel.app/) when you need any of:
 To migrate gradually, keep the `useFetch` result shape and swap the
 implementation, so screens don't change. The mapping below keeps
 `useFetch`'s behavior: no automatic retries, and `loading` (with the error
-cleared) while a retry after an error runs. Two things differ: a refetch of
+cleared) while a retry after an error runs. Besides the cache itself (a query
+key that is already cached shows its data at once), two things differ: a refetch of
 data that loaded keeps `loading` false (the data stays on screen), and a
 failed refetch keeps the previous data next to the error. With TanStack Query (install it and
 wrap the app in a `QueryClientProvider` inside `SessionProvider`):

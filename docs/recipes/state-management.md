@@ -78,8 +78,11 @@ export function useIsFavorite(id: number): boolean {
 ```
 
 To persist it, wrap the store with Zustand's `persist` middleware and a
-storage adapter over AsyncStorage (`createJSONStorage(() => AsyncStorage)`;
-not over `shared/storage/storage.ts`, which already JSON-encodes values)
+storage adapter over AsyncStorage (`createJSONStorage(() => AsyncStorage)`).
+This is the exception to persisting with `shared/storage/storage.ts`: that
+wrapper already JSON-encodes values, and it turns a failed read into `null`,
+from which `persist` would rehydrate an empty store and overwrite the saved
+one
 ([Zustand: persisting state](https://zustand.docs.pmnd.rs/reference/integrations/persisting-store-data)). The stored state comes back asynchronously, so a reset on sign-out
 can run before it arrives and be overwritten: key the persisted data by the
 user's id, or reset again once rehydration finishes (`onRehydrateStorage`).
