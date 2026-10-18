@@ -30,6 +30,7 @@ const init = require('../../scripts/init-project.js') as {
   };
   validators: Record<string, (value: string) => string | null>;
   slugify(name: string): string;
+  defaultScheme(slug: string): string | undefined;
   tsString(value: string): string;
   markdownText(text: string): string;
   appReadme(name: string): string;
@@ -87,6 +88,9 @@ describe('init-project input', () => {
     ['bundleId', 'io.acme.notes_app'],
     ['bundleId', 'com.acme.new'],
     ['bundleId', 'com.class.notes'],
+    // Kotlin keywords that Expo doesn't escape in the generated sources.
+    ['bundleId', 'com.acme.object'],
+    ['bundleId', 'com.when.notes'],
     // Schemes that belong to Expo Go, the web, or the OS.
     ['scheme', 'exp'],
     ['scheme', 'exps'],
@@ -151,6 +155,15 @@ describe('init-project input', () => {
     expect(init.slugify('Ghi Chú: Acme Notes!')).toBe('ghi-chu-acme-notes');
     expect(init.slugify('Mom’s Recipes')).toBe('moms-recipes');
     expect(init.slugify("Bob's App")).toBe('bobs-app');
+    // Letters that Unicode doesn't decompose into a base letter and a mark.
+    expect(init.slugify('Đọc Sách')).toBe('doc-sach');
+    expect(init.slugify('Straße Ødegaard Łódź')).toBe('strasse-odegaard-lodz');
+    expect(init.slugify('Æsop Œuvre Þór')).toBe('aesop-oeuvre-thor');
+    expect(init.defaultScheme('acme-notes')).toBe('acmenotes');
+    // A scheme must start with a letter.
+    expect(init.defaultScheme('2048-game')).toBe('game');
+    expect(init.defaultScheme('2048')).toBeUndefined();
+    expect(init.defaultScheme('')).toBeUndefined();
     expect(init.tsString('Acme')).toBe("'Acme'");
     expect(init.tsString("Bob's")).toBe(`"Bob's"`);
     // Both kinds of quote: single quotes, with the ' escaped.

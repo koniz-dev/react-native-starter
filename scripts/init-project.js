@@ -120,14 +120,19 @@ function parseArgs(argv) {
   return args;
 }
 
-/** Java keywords and literals: Android rejects them as package segments. */
+/**
+ * Java keywords and literals, which Android rejects as package segments, and
+ * the Kotlin keywords that Expo doesn't escape in the Kotlin sources it
+ * generates (it escapes only is, in, as, and fun).
+ */
 const JAVA_RESERVED = new Set(
   (
     'abstract assert boolean break byte case catch char class const continue ' +
     'default do double else enum extends false final finally float for goto ' +
     'if implements import instanceof int interface long native new null ' +
     'package private protected public return short static strictfp super ' +
-    'switch synchronized this throw throws transient true try void volatile while'
+    'switch synchronized this throw throws transient true try void volatile while ' +
+    'object typealias typeof val var when'
   ).split(' ')
 );
 
@@ -208,7 +213,7 @@ const validators = {
     }
     const keyword = value.split('.').find(part => JAVA_RESERVED.has(part));
     if (keyword) {
-      return `bundle ID "${value}": "${keyword}" is a Java keyword, which Android doesn't allow as a part`;
+      return `bundle ID "${value}": "${keyword}" is a Java or Kotlin keyword, which Android doesn't allow as a part`;
     }
     return null;
   },
@@ -222,6 +227,19 @@ const validators = {
   },
 };
 
+/** Letters that NFKD doesn't split into a base letter and a mark. */
+const LETTER_SPELLINGS = {
+  đ: 'd',
+  ð: 'd',
+  ß: 'ss',
+  ø: 'o',
+  ł: 'l',
+  æ: 'ae',
+  œ: 'oe',
+  þ: 'th',
+  ı: 'i',
+};
+
 /** "Acme Notes!" -> "acme-notes" */
 function slugify(name) {
   return (
@@ -231,9 +249,15 @@ function slugify(name) {
       // Drop apostrophes: "Mom's Recipes" is moms-recipes, not mom-s-recipes.
       .replace(/['\u2019]/g, '')
       .toLowerCase()
+      .replace(/[đðßøłæœþı]/g, letter => LETTER_SPELLINGS[letter])
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '')
   );
+}
+
+/** The slug without dashes or leading digits: a scheme starts with a letter. */
+function defaultScheme(slug) {
+  return slug.replace(/-/g, '').replace(/^[0-9]+/, '') || undefined;
 }
 
 /**
@@ -333,11 +357,7 @@ async function collectInput(args) {
       'Slug (Expo project and npm package name)',
       slugify(name) || undefined
     );
-    const scheme = await ask(
-      'scheme',
-      'URL scheme',
-      slug ? slug.replace(/-/g, '') : undefined
-    );
+    const scheme = await ask('scheme', 'URL scheme', defaultScheme(slug ?? ''));
     const bundleId = await ask(
       'bundleId',
       'Bundle / package ID (reverse-DNS, e.g. com.acme.notes)'
@@ -879,6 +899,7 @@ module.exports = {
   parseArgs,
   validators,
   slugify,
+  defaultScheme,
   tsString,
   markdownText,
   appReadme,
