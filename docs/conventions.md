@@ -17,13 +17,15 @@ app/                      Expo Router routes only: layouts and one-line route fi
 features/                 one folder per feature
   home/screens/           Home: the session card
   auth/screens/           Login and Profile
+  not-found/screens/      the not-found screen (app/+not-found.tsx)
   auth/<backend>Adapter.ts  your AuthAdapter (docs/connect-your-backend.md)
 shared/                   foundation, no imports from features/
   config/                 validated environment (env.ts), feature flags
   http/                   createHttpClient, ApiError, the app API client
   session/                AuthAdapter + auth service, token store, SessionProvider
   storage/                AsyncStorage and SecureStore wrappers
-  ui/                     theme, ErrorBoundary, LoadingScreen, ConfigErrorScreen
+  ui/                     theme, ErrorBoundary, LoadingScreen, ConfigErrorScreen,
+                          DocumentTitle, useAnnouncement
   lib/                    logger, useFetch
   integrations/           seams (analytics, flags, push, OTA, error reporting) and setup.ts
   i18n/                   t() and the English dictionary

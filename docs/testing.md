@@ -21,6 +21,7 @@ The full local gate is `npm run lint && npm run type-check && npm run test:ci`.
 ```
 __tests__/                    mirrors the source tree
 ├── app/                      full-app routing tests: guards, initial route, theme, status bar
+├── docs/                     tests that run the docs' snippets
 ├── features/
 │   └── auth/  home/  ...     screen tests
 ├── scripts/                  tests of the Node scripts and the lint rules

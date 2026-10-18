@@ -48,7 +48,8 @@ own name, bundle ID, and scheme, so all three install side by side:
   [EAS Build, the first time](#eas-build-the-first-time).
 - The `development` variant is a debug build without a dev client: it loads
   the JavaScript from Metro on `localhost:8081`, so it is for simulators,
-  emulators, and the e2e flows. On a physical device, use Expo Go, or add
+  emulators, and the e2e flows; so is the EAS `development` profile's build.
+  On a physical device, use Expo Go, or add
   [`expo-dev-client`](https://docs.expo.dev/develop/development-builds/introduction/).
 - iOS builds declare that the app uses only exempt encryption (HTTPS and the
   OS's own: `ios.config.usesNonExemptEncryption: false`), so App Store

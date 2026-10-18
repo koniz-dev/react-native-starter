@@ -100,9 +100,10 @@ npm start
 
 npm's output looks worse than it is. These are expected:
 
-- **Deprecation warnings** (`inflight`, `glob`, `uuid`, `eslint`, ...) come
-  from Expo's, Metro's, and Jest's own dependencies; they go away as those
-  tools update them.
+- **Deprecation warnings** (`inflight`, `glob`, `uuid`, ...) come from
+  Expo's, Metro's, and Jest's own dependencies; they go away as those tools
+  update them. The `eslint` one is the project's own ESLint 9, kept until
+  the React lint plugins support ESLint 10.
 - **"1 package has install scripts not yet covered by allowScripts:
   fsevents"**: fsevents ships its prebuilt binary, so it works without its
   install script.

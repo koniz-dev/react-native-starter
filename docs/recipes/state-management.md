@@ -78,7 +78,8 @@ export function useIsFavorite(id: number): boolean {
 ```
 
 To persist it, wrap the store with Zustand's `persist` middleware and a
-storage adapter over AsyncStorage
+storage adapter over AsyncStorage (`createJSONStorage(() => AsyncStorage)`;
+not over `shared/storage/storage.ts`, which already JSON-encodes values)
 ([Zustand: persisting state](https://zustand.docs.pmnd.rs/reference/integrations/persisting-store-data)). The stored state comes back asynchronously, so a reset on sign-out
 can run before it arrives and be overwritten: key the persisted data by the
 user's id, or reset again once rehydration finishes (`onRehydrateStorage`).
