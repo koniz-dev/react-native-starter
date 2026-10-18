@@ -10,6 +10,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { PaperProvider } from 'react-native-paper';
 import { SessionProvider } from '@/shared/session/SessionProvider';
 import { getTheme } from '@/shared/ui/theme';
+import { getColorScheme } from './colorScheme';
 
 const TEST_SAFE_AREA_METRICS = {
   frame: { x: 0, y: 0, width: 390, height: 844 },
@@ -17,7 +18,7 @@ const TEST_SAFE_AREA_METRICS = {
 };
 
 interface ProvidersOptions {
-  /** Theme to render with (default 'light'). */
+  /** Theme to render with (default: the scheme setColorScheme() set). */
   scheme?: 'light' | 'dark';
   /** Wrap in SessionProvider (restores the session from the mocked stores). */
   withSession?: boolean;
@@ -26,7 +27,7 @@ interface ProvidersOptions {
 export function renderWithProviders(
   ui: ReactElement,
   {
-    scheme = 'light',
+    scheme = getColorScheme(),
     withSession = false,
     ...options
   }: ProvidersOptions & Omit<RenderOptions, 'wrapper'> = {}

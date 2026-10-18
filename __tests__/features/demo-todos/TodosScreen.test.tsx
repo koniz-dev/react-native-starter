@@ -99,8 +99,10 @@ describe('<TodosScreen /> (Explore)', () => {
     await waitFor(() => expect(requests).toHaveLength(2));
     expect(screen.getByText('Loading...')).toBeDisabled();
     expect(screen.getByText('todo 1')).toBeTruthy();
-    // A second press while loading starts nothing.
+    // A second press while loading starts nothing (a request reaches the
+    // adapter only after the interceptors, so let them run first).
     fireEvent.press(screen.getByText('Loading...'));
+    await act(async () => {});
     expect(requests).toHaveLength(2);
 
     await act(async () =>

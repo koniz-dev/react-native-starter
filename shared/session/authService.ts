@@ -175,6 +175,8 @@ export const authService = {
     }
     const user = adapter.normalizeUser(result.user);
 
+    // Before the token is written: a sign-out still pending from an earlier
+    // session checks the session count, and must not clear this token.
     startNewSession();
     try {
       await getTokenStore().set(result.token);
