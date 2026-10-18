@@ -188,6 +188,52 @@ describe('createHttpClient', () => {
     await expect(rejection).rejects.toMatchObject({ code: 'network' });
   });
 
+  /** An XHR as React Native leaves it after a failed request. */
+  const failedXhr = (responseText: string, responseType = '') => ({
+    status: 0,
+    responseType,
+    get responseText() {
+      // Like React Native's, which throws for other response types.
+      if (responseType !== '' && responseType !== 'text') {
+        throw new Error("The 'responseText' property is only available…");
+      }
+      return responseText;
+    },
+  });
+
+  it.each([
+    // OkHttp's call timeout on Android: React Native dispatches `error`, not
+    // `timeout`, and leaves the exception's message as the response text.
+    ['an Android call timeout', failedXhr('timeout'), 'timeout'],
+    [
+      'an Android closed port',
+      failedXhr('unexpected end of stream on http://localhost:9999/...'),
+      'network',
+    ],
+    [
+      'an iOS offline error',
+      failedXhr('The Internet connection appears to be offline.'),
+      'network',
+    ],
+    ['a browser network error', failedXhr(''), 'network'],
+    ['a blob request', failedXhr('timeout', 'blob'), 'network'],
+    ['no request', undefined, 'network'],
+  ])('maps %s without a response to "%s"', async (_, request, code) => {
+    const client = authenticatedClient(async config => {
+      throw new AxiosError('Network Error', 'ERR_NETWORK', config, request);
+    });
+    await expect(client.get('/slow')).rejects.toMatchObject({ code });
+  });
+
+  it('maps ETIMEDOUT to code "timeout"', async () => {
+    const client = authenticatedClient(async config => {
+      throw new AxiosError('timeout exceeded', 'ETIMEDOUT', config);
+    });
+    await expect(client.get('/slow')).rejects.toMatchObject({
+      code: 'timeout',
+    });
+  });
+
   it('maps an aborted request to code "canceled"', async () => {
     const client = authenticatedClient(async config => {
       throw new CanceledError(undefined, undefined, config);

@@ -86,12 +86,16 @@ server's own `message` (or `error`) field for a 4xx, so a failed login shows
 | `code`         | When                                                      |
 | -------------- | --------------------------------------------------------- |
 | `network`      | No response: offline, DNS failure, connection refused     |
-| `timeout`      | The request took longer than `EXPO_PUBLIC_API_TIMEOUT_MS` |
+| `timeout`      | No answer within `EXPO_PUBLIC_API_TIMEOUT_MS` (see below) |
 | `unauthorized` | HTTP 401                                                  |
 | `client`       | Any other HTTP 4xx                                        |
 | `server`       | HTTP 5xx                                                  |
 | `canceled`     | The caller aborted the request (`AbortController`)        |
 | `unknown`      | Anything else                                             |
+
+The timeout means what each platform's networking means by it: the whole
+request on Android and the web, but time without any data on iOS, so a
+response that keeps trickling in doesn't time out there.
 
 ```ts
 import { api } from '@/shared/http/api';

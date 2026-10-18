@@ -12,6 +12,15 @@ describe('errorMessage', () => {
     expect(errorMessage(new ApiError('axios text', { code }))).toBe(shown);
   });
 
+  it("keeps a 401's own server message, as a failed login shows it", () => {
+    const invalid = new ApiError('Request failed with status code 401', {
+      code: 'unauthorized',
+      status: 401,
+      data: { message: 'Invalid credentials' },
+    });
+    expect(errorMessage(invalid)).toBe('Invalid credentials');
+  });
+
   it("keeps a 4xx's own server message, or falls back", () => {
     const withMessage = new ApiError('Request failed with status code 422', {
       code: 'client',

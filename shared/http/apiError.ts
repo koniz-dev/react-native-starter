@@ -117,6 +117,21 @@ function summarize(error: AxiosError): RequestSummary {
 }
 
 /**
+ * React Native on Android enforces the timeout with OkHttp's call timeout,
+ * which fails with an InterruptedIOException("timeout"). React Native flags
+ * only a SocketTimeoutException as a timeout, so the XHR fires `error` and
+ * axios reports ERR_NETWORK; the exception's message is left as the response
+ * text.
+ */
+function isAndroidCallTimeout(request: unknown): boolean {
+  if (typeof request !== 'object' || request === null) return false;
+  const xhr = request as { responseType?: unknown; responseText?: unknown };
+  // responseText throws for other response types.
+  if (xhr.responseType !== '' && xhr.responseType !== 'text') return false;
+  return xhr.responseText === 'timeout';
+}
+
+/**
  * Converts anything thrown by a request into an ApiError. The message prefers
  * the server's own message (e.g. "Invalid credentials") over axios's generic
  * "Request failed with status code 400". For axios errors, `cause` is a
@@ -142,6 +157,12 @@ export function toApiError(error: unknown): ApiError {
       });
     }
     const response = error.response;
+    if (!response && isAndroidCallTimeout(error.request)) {
+      return new ApiError('The request timed out', {
+        code: 'timeout',
+        cause,
+      });
+    }
     if (!response) {
       return new ApiError('Network error: check your connection', {
         code: 'network',
