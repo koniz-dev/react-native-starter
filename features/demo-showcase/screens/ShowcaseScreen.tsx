@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -20,23 +20,18 @@ import { useAnnouncement } from '@/shared/ui/useAnnouncement';
  */
 export function ShowcaseScreen() {
   const theme = useTheme();
-  // The showcase buttons report presses through the snackbar.
-  const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
-  const repeatRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-  useEffect(() => () => clearTimeout(repeatRef.current), []);
-  const notify = (message: string) => () => {
-    clearTimeout(repeatRef.current);
-    if (message === snackbarMessage) {
-      // The same message again: clear it for a moment, so iOS announces it
-      // again.
-      setSnackbarMessage(null);
-      repeatRef.current = setTimeout(() => setSnackbarMessage(message), 100);
-    } else {
-      setSnackbarMessage(message);
-    }
+  // The showcase buttons report presses through the snackbar. Each press is
+  // a new notice: its id remounts the Snackbar (hiding and showing the same
+  // one again races Paper's fade-out and can leave it hidden), and repeats
+  // the iOS announcement for the same text.
+  const [notice, setNotice] = useState<{ text: string; id: number }>();
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const notify = (text: string) => () => {
+    setNotice(current => ({ text, id: (current?.id ?? 0) + 1 }));
+    setSnackbarVisible(true);
   };
   // Paper's Snackbar is a live region, which iOS doesn't have.
-  useAnnouncement(snackbarMessage);
+  useAnnouncement(snackbarVisible ? notice?.text : null, notice?.id);
 
   return (
     <SafeAreaView
@@ -179,13 +174,14 @@ export function ShowcaseScreen() {
       </ScrollView>
 
       <Snackbar
-        visible={snackbarMessage !== null}
-        onDismiss={() => setSnackbarMessage(null)}
+        key={notice?.id}
+        visible={snackbarVisible}
+        onDismiss={() => setSnackbarVisible(false)}
         duration={3000}
         // Paper calls onDismiss after the action.
         action={{ label: t('common.dismiss') }}
       >
-        {snackbarMessage}
+        {notice?.text}
       </Snackbar>
     </SafeAreaView>
   );

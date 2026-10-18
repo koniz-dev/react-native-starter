@@ -1,5 +1,5 @@
-import { AccessibilityInfo, Platform } from 'react-native';
-import { fireEvent, screen, waitFor } from '@testing-library/react-native';
+import { AccessibilityInfo, Animated, Platform } from 'react-native';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react-native';
 import { ShowcaseScreen } from '@/features/demo-showcase/screens/ShowcaseScreen';
 import { renderWithProviders } from '@/testing';
 import { DocumentTitle } from '@/shared/ui/DocumentTitle';
@@ -73,16 +73,68 @@ describe('<ShowcaseScreen />', () => {
     }
   });
 
-  it('closes the snackbar with Dismiss', async () => {
-    renderWithProviders(<ShowcaseScreen />);
-    fireEvent.press(screen.getByText('Show Snackbar'));
-    expect(await screen.findByText('This is a snackbar message!')).toBeTruthy();
+  describe('with animations that take their time, as on a device', () => {
+    // Jest doesn't run native-driver animations on a device's schedule (a
+    // 100 ms fade ends after about a second), which hid a repeat press
+    // leaving the snackbar hidden (#130). Here an animation ends a frame
+    // after its duration, as its end comes back from the UI thread.
+    beforeEach(() => {
+      jest.spyOn(Animated, 'timing').mockImplementation(((
+        value: Animated.Value,
+        config: { toValue: number; duration?: number }
+      ) => ({
+        start: (callback?: (result: { finished: boolean }) => void) => {
+          setTimeout(
+            () => {
+              value.setValue(config.toValue);
+              callback?.({ finished: true });
+            },
+            (config.duration ?? 0) + 16
+          );
+        },
+        stop: () => {},
+        reset: () => {},
+      })) as unknown as typeof Animated.timing);
+    });
 
-    fireEvent.press(screen.getByText('Dismiss'));
+    // Short act() slices, so React renders each update when it happens, as
+    // on a device; one long act() would batch them.
+    const wait = async (ms: number) => {
+      for (let elapsed = 0; elapsed < ms; elapsed += 10) {
+        await act(() => new Promise<void>(resolve => setTimeout(resolve, 10)));
+      }
+    };
+    const shown = (text: string) => screen.queryByText(text) !== null;
 
-    // Well before the snackbar's own 3-second timeout.
-    await waitFor(() =>
-      expect(screen.queryByText('This is a snackbar message!')).toBeNull()
-    );
+    it('keeps showing the snackbar after the same button is pressed again', async () => {
+      renderWithProviders(<ShowcaseScreen />);
+      await wait(300);
+
+      fireEvent.press(screen.getByText('Contained'));
+      await wait(500);
+      expect(shown('Contained pressed')).toBe(true);
+
+      fireEvent.press(screen.getByText('Contained'));
+      await wait(600);
+      expect(shown('Contained pressed')).toBe(true);
+
+      fireEvent.press(screen.getByText('Outlined'));
+      await wait(600);
+      expect(shown('Outlined pressed')).toBe(true);
+    });
+
+    it('closes the snackbar with Dismiss', async () => {
+      renderWithProviders(<ShowcaseScreen />);
+      await wait(300);
+      fireEvent.press(screen.getByText('Show Snackbar'));
+      await wait(400);
+      expect(shown('This is a snackbar message!')).toBe(true);
+
+      fireEvent.press(screen.getByText('Dismiss'));
+
+      // Its fade-out, well before the snackbar's own 3-second timeout.
+      await wait(300);
+      expect(shown('This is a snackbar message!')).toBe(false);
+    });
   });
 });

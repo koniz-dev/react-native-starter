@@ -8,10 +8,14 @@ import { AccessibilityInfo, Platform } from 'react-native';
  * the web announce a live region themselves, so this speaks only on iOS,
  * which has no live regions.
  */
-export function useAnnouncement(message: string | null | undefined): void {
+export function useAnnouncement(
+  message: string | null | undefined,
+  /** Change it to read the same message out again. */
+  repeatKey?: unknown
+): void {
   useEffect(() => {
     if (message && Platform.OS === 'ios') {
       AccessibilityInfo.announceForAccessibility(message);
     }
-  }, [message]);
+  }, [message, repeatKey]);
 }
