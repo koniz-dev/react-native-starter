@@ -66,6 +66,10 @@ the navigator for its folder. The root layout:
   (`Stack.Protected`), so deep links into a guarded group land on Home (an
   in-app link to one does nothing; see
   [A link to a screen that needs sign-in](#a-link-to-a-screen-that-needs-sign-in));
+- returns a user who signs in, signs out, or whose session ends to the
+  screen below Login or Profile (`useNoExtraHome` in `app/_layout.tsx`
+  undoes Expo Router's own redirect, which would put a second Home there;
+  a new guarded group goes in its `GUARDED_GROUPS`);
 - anchors the stack on `(tabs)` (`unstable_settings.anchor`), so
   Back from a deep-linked screen returns to Home;
 - shows `app/+not-found.tsx` for a URL no route matches (an outdated deep
@@ -79,7 +83,9 @@ back button. Add your app's tabs as files in `app/(tabs)/`, next to Home's
 tab at all: it has no button, and a link or deep link to it lands on Home.
 
 Navigate with `router.navigate('/settings')`, `router.replace`, or `<Link>` from
-`expo-router`. Route groups export a route-level error boundary
+`expo-router`. To go somewhere right after `signIn` or `signOut`, use
+`router.replace`: the guards' redirect replaces whatever is on top then, so a
+screen just pushed or navigated to is lost. Route groups export a route-level error boundary
 ([Error Reporting](error-reporting.md#error-boundaries)). Typed routes
 (`experiments.typedRoutes`) are not enabled. See
 [Expo Router](https://docs.expo.dev/router/introduction/).
