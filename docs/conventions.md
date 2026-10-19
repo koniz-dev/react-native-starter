@@ -83,12 +83,20 @@ back button. Add your app's tabs as files in `app/(tabs)/`, next to Home's
 tab at all: it has no button, and a link or deep link to it lands on Home.
 
 Navigate with `router.navigate('/settings')`, `router.replace`, or `<Link>` from
-`expo-router`. To go somewhere after `signIn` or `signOut`, do it straight
-away, before awaiting anything else: `router.dismissTo('/')` for Home or
-`router.dismissTo('/<tab>')` for another tab, and `router.replace('/<screen>')`
-only for a screen outside `(tabs)` (a replace with a tab adds a second Home). The guards' redirect replaces what is on top
-at that moment, so a screen pushed or navigated to then is lost, and a
-`replace('/')` there is taken for the redirect and undone. Route groups export a route-level error boundary
+`expo-router`.
+
+On Login, Profile, or another screen in `(auth)` or `(app)`, `signIn` and
+`signOut` send the user back to the screen below: the guards replace the
+screen on top with a redirect, which the root layout undoes. To go somewhere
+else from there, do it right after the session changes, before awaiting
+anything else: `router.dismissTo('/')` for Home or `router.dismissTo('/<tab>')`
+for another tab, and `router.replace('/<screen>')` for a screen outside
+`(tabs)`. A screen pushed or navigated to at that moment is lost, and a
+`replace('/')` then is taken for the redirect and undone. On any other screen,
+such as a tab with a Sign out button, there is no redirect: navigate as usual,
+for example `router.navigate('/<tab>')`.
+
+Route groups export a route-level error boundary
 ([Error Reporting](error-reporting.md#error-boundaries)). Typed routes
 (`experiments.typedRoutes`) are not enabled. See
 [Expo Router](https://docs.expo.dev/router/introduction/).
