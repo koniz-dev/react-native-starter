@@ -442,7 +442,7 @@ Setup:
   check it against `checksums_sha256.txt`, unzip it, and put `maestro/bin` on
   your `PATH` (or set `MAESTRO=/path/to/maestro/bin/maestro`). It needs Java
   17+ (`JAVA_HOME`).
-- **Expo Go** for SDK 57 on the device (`npx expo start` offers to install it
+- **Expo Go** for SDK 58 on the device (`npx expo start` offers to install it
   on a simulator or emulator).
 - **iOS Simulator keyboard**: flows that type (such as a sign-in flow) use
   the software keyboard, so turn off Simulator's **I/O > Keyboard > Connect Hardware
