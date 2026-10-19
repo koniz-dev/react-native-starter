@@ -1,0 +1,3 @@
+  ● session-guarded routes › leaves a single Home below › over a screen that opened Login or Profile › still lets that screen navigate to Home
+  ● session-guarded routes › leaves a single Home below › over a screen that opened Login or Profile › still lets that screen push to Home
+Tests:       2 failed, 29 skipped, 31 total

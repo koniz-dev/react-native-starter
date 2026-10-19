@@ -1,0 +1,148 @@
+import { Text } from 'react-native';
+import { act, fireEvent, waitFor } from '@testing-library/react-native';
+import { router } from 'expo-router';
+import { renderRouter, screen } from 'expo-router/testing-library';
+import { authService } from '@/shared/session/authService';
+import { defaultUnauthorizedHandler } from '@/shared/session/session';
+import { useSession, type SessionContextValue } from '@/shared/session/SessionProvider';
+import { setItem, STORAGE_KEYS } from '@/shared/storage/storage';
+import { secureStore } from '@/testing';
+
+const user = { id: 1, email: 'emily@example.com', name: 'Emily Johnson' };
+async function storeSession() {
+  secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
+  await setItem(STORAGE_KEYS.USER_DATA, user);
+}
+type R = { name: string; key: string; state?: { index?: number; routes: R[] } };
+type App = { getRouterState(): unknown; getPathname(): string };
+function dump(app: App) {
+  const root = (app.getRouterState() as { routes: R[] }).routes[0]?.state as { index?: number; routes: R[] } | undefined;
+  const routes = (root?.routes ?? []).map(r => {
+    const inner = r.state;
+    const focused = inner && inner.index !== undefined ? inner.routes.map(x => x.name).join('/') + '@' + inner.routes[inner.index]?.name : '';
+    return `${r.name}${focused ? `>${focused}` : ''}`;
+  });
+  return { routes, index: root?.index, path: app.getPathname(), back: router.canGoBack() };
+}
+const log = (label: string, v: unknown) => process.stdout.write(`R10 ${label}: ${JSON.stringify(v)}\n`);
+let ctx: SessionContextValue | undefined;
+import { Link } from 'expo-router';
+function Settings() { ctx = useSession(); return <><Text>Settings screen</Text><Link href="/" testID="lhome"><Text>LH</Text></Link><Link href="/explore" testID="lexp"><Text>LE</Text></Link></>; }
+function Settings2() { ctx = useSession(); return <Text>Settings2 screen</Text>; }
+function Orders() { ctx = useSession(); return <Text>Orders screen</Text>; }
+function Register() { ctx = useSession(); return <Text>Register screen</Text>; }
+async function settle() { for (let i = 0; i < 6; i++) await act(async () => { jest.advanceTimersByTime?.(50); }); }
+const creds = { username: 'emily', password: 'pass' };
+beforeEach(() => {
+  jest.restoreAllMocks(); ctx = undefined;
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(authService, 'fetchProfile').mockResolvedValue(user);
+  jest.spyOn(authService, 'login').mockImplementation(async () => { await storeSession(); return { token: 'stored-token', user }; });
+});
+const TEXTS = ['Settings screen','Settings2 screen','Orders screen','Register screen','Welcome Back','emily@example.com','Not signed in','Signed in as Emily Johnson'];
+const L = (label: string, app: App) => process.stdout.write(`R10 ${label}: ${JSON.stringify(dump(app))} visible=${TEXTS.filter(t => screen.queryByText(t) !== null).join('|')}\n`);
+async function back(label: string, app: App) {
+  if (router.canGoBack()) { await act(async () => { router.back(); }); await settle(); L(`${label} -> Back`, app); }
+  else process.stdout.write(`R10 ${label} -> Back: cannot go back\n`);
+}
+const sess = async (signedIn: boolean) => { if (signedIn) await ctx!.signOut(); else await ctx!.signIn(creds); };
+const OV = { overrides: { settings: Settings, settings2: Settings2, '(app)/orders': Orders, '(auth)/register': Register } };
+async function base(signedIn: boolean, under: string) {
+  if (signedIn) await storeSession();
+  if (under === 'deeplink') {
+    const app = await renderRouter({ appDir: './app', ...OV }, { initialUrl: '/settings' });
+    await screen.findByText('Settings screen'); return app;
+  }
+  const app = await renderRouter({ appDir: './app', ...OV }, { initialUrl: '/' });
+  await screen.findByText(signedIn ? 'Signed in as Emily Johnson' : 'Not signed in');
+  if (under.includes('Explore')) { await act(() => router.navigate('/explore')); await settle(); }
+  if (under.includes('Settings')) { await act(() => router.navigate('/settings')); await screen.findByText('Settings screen'); }
+  if (under.includes('S2')) { await act(() => router.navigate('/settings2')); await screen.findByText('Settings2 screen'); }
+  return app;
+}
+type Act = readonly [string, () => void | Promise<void>];
+const acts: Act[] = [
+  ['dismissTo /', () => router.dismissTo('/')],
+  ['dismissTo /explore', () => router.dismissTo('/explore')],
+  ['back', () => router.back()],
+  ['navigate /', () => router.navigate('/')],
+  ['navigate /explore', () => router.navigate('/explore')],
+  ['Link /', () => { fireEvent.press(screen.getByTestId('lhome')); }],
+  ['Link /explore', () => { fireEvent.press(screen.getByTestId('lexp')); }],
+];
+// D: the general rule from a pushed Settings, no session change / session change settled first
+describe.each([['Home Settings'], ['Explore Settings'], ['deeplink']])('D %s', (under) => {
+  for (const signedIn of [false, true]) for (const change of ['nochange', 'settled']) for (const [dn, d] of acts) {
+    it(`${signedIn} ${change} ${dn}`, async () => {
+      const app = await base(signedIn, under);
+      if (change === 'settled') { await act(async () => { await sess(signedIn); }); await settle(); }
+      const label = `D ${under} signedIn=${signedIn} ${change} ${dn}`;
+      await act(async () => { await d(); }); await settle();
+      L(label, app); await back(label, app);
+    });
+  }
+});
+// E: two pushed screens (Settings > Settings2 over Home / Explore)
+describe.each([['Home Settings S2'], ['Explore Settings S2']])('E %s', (under) => {
+  for (const [dn, d] of acts.slice(0, 5)) {
+    it(dn, async () => {
+      const app = await base(false, under);
+      const label = `E ${under} ${dn}`;
+      await act(async () => { await d(); }); await settle();
+      L(label, app); await back(label, app);
+    });
+  }
+});
+// F: Settings over a group screen (Login/Profile > Settings), session change settled, then back / dismissTo
+for (const signedIn of [false, true]) for (const [dn, d] of acts.slice(0, 5)) {
+  it(`F ${signedIn} ${dn}`, async () => {
+    const app = await base(signedIn, 'Home');
+    await act(() => router.navigate(signedIn ? '/profile' : '/login')); await screen.findByText(signedIn ? 'emily@example.com' : 'Welcome Back');
+    await act(() => router.push('/settings')); await screen.findByText('Settings screen');
+    await act(async () => { await sess(signedIn); }); await settle();
+    const label = `F Settings over group, ${signedIn ? 'signOut' : 'signIn'} settled, ${dn}`;
+    L(`${label} [mid]`, app);
+    await act(async () => { await d(); }); await settle();
+    L(label, app); await back(label, app);
+  });
+}
+// G: group screens (Login / Profile) pushed over the tabs, no session change: navigate to a tab
+for (const signedIn of [false, true]) for (const under of ['Home', 'Explore']) for (const [dn, d] of acts.slice(0, 5)) {
+  it(`G ${signedIn} ${under} ${dn}`, async () => {
+    const app = await base(signedIn, under);
+    await act(() => router.navigate(signedIn ? '/profile' : '/login')); await screen.findByText(signedIn ? 'emily@example.com' : 'Welcome Back');
+    const label = `G ${signedIn ? 'Profile' : 'Login'} over ${under} no change ${dn}`;
+    await act(async () => { await d(); }); await settle();
+    L(label, app); await back(label, app);
+  });
+}
+// H: sign-in paragraph on Login/Profile directly over Home/Settings/Explore: none, dismissTo, replace, push, navigate, replace /
+describe.each([['Home'], ['Home Settings'], ['Explore']])('H %s', (under) => {
+  for (const signedIn of [false, true]) for (const [dn, d] of [
+    ['none', () => {}],
+    ['dismissTo /', () => router.dismissTo('/')],
+    ['dismissTo /explore', () => router.dismissTo('/explore')],
+    ['replace /settings2', () => router.replace('/settings2')],
+    ['push /settings2', () => router.push('/settings2')],
+    ['navigate /settings2', () => router.navigate('/settings2')],
+    ['navigate /explore', () => router.navigate('/explore')],
+    ['replace /', () => router.replace('/')],
+  ] as Act[]) {
+    it(`${signedIn} ${dn}`, async () => {
+      const app = await base(signedIn, under);
+      if (!under.includes('Settings')) { await act(() => router.push('/settings')); await screen.findByText('Settings screen'); await act(() => router.back()); await settle(); }
+      await act(() => router.navigate(signedIn ? '/profile' : '/login')); await screen.findByText(signedIn ? 'emily@example.com' : 'Welcome Back');
+      const label = `H ${signedIn ? 'Profile' : 'Login'} over ${under} ${signedIn ? 'signOut' : 'signIn'} ${dn}`;
+      await act(async () => { await sess(signedIn); await d(); }); await settle();
+      L(label, app); await back(label, app);
+    });
+  }
+});
+for (const [signedIn, url] of [[false, '/profile'], [true, '/login']] as const) {
+  it(`I deep link ${url}`, async () => {
+    if (signedIn) await storeSession();
+    const app = await renderRouter({ appDir: './app', ...OV }, { initialUrl: url });
+    await screen.findByText(signedIn ? 'Signed in as Emily Johnson' : 'Not signed in'); await settle();
+    L(`I deep link ${url} signedIn=${signedIn}`, app); await back(`I deep link ${url}`, app);
+  });
+}

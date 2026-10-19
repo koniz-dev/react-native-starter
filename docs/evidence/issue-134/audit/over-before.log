@@ -1,0 +1,4 @@
+  ● session-guarded routes › leaves a single Home below › over a screen that opened Login or Profile › signing in returns to that screen
+  ● session-guarded routes › leaves a single Home below › over a screen that opened Login or Profile › signing out on Profile returns to that screen
+  ● session-guarded routes › leaves a single Home below › over a screen that opened Login or Profile › a session that expires on Profile returns to that screen
+Tests:       3 failed, 26 skipped, 29 total

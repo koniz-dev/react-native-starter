@@ -1,0 +1,270 @@
+import { Text } from 'react-native';
+import { act, fireEvent, waitFor } from '@testing-library/react-native';
+import { router } from 'expo-router';
+import { renderRouter, screen } from 'expo-router/testing-library';
+import { authService } from '@/shared/session/authService';
+import { defaultUnauthorizedHandler } from '@/shared/session/session';
+import { useSession, type SessionContextValue } from '@/shared/session/SessionProvider';
+import { setItem, STORAGE_KEYS } from '@/shared/storage/storage';
+import { secureStore } from '@/testing';
+
+const user = { id: 1, email: 'emily@example.com', name: 'Emily Johnson' };
+async function storeSession() {
+  secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
+  await setItem(STORAGE_KEYS.USER_DATA, user);
+}
+type R = { name: string; key: string; state?: { index?: number; routes: R[] } };
+type App = { getRouterState(): unknown; getPathname(): string };
+function dump(app: App) {
+  const root = (app.getRouterState() as { routes: R[] }).routes[0]?.state as { index?: number; routes: R[] } | undefined;
+  const routes = (root?.routes ?? []).map(r => {
+    const inner = r.state;
+    const focused = inner && inner.index !== undefined ? inner.routes.map(x => x.name).join('/') + '@' + inner.routes[inner.index]?.name : '';
+    return `${r.name}${focused ? `>${focused}` : ''}`;
+  });
+  return { routes, index: root?.index, path: app.getPathname(), back: router.canGoBack() };
+}
+const log = (label: string, v: unknown) => process.stdout.write(`R4 ${label}: ${JSON.stringify(v)}\n`);
+let ctx: SessionContextValue | undefined;
+function Settings() { ctx = useSession(); return <Text>Settings screen</Text>; }
+function Settings2() { ctx = useSession(); return <Text>Settings2 screen</Text>; }
+async function settle() { for (let i = 0; i < 5; i++) await act(async () => { jest.advanceTimersByTime?.(50); }); }
+const creds = { username: 'emily', password: 'pass' };
+const errs: unknown[] = [];
+beforeEach(() => {
+  jest.restoreAllMocks();
+  ctx = undefined;
+  errs.length = 0;
+  jest.spyOn(console, 'error').mockImplementation((...a) => { errs.push(a.map(String).join(' ').slice(0, 200)); });
+  jest.spyOn(authService, 'fetchProfile').mockResolvedValue(user);
+  jest.spyOn(authService, 'login').mockImplementation(async () => { await storeSession(); return { token: 'stored-token', user }; });
+});
+const ov = (extra: Record<string, unknown> = {}) => ({ appDir: './app', overrides: { settings: Settings, ...extra } });
+
+const L = (label: string, app: App) => process.stdout.write(`R5 ${label}: ${JSON.stringify(dump(app))}\n`);
+async function loginUI() {
+  await fireEvent.changeText(screen.getByTestId('login-username'), 'emily');
+  await fireEvent.changeText(screen.getByTestId('login-password'), 'pass');
+  await fireEvent.press(screen.getByTestId('login-submit'));
+}
+
+it('S1 expiry on Home, then push settings, then settings replace(/)', async () => {
+  await storeSession();
+  const app = await renderRouter(ov(), { initialUrl: '/' });
+  await screen.findByText('Signed in as Emily Johnson');
+  await act(() => defaultUnauthorizedHandler()); await settle();
+  await screen.findByText('Not signed in');
+  L('S1 after expiry', app);
+  await act(() => router.push('/settings')); await settle();
+  await act(() => router.replace('/')); await settle();
+  L('S1 settings replace /', app);
+});
+it('S2 expiry on Home, then sign in via Login', async () => {
+  await storeSession();
+  const app = await renderRouter(ov(), { initialUrl: '/' });
+  await screen.findByText('Signed in as Emily Johnson');
+  await act(() => defaultUnauthorizedHandler()); await settle();
+  await fireEvent.press(screen.getByTestId('sign-in-button'));
+  await screen.findByText('Welcome Back');
+  await loginUI();
+  await screen.findByText('Signed in as Emily Johnson'); await settle();
+  L('S2 after sign-in', app);
+});
+it('S3 sign-out on Settings (no group on top), push login, Login own replace(/)', async () => {
+  await storeSession();
+  const app = await renderRouter(ov(), { initialUrl: '/' });
+  await screen.findByText('Signed in as Emily Johnson');
+  await act(() => router.push('/settings'));
+  await screen.findByText('Settings screen');
+  await act(() => ctx!.signOut()); await settle();
+  await act(() => router.push('/login')); await screen.findByText('Welcome Back');
+  L('S3 login over settings', app);
+  await act(() => router.replace('/')); await settle();
+  L('S3 Login replace /', app);
+});
+it('S3b sign-out on Home, open Login, Back; open Login, auth-back fallback replace', async () => {
+  await storeSession();
+  const app = await renderRouter(ov(), { initialUrl: '/' });
+  await screen.findByText('Signed in as Emily Johnson');
+  await fireEvent.press(screen.getByTestId('logout-button'));
+  await screen.findByText('Not signed in'); await settle();
+  await fireEvent.press(screen.getByTestId('sign-in-button'));
+  await screen.findByText('Welcome Back');
+  await fireEvent.press(screen.getByTestId('auth-back')); await settle();
+  L('S3b after back', app);
+  await fireEvent.press(screen.getByTestId('sign-in-button'));
+  await screen.findByText('Welcome Back');
+  jest.spyOn(router, 'canGoBack').mockReturnValueOnce(false);
+  await fireEvent.press(screen.getByTestId('auth-back')); await settle();
+  L('S3b after fallback replace', app);
+});
+it('S4 failed sign-in on Login over Settings, then Login own replace(/)', async () => {
+  jest.spyOn(authService, 'login').mockRejectedValue(new Error('bad creds'));
+  const app = await renderRouter(ov(), { initialUrl: '/' });
+  await screen.findByText('Not signed in');
+  await act(() => router.push('/settings'));
+  await act(() => router.push('/login'));
+  await screen.findByText('Welcome Back');
+  await loginUI(); await settle();
+  L('S4 after failed sign-in', app);
+  await act(() => router.replace('/')); await settle();
+  L('S4 Login replace /', app);
+});
+it.each([[true], [false]])('S5 cold / (signedIn=%s), push settings, push group, own replace(/)', async signedIn => {
+  if (signedIn) await storeSession();
+  const app = await renderRouter(ov(), { initialUrl: '/' });
+  await screen.findByText(signedIn ? 'Signed in as Emily Johnson' : 'Not signed in');
+  await act(() => router.push('/settings'));
+  await act(() => router.push(signedIn ? '/profile' : '/login'));
+  await screen.findByText(signedIn ? 'emily@example.com' : 'Welcome Back');
+  await act(() => router.replace('/')); await settle();
+  L(`S5 signedIn=${signedIn}`, app);
+});
+it.each([['/profile', true], ['/login', false]])('S6 cold %s, group own replace(/) (stale cold-start flag?)', async (url, signedIn) => {
+  if (signedIn) await storeSession();
+  const app = await renderRouter(ov(), { initialUrl: url });
+  await screen.findByText(signedIn ? 'emily@example.com' : 'Welcome Back');
+  L(`S6 ${url} before`, app);
+  await act(() => router.replace('/')); await settle();
+  L(`S6 ${url} own replace /`, app);
+});
+it('S6b cold /profile, push (app)/settings2 inside group, own replace(/)', async () => {
+  await storeSession();
+  const app = await renderRouter(ov({ '(app)/settings2': Settings2 }), { initialUrl: '/profile' });
+  await screen.findByText('emily@example.com');
+  await act(() => router.push('/settings2')); await screen.findByText('Settings2 screen');
+  L('S6b before', app);
+  await act(() => router.replace('/')); await settle();
+  L('S6b own replace /', app);
+});
+it('S7 sign in and immediately push /settings (await signIn; push)', async () => {
+  const app = await renderRouter(ov(), { initialUrl: '/' });
+  await screen.findByText('Not signed in');
+  await act(() => router.push('/settings')); await screen.findByText('Settings screen');
+  await act(() => router.back()); await settle();
+  await act(() => router.push('/login')); await screen.findByText('Welcome Back');
+  await act(async () => { await ctx!.signIn(creds); router.push('/settings'); });
+  await settle();
+  L('S7 after', app);
+  await act(() => router.back()); await settle();
+  L('S7 after back', app);
+});
+it('S7b sign in over Settings and immediately push /settings2', async () => {
+  const app = await renderRouter(ov({ settings2: Settings2 }), { initialUrl: '/' });
+  await screen.findByText('Not signed in');
+  await act(() => router.push('/settings'));
+  await act(() => router.push('/login')); await screen.findByText('Welcome Back');
+  await act(async () => { await ctx!.signIn(creds); router.push('/settings2'); });
+  await settle();
+  L('S7b after', app);
+});
+it.each([['signOut'], ['expire']])('S8 %s on (app)/settings2 above Profile (Home below)', async how => {
+  await storeSession();
+  const app = await renderRouter(ov({ '(app)/settings2': Settings2 }), { initialUrl: '/' });
+  await screen.findByText('Signed in as Emily Johnson');
+  await act(() => router.push('/profile')); await screen.findByText('emily@example.com');
+  await act(() => router.push('/settings2')); await screen.findByText('Settings2 screen');
+  if (how === 'signOut') await act(() => ctx!.signOut()); else await act(() => defaultUnauthorizedHandler());
+  await settle();
+  L(`S8 ${how}`, app);
+});
+it('S9 cold /profile, expire, open Login, auth-back fallback replace(/)', async () => {
+  await storeSession();
+  const app = await renderRouter(ov(), { initialUrl: '/profile' });
+  await screen.findByText('emily@example.com');
+  await act(() => defaultUnauthorizedHandler()); await settle();
+  await screen.findByText('Not signed in');
+  L('S9 after expire', app);
+  await act(() => router.push('/settings'));
+  await act(() => router.navigate('/login')); await screen.findByText('Welcome Back');
+  jest.spyOn(router, 'canGoBack').mockReturnValueOnce(false);
+  await fireEvent.press(screen.getByTestId('auth-back')); await settle();
+  L('S9 fallback replace', app);
+});
+it('S10 sign out on Home then tab switch, then sign in from Explore', async () => {
+  await storeSession();
+  const app = await renderRouter(ov(), { initialUrl: '/' });
+  await screen.findByText('Signed in as Emily Johnson');
+  await fireEvent.press(screen.getByTestId('logout-button')); await settle();
+  await act(() => router.navigate('/explore')); await settle();
+  await act(() => router.navigate('/login')); await screen.findByText('Welcome Back');
+  await loginUI(); await settle();
+  L('S10 after sign-in from explore', app);
+});
+it('S11 sign in, profile, sign out, sign in again over Settings repeatedly', async () => {
+  const app = await renderRouter(ov(), { initialUrl: '/' });
+  await screen.findByText('Not signed in');
+  await act(() => router.push('/settings'));
+  for (let i = 0; i < 2; i++) {
+    await act(() => router.push('/login')); await screen.findByText('Welcome Back');
+    await loginUI(); await screen.findByText('Settings screen'); await settle();
+    L(`S11 r${i} in`, app);
+    await act(() => router.push('/profile')); await screen.findByText('emily@example.com');
+    await fireEvent.press(screen.getByTestId('profile-logout')); await screen.findByText('Settings screen'); await settle();
+    L(`S11 r${i} out`, app);
+  }
+});
+it('S12 Profile own replace(/) right after a status-less refresh', async () => {
+  await storeSession();
+  const app = await renderRouter(ov(), { initialUrl: '/' });
+  await screen.findByText('Signed in as Emily Johnson');
+  await act(() => router.push('/settings'));
+  await act(() => router.push('/profile')); await screen.findByText('emily@example.com');
+  await act(() => ctx!.refreshUser()); await settle();
+  await act(() => router.replace('/')); await settle();
+  L('S12', app);
+});
+
+it('S13 hook-free baseline marker', () => {});
+it.each([
+  ['replace /settings2', () => router.replace('/settings2')],
+  ['push /', () => router.push('/')],
+  ['replace /profile', () => router.replace('/profile')],
+  ['navigate /', () => router.navigate('/')],
+])('S14 sign in over Settings then at once %s', async (label, go) => {
+  const app = await renderRouter(ov({ settings2: Settings2 }), { initialUrl: '/' });
+  await screen.findByText('Not signed in');
+  await act(() => router.push('/settings'));
+  await act(() => router.push('/login')); await screen.findByText('Welcome Back');
+  await act(async () => { await ctx!.signIn(creds); go(); });
+  await settle();
+  L(`S14 ${label}`, app);
+  if (label === 'replace /profile') {
+    await act(() => router.replace('/')); await settle();
+    L(`S14 ${label} then Profile own replace /`, app);
+  }
+});
+it.each([['signOut'], ['expire']])('S16 %s on Settings, then Settings own replace(/)', async how => {
+  await storeSession();
+  const app = await renderRouter(ov(), { initialUrl: '/' });
+  await screen.findByText('Signed in as Emily Johnson');
+  await act(() => router.push('/settings')); await screen.findByText('Settings screen');
+  if (how === 'signOut') await act(() => ctx!.signOut()); else await act(() => defaultUnauthorizedHandler());
+  await settle();
+  await act(() => router.replace('/')); await settle();
+  L(`S16 ${how}`, app);
+});
+it('S17 expiry on Home, switch to Explore, back to Home tab, push settings, settings replace(/)', async () => {
+  await storeSession();
+  const app = await renderRouter(ov(), { initialUrl: '/' });
+  await screen.findByText('Signed in as Emily Johnson');
+  await act(() => defaultUnauthorizedHandler()); await settle();
+  await act(() => router.navigate('/explore')); await settle();
+  await act(() => router.navigate('/')); await settle();
+  L('S17 mid', app);
+});
+it.each([
+  ['push', () => router.push('/settings2')],
+  ['navigate', () => router.navigate('/settings2')],
+  ['replace', () => router.replace('/settings2')],
+])('S7c Login over Home: await signIn(); %s(/settings2)', async (label, go) => {
+  const app = await renderRouter(ov({ settings2: Settings2 }), { initialUrl: '/' });
+  await screen.findByText('Not signed in');
+  await act(() => router.push('/settings')); await screen.findByText('Settings screen');
+  await act(() => router.back()); await settle();
+  await act(() => router.push('/login')); await screen.findByText('Welcome Back');
+  await act(async () => { await ctx!.signIn(creds); go(); });
+  await settle();
+  L(`S7c ${label}`, app);
+  process.stdout.write(`R5 S7c ${label} visible settings2=${screen.queryByText('Settings2 screen') !== null}\n`);
+});

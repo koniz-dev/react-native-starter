@@ -1,0 +1,28 @@
+R8 T on Home signIn none: {"routes":["(tabs)>index@index"],"index":0,"path":"/","back":false} visible=Signed in as Emily Johnson
+R8 T on Home signIn dismissTo /: {"routes":["(tabs)>index@index"],"index":0,"path":"/","back":false} visible=Signed in as Emily Johnson
+R8 T on Home signIn dismissTo /explore: {"routes":["(tabs)>index@index"],"index":0,"path":"/","back":false} visible=Signed in as Emily Johnson
+R8 T on Home signIn replace /profile: {"routes":["(app)>profile@profile"],"index":0,"path":"/profile","back":false} visible=emily@example.com
+R8 T on Home signIn replace /profile then signOut there (none): {"routes":["(tabs)>index@index"],"index":0,"path":"/","back":false} visible=Not signed in
+R8 T on Home signIn replace /profile ... then Back: cannot go back
+R8 T on Home signIn replace /settings2: {"routes":["settings2"],"index":0,"path":"/settings2","back":false} visible=Settings2 screen
+R8 T on Home signOut none: {"routes":["(tabs)>index@index"],"index":0,"path":"/","back":false} visible=Not signed in
+R8 T on Home signOut dismissTo /: {"routes":["(tabs)>index@index"],"index":0,"path":"/","back":false} visible=Not signed in
+R8 T on Home signOut dismissTo /explore: {"routes":["(tabs)>index@index"],"index":0,"path":"/","back":false} visible=Not signed in
+R8 T on Home signOut replace /login: {"routes":["(auth)>login@login"],"index":0,"path":"/login","back":false} visible=Welcome Back
+R8 T on Home signOut replace /login then signIn there (none): {"routes":["(tabs)>index@index"],"index":0,"path":"/","back":false} visible=Signed in as Emily Johnson
+R8 T on Home signOut replace /login ... then Back: cannot go back
+R8 T on Home signOut replace /settings2: {"routes":["settings2"],"index":0,"path":"/settings2","back":false} visible=Settings2 screen
+R8 T on Explore signIn none: {"routes":["(tabs)>index/explore@explore"],"index":0,"path":"/explore","back":true} visible=
+R8 T on Explore signIn dismissTo /: {"routes":["(tabs)>index/explore@explore"],"index":0,"path":"/explore","back":true} visible=
+R8 T on Explore signIn dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"index":0,"path":"/explore","back":true} visible=
+R8 T on Explore signIn replace /profile: {"routes":["(app)>profile@profile"],"index":0,"path":"/profile","back":false} visible=emily@example.com
+R8 T on Explore signIn replace /profile then signOut there (none): {"routes":["(tabs)>index@index"],"index":0,"path":"/","back":false} visible=Not signed in
+R8 T on Explore signIn replace /profile ... then Back: cannot go back
+R8 T on Explore signIn replace /settings2: {"routes":["settings2"],"index":0,"path":"/settings2","back":false} visible=Settings2 screen
+R8 T on Explore signOut none: {"routes":["(tabs)>index/explore@explore"],"index":0,"path":"/explore","back":true} visible=
+R8 T on Explore signOut dismissTo /: {"routes":["(tabs)>index/explore@explore"],"index":0,"path":"/explore","back":true} visible=
+R8 T on Explore signOut dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"index":0,"path":"/explore","back":true} visible=
+R8 T on Explore signOut replace /login: {"routes":["(auth)>login@login"],"index":0,"path":"/login","back":false} visible=Welcome Back
+R8 T on Explore signOut replace /login then signIn there (none): {"routes":["(tabs)>index@index"],"index":0,"path":"/","back":false} visible=Signed in as Emily Johnson
+R8 T on Explore signOut replace /login ... then Back: cannot go back
+R8 T on Explore signOut replace /settings2: {"routes":["settings2"],"index":0,"path":"/settings2","back":false} visible=Settings2 screen

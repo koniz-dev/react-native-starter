@@ -1,0 +1,76 @@
+import { Text } from 'react-native';
+import { act, fireEvent, waitFor } from '@testing-library/react-native';
+import { router } from 'expo-router';
+import { renderRouter, screen } from 'expo-router/testing-library';
+import { authService } from '@/shared/session/authService';
+import { defaultUnauthorizedHandler } from '@/shared/session/session';
+import { useSession, type SessionContextValue } from '@/shared/session/SessionProvider';
+import { setItem, STORAGE_KEYS } from '@/shared/storage/storage';
+import { secureStore } from '@/testing';
+
+const user = { id: 1, email: 'emily@example.com', name: 'Emily Johnson' };
+async function storeSession() {
+  secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
+  await setItem(STORAGE_KEYS.USER_DATA, user);
+}
+type R = { name: string; key: string; state?: { index?: number; routes: R[] } };
+type App = { getRouterState(): unknown; getPathname(): string };
+function dump(app: App) {
+  const root = (app.getRouterState() as { routes: R[] }).routes[0]?.state as { index?: number; routes: R[] } | undefined;
+  const routes = (root?.routes ?? []).map(r => {
+    const inner = r.state;
+    const focused = inner && inner.index !== undefined ? inner.routes.map(x => x.name).join('/') + '@' + inner.routes[inner.index]?.name : '';
+    return `${r.name}${focused ? `>${focused}` : ''}`;
+  });
+  return { routes, index: root?.index, path: app.getPathname(), back: router.canGoBack() };
+}
+const log = (label: string, v: unknown) => process.stdout.write(`R9 ${label}: ${JSON.stringify(v)}\n`);
+let ctx: SessionContextValue | undefined;
+function Settings() { ctx = useSession(); return <Text>Settings screen</Text>; }
+function Settings2() { ctx = useSession(); return <Text>Settings2 screen</Text>; }
+async function settle() { for (let i = 0; i < 6; i++) await act(async () => { jest.advanceTimersByTime?.(50); }); }
+const creds = { username: 'emily', password: 'pass' };
+beforeEach(() => {
+  jest.restoreAllMocks();
+  ctx = undefined;
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(authService, 'fetchProfile').mockResolvedValue(user);
+  jest.spyOn(authService, 'login').mockImplementation(async () => { await storeSession(); return { token: 'stored-token', user }; });
+});
+const TEXTS = ['Settings screen','Settings2 screen','Orders screen','Register screen','Welcome Back','emily@example.com','Not signed in','Signed in as Emily Johnson'];
+const L = (label: string, app: App) => process.stdout.write(`R9 ${label}: ${JSON.stringify(dump(app))} visible=${TEXTS.filter(t => screen.queryByText(t) !== null).join('|')}\n`);
+async function back(label: string, app: App) {
+  if (router.canGoBack()) { await act(async () => { router.back(); }); await settle(); L(`${label} -> Back`, app); }
+  else process.stdout.write(`R9 ${label} -> Back: cannot go back\n`);
+}
+const sess = async (signedIn: boolean) => { if (signedIn) await ctx!.signOut(); else await ctx!.signIn(creds); };
+async function base(signedIn: boolean, under: string) {
+  if (signedIn) await storeSession();
+  const app = await renderRouter({ appDir: './app', overrides: { settings: Settings, settings2: Settings2, '(app)/orders': Orders, '(auth)/register': Register } }, { initialUrl: '/' });
+  await screen.findByText(signedIn ? 'Signed in as Emily Johnson' : 'Not signed in');
+  if (under.includes('Explore')) { await act(() => router.navigate('/explore')); await settle(); }
+  if (under.includes('Settings')) { await act(() => router.push('/settings')); await screen.findByText('Settings screen'); }
+  return app;
+}
+function Orders() { return <Text>Orders screen</Text>; }
+function Register() { return <Text>Register screen</Text>; }
+// Control: no session change at all
+for (const signedIn of [false, true]) for (const [dn, d] of [
+  ['navigate /', () => router.navigate('/')],
+  ['navigate /explore', () => router.navigate('/explore')],
+  ['dismissTo /explore', () => router.dismissTo('/explore')],
+] as const) {
+  it(`ctrl ${signedIn} ${dn}`, async () => {
+    const app = await base(signedIn, 'Home Settings');
+    const label = `CTRL Settings over Home signedIn=${signedIn} no session change ${dn}`;
+    await act(async () => { d(); }); await settle();
+    L(label, app); await back(label, app);
+  });
+}
+// The doc's sign-out via a real button press on a pushed screen then navigate after awaiting
+it('settings signOut awaited then navigate /', async () => {
+  const app = await base(true, 'Home Settings');
+  await act(async () => { await ctx!.signOut(); }); await settle();
+  await act(async () => { router.navigate('/'); }); await settle();
+  L('CTRL Settings over Home signOut, settle, then navigate /', app); await back('CTRL Settings over Home signOut, settle, then navigate /', app);
+});

@@ -1,0 +1,305 @@
+import { Text } from 'react-native';
+import { act, fireEvent, waitFor } from '@testing-library/react-native';
+import { router } from 'expo-router';
+import { renderRouter, screen } from 'expo-router/testing-library';
+import { authService } from '@/shared/session/authService';
+import { defaultUnauthorizedHandler } from '@/shared/session/session';
+import { setItem, STORAGE_KEYS } from '@/shared/storage/storage';
+import { secureStore } from '@/testing';
+import { analyticsSeam, type Analytics } from '@/shared/integrations/analytics';
+import { configureIntegrations } from '@/shared/integrations/setup';
+
+const user = { id: 1, email: 'emily@example.com', name: 'Emily Johnson' };
+async function storeSession() {
+  secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
+  await setItem(STORAGE_KEYS.USER_DATA, user);
+}
+type R = {
+  name: string;
+  key: string;
+  state?: { index?: number; routes: R[] };
+};
+function dump(app: { getRouterState(): unknown }) {
+  const root = (app.getRouterState() as { routes: R[] }).routes[0]?.state;
+  return (root?.routes ?? []).map(r => {
+    const inner = r.state;
+    const focused =
+      inner && inner.index !== undefined
+        ? inner.routes[inner.index]?.name
+        : undefined;
+    return `${r.name}#${r.key.slice(-6)}${focused ? `>${focused}` : ''}`;
+  });
+}
+function Settings() {
+  return <Text>Settings screen</Text>;
+}
+async function signInOnLogin() {
+  await screen.findByText('Welcome Back');
+  await fireEvent.changeText(screen.getByTestId('login-username'), 'emily');
+  await fireEvent.changeText(screen.getByTestId('login-password'), 'pass');
+  await fireEvent.press(screen.getByTestId('login-submit'));
+}
+async function settle() {
+  for (let i = 0; i < 5; i++) {
+    await act(async () => {
+      jest.advanceTimersByTime(50);
+    });
+  }
+}
+const log = (label: string, v: unknown) =>
+  process.stdout.write(`AUDIT ${label}: ${JSON.stringify(v)}\n`);
+
+describe('audit', () => {
+  let provider: Analytics;
+  beforeEach(() => {
+    jest.restoreAllMocks();
+    jest.spyOn(authService, 'fetchProfile').mockResolvedValue(user);
+    jest.spyOn(authService, 'login').mockImplementation(async () => {
+      await storeSession();
+      return { token: 'stored-token', user };
+    });
+    configureIntegrations();
+    provider = { track: jest.fn(), screen: jest.fn(), identify: jest.fn() };
+    analyticsSeam.set(provider);
+  });
+  afterEach(() => analyticsSeam.reset());
+
+  it('A: sign in from Login opened over /settings', async () => {
+    const app = await renderRouter(
+      { appDir: './app', overrides: { settings: Settings } },
+      { initialUrl: '/' }
+    );
+    await screen.findByText('Not signed in');
+    await act(() => router.push('/settings'));
+    await screen.findByText('Settings screen');
+    await act(() => router.push('/login'));
+    log('A before', dump(app));
+    await signInOnLogin();
+    await waitFor(() => expect(screen.queryByText('Welcome Back')).toBeNull());
+    await settle();
+    log('A after', dump(app));
+    log('A pathname', app.getPathname());
+    log('A canGoBack', router.canGoBack());
+    log('A visible settings', !!screen.queryByText('Settings screen'));
+    log('A visible home', !!screen.queryByText('Signed in as Emily Johnson'));
+  });
+
+  it('B: sign out from Profile opened over /settings', async () => {
+    await storeSession();
+    const app = await renderRouter(
+      { appDir: './app', overrides: { settings: Settings } },
+      { initialUrl: '/' }
+    );
+    await screen.findByText('Signed in as Emily Johnson');
+    await act(() => router.push('/settings'));
+    await act(() => router.push('/profile'));
+    await screen.findByText('emily@example.com');
+    log('B before', dump(app));
+    await fireEvent.press(screen.getByTestId('profile-logout'));
+    await settle();
+    log('B after', dump(app));
+    log('B pathname', app.getPathname());
+  });
+
+  it('C: 401 while on Profile (opened from Home)', async () => {
+    await storeSession();
+    const app = await renderRouter('./app', { initialUrl: '/' });
+    await screen.findByText('Signed in as Emily Johnson');
+    await fireEvent.press(screen.getByTestId('profile-button'));
+    await screen.findByText('emily@example.com');
+    log('C before', dump(app));
+    await act(async () => {
+      await defaultUnauthorizedHandler();
+    });
+    await screen.findByText('Not signed in');
+    await settle();
+    log('C after', dump(app));
+    log('C canGoBack', router.canGoBack());
+  });
+
+  it('C2: 401 while on Profile over /settings', async () => {
+    await storeSession();
+    const app = await renderRouter(
+      { appDir: './app', overrides: { settings: Settings } },
+      { initialUrl: '/' }
+    );
+    await screen.findByText('Signed in as Emily Johnson');
+    await act(() => router.push('/settings'));
+    await act(() => router.push('/profile'));
+    await screen.findByText('emily@example.com');
+    await act(async () => {
+      await defaultUnauthorizedHandler();
+    });
+    await settle();
+    log('C2 after', dump(app));
+  });
+
+  it('D: on Explore tab, push /login, sign in: which tab remains', async () => {
+    const app = await renderRouter('./app', { initialUrl: '/' });
+    await screen.findByText('Not signed in');
+    await act(() => router.navigate('/explore'));
+    await settle();
+    log('D on explore', dump(app));
+    await act(() => router.push('/login'));
+    await signInOnLogin();
+    await waitFor(() => expect(screen.queryByText('Welcome Back')).toBeNull());
+    await settle();
+    log('D after', dump(app));
+    log('D pathname', app.getPathname());
+    log(
+      'D screens',
+      (provider.screen as jest.Mock).mock.calls.map(c => c[0])
+    );
+  });
+
+  it('D2: on Explore, push /profile, sign out', async () => {
+    await storeSession();
+    const app = await renderRouter('./app', { initialUrl: '/' });
+    await screen.findByText('Signed in as Emily Johnson');
+    await act(() => router.navigate('/explore'));
+    await act(() => router.push('/profile'));
+    await screen.findByText('emily@example.com');
+    await fireEvent.press(screen.getByTestId('profile-logout'));
+    await settle();
+    log('D2 after', dump(app));
+    log('D2 pathname', app.getPathname());
+    log(
+      'D2 screens',
+      (provider.screen as jest.Mock).mock.calls.map(c => c[0])
+    );
+  });
+
+  it('E: legit push of / from Home', async () => {
+    const app = await renderRouter('./app', { initialUrl: '/' });
+    await screen.findByText('Not signed in');
+    await act(() => router.push('/'));
+    await settle();
+    log('E after', dump(app));
+    await act(() => router.navigate('/explore'));
+    await act(() => router.push('/'));
+    await settle();
+    log('E2 after push / from explore', dump(app));
+  });
+
+  it('F: +not-found Go home', async () => {
+    const app = await renderRouter('./app', { initialUrl: '/' });
+    await screen.findByText('Not signed in');
+    await act(() => router.push('/nope'));
+    await screen.findByTestId('not-found-home');
+    await fireEvent.press(screen.getByTestId('not-found-home'));
+    await settle();
+    log('F after', dump(app));
+    const app2 = app;
+    void app2;
+  });
+
+  it('F2: cold start +not-found Go home', async () => {
+    const app = await renderRouter('./app', { initialUrl: '/nope' });
+    await screen.findByTestId('not-found-home');
+    await fireEvent.press(screen.getByTestId('not-found-home'));
+    await settle();
+    log('F2 after', dump(app));
+  });
+
+  it('G: double sign-in rounds screen views', async () => {
+    const app = await renderRouter('./app', { initialUrl: '/' });
+    await screen.findByText('Not signed in');
+    await fireEvent.press(screen.getByTestId('sign-in-button'));
+    await signInOnLogin();
+    await screen.findByText('Signed in as Emily Johnson');
+    await settle();
+    log('G after', dump(app));
+    log(
+      'G screens',
+      (provider.screen as jest.Mock).mock.calls.map(c => c[0])
+    );
+  });
+});
+
+describe('audit2', () => {
+  beforeEach(() => {
+    jest.restoreAllMocks();
+    jest.spyOn(authService, 'fetchProfile').mockResolvedValue(user);
+  });
+  it('E3: push / from settings', async () => {
+    const app = await renderRouter(
+      { appDir: './app', overrides: { settings: Settings } },
+      { initialUrl: '/' }
+    );
+    await screen.findByText('Not signed in');
+    await act(() => router.push('/settings'));
+    await act(() => router.push('/'));
+    await settle();
+    log('E3 after', dump(app));
+  });
+  it('E4: replace / from settings', async () => {
+    const app = await renderRouter(
+      { appDir: './app', overrides: { settings: Settings } },
+      { initialUrl: '/' }
+    );
+    await screen.findByText('Not signed in');
+    await act(() => router.push('/settings'));
+    await act(() => router.replace('/'));
+    await settle();
+    log('E4 after', dump(app));
+  });
+  it('E5: push / from Home', async () => {
+    const app = await renderRouter('./app', { initialUrl: '/' });
+    await screen.findByText('Not signed in');
+    await act(() => router.push('/'));
+    log('E5 immediately', dump(app));
+    await settle();
+    log('E5 after', dump(app));
+  });
+});
+
+describe('audit3 real timers', () => {
+  beforeEach(() => {
+    jest.restoreAllMocks();
+    jest.spyOn(authService, 'fetchProfile').mockResolvedValue(user);
+  });
+  afterEach(() => analyticsSeam.reset());
+  it('T: screen views when signing out from Profile over Explore', async () => {
+    configureIntegrations();
+    const provider = { track: jest.fn(), screen: jest.fn(), identify: jest.fn() };
+    analyticsSeam.set(provider);
+    await storeSession();
+    const app = await renderRouter('./app', { initialUrl: '/' });
+    jest.useRealTimers();
+    const wait = (ms: number) => act(() => new Promise<void>(r => setTimeout(r, ms)));
+    await screen.findByText('Signed in as Emily Johnson');
+    await wait(30);
+    await act(() => router.navigate('/explore'));
+    await wait(30);
+    await act(() => router.push('/profile'));
+    await screen.findByText('emily@example.com');
+    await wait(30);
+    await fireEvent.press(screen.getByTestId('profile-logout'));
+    await wait(100);
+    log('T after', dump(app));
+    log('T screens', provider.screen.mock.calls.map(c => c[0]));
+  });
+  it('T2: screen views signing in on Login over Home, round trip', async () => {
+    jest.spyOn(authService, 'login').mockImplementation(async () => {
+      await storeSession();
+      return { token: 'stored-token', user };
+    });
+    configureIntegrations();
+    const provider = { track: jest.fn(), screen: jest.fn(), identify: jest.fn() };
+    analyticsSeam.set(provider);
+    const app = await renderRouter('./app', { initialUrl: '/' });
+    jest.useRealTimers();
+    const wait = (ms: number) => act(() => new Promise<void>(r => setTimeout(r, ms)));
+    await screen.findByText('Not signed in');
+    await wait(30);
+    await fireEvent.press(screen.getByTestId('sign-in-button'));
+    await screen.findByText('Welcome Back');
+    await wait(30);
+    await fireEvent.changeText(screen.getByTestId('login-username'), 'emily');
+    await fireEvent.changeText(screen.getByTestId('login-password'), 'pass');
+    await fireEvent.press(screen.getByTestId('login-submit'));
+    await wait(100);
+    log('T2 after', dump(app));
+    log('T2 screens', provider.screen.mock.calls.map(c => c[0]));
+  });
+});

@@ -1,0 +1,116 @@
+import { Text } from 'react-native';
+import { act, fireEvent, waitFor } from '@testing-library/react-native';
+import { router } from 'expo-router';
+import { renderRouter, screen } from 'expo-router/testing-library';
+import { authService } from '@/shared/session/authService';
+import { defaultUnauthorizedHandler } from '@/shared/session/session';
+import { useSession, type SessionContextValue } from '@/shared/session/SessionProvider';
+import { setItem, STORAGE_KEYS } from '@/shared/storage/storage';
+import { secureStore } from '@/testing';
+
+const user = { id: 1, email: 'emily@example.com', name: 'Emily Johnson' };
+async function storeSession() {
+  secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
+  await setItem(STORAGE_KEYS.USER_DATA, user);
+}
+type R = { name: string; key: string; state?: { index?: number; routes: R[] } };
+type App = { getRouterState(): unknown; getPathname(): string };
+function dump(app: App) {
+  const root = (app.getRouterState() as { routes: R[] }).routes[0]?.state as { index?: number; routes: R[] } | undefined;
+  const routes = (root?.routes ?? []).map(r => {
+    const inner = r.state;
+    const focused = inner && inner.index !== undefined ? inner.routes.map(x => x.name).join('/') + '@' + inner.routes[inner.index]?.name : '';
+    return `${r.name}${focused ? `>${focused}` : ''}`;
+  });
+  return { routes, index: root?.index, path: app.getPathname(), back: router.canGoBack() };
+}
+const log = (label: string, v: unknown) => process.stdout.write(`R9 ${label}: ${JSON.stringify(v)}\n`);
+let ctx: SessionContextValue | undefined;
+function Settings() { ctx = useSession(); return <Text>Settings screen</Text>; }
+function Settings2() { ctx = useSession(); return <Text>Settings2 screen</Text>; }
+function Orders() { ctx = useSession(); return <Text>Orders screen</Text>; }
+function Register() { ctx = useSession(); return <Text>Register screen</Text>; }
+async function settle() { for (let i = 0; i < 6; i++) await act(async () => { jest.advanceTimersByTime?.(50); }); }
+const creds = { username: 'emily', password: 'pass' };
+beforeEach(() => {
+  jest.restoreAllMocks();
+  ctx = undefined;
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(authService, 'fetchProfile').mockResolvedValue(user);
+  jest.spyOn(authService, 'login').mockImplementation(async () => { await storeSession(); return { token: 'stored-token', user }; });
+});
+const TEXTS = ['Settings screen','Settings2 screen','Orders screen','Register screen','Welcome Back','emily@example.com','Not signed in','Signed in as Emily Johnson'];
+const L = (label: string, app: App) => process.stdout.write(`R9 ${label}: ${JSON.stringify(dump(app))} visible=${TEXTS.filter(t => screen.queryByText(t) !== null).join('|')}\n`);
+async function back(label: string, app: App) {
+  if (router.canGoBack()) { await act(async () => { router.back(); }); await settle(); L(`${label} -> Back`, app); }
+  else process.stdout.write(`R9 ${label} -> Back: cannot go back\n`);
+}
+const sess = async (signedIn: boolean) => { if (signedIn) await ctx!.signOut(); else await ctx!.signIn(creds); };
+async function base(signedIn: boolean, under: string) {
+  if (signedIn) await storeSession();
+  const app = await renderRouter({ appDir: './app', overrides: { settings: Settings, settings2: Settings2, '(app)/orders': Orders, '(auth)/register': Register } }, { initialUrl: '/' });
+  await screen.findByText(signedIn ? 'Signed in as Emily Johnson' : 'Not signed in');
+  if (under.includes('Explore')) { await act(() => router.navigate('/explore')); await settle(); }
+  if (under.includes('Settings')) { await act(() => router.push('/settings')); await screen.findByText('Settings screen'); }
+  return app;
+}
+type Act = readonly [string, () => void];
+const groupActs = (signedIn: boolean): Act[] => [
+  ['none', () => {}],
+  ['dismissTo /', () => router.dismissTo('/')],
+  ['dismissTo /explore', () => router.dismissTo('/explore')],
+  ['replace /settings2', () => router.replace('/settings2')],
+  [`replace ${signedIn ? '/login' : '/profile'}`, () => router.replace(signedIn ? '/login' : '/profile')],
+  ['push /settings2', () => router.push('/settings2')],
+  ['navigate /explore', () => router.navigate('/explore')],
+  ['replace /', () => router.replace('/')],
+];
+// A: another (auth)/(app) screen, alone in its group, and pushed over Login/Profile in the group
+describe.each([['over Home'], ['over Settings'], ['over Explore']])('A %s', (under) => {
+  for (const signedIn of [false, true]) for (const shape of ['other', 'login>other']) for (const [dn, d] of groupActs(signedIn)) {
+    it(`${signedIn} ${shape} ${dn}`, async () => {
+      const app = await base(signedIn, under);
+      if (shape === 'login>other') { await act(() => router.push(signedIn ? '/profile' : '/login')); await screen.findByText(signedIn ? 'emily@example.com' : 'Welcome Back'); }
+      await act(() => router.push(signedIn ? '/orders' : '/register')); await screen.findByText(signedIn ? 'Orders screen' : 'Register screen');
+      const label = `A ${under} ${shape} ${signedIn ? 'signOut' : 'signIn'} ${dn}`;
+      L(`${label} [start]`, app);
+      await act(async () => { await sess(signedIn); d(); }); await settle();
+      L(label, app); await back(label, app);
+    });
+  }
+});
+// B: Login/Profile directly, the two "lost/undone" claims and navigate
+describe.each([['over Home'], ['over Settings']])('B %s', (under) => {
+  for (const signedIn of [false, true]) for (const [dn, d] of groupActs(signedIn).slice(5)) {
+    it(`${signedIn} ${dn}`, async () => {
+      const app = await base(signedIn, under);
+      if (!under.includes('Settings')) { await act(() => router.push('/settings')); await screen.findByText('Settings screen'); await act(() => router.back()); await settle(); }
+      await act(() => router.push(signedIn ? '/profile' : '/login')); await screen.findByText(signedIn ? 'emily@example.com' : 'Welcome Back');
+      const label = `B ${under} ${signedIn ? 'signOut' : 'signIn'} ${dn}`;
+      await act(async () => { await sess(signedIn); d(); }); await settle();
+      L(label, app); await back(label, app);
+    });
+  }
+});
+// C: a pushed non-group screen (/settings with Sign out/in), over Home, over Explore, and over Login/Profile
+describe.each([['Settings over Home'], ['Settings over Explore'], ['Settings over group']])('C %s', (where) => {
+  for (const signedIn of [false, true]) for (const [dn, d] of [
+    ['none', () => {}],
+    ['navigate /', () => router.navigate('/')],
+    ['navigate /explore', () => router.navigate('/explore')],
+    ['dismissTo /', () => router.dismissTo('/')],
+    ['dismissTo /explore', () => router.dismissTo('/explore')],
+    [`replace ${signedIn ? '/login' : '/profile'}`, () => router.replace(signedIn ? '/login' : '/profile')],
+    ['back', () => router.back()],
+  ] as Act[]) {
+    it(`${signedIn} ${dn}`, async () => {
+      const app = await base(signedIn, where.includes('Explore') ? 'Explore' : 'Home');
+      if (where.includes('group')) { await act(() => router.push(signedIn ? '/profile' : '/login')); await screen.findByText(signedIn ? 'emily@example.com' : 'Welcome Back'); }
+      await act(() => router.push('/settings')); await screen.findByText('Settings screen');
+      const label = `C ${where} ${signedIn ? 'signOut' : 'signIn'} ${dn}`;
+      L(`${label} [start]`, app);
+      await act(async () => { await sess(signedIn); d(); }); await settle();
+      L(label, app); await back(label, app);
+    });
+  }
+});

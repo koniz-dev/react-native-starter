@@ -1,0 +1,181 @@
+import { Text } from 'react-native';
+import { act, fireEvent, waitFor } from '@testing-library/react-native';
+import { router } from 'expo-router';
+import { renderRouter, screen } from 'expo-router/testing-library';
+import { authService } from '@/shared/session/authService';
+import { defaultUnauthorizedHandler } from '@/shared/session/session';
+import { useSession, type SessionContextValue } from '@/shared/session/SessionProvider';
+import { setItem, STORAGE_KEYS } from '@/shared/storage/storage';
+import { secureStore } from '@/testing';
+
+const user = { id: 1, email: 'emily@example.com', name: 'Emily Johnson' };
+async function storeSession() {
+  secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
+  await setItem(STORAGE_KEYS.USER_DATA, user);
+}
+type R = { name: string; key: string; state?: { index?: number; routes: R[] } };
+type App = { getRouterState(): unknown; getPathname(): string };
+function dump(app: App) {
+  const root = (app.getRouterState() as { routes: R[] }).routes[0]?.state as { index?: number; routes: R[] } | undefined;
+  const routes = (root?.routes ?? []).map(r => {
+    const inner = r.state;
+    const focused = inner && inner.index !== undefined ? inner.routes.map(x => x.name).join('/') + '@' + inner.routes[inner.index]?.name : '';
+    return `${r.name}${focused ? `>${focused}` : ''}`;
+  });
+  return { routes, index: root?.index, path: app.getPathname(), back: router.canGoBack() };
+}
+const log = (label: string, v: unknown) => process.stdout.write(`R4 ${label}: ${JSON.stringify(v)}\n`);
+let ctx: SessionContextValue | undefined;
+function Settings() { ctx = useSession(); return <Text>Settings screen</Text>; }
+function Settings2() { ctx = useSession(); return <Text>Settings2 screen</Text>; }
+async function settle() { for (let i = 0; i < 5; i++) await act(async () => { jest.advanceTimersByTime?.(50); }); }
+const creds = { username: 'emily', password: 'pass' };
+const errs: unknown[] = [];
+beforeEach(() => {
+  jest.restoreAllMocks();
+  ctx = undefined;
+  errs.length = 0;
+  jest.spyOn(console, 'error').mockImplementation((...a) => { errs.push(a.map(String).join(' ').slice(0, 200)); });
+  jest.spyOn(authService, 'fetchProfile').mockResolvedValue(user);
+  jest.spyOn(authService, 'login').mockImplementation(async () => { await storeSession(); return { token: 'stored-token', user }; });
+});
+const ov = (extra: Record<string, unknown> = {}) => ({ appDir: './app', overrides: { settings: Settings, ...extra } });
+
+it('A: Profile replace(/explore)', async () => {
+  await storeSession();
+  const app = await renderRouter(ov(), { initialUrl: '/' });
+  await screen.findByText('Signed in as Emily Johnson');
+  await act(() => router.push('/profile'));
+  await screen.findByText('emily@example.com');
+  await act(() => router.replace('/explore'));
+  await settle();
+  log('A Profile replace /explore', dump(app));
+});
+it('A2: Profile over Settings replace(/)', async () => {
+  await storeSession();
+  const app = await renderRouter(ov(), { initialUrl: '/' });
+  await screen.findByText('Signed in as Emily Johnson');
+  await act(() => router.push('/settings'));
+  await act(() => router.push('/profile'));
+  await screen.findByText('emily@example.com');
+  await act(() => router.replace('/'));
+  await settle();
+  log('A2 Profile/Settings replace /', dump(app));
+});
+it('C: Login replace(/explore) signed out', async () => {
+  const app = await renderRouter(ov(), { initialUrl: '/' });
+  await screen.findByText('Not signed in');
+  await act(() => router.navigate('/login'));
+  await screen.findByText('Welcome Back');
+  await act(() => router.replace('/explore'));
+  await settle();
+  log('C Login replace /explore', dump(app));
+});
+it.each([
+  ['replace', () => router.replace('/explore')],
+  ['navigate', () => router.navigate('/explore')],
+])('E: sign in then %s(/explore) at once', async (label, go) => {
+  const app = await renderRouter(ov(), { initialUrl: '/' });
+  await screen.findByText('Not signed in');
+  await act(() => router.push('/settings'));
+  await screen.findByText('Settings screen');
+  await act(() => router.push('/login'));
+  await screen.findByText('Welcome Back');
+  await act(async () => { await ctx!.signIn(creds); go(); });
+  await settle();
+  log(`E sign-in then ${label}`, dump(app));
+});
+it('F: root settings2 over Profile, session expires', async () => {
+  await storeSession();
+  const app = await renderRouter(ov({ settings2: Settings2 }), { initialUrl: '/' });
+  await screen.findByText('Signed in as Emily Johnson');
+  await act(() => router.push('/profile'));
+  await screen.findByText('emily@example.com');
+  await act(() => router.push('/settings2'));
+  await screen.findByText('Settings2 screen');
+  log('F before', dump(app));
+  await act(() => defaultUnauthorizedHandler());
+  await settle();
+  log('F after', dump(app));
+  await act(() => router.back()); await settle();
+  log('F after back', dump(app));
+});
+it('G: (app)/settings2 over Profile, sign out there', async () => {
+  await storeSession();
+  const app = await renderRouter(ov({ '(app)/settings2': Settings2 }), { initialUrl: '/' });
+  await screen.findByText('Signed in as Emily Johnson');
+  await act(() => router.push('/settings'));
+  await act(() => router.push('/profile'));
+  await screen.findByText('emily@example.com');
+  await act(() => router.push('/settings2'));
+  await screen.findByText('Settings2 screen');
+  log('G before', dump(app));
+  await act(() => ctx!.signOut());
+  await settle();
+  log('G after', dump(app));
+});
+it('H: guard flip while (auth) not top', async () => {
+  const app = await renderRouter(ov(), { initialUrl: '/' });
+  await screen.findByText('Not signed in');
+  await act(() => router.push('/login'));
+  await screen.findByText('Welcome Back');
+  await act(() => router.push('/settings'));
+  await screen.findByText('Settings screen');
+  log('H before', dump(app));
+  await act(() => ctx!.signIn(creds));
+  await settle();
+  log('H after', dump(app));
+  await act(() => router.back()); await settle();
+  log('H after back', dump(app));
+});
+it('H2: session expires while (app) not top (root settings over profile)', async () => {
+  await storeSession();
+  const app = await renderRouter(ov(), { initialUrl: '/' });
+  await screen.findByText('Signed in as Emily Johnson');
+  await act(() => router.push('/profile'));
+  await screen.findByText('emily@example.com');
+  await act(() => router.push('/settings'));
+  await act(() => ctx!.signOut());
+  await settle();
+  log('H2 after', dump(app));
+});
+it.each([['/login', false], ['/profile', true]])('J: cold %s then leave group via session', async (url, signedIn) => {
+  if (signedIn) await storeSession();
+  const app = await renderRouter(ov(), { initialUrl: url });
+  await screen.findByText(signedIn ? 'emily@example.com' : 'Welcome Back');
+  log(`J cold ${url} before`, dump(app));
+  if (signedIn) await fireEvent.press(screen.getByTestId('profile-logout'));
+  else {
+    await fireEvent.changeText(screen.getByTestId('login-username'), 'emily');
+    await fireEvent.changeText(screen.getByTestId('login-password'), 'pass');
+    await fireEvent.press(screen.getByTestId('login-submit'));
+  }
+  await waitFor(() => expect(screen.queryByText(/Welcome Back|emily@example/)).toBeNull());
+  await settle();
+  log(`J cold ${url} after`, { ...dump(app), errs });
+});
+it('K: auth-back with canGoBack false (replace / from Login)', async () => {
+  const app = await renderRouter(ov(), { initialUrl: '/login' });
+  await screen.findByText('Welcome Back');
+  jest.spyOn(router, 'canGoBack').mockReturnValueOnce(false);
+  await fireEvent.press(screen.getByTestId('auth-back'));
+  await settle();
+  log('K', { ...dump(app), errs });
+});
+it('L: sign in on Login then quickly push /settings before guard flips', async () => {
+  let release!: () => void;
+  jest.spyOn(authService, 'login').mockImplementation(async () => {
+    await new Promise<void>(r => { release = r; });
+    await storeSession(); return { token: 'stored-token', user };
+  });
+  const app = await renderRouter(ov(), { initialUrl: '/' });
+  await screen.findByText('Not signed in');
+  await act(() => router.push('/login'));
+  await fireEvent.changeText(screen.getByTestId('login-username'), 'emily');
+  await fireEvent.changeText(screen.getByTestId('login-password'), 'pass');
+  await fireEvent.press(screen.getByTestId('login-submit'));
+  await act(() => router.push('/settings'));
+  await act(async () => { release(); });
+  await settle();
+  log('L after', dump(app));
+});

@@ -1,0 +1,35 @@
+== run 39306435483 (E2E (Android, manual) 050b01a14795ae39b6bdd72fb4606f100c5c971d; Maestro on Android emulator (expo-go))
+[Passed] Cold start opens Home (1m 8s)
+[Passed] Back from Login returns Home (51s)
+[Passed] Tab navigation (30s)
+[Passed] Sign-in session survives a relaunch; logout clears it (23m 46s)
+[Passed] Login keyboard return keys (1m 3s)
+[Passed] Explore error state and Retry (33s)
+[Passed] Profile is protected and reloads the user (1m 10s)
+7/7 Flows Passed in 29m 1s
+== run 39306443113 (E2E (Android, manual) 050b01a14795ae39b6bdd72fb4606f100c5c971d; Maestro on Android emulator (native-debug))
+[Passed] Cold start opens Home (49s)
+[Passed] Back from Login returns Home (42s)
+[Passed] Tab navigation (30s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 24s)
+[Passed] Login keyboard return keys (49s)
+[Passed] Explore error state and Retry (31s)
+[Passed] Profile is protected and reloads the user (56s)
+7/7 Flows Passed in 5m 41s
+== run 39306448903 (E2E (iOS, manual) 050b01a14795ae39b6bdd72fb4606f100c5c971d; Maestro on iOS simulator (native-debug))
+[Passed] Cold start opens Home (3m 49s)
+[Passed] Back from Login returns Home (59s)
+[Passed] Tab navigation (38s)
+[Passed] Sign-in session survives a relaunch; logout clears it (2m 23s)
+[Failed] Login keyboard return keys (1m 25s) (Assertion is false: "(Signed in as Emily Johnson|Save Password\?)" is visible)
+1/5 Flow Failed
+E2E RETRY: a flow failed (see /Users/runner/work/react-native-starter/react-native-starter/e2e-results/ios/maestro.log); running the flows once more.
+##[warning]E2E RETRY: a flow failed on the first attempt; see maestro.log in the results artifact.
+[Passed] Cold start opens Home (45s)
+[Passed] Back from Login returns Home (46s)
+[Passed] Tab navigation (32s)
+[Passed] Sign-in session survives a relaunch; logout clears it (2m 22s)
+[Passed] Login keyboard return keys (1m 14s)
+[Passed] Explore error state and Retry (1m 9s)
+[Passed] Profile is protected and reloads the user (1m 30s)
+7/7 Flows Passed in 8m 17s

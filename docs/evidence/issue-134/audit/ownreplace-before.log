@@ -1,0 +1,4 @@
+  ● session-guarded routes › leaves a single Home below › over a screen that opened Login or Profile › leaves Profile's own replace with Home alone
+  ● session-guarded routes › leaves a single Home below › over a screen that opened Login or Profile › leaves Profile's own replace with a tab alone
+  ● session-guarded routes › leaves a single Home below › over a screen that opened Login or Profile › leaves Login's own replace with a tab alone
+Tests:       3 failed, 33 skipped, 36 total

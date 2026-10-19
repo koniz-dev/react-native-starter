@@ -1,0 +1,22 @@
+R6 signin over Home replace /profile: {"routes":["(tabs)>index@index","(app)>profile@profile"],"index":1,"path":"/profile","back":true}
+R6 signin over Home replace /settings2: {"routes":["(tabs)>index@index","settings2"],"index":1,"path":"/settings2","back":true}
+R6 signin over Home replace /explore: {"routes":["(tabs)>index@index","(tabs)>explore@explore"],"index":1,"path":"/explore","back":true}
+R6 signin-late over Home replace /profile: {"routes":["(app)>profile@profile"],"index":0,"path":"/profile","back":false}
+R6 signin-late over Home replace /settings2: {"routes":["settings2"],"index":0,"path":"/settings2","back":false}
+R6 signout over Home replace /: {"routes":["(tabs)>index@index"],"index":0,"path":"/","back":false}
+R6 signout over Home replace /login: {"routes":["(tabs)>index@index","(auth)>login@login"],"index":1,"path":"/login","back":true}
+R6 signout over Home replace /settings2: {"routes":["(tabs)>index@index","settings2"],"index":1,"path":"/settings2","back":true}
+R6 signin over Settings replace /profile: {"routes":["(tabs)>index@index","settings","(app)>profile@profile"],"index":2,"path":"/profile","back":true}
+R6 signin over Settings replace /settings2: {"routes":["(tabs)>index@index","settings","settings2"],"index":2,"path":"/settings2","back":true}
+R6 signin over Settings replace /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore@explore"],"index":2,"path":"/explore","back":true}
+R6 signin-late over Settings replace /profile: {"routes":["(tabs)>index@index","(app)>profile@profile"],"index":1,"path":"/profile","back":true}
+R6 signin-late over Settings replace /settings2: {"routes":["(tabs)>index@index","settings2"],"index":1,"path":"/settings2","back":true}
+R6 signout over Settings replace /: {"routes":["(tabs)>index@index","settings"],"index":1,"path":"/settings","back":true}
+R6 signout over Settings replace /login: {"routes":["(tabs)>index@index","settings","(auth)>login@login"],"index":2,"path":"/login","back":true}
+R6 signout over Settings replace /settings2: {"routes":["(tabs)>index@index","settings","settings2"],"index":2,"path":"/settings2","back":true}
+R6 X signin over Home replace /: {"routes":["(tabs)>index@index"],"index":0,"path":"/","back":false}
+R6 X signin over Home replace / visible settings=false
+R6 X signin over Settings replace /: {"routes":["(tabs)>index@index","settings"],"index":1,"path":"/settings","back":true}
+R6 X signin over Settings replace / visible settings=true
+R6 X plain replace /profile from Home: {"routes":["(app)>profile@profile"],"index":0,"path":"/profile","back":false}
+R6 X plain replace /settings2 from Home: {"routes":["settings2"],"index":0,"path":"/settings2","back":false}

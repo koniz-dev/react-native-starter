@@ -1,0 +1,354 @@
+R10 D Home Settings signedIn=false nochange dismissTo /: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 D Home Settings signedIn=false nochange dismissTo / -> Back: cannot go back
+R10 D Home Settings signedIn=false nochange dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 D Home Settings signedIn=false nochange dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 D Home Settings signedIn=false nochange back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 D Home Settings signedIn=false nochange back -> Back: cannot go back
+R10 D Home Settings signedIn=false nochange navigate /: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 D Home Settings signedIn=false nochange navigate / -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 D Home Settings signedIn=false nochange navigate /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D Home Settings signedIn=false nochange navigate /explore -> Back: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 D Home Settings signedIn=false nochange Link /: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 D Home Settings signedIn=false nochange Link / -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 D Home Settings signedIn=false nochange Link /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D Home Settings signedIn=false nochange Link /explore -> Back: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 D Home Settings signedIn=false settled dismissTo /: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 D Home Settings signedIn=false settled dismissTo / -> Back: cannot go back
+R10 D Home Settings signedIn=false settled dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 D Home Settings signedIn=false settled dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 D Home Settings signedIn=false settled back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 D Home Settings signedIn=false settled back -> Back: cannot go back
+R10 D Home Settings signedIn=false settled navigate /: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D Home Settings signedIn=false settled navigate / -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 D Home Settings signedIn=false settled navigate /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D Home Settings signedIn=false settled navigate /explore -> Back: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D Home Settings signedIn=false settled Link /: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D Home Settings signedIn=false settled Link / -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 D Home Settings signedIn=false settled Link /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D Home Settings signedIn=false settled Link /explore -> Back: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D Home Settings signedIn=true nochange dismissTo /: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 D Home Settings signedIn=true nochange dismissTo / -> Back: cannot go back
+R10 D Home Settings signedIn=true nochange dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 D Home Settings signedIn=true nochange dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 D Home Settings signedIn=true nochange back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 D Home Settings signedIn=true nochange back -> Back: cannot go back
+R10 D Home Settings signedIn=true nochange navigate /: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D Home Settings signedIn=true nochange navigate / -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 D Home Settings signedIn=true nochange navigate /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D Home Settings signedIn=true nochange navigate /explore -> Back: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D Home Settings signedIn=true nochange Link /: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D Home Settings signedIn=true nochange Link / -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 D Home Settings signedIn=true nochange Link /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D Home Settings signedIn=true nochange Link /explore -> Back: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D Home Settings signedIn=true settled dismissTo /: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 D Home Settings signedIn=true settled dismissTo / -> Back: cannot go back
+R10 D Home Settings signedIn=true settled dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 D Home Settings signedIn=true settled dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 D Home Settings signedIn=true settled back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 D Home Settings signedIn=true settled back -> Back: cannot go back
+R10 D Home Settings signedIn=true settled navigate /: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 D Home Settings signedIn=true settled navigate / -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 D Home Settings signedIn=true settled navigate /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D Home Settings signedIn=true settled navigate /explore -> Back: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 D Home Settings signedIn=true settled Link /: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 D Home Settings signedIn=true settled Link / -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 D Home Settings signedIn=true settled Link /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D Home Settings signedIn=true settled Link /explore -> Back: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 D Explore Settings signedIn=false nochange dismissTo /: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 D Explore Settings signedIn=false nochange dismissTo / -> Back: cannot go back
+R10 D Explore Settings signedIn=false nochange dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 D Explore Settings signedIn=false nochange dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 D Explore Settings signedIn=false nochange back: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 D Explore Settings signedIn=false nochange back -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 D Explore Settings signedIn=false nochange navigate /: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 D Explore Settings signedIn=false nochange navigate / -> Back: {"routes":["(tabs)>index/explore@explore","settings"],"path":"/settings",true} visible=Settings screen
+R10 D Explore Settings signedIn=false nochange navigate /explore: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D Explore Settings signedIn=false nochange navigate /explore -> Back: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 D Explore Settings signedIn=false nochange Link /: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 D Explore Settings signedIn=false nochange Link / -> Back: {"routes":["(tabs)>index/explore@explore","settings"],"path":"/settings",true} visible=Settings screen
+R10 D Explore Settings signedIn=false nochange Link /explore: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D Explore Settings signedIn=false nochange Link /explore -> Back: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 D Explore Settings signedIn=false settled dismissTo /: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 D Explore Settings signedIn=false settled dismissTo / -> Back: cannot go back
+R10 D Explore Settings signedIn=false settled dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 D Explore Settings signedIn=false settled dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 D Explore Settings signedIn=false settled back: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 D Explore Settings signedIn=false settled back -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 D Explore Settings signedIn=false settled navigate /: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D Explore Settings signedIn=false settled navigate / -> Back: {"routes":["(tabs)>index/explore@explore","settings"],"path":"/settings",true} visible=Settings screen
+R10 D Explore Settings signedIn=false settled navigate /explore: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D Explore Settings signedIn=false settled navigate /explore -> Back: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D Explore Settings signedIn=false settled Link /: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D Explore Settings signedIn=false settled Link / -> Back: {"routes":["(tabs)>index/explore@explore","settings"],"path":"/settings",true} visible=Settings screen
+R10 D Explore Settings signedIn=false settled Link /explore: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D Explore Settings signedIn=false settled Link /explore -> Back: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D Explore Settings signedIn=true nochange dismissTo /: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 D Explore Settings signedIn=true nochange dismissTo / -> Back: cannot go back
+R10 D Explore Settings signedIn=true nochange dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 D Explore Settings signedIn=true nochange dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 D Explore Settings signedIn=true nochange back: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 D Explore Settings signedIn=true nochange back -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 D Explore Settings signedIn=true nochange navigate /: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D Explore Settings signedIn=true nochange navigate / -> Back: {"routes":["(tabs)>index/explore@explore","settings"],"path":"/settings",true} visible=Settings screen
+R10 D Explore Settings signedIn=true nochange navigate /explore: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D Explore Settings signedIn=true nochange navigate /explore -> Back: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D Explore Settings signedIn=true nochange Link /: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D Explore Settings signedIn=true nochange Link / -> Back: {"routes":["(tabs)>index/explore@explore","settings"],"path":"/settings",true} visible=Settings screen
+R10 D Explore Settings signedIn=true nochange Link /explore: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D Explore Settings signedIn=true nochange Link /explore -> Back: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D Explore Settings signedIn=true settled dismissTo /: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 D Explore Settings signedIn=true settled dismissTo / -> Back: cannot go back
+R10 D Explore Settings signedIn=true settled dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 D Explore Settings signedIn=true settled dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 D Explore Settings signedIn=true settled back: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 D Explore Settings signedIn=true settled back -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 D Explore Settings signedIn=true settled navigate /: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 D Explore Settings signedIn=true settled navigate / -> Back: {"routes":["(tabs)>index/explore@explore","settings"],"path":"/settings",true} visible=Settings screen
+R10 D Explore Settings signedIn=true settled navigate /explore: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D Explore Settings signedIn=true settled navigate /explore -> Back: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 D Explore Settings signedIn=true settled Link /: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 D Explore Settings signedIn=true settled Link / -> Back: {"routes":["(tabs)>index/explore@explore","settings"],"path":"/settings",true} visible=Settings screen
+R10 D Explore Settings signedIn=true settled Link /explore: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D Explore Settings signedIn=true settled Link /explore -> Back: {"routes":["(tabs)>index/explore@explore","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 D deeplink signedIn=false nochange dismissTo /: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 D deeplink signedIn=false nochange dismissTo / -> Back: cannot go back
+R10 D deeplink signedIn=false nochange dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 D deeplink signedIn=false nochange dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 D deeplink signedIn=false nochange back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 D deeplink signedIn=false nochange back -> Back: cannot go back
+R10 D deeplink signedIn=false nochange navigate /: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 D deeplink signedIn=false nochange navigate / -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 D deeplink signedIn=false nochange navigate /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D deeplink signedIn=false nochange navigate /explore -> Back: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 D deeplink signedIn=false nochange Link /: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 D deeplink signedIn=false nochange Link / -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 D deeplink signedIn=false nochange Link /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D deeplink signedIn=false nochange Link /explore -> Back: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 D deeplink signedIn=false settled dismissTo /: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 D deeplink signedIn=false settled dismissTo / -> Back: cannot go back
+R10 D deeplink signedIn=false settled dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 D deeplink signedIn=false settled dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 D deeplink signedIn=false settled back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 D deeplink signedIn=false settled back -> Back: cannot go back
+R10 D deeplink signedIn=false settled navigate /: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D deeplink signedIn=false settled navigate / -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 D deeplink signedIn=false settled navigate /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D deeplink signedIn=false settled navigate /explore -> Back: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D deeplink signedIn=false settled Link /: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D deeplink signedIn=false settled Link / -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 D deeplink signedIn=false settled Link /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D deeplink signedIn=false settled Link /explore -> Back: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D deeplink signedIn=true nochange dismissTo /: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 D deeplink signedIn=true nochange dismissTo / -> Back: cannot go back
+R10 D deeplink signedIn=true nochange dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 D deeplink signedIn=true nochange dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 D deeplink signedIn=true nochange back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 D deeplink signedIn=true nochange back -> Back: cannot go back
+R10 D deeplink signedIn=true nochange navigate /: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D deeplink signedIn=true nochange navigate / -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 D deeplink signedIn=true nochange navigate /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D deeplink signedIn=true nochange navigate /explore -> Back: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D deeplink signedIn=true nochange Link /: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D deeplink signedIn=true nochange Link / -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 D deeplink signedIn=true nochange Link /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D deeplink signedIn=true nochange Link /explore -> Back: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 D deeplink signedIn=true settled dismissTo /: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 D deeplink signedIn=true settled dismissTo / -> Back: cannot go back
+R10 D deeplink signedIn=true settled dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 D deeplink signedIn=true settled dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 D deeplink signedIn=true settled back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 D deeplink signedIn=true settled back -> Back: cannot go back
+R10 D deeplink signedIn=true settled navigate /: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 D deeplink signedIn=true settled navigate / -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 D deeplink signedIn=true settled navigate /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D deeplink signedIn=true settled navigate /explore -> Back: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 D deeplink signedIn=true settled Link /: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 D deeplink signedIn=true settled Link / -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 D deeplink signedIn=true settled Link /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 D deeplink signedIn=true settled Link /explore -> Back: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 E Home Settings S2 dismissTo /: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 E Home Settings S2 dismissTo / -> Back: cannot go back
+R10 E Home Settings S2 dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 E Home Settings S2 dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 E Home Settings S2 back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 E Home Settings S2 back -> Back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 E Home Settings S2 navigate /: {"routes":["(tabs)>index@index","settings","settings2","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 E Home Settings S2 navigate / -> Back: {"routes":["(tabs)>index@index","settings","settings2"],"path":"/settings2",true} visible=Settings2 screen
+R10 E Home Settings S2 navigate /explore: {"routes":["(tabs)>index@index","settings","settings2","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 E Home Settings S2 navigate /explore -> Back: {"routes":["(tabs)>index@index","settings","settings2","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 E Explore Settings S2 dismissTo /: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 E Explore Settings S2 dismissTo / -> Back: cannot go back
+R10 E Explore Settings S2 dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 E Explore Settings S2 dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 E Explore Settings S2 back: {"routes":["(tabs)>index/explore@explore","settings"],"path":"/settings",true} visible=Settings screen
+R10 E Explore Settings S2 back -> Back: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 E Explore Settings S2 navigate /: {"routes":["(tabs)>index/explore@explore","settings","settings2","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 E Explore Settings S2 navigate / -> Back: {"routes":["(tabs)>index/explore@explore","settings","settings2"],"path":"/settings2",true} visible=Settings2 screen
+R10 E Explore Settings S2 navigate /explore: {"routes":["(tabs)>index/explore@explore","settings","settings2","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 E Explore Settings S2 navigate /explore -> Back: {"routes":["(tabs)>index/explore@explore","settings","settings2","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 F Settings over group, signIn settled, dismissTo / [mid]: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 F Settings over group, signIn settled, dismissTo /: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 F Settings over group, signIn settled, dismissTo / -> Back: cannot go back
+R10 F Settings over group, signIn settled, dismissTo /explore [mid]: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 F Settings over group, signIn settled, dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 F Settings over group, signIn settled, dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 F Settings over group, signIn settled, back [mid]: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 F Settings over group, signIn settled, back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 F Settings over group, signIn settled, back -> Back: cannot go back
+R10 F Settings over group, signIn settled, navigate / [mid]: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 F Settings over group, signIn settled, navigate /: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 F Settings over group, signIn settled, navigate / -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 F Settings over group, signIn settled, navigate /explore [mid]: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 F Settings over group, signIn settled, navigate /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 F Settings over group, signIn settled, navigate /explore -> Back: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 F Settings over group, signOut settled, dismissTo / [mid]: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 F Settings over group, signOut settled, dismissTo /: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 F Settings over group, signOut settled, dismissTo / -> Back: cannot go back
+R10 F Settings over group, signOut settled, dismissTo /explore [mid]: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 F Settings over group, signOut settled, dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 F Settings over group, signOut settled, dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 F Settings over group, signOut settled, back [mid]: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 F Settings over group, signOut settled, back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 F Settings over group, signOut settled, back -> Back: cannot go back
+R10 F Settings over group, signOut settled, navigate / [mid]: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 F Settings over group, signOut settled, navigate /: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 F Settings over group, signOut settled, navigate / -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 F Settings over group, signOut settled, navigate /explore [mid]: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 F Settings over group, signOut settled, navigate /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 F Settings over group, signOut settled, navigate /explore -> Back: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 G Login over Home no change dismissTo /: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 G Login over Home no change dismissTo / -> Back: cannot go back
+R10 G Login over Home no change dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 G Login over Home no change dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 G Login over Home no change back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 G Login over Home no change back -> Back: cannot go back
+R10 G Login over Home no change navigate /: {"routes":["(tabs)>index@index","(auth)>login@login","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 G Login over Home no change navigate / -> Back: {"routes":["(tabs)>index@index","(auth)>login@login"],"path":"/login",true} visible=Welcome Back
+R10 G Login over Home no change navigate /explore: {"routes":["(tabs)>index@index","(auth)>login@login","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 G Login over Home no change navigate /explore -> Back: {"routes":["(tabs)>index@index","(auth)>login@login","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 G Login over Explore no change dismissTo /: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 G Login over Explore no change dismissTo / -> Back: cannot go back
+R10 G Login over Explore no change dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 G Login over Explore no change dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 G Login over Explore no change back: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 G Login over Explore no change back -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 G Login over Explore no change navigate /: {"routes":["(tabs)>index/explore@explore","(auth)>login@login","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 G Login over Explore no change navigate / -> Back: {"routes":["(tabs)>index/explore@explore","(auth)>login@login"],"path":"/login",true} visible=Welcome Back
+R10 G Login over Explore no change navigate /explore: {"routes":["(tabs)>index/explore@explore","(auth)>login@login","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 G Login over Explore no change navigate /explore -> Back: {"routes":["(tabs)>index/explore@explore","(auth)>login@login","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 G Profile over Home no change dismissTo /: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 G Profile over Home no change dismissTo / -> Back: cannot go back
+R10 G Profile over Home no change dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 G Profile over Home no change dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 G Profile over Home no change back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 G Profile over Home no change back -> Back: cannot go back
+R10 G Profile over Home no change navigate /: {"routes":["(tabs)>index@index","(app)>profile@profile","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 G Profile over Home no change navigate / -> Back: {"routes":["(tabs)>index@index","(app)>profile@profile"],"path":"/profile",true} visible=emily@example.com
+R10 G Profile over Home no change navigate /explore: {"routes":["(tabs)>index@index","(app)>profile@profile","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 G Profile over Home no change navigate /explore -> Back: {"routes":["(tabs)>index@index","(app)>profile@profile","(tabs)>explore/index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 G Profile over Explore no change dismissTo /: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 G Profile over Explore no change dismissTo / -> Back: cannot go back
+R10 G Profile over Explore no change dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 G Profile over Explore no change dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 G Profile over Explore no change back: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 G Profile over Explore no change back -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 G Profile over Explore no change navigate /: {"routes":["(tabs)>index/explore@explore","(app)>profile@profile","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 G Profile over Explore no change navigate / -> Back: {"routes":["(tabs)>index/explore@explore","(app)>profile@profile"],"path":"/profile",true} visible=emily@example.com
+R10 G Profile over Explore no change navigate /explore: {"routes":["(tabs)>index/explore@explore","(app)>profile@profile","(tabs)>explore@explore"],"path":"/explore",true} visible=
+R10 G Profile over Explore no change navigate /explore -> Back: {"routes":["(tabs)>index/explore@explore","(app)>profile@profile","(tabs)>explore/index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 H Login over Home signIn none: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 H Login over Home signIn none -> Back: cannot go back
+R10 H Login over Home signIn dismissTo /: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 H Login over Home signIn dismissTo / -> Back: cannot go back
+R10 H Login over Home signIn dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 H Login over Home signIn dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 H Login over Home signIn replace /settings2: {"routes":["(tabs)>index@index","settings2"],"path":"/settings2",true} visible=Settings2 screen
+R10 H Login over Home signIn replace /settings2 -> Back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 H Login over Home signIn push /settings2: {"routes":["(tabs)>index@index","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 H Login over Home signIn push /settings2 -> Back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 H Login over Home signIn navigate /settings2: {"routes":["(tabs)>index@index","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 H Login over Home signIn navigate /settings2 -> Back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 H Login over Home signIn navigate /explore: {"routes":["(tabs)>index@index","(tabs)>explore/index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 H Login over Home signIn navigate /explore -> Back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 H Login over Home signIn replace /: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 H Login over Home signIn replace / -> Back: cannot go back
+R10 H Profile over Home signOut none: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 H Profile over Home signOut none -> Back: cannot go back
+R10 H Profile over Home signOut dismissTo /: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 H Profile over Home signOut dismissTo / -> Back: cannot go back
+R10 H Profile over Home signOut dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 H Profile over Home signOut dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 H Profile over Home signOut replace /settings2: {"routes":["(tabs)>index@index","settings2"],"path":"/settings2",true} visible=Settings2 screen
+R10 H Profile over Home signOut replace /settings2 -> Back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 H Profile over Home signOut push /settings2: {"routes":["(tabs)>index@index","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 H Profile over Home signOut push /settings2 -> Back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 H Profile over Home signOut navigate /settings2: {"routes":["(tabs)>index@index","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 H Profile over Home signOut navigate /settings2 -> Back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 H Profile over Home signOut navigate /explore: {"routes":["(tabs)>index@index","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 H Profile over Home signOut navigate /explore -> Back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 H Profile over Home signOut replace /: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 H Profile over Home signOut replace / -> Back: cannot go back
+R10 H Login over Home Settings signIn none: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 H Login over Home Settings signIn none -> Back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 H Login over Home Settings signIn dismissTo /: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 H Login over Home Settings signIn dismissTo / -> Back: cannot go back
+R10 H Login over Home Settings signIn dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 H Login over Home Settings signIn dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 H Login over Home Settings signIn replace /settings2: {"routes":["(tabs)>index@index","settings","settings2"],"path":"/settings2",true} visible=Settings2 screen
+R10 H Login over Home Settings signIn replace /settings2 -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 H Login over Home Settings signIn push /settings2: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 H Login over Home Settings signIn push /settings2 -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 H Login over Home Settings signIn navigate /settings2: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 H Login over Home Settings signIn navigate /settings2 -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 H Login over Home Settings signIn navigate /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 H Login over Home Settings signIn navigate /explore -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 H Login over Home Settings signIn replace /: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 H Login over Home Settings signIn replace / -> Back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 H Profile over Home Settings signOut none: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 H Profile over Home Settings signOut none -> Back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 H Profile over Home Settings signOut dismissTo /: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 H Profile over Home Settings signOut dismissTo / -> Back: cannot go back
+R10 H Profile over Home Settings signOut dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 H Profile over Home Settings signOut dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 H Profile over Home Settings signOut replace /settings2: {"routes":["(tabs)>index@index","settings","settings2"],"path":"/settings2",true} visible=Settings2 screen
+R10 H Profile over Home Settings signOut replace /settings2 -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 H Profile over Home Settings signOut push /settings2: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 H Profile over Home Settings signOut push /settings2 -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 H Profile over Home Settings signOut navigate /settings2: {"routes":["(tabs)>index@index","settings","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 H Profile over Home Settings signOut navigate /settings2 -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 H Profile over Home Settings signOut navigate /explore: {"routes":["(tabs)>index@index","settings","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 H Profile over Home Settings signOut navigate /explore -> Back: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 H Profile over Home Settings signOut replace /: {"routes":["(tabs)>index@index","settings"],"path":"/settings",true} visible=Settings screen
+R10 H Profile over Home Settings signOut replace / -> Back: {"routes":["(tabs)>index@index"],"path":"/",false} visible=Not signed in
+R10 H Login over Explore signIn none: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 H Login over Explore signIn none -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 H Login over Explore signIn dismissTo /: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 H Login over Explore signIn dismissTo / -> Back: cannot go back
+R10 H Login over Explore signIn dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 H Login over Explore signIn dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 H Login over Explore signIn replace /settings2: {"routes":["(tabs)>index/explore@explore","settings2"],"path":"/settings2",true} visible=Settings2 screen
+R10 H Login over Explore signIn replace /settings2 -> Back: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 H Login over Explore signIn push /settings2: {"routes":["(tabs)>index/explore@explore","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 H Login over Explore signIn push /settings2 -> Back: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 H Login over Explore signIn navigate /settings2: {"routes":["(tabs)>index/explore@explore","(tabs)>index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 H Login over Explore signIn navigate /settings2 -> Back: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 H Login over Explore signIn navigate /explore: {"routes":["(tabs)>index/explore@explore","(tabs)>explore/index@index"],"path":"/",true} visible=Signed in as Emily Johnson
+R10 H Login over Explore signIn navigate /explore -> Back: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 H Login over Explore signIn replace /: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 H Login over Explore signIn replace / -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Signed in as Emily Johnson
+R10 H Profile over Explore signOut none: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 H Profile over Explore signOut none -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 H Profile over Explore signOut dismissTo /: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 H Profile over Explore signOut dismissTo / -> Back: cannot go back
+R10 H Profile over Explore signOut dismissTo /explore: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 H Profile over Explore signOut dismissTo /explore -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in
+R10 H Profile over Explore signOut replace /settings2: {"routes":["(tabs)>index/explore@explore","settings2"],"path":"/settings2",true} visible=Settings2 screen
+R10 H Profile over Explore signOut replace /settings2 -> Back: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 H Profile over Explore signOut push /settings2: {"routes":["(tabs)>index/explore@explore","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 H Profile over Explore signOut push /settings2 -> Back: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 H Profile over Explore signOut navigate /settings2: {"routes":["(tabs)>index/explore@explore","(tabs)>index@index"],"path":"/",true} visible=Not signed in
+R10 H Profile over Explore signOut navigate /settings2 -> Back: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 H Profile over Explore signOut navigate /explore: {"routes":["(tabs)>index/explore@explore","(tabs)>explore/index@index"],"path":"/",true} visible=Not signed in
+R10 H Profile over Explore signOut navigate /explore -> Back: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 H Profile over Explore signOut replace /: {"routes":["(tabs)>index/explore@explore"],"path":"/explore",true} visible=
+R10 H Profile over Explore signOut replace / -> Back: {"routes":["(tabs)>index/explore@index"],"path":"/",false} visible=Not signed in

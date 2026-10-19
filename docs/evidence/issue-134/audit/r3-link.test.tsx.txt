@@ -1,0 +1,42 @@
+import { Platform, Text } from 'react-native';
+import { act, fireEvent } from '@testing-library/react-native';
+import { Link, router } from 'expo-router';
+import { renderRouter, screen } from 'expo-router/testing-library';
+
+type R = { name: string; key: string; state?: { index?: number; routes: R[] } };
+function dump(app: { getRouterState(): unknown; getPathname(): string }) {
+  const root = (app.getRouterState() as { routes: R[] }).routes[0]?.state as { index?: number; routes: R[] } | undefined;
+  return {
+    os: Platform.OS,
+    routes: (root?.routes ?? []).map(r => `${r.name}${r.state && r.state.index !== undefined ? '>' + r.state.routes[r.state.index]?.name : ''}`),
+    path: app.getPathname(),
+  };
+}
+const log = (l: string, v: unknown) => process.stdout.write(`R3K ${l}: ${JSON.stringify(v)}\n`);
+function Settings() {
+  return (
+    <>
+      <Text>Settings screen</Text>
+      <Link href="/explore" testID="to-explore"><Text>Explore</Text></Link>
+      <Link href="/" testID="to-home"><Text>Home</Text></Link>
+    </>
+  );
+}
+it.each(['to-explore', 'to-home'])('<Link> %s from Settings', async (id) => {
+  const app = await renderRouter({ appDir: './app', overrides: { settings: Settings } }, { initialUrl: '/' });
+  await screen.findByText('Not signed in');
+  await act(() => router.push('/settings'));
+  await screen.findByText('Settings screen');
+  await fireEvent.press(screen.getByTestId(id));
+  for (let i = 0; i < 5; i++) await act(async () => { jest.advanceTimersByTime(50); });
+  log(id, dump(app));
+});
+it('navigate / from Settings', async () => {
+  const app = await renderRouter({ appDir: './app', overrides: { settings: Settings } }, { initialUrl: '/' });
+  await screen.findByText('Not signed in');
+  await act(() => router.push('/settings'));
+  await screen.findByText('Settings screen');
+  await act(() => router.navigate('/'));
+  for (let i = 0; i < 5; i++) await act(async () => { jest.advanceTimersByTime(50); });
+  log('navigate /', dump(app));
+});
