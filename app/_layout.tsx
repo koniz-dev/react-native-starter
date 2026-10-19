@@ -145,9 +145,8 @@ function useNoExtraHome(status: string) {
       previous.name !== undefined && GUARDED_GROUPS.has(previous.name);
     if (!inGroup) {
       // The stack moved with another screen on top: a session change before
-      // this had no guarded group to send the user out of. (The first state,
-      // before any, keeps it: a cold-start deep link opens on the group.)
-      if (previous.name !== undefined) sessionChanged.current = false;
+      // this had no guarded group to send the user out of.
+      sessionChanged.current = false;
       return;
     }
     if (top?.name === previous.name) return;

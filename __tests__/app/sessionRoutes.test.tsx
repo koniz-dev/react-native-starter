@@ -1,9 +1,13 @@
 import { Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { act, fireEvent } from '@testing-library/react-native';
+import { act, fireEvent, waitFor } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import { renderRouter, screen } from 'expo-router/testing-library';
 import { authService } from '@/shared/session/authService';
+import {
+  useSession,
+  type SessionContextValue,
+} from '@/shared/session/SessionProvider';
 import { defaultUnauthorizedHandler } from '@/shared/session/session';
 import { ApiError } from '@/shared/http/apiError';
 import {
@@ -345,6 +349,120 @@ describe('session-guarded routes', () => {
         expect(await screen.findByText('Settings screen')).toBeTruthy();
         expect(app.getPathname()).toBe('/settings');
         expect(rootRoutes(app)).toEqual(['(tabs)', 'settings']);
+      });
+    });
+
+    describe("the app's own navigation around a session change", () => {
+      // A screen that holds the session, to sign in or out from a test.
+      let session: SessionContextValue | undefined;
+      function Holder({ label }: { label: string }) {
+        session = useSession();
+        return <Text>{label}</Text>;
+      }
+      const Settings = () => <Holder label="Settings screen" />;
+      const Settings2 = () => <Holder label="Settings2 screen" />;
+      const credentials = { username: 'emily', password: 'pass' };
+      beforeEach(() => {
+        session = undefined;
+        jest.spyOn(authService, 'login').mockImplementation(async () => {
+          await storeSession();
+          return { token: 'stored-token', user };
+        });
+      });
+
+      it.each([
+        ['signing out', () => session?.signOut()],
+        ['a session that expires', () => defaultUnauthorizedHandler()],
+      ])(
+        '%s on a second (app) screen above Profile leaves one Home',
+        async (_, end) => {
+          await storeSession();
+          const app = await renderRouter(
+            { appDir: './app', overrides: { '(app)/settings2': Settings2 } },
+            { initialUrl: '/' }
+          );
+          await screen.findByText('Signed in as Emily Johnson');
+          await act(() => router.push('/profile'));
+          await screen.findByText('emily@example.com');
+          await act(() => router.push('/settings2'));
+          await screen.findByText('Settings2 screen');
+
+          await act(async () => {
+            await end();
+          });
+
+          expect(await screen.findByText('Not signed in')).toBeTruthy();
+          expect(rootRoutes(app)).toEqual(['(tabs)']);
+        }
+      );
+
+      it.each([
+        [
+          'replace a root screen',
+          () => router.replace('/settings2'),
+          '/settings2',
+        ],
+        ['push Home', () => router.push('/'), '/'],
+      ])('signing in, then at once to %s, gets there', async (_, go, path) => {
+        const app = await renderRouter(
+          {
+            appDir: './app',
+            overrides: { settings: Settings, settings2: Settings2 },
+          },
+          { initialUrl: '/' }
+        );
+        await screen.findByText('Not signed in');
+        await act(() => router.push('/settings'));
+        await screen.findByText('Settings screen');
+        await act(() => router.push('/login'));
+        await screen.findByText('Welcome Back');
+
+        await act(async () => {
+          await session?.signIn(credentials);
+          go();
+        });
+
+        await waitFor(() => expect(app.getPathname()).toBe(path));
+      });
+
+      // @demo remove-block-start
+      it('signing in, then at once replacing Login with a tab, gets there', async () => {
+        const app = await renderRouter(
+          { appDir: './app', overrides: { settings: Settings } },
+          { initialUrl: '/' }
+        );
+        await screen.findByText('Not signed in');
+        await act(() => router.push('/settings'));
+        await screen.findByText('Settings screen');
+        await act(() => router.push('/login'));
+        await screen.findByText('Welcome Back');
+
+        await act(async () => {
+          await session?.signIn(credentials);
+          router.replace('/explore');
+        });
+
+        await waitFor(() => expect(app.getPathname()).toBe('/explore'));
+      });
+      // @demo remove-block-end
+
+      it('signing out on another screen leaves its own replace with Home alone', async () => {
+        await storeSession();
+        const app = await renderRouter(
+          { appDir: './app', overrides: { settings: Settings } },
+          { initialUrl: '/' }
+        );
+        await screen.findByText('Signed in as Emily Johnson');
+        await act(() => router.push('/settings'));
+        await screen.findByText('Settings screen');
+        await act(async () => {
+          await session?.signOut();
+        });
+
+        await act(() => router.replace('/'));
+
+        expect(await screen.findByText('Not signed in')).toBeTruthy();
+        expect(rootRoutes(app)).toEqual(['(tabs)', '(tabs)']);
       });
     });
 
