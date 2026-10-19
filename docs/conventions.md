@@ -83,18 +83,19 @@ back button. Add your app's tabs as files in `app/(tabs)/`, next to Home's
 tab at all: it has no button, and a link or deep link to it lands on Home.
 
 Navigate with `router.navigate('/settings')`, `router.replace`, or `<Link>` from
-`expo-router`.
+`expo-router`. To go back to a tab from a screen pushed over the tabs, use
+`router.dismissTo('/<tab>')` (or `router.back()` when it is just below):
+`navigate` and `<Link>` to a tab push a second Home there.
 
 On Login, Profile, or another screen in `(auth)` or `(app)`, `signIn` and
-`signOut` send the user back to the screen below: the guards replace the
-screen on top with a redirect, which the root layout undoes. To go somewhere
-else from there, do it right after the session changes, before awaiting
-anything else: `router.dismissTo('/')` for Home or `router.dismissTo('/<tab>')`
-for another tab, and `router.replace('/<screen>')` for a screen outside
-`(tabs)`. A screen pushed or navigated to at that moment is lost, and a
-`replace('/')` then is taken for the redirect and undone. On any other screen,
-such as a tab with a Sign out button, there is no redirect: navigate as usual,
-for example `router.navigate('/<tab>')`.
+`signOut` send the user back to the screen below the group: the guards
+replace it with a redirect, which the root layout undoes. To go somewhere else
+from there, do it right after the session changes, before awaiting anything
+else: `router.dismissTo('/')` for Home or `router.dismissTo('/<tab>')` for
+another tab, and `router.replace('/<screen>')` for a screen outside `(tabs)`.
+A screen pushed or navigated to at that moment is lost (and leaves a second
+Home), and a `replace('/')` then is taken for the redirect and undone.
+Anywhere else there is no redirect: navigate as above.
 
 Route groups export a route-level error boundary
 ([Error Reporting](error-reporting.md#error-boundaries)). Typed routes

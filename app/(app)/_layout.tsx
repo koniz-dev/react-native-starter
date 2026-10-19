@@ -9,11 +9,11 @@ export { RouteErrorBoundary as ErrorBoundary } from '@/shared/ui/ErrorBoundary';
 
 /**
  * Screens that require a signed-in user. The root layout wraps this group in
- * <Stack.Protected guard={signedIn}>: when the session ends, a user here is
- * sent back to Home, and a deep link into the group lands on Home. While
- * signed out, router.navigate() to a screen here does nothing, so links to
- * it check the session first (docs/conventions.md). Add new protected
- * screens to this folder.
+ * <Stack.Protected guard={signedIn}>: when the session ends, a user here goes
+ * back to the screen below the group, and a deep link into the group lands
+ * on Home. While signed out, router.navigate() to a screen here does nothing,
+ * so links to it check the session first (docs/conventions.md). Add new
+ * protected screens to this folder.
  */
 export default function ProtectedLayout() {
   return (
