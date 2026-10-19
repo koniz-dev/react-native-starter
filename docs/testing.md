@@ -99,7 +99,7 @@ import { screen } from '@testing-library/react-native';
 import { HomeScreen } from '@/features/home/screens/HomeScreen';
 import { renderWithProviders } from '@/testing';
 
-renderWithProviders(<HomeScreen />, { withSession: true }); // options: scheme, withSession
+await renderWithProviders(<HomeScreen />, { withSession: true }); // options: scheme, withSession
 expect(await screen.findByText('Not signed in')).toBeTruthy();
 ```
 
@@ -109,14 +109,22 @@ expect(await screen.findByText('Not signed in')).toBeTruthy();
 ```tsx
 import { renderRouter, screen } from 'expo-router/testing-library';
 
-const app = renderRouter('./app', { initialUrl: '/profile' });
+const app = await renderRouter('./app', { initialUrl: '/profile' });
 expect(await screen.findByText('Not signed in')).toBeTruthy();
 expect(app.getPathname()).toBe('/'); // the guard sent a signed-out user Home
 ```
 
 Add a route just for a test with
-`renderRouter({ appDir: './app', overrides: { '(tabs)/boom': Bomb } })` (see
-`__tests__/shared/ui/ErrorBoundary.test.tsx`).
+`renderRouter({ appDir: './app', overrides: { '(auth)/boom': Bomb } })`, or
+replace a screen with `overrides: { '(tabs)/index': Bomb }` (see
+`__tests__/shared/ui/ErrorBoundary.test.tsx`). A tab must be declared in the
+tabs layout to be a route, so an extra file in `(tabs)` isn't reachable.
+
+`render`, `renderHook`, `renderRouter`, `fireEvent`, and `act` return
+promises (React Native Testing Library 14): `await` each of them. An awaited
+render has already run the effects and settled what was ready, so to see a
+loading state, hold the request or the storage read first (`holdRequests()`,
+or a promise the test resolves).
 
 ### A seam or adapter in a full-app test
 
@@ -147,12 +155,12 @@ beforeEach(() => {
 afterEach(() => analyticsSeam.reset());
 
 it('reports a screen view for each route', async () => {
-  renderRouter('./app', { initialUrl: '/' });
+  await renderRouter('./app', { initialUrl: '/' });
   await screen.findByText('Not signed in');
   // A screen view is reported just after navigation settles: wait for it.
   await waitFor(() => expect(provider.screen).toHaveBeenLastCalledWith('/'));
 
-  act(() => router.push('/login'));
+  await act(() => router.push('/login'));
   await screen.findByText('Welcome Back');
   await waitFor(() =>
     expect(provider.screen).toHaveBeenLastCalledWith('/login')
@@ -212,7 +220,7 @@ afterEach(() => {
 
 it('shows loading, then the error, and Try again loads the list', async () => {
   const requests = holdRequests();
-  renderWithProviders(<PostsScreen />);
+  await renderWithProviders(<PostsScreen />);
 
   expect(screen.getByTestId('loading-screen')).toBeTruthy();
   await waitFor(() => expect(requests).toHaveLength(1));
@@ -228,7 +236,7 @@ it('shows loading, then the error, and Try again loads the list', async () => {
     await screen.findByText('The server had a problem. Please try again later.')
   ).toBeTruthy();
   expect(screen.queryByText('Service unavailable')).toBeNull();
-  fireEvent.press(screen.getByText('Try again'));
+  await fireEvent.press(screen.getByText('Try again'));
 
   expect(await screen.findByTestId('loading-screen')).toBeTruthy();
   await waitFor(() => expect(requests).toHaveLength(2));

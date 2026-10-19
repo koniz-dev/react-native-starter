@@ -5,7 +5,6 @@ import {
   within,
   screen,
 } from '@testing-library/react-native';
-import { ActivityIndicator } from 'react-native-paper';
 
 jest.mock('expo-router', () => {
   return { router: { navigate: jest.fn(), replace: jest.fn() } };
@@ -14,12 +13,17 @@ jest.mock('expo-router', () => {
 import * as SecureStore from 'expo-secure-store';
 import { router } from 'expo-router';
 import { HomeScreen } from '@/features/home/screens/HomeScreen';
-import { DocumentTitle } from '@/shared/ui/DocumentTitle';
 import { getItem, setItem, STORAGE_KEYS } from '@/shared/storage/storage';
 import { defaultUnauthorizedHandler } from '@/shared/session/session';
 import { setAuthAdapter } from '@/shared/session/authService';
 import { logger } from '@/shared/lib/logger';
 import { renderWithProviders, secureStore } from '@/testing';
+import { documentTitles } from '@/testing/documentTitle';
+
+// DocumentTitle renders nothing on native; this one shows its title.
+jest.mock('@/shared/ui/DocumentTitle', () =>
+  jest.requireActual('@/testing/documentTitle')
+);
 
 describe('<HomeScreen /> session', () => {
   afterEach(() => setAuthAdapter(null));
@@ -31,7 +35,7 @@ describe('<HomeScreen /> session', () => {
   });
 
   test('shows the signed-out state with the sign-in entry', async () => {
-    const { findByText, getByText, queryByText } = renderWithProviders(
+    const { findByText, getByText, queryByText } = await renderWithProviders(
       <HomeScreen />,
       { withSession: true }
     );
@@ -41,7 +45,7 @@ describe('<HomeScreen /> session', () => {
     expect(queryByText('Log out')).toBeNull();
     expect(screen.getByRole('header', { name: 'Session' })).toBeTruthy();
 
-    fireEvent.press(getByText('Sign in'));
+    await fireEvent.press(getByText('Sign in'));
     expect(router.navigate).toHaveBeenCalledWith('/login');
   });
 
@@ -51,7 +55,7 @@ describe('<HomeScreen /> session', () => {
     secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
     await setItem(STORAGE_KEYS.INSTALL_MARKER, true);
 
-    const { findByText } = renderWithProviders(<HomeScreen />, {
+    const { findByText } = await renderWithProviders(<HomeScreen />, {
       withSession: true,
     });
 
@@ -62,7 +66,7 @@ describe('<HomeScreen /> session', () => {
     secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
     await setItem(STORAGE_KEYS.USER_DATA, { ...user, name: '' });
 
-    const { findByText } = renderWithProviders(<HomeScreen />, {
+    const { findByText } = await renderWithProviders(<HomeScreen />, {
       withSession: true,
     });
 
@@ -73,7 +77,7 @@ describe('<HomeScreen /> session', () => {
     secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
     await setItem(STORAGE_KEYS.USER_DATA, user);
 
-    const { findByText, getByText, queryByText } = renderWithProviders(
+    const { findByText, getByText, queryByText } = await renderWithProviders(
       <HomeScreen />,
       { withSession: true }
     );
@@ -86,12 +90,15 @@ describe('<HomeScreen /> session', () => {
   test('logging out clears the session and returns to the signed-out state', async () => {
     secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
     await setItem(STORAGE_KEYS.USER_DATA, user);
-    const { findByText, getByText } = renderWithProviders(<HomeScreen />, {
-      withSession: true,
-    });
+    const { findByText, getByText } = await renderWithProviders(
+      <HomeScreen />,
+      {
+        withSession: true,
+      }
+    );
     await findByText('Signed in as Emily Johnson');
 
-    fireEvent.press(getByText('Log out'));
+    await fireEvent.press(getByText('Log out'));
 
     expect(await findByText('Not signed in')).toBeTruthy();
     expect(getByText('Sign in')).toBeTruthy();
@@ -111,17 +118,20 @@ describe('<HomeScreen /> session', () => {
       normalizeUser: raw => raw as typeof user,
       logout: () => new Promise<void>(resolve => (finish = resolve)),
     });
-    const { findByText, getByTestId } = renderWithProviders(<HomeScreen />, {
-      withSession: true,
-    });
+    const { findByText, getByTestId } = await renderWithProviders(
+      <HomeScreen />,
+      {
+        withSession: true,
+      }
+    );
     await findByText('Signed in as Emily Johnson');
 
-    fireEvent.press(getByTestId('logout-button'));
+    await fireEvent.press(getByTestId('logout-button'));
 
     // Disabled, with Paper's loading indicator in place of the label's icon.
     await waitFor(() => expect(getByTestId('logout-button')).toBeDisabled());
     expect(
-      within(getByTestId('logout-button')).UNSAFE_getByType(ActivityIndicator)
+      within(getByTestId('logout-button')).getByRole('progressbar')
     ).toBeTruthy();
     await act(async () => finish());
     expect(await findByText('Not signed in')).toBeTruthy();
@@ -133,7 +143,7 @@ describe('<HomeScreen /> session', () => {
       .mockRejectedValueOnce(new Error('Keychain unavailable'));
     const logError = jest.spyOn(logger, 'error').mockImplementation(() => {});
 
-    const { findByText } = renderWithProviders(<HomeScreen />, {
+    const { findByText } = await renderWithProviders(<HomeScreen />, {
       withSession: true,
     });
 
@@ -148,7 +158,7 @@ describe('<HomeScreen /> session', () => {
   test('switches to signed out when the API reports the session expired', async () => {
     secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
     await setItem(STORAGE_KEYS.USER_DATA, user);
-    const { findByText } = renderWithProviders(<HomeScreen />, {
+    const { findByText } = await renderWithProviders(<HomeScreen />, {
       withSession: true,
     });
     await findByText('Signed in as Emily Johnson');
@@ -164,10 +174,12 @@ describe('<HomeScreen /> session', () => {
 
 describe('<HomeScreen /> titles', () => {
   test('marks the heading and names the browser tab', async () => {
-    const view = renderWithProviders(<HomeScreen />, { withSession: true });
+    const view = await renderWithProviders(<HomeScreen />, {
+      withSession: true,
+    });
     await view.findByText('Not signed in');
     expect(view.getByRole('header', { name: 'Welcome' })).toBeTruthy();
-    expect(view.UNSAFE_getByType(DocumentTitle).props.title).toBe('Home');
+    expect(documentTitles()).toEqual(['Home']);
   });
 });
 
@@ -177,13 +189,13 @@ describe('<HomeScreen /> examples', () => {
     ['Todos (API example)', '/explore'],
     ['Component showcase', '/showcase'],
   ])('"%s" opens %s', async (title, route) => {
-    const { findByText, getByText, getByRole } = renderWithProviders(
+    const { findByText, getByText, getByRole } = await renderWithProviders(
       <HomeScreen />,
       { withSession: true }
     );
     await findByText('Not signed in');
 
-    fireEvent.press(getByText(title));
+    await fireEvent.press(getByText(title));
 
     expect(router.navigate).toHaveBeenCalledWith(route);
     // A screen reader announces it as something to press.

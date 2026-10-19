@@ -1,4 +1,6 @@
+import * as SecureStore from 'expo-secure-store';
 import * as SplashScreen from 'expo-splash-screen';
+import { act } from '@testing-library/react-native';
 import { renderRouter, screen } from 'expo-router/testing-library';
 import { englishI18n, i18nSeam } from '@/shared/i18n';
 import { authService } from '@/shared/session/authService';
@@ -33,16 +35,24 @@ describe('the native splash screen', () => {
       },
     });
 
-    renderRouter('./app', { initialUrl: '/' });
+    await renderRouter('./app', { initialUrl: '/' });
 
     expect(await screen.findByTestId('error-fallback')).toBeTruthy();
     expect(SplashScreen.hideAsync).toHaveBeenCalled();
   });
 
   it('stays up while the stored session is read, then hides once', async () => {
-    renderRouter('./app', { initialUrl: '/' });
+    // Hold the token read, so the session is still loading after render.
+    let finishRead!: () => void;
+    const read = new Promise<null>(
+      resolve => (finishRead = () => resolve(null))
+    );
+    jest.mocked(SecureStore.getItemAsync).mockReturnValueOnce(read);
+    await renderRouter('./app', { initialUrl: '/' });
     // Rendered, but the session is still loading: nothing is shown yet.
     expect(SplashScreen.hideAsync).not.toHaveBeenCalled();
+
+    await act(async () => finishRead());
 
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     expect(SplashScreen.hideAsync).toHaveBeenCalledTimes(1);
@@ -54,7 +64,7 @@ describe('the native splash screen', () => {
     await setItem(STORAGE_KEYS.USER_DATA, user);
     jest.spyOn(authService, 'fetchProfile').mockResolvedValue(user);
 
-    renderRouter('./app', { initialUrl: '/' });
+    await renderRouter('./app', { initialUrl: '/' });
 
     expect(await screen.findByText('Signed in as Emily')).toBeTruthy();
     expect(SplashScreen.hideAsync).toHaveBeenCalledTimes(1);

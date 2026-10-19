@@ -29,7 +29,7 @@ const wrapper = ({ children }: { children: ReactNode }) => (
 );
 
 async function renderSession() {
-  const hook = renderHook(() => useSession(), { wrapper });
+  const hook = await renderHook(() => useSession(), { wrapper });
   await waitFor(() =>
     expect(hook.result.current.session.status).toBe('signedOut')
   );
@@ -50,7 +50,7 @@ describe('SessionProvider sign-out', () => {
 
     let first!: Promise<void>;
     let second!: Promise<void>;
-    act(() => {
+    await act(() => {
       first = result.current.signOut();
       second = result.current.signOut();
     });
@@ -75,7 +75,7 @@ describe('SessionProvider sign-out', () => {
     await act(() => result.current.signIn({ username: 'a', password: 'p' }));
 
     let pending!: Promise<void>;
-    act(() => {
+    await act(() => {
       pending = result.current.signOut();
     });
     // A's session expires (a 401) while the backend is slow to sign out, and
@@ -99,7 +99,7 @@ describe('SessionProvider sign-out', () => {
 
     // B's own sign-out is a new one, not A's finished one.
     let own!: Promise<void>;
-    act(() => {
+    await act(() => {
       own = result.current.signOut();
     });
     await act(async () => {
@@ -126,9 +126,9 @@ describe('SessionProvider sign-out', () => {
   });
 });
 
-it('useSession throws outside a SessionProvider', () => {
+it('useSession throws outside a SessionProvider', async () => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
-  expect(() => renderHook(() => useSession())).toThrow(
+  await expect(renderHook(() => useSession())).rejects.toThrow(
     'useSession must be used inside <SessionProvider>'
   );
 });

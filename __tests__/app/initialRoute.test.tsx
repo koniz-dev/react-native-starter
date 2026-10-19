@@ -5,11 +5,11 @@ import { unstable_settings } from '@/app/_layout';
 
 describe('initial route', () => {
   test('anchors the root stack on the tabs group', () => {
-    expect(unstable_settings.initialRouteName).toBe('(tabs)');
+    expect(unstable_settings.anchor).toBe('(tabs)');
   });
 
   test('/ renders the Home tab', async () => {
-    const app = renderRouter('./app', { initialUrl: '/' });
+    const app = await renderRouter('./app', { initialUrl: '/' });
 
     expect(await screen.findByText('Session')).toBeTruthy();
     expect(app.getPathname()).toBe('/');
@@ -17,18 +17,18 @@ describe('initial route', () => {
   });
 
   test('/login renders the Login screen', async () => {
-    const app = renderRouter('./app', { initialUrl: '/login' });
+    const app = await renderRouter('./app', { initialUrl: '/login' });
 
     expect(await screen.findByText('Welcome Back')).toBeTruthy();
     expect(app.getPathname()).toBe('/login');
   });
 
   test('going back from a deep-linked /login returns to Home', async () => {
-    const app = renderRouter('./app', { initialUrl: '/login' });
+    const app = await renderRouter('./app', { initialUrl: '/login' });
     await screen.findByText('Welcome Back');
 
     expect(router.canGoBack()).toBe(true);
-    act(() => router.back());
+    await act(() => router.back());
 
     expect(await screen.findByText('Session')).toBeTruthy();
     expect(app.getPathname()).toBe('/');

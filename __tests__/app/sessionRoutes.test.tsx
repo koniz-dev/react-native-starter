@@ -33,14 +33,14 @@ describe('session-guarded routes', () => {
 
   it('restores a stored session on cold start, including a deep link into the protected group', async () => {
     await storeSession();
-    const app = renderRouter('./app', { initialUrl: '/profile' });
+    const app = await renderRouter('./app', { initialUrl: '/profile' });
 
     expect(await screen.findByText('emily@example.com')).toBeTruthy();
     expect(app.getPathname()).toBe('/profile');
   });
 
   it('redirects a signed-out deep link into the protected group to Home', async () => {
-    const app = renderRouter('./app', { initialUrl: '/profile' });
+    const app = await renderRouter('./app', { initialUrl: '/profile' });
 
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     expect(app.getPathname()).toBe('/');
@@ -53,7 +53,7 @@ describe('session-guarded routes', () => {
       ...user,
       email: 'emily.new@example.com',
     });
-    renderRouter('./app', { initialUrl: '/profile' });
+    await renderRouter('./app', { initialUrl: '/profile' });
 
     expect(await screen.findByText('emily.new@example.com')).toBeTruthy();
     expect(screen.queryByText('emily@example.com')).toBeNull();
@@ -69,13 +69,13 @@ describe('session-guarded routes', () => {
     errorReporterSeam.set(reporter);
     try {
       await storeSession();
-      renderRouter('./app', { initialUrl: '/' });
+      await renderRouter('./app', { initialUrl: '/' });
       expect(
         await screen.findByText('Signed in as Emily Johnson')
       ).toBeTruthy();
       expect(reporter.setUser).toHaveBeenLastCalledWith({ id: '1' });
 
-      fireEvent.press(screen.getByTestId('logout-button'));
+      await fireEvent.press(screen.getByTestId('logout-button'));
       expect(await screen.findByText('Not signed in')).toBeTruthy();
       expect(reporter.setUser).toHaveBeenLastCalledWith(null);
     } finally {
@@ -84,10 +84,10 @@ describe('session-guarded routes', () => {
   });
 
   it('offers a way back from Login, even when it was opened directly', async () => {
-    const app = renderRouter('./app', { initialUrl: '/login' });
+    const app = await renderRouter('./app', { initialUrl: '/login' });
     await screen.findByText('Welcome Back');
 
-    fireEvent.press(screen.getByTestId('auth-back'));
+    await fireEvent.press(screen.getByTestId('auth-back'));
 
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     expect(app.getPathname()).toBe('/');
@@ -97,45 +97,59 @@ describe('session-guarded routes', () => {
     function Settings() {
       return <Text>Settings screen</Text>;
     }
-    const app = renderRouter(
+    const app = await renderRouter(
       { appDir: './app', overrides: { settings: Settings } },
       { initialUrl: '/' }
     );
     await screen.findByText('Not signed in');
-    act(() => router.push('/settings'));
+    await act(() => router.push('/settings'));
     await screen.findByText('Settings screen');
-    act(() => router.push('/login'));
+    await act(() => router.push('/login'));
     await screen.findByText('Welcome Back');
 
-    fireEvent.press(screen.getByTestId('auth-back'));
+    await fireEvent.press(screen.getByTestId('auth-back'));
 
     expect(await screen.findByText('Settings screen')).toBeTruthy();
     expect(app.getPathname()).toBe('/settings');
   });
 
   it('goes Home from Login when there is nothing to go back to', async () => {
-    renderRouter('./app', { initialUrl: '/login' });
+    await renderRouter('./app', { initialUrl: '/login' });
     await screen.findByText('Welcome Back');
     jest.spyOn(router, 'canGoBack').mockReturnValue(false);
     const back = jest.spyOn(router, 'back');
     const replace = jest.spyOn(router, 'replace');
 
-    fireEvent.press(screen.getByTestId('auth-back'));
+    await fireEvent.press(screen.getByTestId('auth-back'));
+
+    expect(replace).toHaveBeenCalledWith('/');
+    expect(back).not.toHaveBeenCalled();
+  });
+
+  it('goes Home from Profile when there is nothing to go back to', async () => {
+    await storeSession();
+    await renderRouter('./app', { initialUrl: '/profile' });
+    await screen.findByText('emily@example.com');
+    jest.spyOn(router, 'canGoBack').mockReturnValue(false);
+    const back = jest.spyOn(router, 'back');
+    const replace = jest.spyOn(router, 'replace');
+
+    await fireEvent.press(screen.getByTestId('protected-back'));
 
     expect(replace).toHaveBeenCalledWith('/');
     expect(back).not.toHaveBeenCalled();
   });
 
   it('opens Login once for a double tap, so one Back returns Home', async () => {
-    const app = renderRouter('./app', { initialUrl: '/' });
+    const app = await renderRouter('./app', { initialUrl: '/' });
     await screen.findByText('Not signed in');
 
     // Both taps land before the new screen covers the button.
     const signIn = screen.getByTestId('sign-in-button');
-    fireEvent.press(signIn);
-    fireEvent.press(signIn);
+    await fireEvent.press(signIn);
+    await fireEvent.press(signIn);
     await screen.findByText('Welcome Back');
-    fireEvent.press(screen.getByTestId('auth-back'));
+    await fireEvent.press(screen.getByTestId('auth-back'));
 
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     expect(app.getPathname()).toBe('/');
@@ -143,15 +157,15 @@ describe('session-guarded routes', () => {
 
   it('opens Profile once for a double tap, and loads it once', async () => {
     await storeSession();
-    const app = renderRouter('./app', { initialUrl: '/' });
+    const app = await renderRouter('./app', { initialUrl: '/' });
     await screen.findByText('Signed in as Emily Johnson');
 
     const viewProfile = screen.getByTestId('profile-button');
-    fireEvent.press(viewProfile);
-    fireEvent.press(viewProfile);
+    await fireEvent.press(viewProfile);
+    await fireEvent.press(viewProfile);
     expect(await screen.findByText('emily@example.com')).toBeTruthy();
     expect(authService.fetchProfile).toHaveBeenCalledTimes(1);
-    fireEvent.press(screen.getByTestId('protected-back'));
+    await fireEvent.press(screen.getByTestId('protected-back'));
 
     expect(await screen.findByText('Signed in as Emily Johnson')).toBeTruthy();
     expect(app.getPathname()).toBe('/');
@@ -159,7 +173,7 @@ describe('session-guarded routes', () => {
 
   it('keeps signed-in users out of the login screen', async () => {
     await storeSession();
-    const app = renderRouter('./app', { initialUrl: '/login' });
+    const app = await renderRouter('./app', { initialUrl: '/login' });
 
     expect(await screen.findByText('Signed in as Emily Johnson')).toBeTruthy();
     expect(app.getPathname()).toBe('/');
@@ -170,40 +184,43 @@ describe('session-guarded routes', () => {
       await storeSession();
       return { token: 'stored-token', user };
     });
-    const app = renderRouter('./app', { initialUrl: '/login' });
+    const app = await renderRouter('./app', { initialUrl: '/login' });
     await screen.findByText('Welcome Back');
 
-    fireEvent.changeText(screen.getByTestId('login-username'), 'emily');
-    fireEvent.changeText(screen.getByTestId('login-password'), 'secret-pass');
-    fireEvent.press(screen.getByText('Sign In'));
+    await fireEvent.changeText(screen.getByTestId('login-username'), 'emily');
+    await fireEvent.changeText(
+      screen.getByTestId('login-password'),
+      'secret-pass'
+    );
+    await fireEvent.press(screen.getByText('Sign In'));
 
     expect(await screen.findByText('Signed in as Emily Johnson')).toBeTruthy();
     expect(app.getPathname()).toBe('/');
 
-    act(() => router.push('/profile'));
+    await act(() => router.push('/profile'));
     expect(await screen.findByText('emily@example.com')).toBeTruthy();
   });
 
   it('the protected group has a back button to the screen that opened it', async () => {
     await storeSession();
-    const app = renderRouter('./app', { initialUrl: '/' });
+    const app = await renderRouter('./app', { initialUrl: '/' });
     await screen.findByText('Signed in as Emily Johnson');
 
-    fireEvent.press(screen.getByTestId('profile-button'));
+    await fireEvent.press(screen.getByTestId('profile-button'));
     expect(await screen.findByText('emily@example.com')).toBeTruthy();
     expect(app.getPathname()).toBe('/profile');
 
-    fireEvent.press(screen.getByTestId('protected-back'));
+    await fireEvent.press(screen.getByTestId('protected-back'));
     expect(await screen.findByText('Signed in as Emily Johnson')).toBeTruthy();
     expect(app.getPathname()).toBe('/');
   });
 
   it('signing out from the protected screen returns to Home signed out', async () => {
     await storeSession();
-    const app = renderRouter('./app', { initialUrl: '/profile' });
+    const app = await renderRouter('./app', { initialUrl: '/profile' });
     await screen.findByText('emily@example.com');
 
-    fireEvent.press(screen.getByTestId('profile-logout'));
+    await fireEvent.press(screen.getByTestId('profile-logout'));
 
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     expect(app.getPathname()).toBe('/');
@@ -212,7 +229,7 @@ describe('session-guarded routes', () => {
 
   it('a session-expired event (API 401) signs out and leaves the protected group', async () => {
     await storeSession();
-    const app = renderRouter('./app', { initialUrl: '/profile' });
+    const app = await renderRouter('./app', { initialUrl: '/profile' });
     await screen.findByText('emily@example.com');
 
     await act(async () => {
@@ -235,10 +252,10 @@ describe('session-guarded routes', () => {
         status: 401,
       });
     });
-    const app = renderRouter('./app', { initialUrl: '/' });
+    const app = await renderRouter('./app', { initialUrl: '/' });
     await screen.findByText('Signed in as Emily Johnson');
 
-    fireEvent.press(screen.getByTestId('profile-button'));
+    await fireEvent.press(screen.getByTestId('profile-button'));
 
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     expect(app.getPathname()).toBe('/');
@@ -252,7 +269,7 @@ describe('session-guarded routes', () => {
         code: 'network',
       })
     );
-    const app = renderRouter('./app', { initialUrl: '/profile' });
+    const app = await renderRouter('./app', { initialUrl: '/profile' });
 
     expect(
       await screen.findByText(
@@ -274,7 +291,7 @@ describe('first launch after an install', () => {
   it('clears a token left by a previous install and starts signed out', async () => {
     secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'previous-install-token');
 
-    renderRouter('./app', { initialUrl: '/' });
+    await renderRouter('./app', { initialUrl: '/' });
 
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     expect(screen.queryByText(/Signed in as/)).toBeNull();
@@ -284,14 +301,14 @@ describe('first launch after an install', () => {
 
   it('restores the session on later launches (the marker is set)', async () => {
     secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'previous-install-token');
-    const first = renderRouter('./app', { initialUrl: '/' });
+    const first = await renderRouter('./app', { initialUrl: '/' });
     expect(await screen.findByText('Not signed in')).toBeTruthy();
-    first.unmount();
+    await first.unmount();
 
     // Sign in, then relaunch: still signed in.
     secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
     await setItem(STORAGE_KEYS.USER_DATA, user);
-    renderRouter('./app', { initialUrl: '/' });
+    await renderRouter('./app', { initialUrl: '/' });
     expect(await screen.findByText('Signed in as Emily Johnson')).toBeTruthy();
     expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('stored-token');
   });
@@ -303,7 +320,7 @@ describe('first launch after an install', () => {
     jest.mocked(AsyncStorage.getItem).mockRejectedValueOnce(failure);
     const logError = jest.spyOn(logger, 'error').mockImplementation(() => {});
 
-    const first = renderRouter('./app', { initialUrl: '/' });
+    const first = await renderRouter('./app', { initialUrl: '/' });
     // This launch can't tell, so it starts signed out, without clearing.
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('stored-token');
@@ -311,9 +328,9 @@ describe('first launch after an install', () => {
       'Restoring the session failed',
       failure
     );
-    first.unmount();
+    await first.unmount();
 
-    renderRouter('./app', { initialUrl: '/' });
+    await renderRouter('./app', { initialUrl: '/' });
     expect(await screen.findByText('Signed in as Emily Johnson')).toBeTruthy();
   });
 
@@ -330,7 +347,7 @@ describe('first launch after an install', () => {
       secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
       await AsyncStorage.setItem(STORAGE_KEYS.USER_DATA, '"legacy-profile"');
 
-      renderRouter('./app', { initialUrl: '/' });
+      await renderRouter('./app', { initialUrl: '/' });
 
       expect(await screen.findByText('Signed in as your account')).toBeTruthy();
       expect(reporter.setUser).toHaveBeenLastCalledWith(null);
@@ -344,7 +361,7 @@ describe('first launch after an install', () => {
     // there, so this is not a fresh install.
     await storeSession();
 
-    renderRouter('./app', { initialUrl: '/' });
+    await renderRouter('./app', { initialUrl: '/' });
 
     expect(await screen.findByText('Signed in as Emily Johnson')).toBeTruthy();
     expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('stored-token');
