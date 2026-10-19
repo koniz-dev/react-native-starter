@@ -76,7 +76,7 @@ back button. Add your app's tabs as files in `app/(tabs)/`, next to Home's
 `index.tsx`, and give each a `<Tabs.Screen name="<file>">` in
 `app/(tabs)/_layout.tsx` with its `title` from `t()`, a `tabBarIcon`, and a
 `tabBarButtonTestID` (copy Home's). A file without a `<Tabs.Screen>` is not a
-tab at all: it has no button, and a link or deep link to it stays on Home.
+tab at all: it has no button, and a link or deep link to it lands on Home.
 
 Navigate with `router.navigate('/settings')`, `router.replace`, or `<Link>` from
 `expo-router`. Route groups export a route-level error boundary
