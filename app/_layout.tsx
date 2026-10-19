@@ -31,7 +31,7 @@ SplashScreen.preventAutoHideAsync().catch(() => {});
 // alphabetically first group, and so that Back from a deep-linked /login
 // returns to Home instead of exiting the app.
 export const unstable_settings = {
-  initialRouteName: '(tabs)',
+  anchor: '(tabs)',
 };
 
 export default function RootLayout() {

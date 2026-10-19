@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { Stack, useRouter } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { Appbar } from 'react-native-paper';
 import { t } from '@/shared/i18n';
 
@@ -15,7 +15,6 @@ export { RouteErrorBoundary as ErrorBoundary } from '@/shared/ui/ErrorBoundary';
  * turns off React Navigation's document title.
  */
 export default function AuthLayout() {
-  const router = useRouter();
   return (
     <Stack
       screenOptions={{

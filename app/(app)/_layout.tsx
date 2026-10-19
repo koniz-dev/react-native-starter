@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { Appbar } from 'react-native-paper';
 import { t } from '@/shared/i18n';
 
@@ -21,14 +21,18 @@ export default function ProtectedLayout() {
       screenOptions={({ route, navigation }) => {
         // This stack starts at the group's first screen, so the header has no
         // back button of its own; add one that returns to the screen that
-        // opened the group. Later screens keep the default back button.
+        // opened the group, or Home when there is none. It decides when
+        // pressed: these options are read once, before the stack below has
+        // settled. Later screens keep the default back button.
         const isFirst = navigation.getState().routes[0]?.key === route.key;
-        if (!isFirst || !navigation.canGoBack()) return {};
+        if (!isFirst) return {};
         return {
           headerLeft: () => (
             <Appbar.BackAction
               accessibilityLabel={t('common.back')}
-              onPress={() => navigation.goBack()}
+              onPress={() =>
+                router.canGoBack() ? router.back() : router.replace('/')
+              }
               style={styles.back}
               testID="protected-back"
             />

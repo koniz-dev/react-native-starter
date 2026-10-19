@@ -9,6 +9,8 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 export { RouteErrorBoundary as ErrorBoundary } from '@/shared/ui/ErrorBoundary';
 
 export default function TabLayout() {
+  // The icons take the tint colors too: React Navigation's own `color` is a
+  // ColorValue, which the icon's color type doesn't accept.
   const tabBar = getTabBarColors(useTheme());
 
   return (
@@ -29,11 +31,11 @@ export default function TabLayout() {
           title: t('tabs.home'),
           tabBarAccessibilityLabel: t('tabs.home'),
           tabBarButtonTestID: 'tab-home',
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ focused }) => (
             <MaterialCommunityIcons
               name="home"
               size={24}
-              color={color}
+              color={focused ? tabBar.active : tabBar.inactive}
               aria-hidden
             />
           ),
@@ -46,11 +48,11 @@ export default function TabLayout() {
           title: t('tabs.explore'),
           tabBarAccessibilityLabel: t('tabs.explore'),
           tabBarButtonTestID: 'tab-explore',
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ focused }) => (
             <MaterialCommunityIcons
               name="compass"
               size={24}
-              color={color}
+              color={focused ? tabBar.active : tabBar.inactive}
               aria-hidden
             />
           ),

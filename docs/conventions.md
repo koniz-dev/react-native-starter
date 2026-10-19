@@ -66,7 +66,7 @@ the navigator for its folder. The root layout:
   (`Stack.Protected`), so deep links into a guarded group land on Home (an
   in-app link to one does nothing; see
   [A link to a screen that needs sign-in](#a-link-to-a-screen-that-needs-sign-in));
-- anchors the stack on `(tabs)` (`unstable_settings.initialRouteName`), so
+- anchors the stack on `(tabs)` (`unstable_settings.anchor`), so
   Back from a deep-linked screen returns to Home;
 - shows `app/+not-found.tsx` for a URL no route matches (an outdated deep
   link, a mistyped web address), with a way Home.
