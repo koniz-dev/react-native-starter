@@ -271,6 +271,39 @@ describe('session-guarded routes', () => {
       });
       // @demo remove-block-end
 
+      it("leaves Profile's own replace with Home alone", async () => {
+        await storeSession();
+        const app = await openOverSettings('/profile');
+        await screen.findByText('emily@example.com');
+
+        await act(() => router.replace('/'));
+
+        expect(
+          await screen.findByText('Signed in as Emily Johnson')
+        ).toBeTruthy();
+        expect(app.getPathname()).toBe('/');
+      });
+
+      // @demo remove-block-start
+      it.each([
+        ['Profile', '/profile' as const, true],
+        ['Login', '/login' as const, false],
+      ])(
+        "leaves %s's own replace with a tab alone",
+        async (_, path, signedIn) => {
+          if (signedIn) await storeSession();
+          const app = await openOverSettings(path);
+          await screen.findByText(
+            signedIn ? 'emily@example.com' : 'Welcome Back'
+          );
+
+          await act(() => router.replace('/explore'));
+
+          expect(app.getPathname()).toBe('/explore');
+        }
+      );
+      // @demo remove-block-end
+
       it('signing in returns to that screen', async () => {
         jest.spyOn(authService, 'login').mockImplementation(async () => {
           await storeSession();
