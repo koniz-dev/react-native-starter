@@ -85,11 +85,12 @@ tab at all: it has no button, and a link or deep link to it lands on Home.
 Navigate with `router.navigate('/settings')`, `router.replace`, or `<Link>` from
 `expo-router`. To go back to a tab from a screen pushed over the tabs, use
 `router.dismissTo('/<tab>')` (or `router.back()` when it is just below):
-`navigate` and `<Link>` to a tab push a second Home there.
+`navigate` and `<Link>` to a tab push a second copy of the tabs there, so Back
+shows Home again.
 
 On Login, Profile, or another screen in `(auth)` or `(app)`, `signIn` and
 `signOut` send the user back to the screen below the group: the guards
-replace it with a redirect, which the root layout undoes. To go somewhere else
+replace the group's screen with a redirect, which the root layout undoes. To go somewhere else
 from there, do it right after the session changes, before awaiting anything
 else: `router.dismissTo('/')` for Home or `router.dismissTo('/<tab>')` for
 another tab, and `router.replace('/<screen>')` for a screen outside `(tabs)`.
