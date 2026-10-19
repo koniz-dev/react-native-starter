@@ -1,0 +1,17 @@
+After publishing, 2026-10-19T15:34:22Z
+code-scanning open alerts: 0
+dependabot open alerts: 0
+secret-scanning open alerts: 0
+CodeQL analyses on 14033fb:
+  /language:javascript-typescript results=0 2026-10-18T14:07:56Z
+  /language:actions results=0 2026-10-18T14:07:28Z
+runs on 14033fb:
+  E2E (iOS, manual) success 39270385247
+  E2E (Android, manual) success 39270380227
+  E2E (Android, manual) success 39270372940
+  Audit success 39254943487
+  CI success 39134536069
+  Audit success 39134536054
+  CodeQL success 39134535604
+open issues:
+133

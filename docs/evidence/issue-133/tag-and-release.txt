@@ -1,0 +1,14 @@
+Tag at 2026-10-19T15:33:22Z
+object 14033fbaa048a34cfa4ee327b4c9017e24607fb0
+type commit
+tag v1.1.16
+tagger koniz-dev <kietna.work@gmail.com> 1792423999 +0700
+
+v1.1.16: eighth deep audit fixes (#129-#132)
+
+Refs koniz-dev/react-native-starter#133
+remote: 14033fbaa048a34cfa4ee327b4c9017e24607fb0	refs/tags/v1.1.16^{}
+origin/main: 14033fbaa048a34cfa4ee327b4c9017e24607fb0
+{"isDraft":false,"isPrerelease":false,"name":"v1.1.16: eighth deep audit fixes","publishedAt":"2026-10-19T15:34:05Z","tagName":"v1.1.16","url":"https://github.com/koniz-dev/react-native-starter/releases/tag/v1.1.16"}
+latest release: v1.1.16 2026-10-19T15:34:05Z
+v1.1.15 name: v1.1.15: seventh deep audit fixes and iOS e2e retry

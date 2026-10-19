@@ -1,0 +1,15 @@
+Pre-tag check at 2026-10-19T15:33:02Z
+origin/main: 14033fbaa048a34cfa4ee327b4c9017e24607fb0
+open issues:
+#133 Release v1.1.16: eighth deep audit fixes (#129-#132)
+code-scanning open alerts: 0
+dependabot open alerts: 0
+secret-scanning open alerts: 0
+runs on 14033fb:
+  E2E (iOS, manual) success 39270385247
+  E2E (Android, manual) success 39270380227
+  E2E (Android, manual) success 39270372940
+  Audit success 39254943487
+  CI success 39134536069
+  Audit success 39134536054
+  CodeQL success 39134535604

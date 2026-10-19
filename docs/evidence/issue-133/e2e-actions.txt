@@ -1,0 +1,30 @@
+== run 39270372940 (E2E (Android, manual) 14033fbaa048a34cfa4ee327b4c9017e24607fb0)
+[Passed] Cold start opens Home (1m 7s)
+[Passed] Back from Login returns Home (55s)
+[Passed] Tab navigation (30s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 41s)
+[Passed] Login keyboard return keys (1m 5s)
+[Passed] Explore error state and Retry (33s)
+[Passed] Profile is protected and reloads the user (20m 33s)
+7/7 Flows Passed in 26m 24s
+E2E RETRY lines: 0
+== run 39270380227 (E2E (Android, manual) 14033fbaa048a34cfa4ee327b4c9017e24607fb0)
+[Passed] Cold start opens Home (45s)
+[Passed] Back from Login returns Home (40s)
+[Passed] Tab navigation (31s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 26s)
+[Passed] Login keyboard return keys (48s)
+[Passed] Explore error state and Retry (31s)
+[Passed] Profile is protected and reloads the user (56s)
+7/7 Flows Passed in 5m 38s
+E2E RETRY lines: 0
+== run 39270385247 (E2E (iOS, manual) 14033fbaa048a34cfa4ee327b4c9017e24607fb0)
+[Passed] Cold start opens Home (2m 43s)
+[Passed] Back from Login returns Home (53s)
+[Passed] Tab navigation (39s)
+[Passed] Sign-in session survives a relaunch; logout clears it (5m 18s)
+[Passed] Login keyboard return keys (1m 24s)
+[Passed] Explore error state and Retry (54s)
+[Passed] Profile is protected and reloads the user (1m 27s)
+7/7 Flows Passed in 13m 18s
+E2E RETRY lines: 0
