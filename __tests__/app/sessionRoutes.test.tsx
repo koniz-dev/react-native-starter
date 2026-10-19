@@ -222,6 +222,55 @@ describe('session-guarded routes', () => {
         return app;
       };
 
+      it.each([
+        ['navigate', () => router.navigate('/')],
+        ['push', () => router.push('/')],
+      ])('still lets that screen %s to Home', async (_, go) => {
+        const app = await renderRouter(
+          { appDir: './app', overrides: { settings: Settings } },
+          { initialUrl: '/' }
+        );
+        await screen.findByText('Not signed in');
+        await act(() => router.push('/settings'));
+        await screen.findByText('Settings screen');
+
+        await act(go);
+
+        expect(await screen.findByText('Not signed in')).toBeTruthy();
+        expect(app.getPathname()).toBe('/');
+      });
+
+      it('still lets Profile push Home', async () => {
+        await storeSession();
+        const app = await renderRouter('./app', { initialUrl: '/' });
+        await screen.findByText('Signed in as Emily Johnson');
+        await act(() => router.push('/profile'));
+        await screen.findByText('emily@example.com');
+
+        await act(() => router.push('/'));
+
+        expect(
+          await screen.findByText('Signed in as Emily Johnson')
+        ).toBeTruthy();
+        expect(app.getPathname()).toBe('/');
+      });
+
+      // @demo remove-block-start
+      it('still lets that screen replace itself with a tab', async () => {
+        const app = await renderRouter(
+          { appDir: './app', overrides: { settings: Settings } },
+          { initialUrl: '/' }
+        );
+        await screen.findByText('Not signed in');
+        await act(() => router.push('/settings'));
+        await screen.findByText('Settings screen');
+
+        await act(() => router.replace('/explore'));
+
+        expect(app.getPathname()).toBe('/explore');
+      });
+      // @demo remove-block-end
+
       it('signing in returns to that screen', async () => {
         jest.spyOn(authService, 'login').mockImplementation(async () => {
           await storeSession();

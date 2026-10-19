@@ -1,5 +1,5 @@
 import { PaperProvider } from 'react-native-paper';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useColorScheme } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import { getNavigationTheme, getTheme } from '@/shared/ui/theme';
@@ -119,16 +119,22 @@ function RootNavigator() {
  * (Android) or the edge swipe (iOS) would then show that screen, or Home
  * again, and each sign-in or sign-out would add one more Home.
  *
- * A Home on top of the root stack, above its bottom, is such a Home: the app
- * goes Home with navigate or dismissTo, which return to the bottom one.
+ * Only that replacement is undone: a Home on top, in the place where (auth)
+ * or (app) just was. A Home the app navigates or pushes to stays.
  */
 function useNoExtraHome() {
   // The root stack is the first route's state, under Expo Router's own root.
   const stack = useRootNavigationState()?.routes[0]?.state;
-  const index = stack?.index ?? 0;
-  const top = stack?.routes[index];
-  const extraHome = index > 0 && top?.name === '(tabs)' ? top.key : undefined;
+  const top = stack?.routes[stack.index ?? 0];
+  const length = stack?.routes.length ?? 0;
+  const before = useRef<{ name?: string; length: number }>({ length: 0 });
   useEffect(() => {
-    if (extraHome) router.dismiss();
-  }, [extraHome]);
+    const previous = before.current;
+    before.current = { name: top?.name, length };
+    const replacedGroup =
+      top?.name === '(tabs)' &&
+      length === previous.length &&
+      (previous.name === '(auth)' || previous.name === '(app)');
+    if (replacedGroup) router.dismiss();
+  }, [top?.name, length]);
 }
