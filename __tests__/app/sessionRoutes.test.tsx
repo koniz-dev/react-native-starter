@@ -126,6 +126,27 @@ describe('session-guarded routes', () => {
     expect(back).not.toHaveBeenCalled();
   });
 
+  it('the protected back button returns to the screen that opened it, not Home', async () => {
+    function Settings() {
+      return <Text>Settings screen</Text>;
+    }
+    await storeSession();
+    const app = await renderRouter(
+      { appDir: './app', overrides: { settings: Settings } },
+      { initialUrl: '/' }
+    );
+    await screen.findByText('Signed in as Emily Johnson');
+    await act(() => router.push('/settings'));
+    await screen.findByText('Settings screen');
+    await act(() => router.push('/profile'));
+    await screen.findByText('emily@example.com');
+
+    await fireEvent.press(screen.getByTestId('protected-back'));
+
+    expect(await screen.findByText('Settings screen')).toBeTruthy();
+    expect(app.getPathname()).toBe('/settings');
+  });
+
   it('goes Home from Profile when there is nothing to go back to', async () => {
     await storeSession();
     await renderRouter('./app', { initialUrl: '/profile' });
@@ -138,6 +159,71 @@ describe('session-guarded routes', () => {
 
     expect(replace).toHaveBeenCalledWith('/');
     expect(back).not.toHaveBeenCalled();
+  });
+
+  describe('leaves a single Home below', () => {
+    // Expo Router 58 sends a user out of a guarded group with replace('/'),
+    // which would stack a new Home over the one at the bottom: Back (Android)
+    // or the edge swipe (iOS) would then show Home again.
+    const rootRoutes = (app: { getRouterState(): unknown }) =>
+      (
+        app.getRouterState() as {
+          routes: { state?: { routes: { name: string }[] } }[];
+        }
+      ).routes[0]?.state?.routes.map(route => route.name);
+
+    it('after signing in and out, again and again', async () => {
+      jest.spyOn(authService, 'login').mockImplementation(async () => {
+        await storeSession();
+        return { token: 'stored-token', user };
+      });
+      const app = await renderRouter('./app', { initialUrl: '/' });
+      await screen.findByText('Not signed in');
+
+      for (let round = 0; round < 2; round++) {
+        await fireEvent.press(screen.getByTestId('sign-in-button'));
+        await screen.findByText('Welcome Back');
+        await fireEvent.changeText(
+          screen.getByTestId('login-username'),
+          'emily'
+        );
+        await fireEvent.changeText(
+          screen.getByTestId('login-password'),
+          'pass'
+        );
+        await fireEvent.press(screen.getByTestId('login-submit'));
+        expect(
+          await screen.findByText('Signed in as Emily Johnson')
+        ).toBeTruthy();
+        expect(rootRoutes(app)).toEqual(['(tabs)']);
+
+        await fireEvent.press(screen.getByTestId('profile-button'));
+        await screen.findByText('emily@example.com');
+        await fireEvent.press(screen.getByTestId('profile-logout'));
+        expect(await screen.findByText('Not signed in')).toBeTruthy();
+        expect(rootRoutes(app)).toEqual(['(tabs)']);
+      }
+      expect(router.canGoBack()).toBe(false);
+    });
+
+    it.each([
+      ['/profile', false],
+      ['/login', true],
+    ])(
+      'after a cold-start deep link to %s that the guard refuses',
+      async (url, signedIn) => {
+        if (signedIn) await storeSession();
+        const app = await renderRouter('./app', { initialUrl: url });
+
+        expect(
+          await screen.findByText(
+            signedIn ? 'Signed in as Emily Johnson' : 'Not signed in'
+          )
+        ).toBeTruthy();
+        expect(rootRoutes(app)).toEqual(['(tabs)']);
+        expect(router.canGoBack()).toBe(false);
+      }
+    );
   });
 
   it('opens Login once for a double tap, so one Back returns Home', async () => {
