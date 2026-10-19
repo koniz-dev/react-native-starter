@@ -446,6 +446,36 @@ describe('session-guarded routes', () => {
       });
       // @demo remove-block-end
 
+      it.each([
+        ['signing in on Login', '/login' as const, false],
+        ['signing out on Profile', '/profile' as const, true],
+      ])(
+        '%s, then at once dismissTo Home, gets Home',
+        async (_, path, signedIn) => {
+          if (signedIn) await storeSession();
+          const app = await renderRouter(
+            { appDir: './app', overrides: { settings: Settings } },
+            { initialUrl: '/' }
+          );
+          await screen.findByText(/Not signed in|Signed in as/);
+          await act(() => router.push('/settings'));
+          await screen.findByText('Settings screen');
+          await act(() => router.push(path));
+          await screen.findByText(
+            signedIn ? 'emily@example.com' : 'Welcome Back'
+          );
+
+          await act(async () => {
+            if (signedIn) await session?.signOut();
+            else await session?.signIn(credentials);
+            router.dismissTo('/');
+          });
+
+          await waitFor(() => expect(app.getPathname()).toBe('/'));
+          expect(rootRoutes(app)).toEqual(['(tabs)']);
+        }
+      );
+
       it('signing out on another screen leaves its own replace with Home alone', async () => {
         await storeSession();
         const app = await renderRouter(

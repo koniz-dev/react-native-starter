@@ -124,8 +124,9 @@ const GUARDED_GROUPS = new Set(['(auth)', '(app)']);
  *
  * Only that replacement is undone: after the session changed, a Home on its
  * first tab in the place where a guarded group just was. The app's own
- * navigation, a replace included, stays. A new guarded group goes in
- * GUARDED_GROUPS.
+ * navigation stays, except a replace('/') at that moment, which looks the
+ * same (docs/conventions.md says to use dismissTo('/') then). A new guarded
+ * group goes in GUARDED_GROUPS.
  */
 function useNoExtraHome(status: string) {
   // The root stack is the first route's state, under Expo Router's own root.
@@ -155,7 +156,6 @@ function useNoExtraHome(status: string) {
       top?.name === '(tabs)' &&
       tab === 'index' &&
       length === previous.length;
-    sessionChanged.current = false;
     if (guardsRedirect) router.dismiss();
   }, [top?.name, tab, length]);
 }
