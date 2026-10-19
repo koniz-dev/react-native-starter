@@ -80,7 +80,7 @@ function RootNavigator() {
   const { session } = useSession();
   const signedIn = session.status === 'signedIn';
   useScreenTracking({ enabled: session.status !== 'loading' });
-  useSingleHome();
+  useNoExtraHome();
 
   useEffect(() => {
     if (session.status !== 'loading') {
@@ -111,21 +111,24 @@ function RootNavigator() {
 }
 
 /**
- * Keeps one Home at the bottom of the root stack. Expo Router 58 sends a user
- * out of a guarded group (signing in on Login, signing out on Profile, a
- * deep link the guard refuses) with replace('/'), which puts a new Home in
- * place of the group instead of returning to the Home below it: Back
- * (Android) or the edge swipe (iOS) would then show Home again, and each
- * sign-in or sign-out would add one more.
+ * Takes the user back to the screen below when the session guards send them
+ * Home. Expo Router 58 sends a user out of a guarded group (signing in on
+ * Login, signing out or a session that ends on Profile, a deep link the guard
+ * refuses) with replace('/'): a new Home takes the group's place on top of
+ * the stack, instead of the user going back to where they were. Back
+ * (Android) or the edge swipe (iOS) would then show that screen, or Home
+ * again, and each sign-in or sign-out would add one more Home.
+ *
+ * A Home on top of the root stack, above its bottom, is such a Home: the app
+ * goes Home with navigate or dismissTo, which return to the bottom one.
  */
-function useSingleHome() {
+function useNoExtraHome() {
   // The root stack is the first route's state, under Expo Router's own root.
-  const routes = useRootNavigationState()?.routes[0]?.state?.routes;
-  const onlyHomes =
-    routes !== undefined &&
-    routes.length > 1 &&
-    routes.every(route => route.name === '(tabs)');
+  const stack = useRootNavigationState()?.routes[0]?.state;
+  const index = stack?.index ?? 0;
+  const top = stack?.routes[index];
+  const extraHome = index > 0 && top?.name === '(tabs)' ? top.key : undefined;
   useEffect(() => {
-    if (onlyHomes) router.dismissAll();
-  }, [onlyHomes]);
+    if (extraHome) router.dismiss();
+  }, [extraHome]);
 }

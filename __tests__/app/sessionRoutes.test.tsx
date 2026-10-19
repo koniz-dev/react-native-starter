@@ -206,6 +206,66 @@ describe('session-guarded routes', () => {
       expect(router.canGoBack()).toBe(false);
     });
 
+    describe('over a screen that opened Login or Profile', () => {
+      function Settings() {
+        return <Text>Settings screen</Text>;
+      }
+      const openOverSettings = async (path: '/login' | '/profile') => {
+        const app = await renderRouter(
+          { appDir: './app', overrides: { settings: Settings } },
+          { initialUrl: '/' }
+        );
+        await screen.findByText(/Not signed in|Signed in as/);
+        await act(() => router.push('/settings'));
+        await screen.findByText('Settings screen');
+        await act(() => router.push(path));
+        return app;
+      };
+
+      it('signing in returns to that screen', async () => {
+        jest.spyOn(authService, 'login').mockImplementation(async () => {
+          await storeSession();
+          return { token: 'stored-token', user };
+        });
+        const app = await openOverSettings('/login');
+        await screen.findByText('Welcome Back');
+        await fireEvent.changeText(
+          screen.getByTestId('login-username'),
+          'emily'
+        );
+        await fireEvent.changeText(
+          screen.getByTestId('login-password'),
+          'pass'
+        );
+        await fireEvent.press(screen.getByTestId('login-submit'));
+
+        expect(await screen.findByText('Settings screen')).toBeTruthy();
+        expect(app.getPathname()).toBe('/settings');
+        expect(rootRoutes(app)).toEqual(['(tabs)', 'settings']);
+      });
+
+      it.each([
+        [
+          'signing out',
+          () => fireEvent.press(screen.getByTestId('profile-logout')),
+        ],
+        [
+          'a session that expires',
+          () => act(() => defaultUnauthorizedHandler()),
+        ],
+      ])('%s on Profile returns to that screen', async (_, end) => {
+        await storeSession();
+        const app = await openOverSettings('/profile');
+        await screen.findByText('emily@example.com');
+
+        await end();
+
+        expect(await screen.findByText('Settings screen')).toBeTruthy();
+        expect(app.getPathname()).toBe('/settings');
+        expect(rootRoutes(app)).toEqual(['(tabs)', 'settings']);
+      });
+    });
+
     it.each([
       ['/profile', false],
       ['/login', true],
