@@ -84,8 +84,9 @@ tab at all: it has no button, and a link or deep link to it lands on Home.
 
 Navigate with `router.navigate('/settings')`, `router.replace`, or `<Link>` from
 `expo-router`. To go somewhere after `signIn` or `signOut`, do it straight
-away, before awaiting anything else: `router.replace('/<screen>')`, or
-`router.dismissTo('/')` for Home. The guards' redirect replaces what is on top
+away, before awaiting anything else: `router.dismissTo('/')` for Home or
+`router.dismissTo('/<tab>')` for another tab, and `router.replace('/<screen>')`
+only for a screen outside `(tabs)` (a replace with a tab adds a second Home). The guards' redirect replaces what is on top
 at that moment, so a screen pushed or navigated to then is lost, and a
 `replace('/')` there is taken for the redirect and undone. Route groups export a route-level error boundary
 ([Error Reporting](error-reporting.md#error-boundaries)). Typed routes

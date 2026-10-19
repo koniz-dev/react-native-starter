@@ -476,6 +476,30 @@ describe('session-guarded routes', () => {
         }
       );
 
+      it("signing in, replacing Login with Profile at once, leaves Profile's later replace with Home alone", async () => {
+        const app = await renderRouter(
+          { appDir: './app', overrides: { settings: Settings } },
+          { initialUrl: '/' }
+        );
+        await screen.findByText('Not signed in');
+        await act(() => router.push('/settings'));
+        await screen.findByText('Settings screen');
+        await act(() => router.push('/login'));
+        await screen.findByText('Welcome Back');
+        await act(async () => {
+          await session?.signIn(credentials);
+          router.replace('/profile');
+        });
+        await screen.findByText('emily@example.com');
+
+        await act(() => router.replace('/'));
+
+        expect(
+          await screen.findByText('Signed in as Emily Johnson')
+        ).toBeTruthy();
+        expect(app.getPathname()).toBe('/');
+      });
+
       it('signing out on another screen leaves its own replace with Home alone', async () => {
         await storeSession();
         const app = await renderRouter(

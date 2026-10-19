@@ -156,6 +156,9 @@ function useNoExtraHome(status: string) {
       top?.name === '(tabs)' &&
       tab === 'index' &&
       length === previous.length;
+    // Answered either way: the guarded group has left the top. Needed when it
+    // left for the other group, where the reset above doesn't run.
+    sessionChanged.current = false;
     if (guardsRedirect) router.dismiss();
   }, [top?.name, tab, length]);
 }
