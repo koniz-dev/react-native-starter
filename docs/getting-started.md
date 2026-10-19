@@ -79,10 +79,13 @@ check your screens there, or set `supportsTablet: false` in
 `app.config.ts`.
 
 **Hosting the web export:** `dist/` is a single-page app (`web.output:
-'single'` in `app.config.ts`; its JavaScript is split per route). Serve it at the
-root of a domain, and have the host answer every unknown path with
-`index.html` (for example `/profile` after a reload), or links into the app
-return 404. Under a subpath, set
+'single'` in `app.config.ts`). Serve it at the root of a domain, and have the
+host answer every unknown path with `index.html` (for example `/profile` after
+a reload), or links into the app return 404. The JavaScript is split per route
+and loaded on demand, so a page opened before a deploy may still ask for the
+old files: keep the previous deploy's `_expo/static/` for a while, and don't
+answer missing `/_expo/` paths with `index.html` (the app would show its error
+screen instead of the route). Under a subpath, set
 [`experiments.baseUrl`](https://docs.expo.dev/guides/publishing-websites/)
 first. Since the web build keeps the sign-in token in memory, also send a
 Content-Security-Policy header that allows only your own scripts and your

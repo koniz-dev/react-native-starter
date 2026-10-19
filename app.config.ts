@@ -134,8 +134,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     web: {
       favicon: './assets/favicon.png',
-      // A single-page app (docs/getting-started.md, hosting). Set on purpose:
-      // without it, Expo SDK 58 exports server output.
+      // A single-page app, which the hosting notes in docs/getting-started.md
+      // describe. Kept explicit so a change of default can't change it.
       output: 'single',
     },
     plugins: [

@@ -35,6 +35,8 @@ testing/                      shared helpers
 ├── secureStore.ts            in-memory expo-secure-store
 ├── colorScheme.ts            setColorScheme
 ├── http.ts                   holdRequests, ok, httpError
+├── documentTitle.tsx         a DocumentTitle that shows its title, for screen tests
+│                             (jest.mock it; see the file)
 └── projectCopy.ts            copies of the project, for script tests
                               (import from '@/testing/projectCopy')
 jest.setup.env.js             env for every test file (URLs, log level)
@@ -120,7 +122,8 @@ replace a screen with `overrides: { '(tabs)/index': Bomb }` (see
 `__tests__/shared/ui/ErrorBoundary.test.tsx`). A tab must be declared in the
 tabs layout to be a route, so an extra file in `(tabs)` isn't reachable.
 
-`render`, `renderHook`, `renderRouter`, `fireEvent`, and `act` return
+`render`, `renderHook`, `renderRouter`, `fireEvent`, `act`, and the `rerender`
+and `unmount` they give you return
 promises (React Native Testing Library 14): `await` each of them. An awaited
 render has already run the effects and settled what was ready, so to see a
 loading state, hold the request or the storage read first (`holdRequests()`,
