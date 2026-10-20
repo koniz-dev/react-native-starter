@@ -66,7 +66,11 @@ the navigator for its folder. The root layout:
   (`Stack.Protected`), so deep links into a guarded group land on Home (an
   in-app link to one does nothing; see
   [A link to a screen that needs sign-in](#a-link-to-a-screen-that-needs-sign-in));
-- anchors the stack on `(tabs)` (`unstable_settings.initialRouteName`), so
+- returns a user who signs in, signs out, or whose session ends to the
+  screen below Login or Profile (`useNoExtraHome` in `app/_layout.tsx`
+  undoes Expo Router's own redirect, which would put a second Home there;
+  a new guarded group goes in its `GUARDED_GROUPS`);
+- anchors the stack on `(tabs)` (`unstable_settings.anchor`), so
   Back from a deep-linked screen returns to Home;
 - shows `app/+not-found.tsx` for a URL no route matches (an outdated deep
   link, a mistyped web address), with a way Home.
@@ -75,11 +79,26 @@ The root stack hides headers. `(app)` and `(auth)` show their own, with a
 back button. Add your app's tabs as files in `app/(tabs)/`, next to Home's
 `index.tsx`, and give each a `<Tabs.Screen name="<file>">` in
 `app/(tabs)/_layout.tsx` with its `title` from `t()`, a `tabBarIcon`, and a
-`tabBarButtonTestID` (copy Home's); without one, the tab shows its file
-name and a placeholder icon.
+`tabBarButtonTestID` (copy Home's). A file without a `<Tabs.Screen>` is not a
+tab at all: it has no button, and a link or deep link to it lands on Home.
 
 Navigate with `router.navigate('/settings')`, `router.replace`, or `<Link>` from
-`expo-router`. Route groups export a route-level error boundary
+`expo-router`. To go back to a tab from a screen pushed over the tabs, use
+`router.dismissTo('/<tab>')` (or `router.back()` when it is just below):
+`navigate` and `<Link>` to a tab push a second copy of the tabs there, so Back
+shows Home again.
+
+On Login, Profile, or another screen in `(auth)` or `(app)`, `signIn` and
+`signOut` send the user back to the screen below the group: the guards
+replace the group's screen with a redirect, which the root layout undoes. To go somewhere else
+from there, do it right after the session changes, before awaiting anything
+else: `router.dismissTo('/')` for Home or `router.dismissTo('/<tab>')` for
+another tab, and `router.replace('/<screen>')` for a screen outside `(tabs)`.
+A screen pushed or navigated to at that moment is lost (and leaves a second
+Home), and a `replace('/')` then is taken for the redirect and undone.
+Anywhere else there is no redirect: navigate as above.
+
+Route groups export a route-level error boundary
 ([Error Reporting](error-reporting.md#error-boundaries)). Typed routes
 (`experiments.typedRoutes`) are not enabled. See
 [Expo Router](https://docs.expo.dev/router/introduction/).

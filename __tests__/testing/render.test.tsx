@@ -14,15 +14,15 @@ const background = () =>
     ).backgroundColor;
 
 describe('renderWithProviders', () => {
-  it('uses the scheme setColorScheme() set', () => {
+  it('uses the scheme setColorScheme() set', async () => {
     setColorScheme('dark');
-    renderWithProviders(<LoadingScreen />);
+    await renderWithProviders(<LoadingScreen />);
     expect(background()).toBe(getTheme('dark').colors.background);
   });
 
-  it('uses the scheme it is given over the system one', () => {
+  it('uses the scheme it is given over the system one', async () => {
     setColorScheme('dark');
-    renderWithProviders(<LoadingScreen />, { scheme: 'light' });
+    await renderWithProviders(<LoadingScreen />, { scheme: 'light' });
     expect(background()).toBe(getTheme('light').colors.background);
   });
 });

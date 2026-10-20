@@ -75,9 +75,9 @@ describe('error boundaries', () => {
     });
 
     it('a route boundary catches a throwing screen, reports it, and renders a themed fallback', async () => {
-      renderRouter(
-        { appDir: './app', overrides: { '(tabs)/boom': Bomb } },
-        { initialUrl: '/boom' }
+      await renderRouter(
+        { appDir: './app', overrides: { '(tabs)/index': Bomb } },
+        { initialUrl: '/' }
       );
 
       expect(await screen.findByText('Something went wrong')).toBeTruthy();
@@ -105,9 +105,9 @@ describe('error boundaries', () => {
       const dev = __DEV__;
       Object.assign(globalThis, { __DEV__: false });
       try {
-        renderRouter(
-          { appDir: './app', overrides: { '(tabs)/boom': Bomb } },
-          { initialUrl: '/boom' }
+        await renderRouter(
+          { appDir: './app', overrides: { '(tabs)/index': Bomb } },
+          { initialUrl: '/' }
         );
         expect(await screen.findByText('Something went wrong')).toBeTruthy();
         expect(screen.getByText('An unexpected error occurred')).toBeTruthy();
@@ -120,7 +120,7 @@ describe('error boundaries', () => {
 
     it('the app boundary sits inside the theme provider and reports with the component stack', async () => {
       mockSessionProviderThrows = true;
-      renderRouter('./app', { initialUrl: '/' });
+      await renderRouter('./app', { initialUrl: '/' });
 
       expect(await screen.findByText('Session provider exploded')).toBeTruthy();
       expect(backgroundOf('error-fallback')).toBe(theme.colors.background);
@@ -139,13 +139,15 @@ describe('error boundaries', () => {
   });
 
   it('"Go home" on a route boundary returns to Home', async () => {
-    const app = renderRouter(
-      { appDir: './app', overrides: { '(tabs)/boom': Bomb } },
+    // A screen of its own: only the screens a Tabs layout declares are
+    // routes, and Home itself is the one that would throw again.
+    const app = await renderRouter(
+      { appDir: './app', overrides: { '(auth)/boom': Bomb } },
       { initialUrl: '/boom' }
     );
     await screen.findByText('Something went wrong');
 
-    fireEvent.press(screen.getByTestId('error-go-home'));
+    await fireEvent.press(screen.getByTestId('error-go-home'));
 
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     expect(app.getPathname()).toBe('/');
@@ -162,15 +164,15 @@ describe('error boundaries', () => {
     });
 
     it('"Go home" returns to the Home below it instead of stacking a second one', async () => {
-      const app = renderRouter(
+      const app = await renderRouter(
         { appDir: './app', overrides: { '(app)/boom': Bomb } },
         { initialUrl: '/' }
       );
       await screen.findByText('Signed in as E');
-      act(() => router.push('/boom'));
+      await act(() => router.push('/boom'));
       await screen.findByText('Something went wrong');
 
-      fireEvent.press(screen.getByTestId('error-go-home'));
+      await fireEvent.press(screen.getByTestId('error-go-home'));
 
       expect(await screen.findByText('Signed in as E')).toBeTruthy();
       expect(app.getPathname()).toBe('/');
@@ -178,13 +180,13 @@ describe('error boundaries', () => {
     });
 
     it('"Go home" after a deep link to the screen leaves only Home', async () => {
-      const app = renderRouter(
+      const app = await renderRouter(
         { appDir: './app', overrides: { '(app)/boom': Bomb } },
         { initialUrl: '/boom' }
       );
       await screen.findByText('Something went wrong');
 
-      fireEvent.press(screen.getByTestId('error-go-home'));
+      await fireEvent.press(screen.getByTestId('error-go-home'));
 
       expect(await screen.findByText('Signed in as E')).toBeTruthy();
       expect(app.getPathname()).toBe('/');
@@ -193,9 +195,9 @@ describe('error boundaries', () => {
   });
 
   it('"Go home" on a route boundary still clears the error when navigation fails', async () => {
-    renderRouter(
-      { appDir: './app', overrides: { '(tabs)/boom': Bomb } },
-      { initialUrl: '/boom' }
+    await renderRouter(
+      { appDir: './app', overrides: { '(tabs)/index': Bomb } },
+      { initialUrl: '/' }
     );
     await screen.findByText('Something went wrong');
     jest.spyOn(router, 'replace').mockImplementation(() => {
@@ -203,20 +205,20 @@ describe('error boundaries', () => {
     });
 
     shouldThrow = false;
-    fireEvent.press(screen.getByTestId('error-go-home'));
+    await fireEvent.press(screen.getByTestId('error-go-home'));
 
     expect(await screen.findByText('Recovered')).toBeTruthy();
   });
 
   it('"Try again" on a route boundary re-renders the screen', async () => {
-    renderRouter(
-      { appDir: './app', overrides: { '(tabs)/boom': Bomb } },
-      { initialUrl: '/boom' }
+    await renderRouter(
+      { appDir: './app', overrides: { '(tabs)/index': Bomb } },
+      { initialUrl: '/' }
     );
     await screen.findByText('Something went wrong');
 
     shouldThrow = false;
-    fireEvent.press(screen.getByTestId('error-retry'));
+    await fireEvent.press(screen.getByTestId('error-retry'));
 
     expect(await screen.findByText('Recovered')).toBeTruthy();
   });
@@ -232,31 +234,31 @@ describe('error boundaries', () => {
       );
     }
 
-    it('"Try again" re-renders the children', () => {
-      renderBoundary();
+    it('"Try again" re-renders the children', async () => {
+      await renderBoundary();
       expect(screen.getByText('Something went wrong')).toBeTruthy();
 
       shouldThrow = false;
-      fireEvent.press(screen.getByTestId('error-retry'));
+      await fireEvent.press(screen.getByTestId('error-retry'));
 
       expect(screen.getByText('Recovered')).toBeTruthy();
     });
 
-    it('"Go home" navigates to Home and re-renders', () => {
+    it('"Go home" navigates to Home and re-renders', async () => {
       const replace = jest
         .spyOn(router, 'replace')
         .mockImplementation(() => {});
-      renderBoundary();
+      await renderBoundary();
 
       shouldThrow = false;
-      fireEvent.press(screen.getByTestId('error-go-home'));
+      await fireEvent.press(screen.getByTestId('error-go-home'));
 
       expect(replace).toHaveBeenCalledWith('/');
       expect(screen.getByText('Recovered')).toBeTruthy();
     });
 
-    it('renders a custom fallback, which can reset the boundary', () => {
-      render(
+    it('renders a custom fallback, which can reset the boundary', async () => {
+      await render(
         <PaperProvider theme={getTheme('light')}>
           <ErrorBoundary
             fallback={(error, reset) => (
@@ -275,17 +277,17 @@ describe('error boundaries', () => {
       expect(reporter.captureException).toHaveBeenCalledTimes(1);
 
       shouldThrow = false;
-      fireEvent.press(screen.getByTestId('custom-fallback'));
+      await fireEvent.press(screen.getByTestId('custom-fallback'));
       expect(screen.getByText('Recovered')).toBeTruthy();
     });
 
     it.each([undefined, null, 0, ''])(
       'shows the fallback and reports when %j is thrown',
-      thrown => {
+      async thrown => {
         function ThrowsValue(): ReactNode {
           throw thrown;
         }
-        render(
+        await render(
           <PaperProvider theme={getTheme('light')}>
             <ErrorBoundary>
               <ThrowsValue />
@@ -303,16 +305,16 @@ describe('error boundaries', () => {
       }
     );
 
-    it('renders its children when nothing throws', () => {
+    it('renders its children when nothing throws', async () => {
       shouldThrow = false;
-      renderBoundary();
+      await renderBoundary();
 
       expect(screen.getByText('Recovered')).toBeTruthy();
       expect(reporter.captureException).not.toHaveBeenCalled();
     });
 
-    it('reports in every build, with the component stack', () => {
-      renderBoundary();
+    it('reports in every build, with the component stack', async () => {
+      await renderBoundary();
 
       expect(reporter.captureException).toHaveBeenCalledTimes(1);
       expect(reporter.captureException).toHaveBeenCalledWith(

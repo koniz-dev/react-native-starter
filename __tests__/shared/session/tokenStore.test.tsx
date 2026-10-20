@@ -124,34 +124,40 @@ describe('auth flow with the web token store', () => {
   it('signs in, shows the session, logs out, and a reload returns to signed out', async () => {
     setTokenStore(createTokenStore('web'));
 
-    const app = renderRouter('./app', { initialUrl: '/login' });
+    const app = await renderRouter('./app', { initialUrl: '/login' });
     await screen.findByText('Welcome Back');
-    fireEvent.changeText(screen.getByTestId('login-username'), 'emily');
-    fireEvent.changeText(screen.getByTestId('login-password'), 'secret-pass');
-    fireEvent.press(screen.getByText('Sign In'));
+    await fireEvent.changeText(screen.getByTestId('login-username'), 'emily');
+    await fireEvent.changeText(
+      screen.getByTestId('login-password'),
+      'secret-pass'
+    );
+    await fireEvent.press(screen.getByText('Sign In'));
 
     expect(await screen.findByText('Signed in as Emily Johnson')).toBeTruthy();
     expect(app.getPathname()).toBe('/');
     await expect(getTokenStore().get()).resolves.toBe('web-token');
     expect(SecureStore.setItemAsync).not.toHaveBeenCalled();
 
-    fireEvent.press(screen.getByTestId('logout-button'));
+    await fireEvent.press(screen.getByTestId('logout-button'));
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     await expect(getTokenStore().get()).resolves.toBeNull();
-    app.unmount();
+    await app.unmount();
 
     // Sign in again, then "reload": a fresh in-memory store and a new app.
-    renderRouter('./app', { initialUrl: '/login' });
+    await renderRouter('./app', { initialUrl: '/login' });
     await screen.findByText('Welcome Back');
-    fireEvent.changeText(screen.getByTestId('login-username'), 'emily');
-    fireEvent.changeText(screen.getByTestId('login-password'), 'secret-pass');
-    fireEvent.press(screen.getByText('Sign In'));
+    await fireEvent.changeText(screen.getByTestId('login-username'), 'emily');
+    await fireEvent.changeText(
+      screen.getByTestId('login-password'),
+      'secret-pass'
+    );
+    await fireEvent.press(screen.getByText('Sign In'));
     await screen.findByText('Signed in as Emily Johnson');
     expect(await getItem(STORAGE_KEYS.USER_DATA)).not.toBeNull();
-    screen.unmount();
+    await screen.unmount();
 
     setTokenStore(createTokenStore('web'));
-    renderRouter('./app', { initialUrl: '/' });
+    await renderRouter('./app', { initialUrl: '/' });
 
     expect(await screen.findByText('Not signed in')).toBeTruthy();
     // The profile left in AsyncStorage (localStorage on web) is removed too.

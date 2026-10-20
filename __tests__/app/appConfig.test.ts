@@ -38,6 +38,8 @@ describe('app.config.ts variants', () => {
     expect(config.scheme).toBe(scheme);
     expect(config.ios?.bundleIdentifier).toBe(bundleId);
     expect(config.android?.package).toBe(bundleId);
+    // The web export is a single-page app, which the hosting docs describe.
+    expect(config.web?.output).toBe('single');
   });
 
   it('gives each variant a distinct bundle ID and scheme', () => {

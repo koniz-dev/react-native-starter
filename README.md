@@ -1,6 +1,6 @@
 # React Native Starter
 
-An Expo (SDK 57) and React Native starter that is **production-ready by
+An Expo (SDK 58) and React Native starter that is **production-ready by
 configuration, not by installation**: the foundation (routing, session,
 HTTP, storage, theming, error reporting, i18n, test setup) is in place, every
 third-party service sits behind a typed seam with a no-op or console

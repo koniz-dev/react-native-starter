@@ -26,7 +26,7 @@ describe('integration setup that throws', () => {
     const logError = jest.spyOn(logger, 'error').mockImplementation(() => {});
 
     // Loads app/_layout.tsx for the first time in this file.
-    renderRouter('./app', { initialUrl: '/' });
+    await renderRouter('./app', { initialUrl: '/' });
 
     expect(await screen.findByText('Configuration error')).toBeTruthy();
     expect(logError).toHaveBeenCalledWith(

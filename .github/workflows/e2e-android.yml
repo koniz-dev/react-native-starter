@@ -26,8 +26,8 @@ jobs:
       MAESTRO_VERSION: '2.11.0'
       MAESTRO_SHA256: '5384593cb4e7a106489e75a821d157dd43f4e438df6bc308b72e82c685e1283a'
       # Expo Go for the project's SDK; update both on an SDK upgrade.
-      EXPO_GO_VERSION: '57.0.9'
-      EXPO_GO_SHA256: '14c18828a3d04e43922245920bd941b978fd1c7a5aec88a0188032f0bb4972ce'
+      EXPO_GO_VERSION: '58.0.4'
+      EXPO_GO_SHA256: 'bd3d36794f3e060a1dd93bec7affdceb516294c1b33abbf63d2994f5cc66b3a6'
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

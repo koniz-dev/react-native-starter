@@ -134,6 +134,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     web: {
       favicon: './assets/favicon.png',
+      // A single-page app, which the hosting notes in docs/getting-started.md
+      // describe. Kept explicit so a change of default can't change it.
+      output: 'single',
     },
     plugins: [
       'expo-font',

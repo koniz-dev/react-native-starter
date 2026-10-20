@@ -21,11 +21,11 @@ describe('screen tracking', () => {
     configureIntegrations();
     analyticsSeam.set(provider);
 
-    renderRouter('./app', { initialUrl: '/' });
+    await renderRouter('./app', { initialUrl: '/' });
     await screen.findByText('Not signed in');
     await waitFor(() => expect(provider.screen).toHaveBeenLastCalledWith('/'));
 
-    act(() => router.push('/login'));
+    await act(() => router.push('/login'));
     await screen.findByText('Welcome Back');
     await waitFor(() =>
       expect(provider.screen).toHaveBeenLastCalledWith('/login')
@@ -38,7 +38,7 @@ describe('screen tracking', () => {
     analyticsSeam.set(provider);
 
     // Signed out: /profile redirects to Home.
-    renderRouter('./app', { initialUrl: '/profile' });
+    await renderRouter('./app', { initialUrl: '/profile' });
     await screen.findByText('Not signed in');
 
     await waitFor(() => expect(provider.screen).toHaveBeenCalled());
@@ -60,7 +60,7 @@ describe('screen tracking', () => {
     const provider = fakeAnalytics();
     analyticsSeam.set(provider);
 
-    renderRouter(app, { initialUrl: '/reset/SECRET-RESET-TOKEN' });
+    await renderRouter(app, { initialUrl: '/reset/SECRET-RESET-TOKEN' });
     await screen.findByText('Reset');
 
     await waitFor(() =>
@@ -81,9 +81,9 @@ describe('screen tracking', () => {
     });
     const logError = jest.spyOn(logger, 'error').mockImplementation(() => {});
 
-    renderRouter(app, { initialUrl: '/' });
+    await renderRouter(app, { initialUrl: '/' });
     await screen.findByText('Home');
-    act(() => router.push('/reset/abc'));
+    await act(() => router.push('/reset/abc'));
 
     expect(await screen.findByText('Reset')).toBeTruthy();
     await waitFor(() =>
