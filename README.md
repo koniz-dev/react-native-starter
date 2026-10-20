@@ -193,6 +193,12 @@ inherit them):
   ranges: eslint-plugin-react 7.37.x allows `^9.7` at most and
   eslint-plugin-react-native 5.0.0 allows `^9`. Upgrade when both plugins
   accept ESLint 10 (recorded in #95, 2026-10-14).
+- **Expo Router's guarded-route redirect** (SDK 58): `Stack.Protected`
+  redirects with `replace('/')`, which stacks a second Home; `useNoExtraHome`
+  in `app/_layout.tsx` undoes it. Reported as
+  [expo/expo#51916](https://github.com/expo/expo/issues/51916) (2026-10-20).
+  At each monthly dependency review, check whether a newer expo-router fixes
+  it, and remove the hook (and its Conventions notes) when it does.
 - **react-native-gesture-handler** stays a direct dependency although the
   app doesn't import it: it is a required peer of expo-router's
   react-native-drawer-layout, so npm installs it anyway; keeping it direct
