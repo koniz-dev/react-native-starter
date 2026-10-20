@@ -126,7 +126,8 @@ const GUARDED_GROUPS = new Set(['(auth)', '(app)']);
  * first tab in the place where a guarded group just was. The app's own
  * navigation stays, except a replace('/') at that moment, which looks the
  * same (docs/conventions.md says to use dismissTo('/') then). A new guarded
- * group goes in GUARDED_GROUPS.
+ * group goes in GUARDED_GROUPS. Reported upstream as expo/expo#51916; remove
+ * this hook once Expo Router pops a guarded route instead of replacing it.
  */
 function useNoExtraHome(status: string) {
   // The root stack is the first route's state, under Expo Router's own root.
