@@ -13,7 +13,7 @@ Branch `sdk-58`, draft PR #135. Last runtime change: 050b01a. Head: b6d6379 (doc
 | 5 | E2E with Expo Go 58: Android Expo Go, Android native, iOS native on Actions; iOS Expo Go locally | PASS | `e2e-actions-050b01a.txt`: Android Expo Go 39306435483 7/7 + dark; Android native 39306443113 7/7 + dark; iOS native 39306448903 7/7 + dark on the retry (see Notes). `e2e-ios-expogo58-local.txt`: 7/7 + dark, no retry. Earlier heads: c4ee546 green on all three. Screenshots in `sheets/` (15, 15, 14, 14), all looked at. Expo Go 58.0.4 pinned by the release's asset digest (9c34427). |
 | 6 | Docs updated; init-project still passes every gate | PASS | 9c34427 (versions), conventions (anchor, undeclared tabs, the guards' behaviour and navigation after sign-in/out, returning to a tab), testing, getting-started. R6/R8 ran `init-project --remove-demo --remove-recipes` in committed copies: every gate passes (596–599 tests); the `@demo` blocks in the new tests come out cleanly. |
 | 7 | Gates, format, docs:check, CI pass; a confirmation round finds no HIGH or MEDIUM | PASS | `gates.log` (732 tests). CI, Audit, CodeQL green on 050b01a and b6d6379. Confirmation rounds R1–R10 below; R10 found none. |
-| 8 | (maintainer) merge within about 1 week of the store Expo Go supporting SDK 58 (policy changed on 2026-10-25; was: or at the 2026-10-27 deadline) | OPEN | The store Expo Go was still SDK 57 on 2026-10-25 (`api.expo.dev`). |
+| 8 | Merged once the store's Expo Go runs SDK 58, then released (policy changed on 2026-10-25, maintainers b944f26: no schedule or date; was: by the 2026-10-27 deadline, then within about 1 week of the store moving) | OPEN | The store Expo Go was still SDK 57 on 2026-10-25 (`api.expo.dev`). |
 
 ## Behaviour changes found by the upgrade
 

@@ -50,9 +50,13 @@ All 73 were looked at, and each shows the expected screen.
 - **Gates and tools.** `tools/` is v1.1.16's (issue-133) unchanged. iOS Expo Go ran in a
   worktree of `main` at 1ecec29 with a clean tree. Maestro 2.11.0 (SHA256 matches the
   workflow) and JDK 17 were fetched again into the scratch folder after macOS purged it.
-- **Expo SDK 58.** Under the Support Policy (changed 2026-10-25), the starter moves within
-  about 1 week of the store's Expo Go supporting SDK 58. On 2026-10-25 the store's Expo Go
-  was still on SDK 57 (`expoGoSdkVersion` 57.0.0); the release notes say so.
+- **Expo SDK 58.** On 2026-10-25 the store's Expo Go was still on SDK 57
+  (`expoGoSdkVersion` 57.0.0). `release-notes.md` is the notes as published at 14:11Z, which
+  said the starter moves within about 1 week of the store supporting SDK 58. Later that day
+  the maintainer dropped every SDK schedule from the Support Policy (maintainers b944f26:
+  the starter targets the stable SDK the store's Expo Go runs, with no date), and the
+  published notes of v1.1.17 and v1.1.16 were edited to match: the SDK 58 bullet and the
+  closing paragraph no longer promise a date.
 
 Verdict: PASS.
 
