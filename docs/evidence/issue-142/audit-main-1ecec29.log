@@ -1,0 +1,22 @@
+# main at 1ecec29
+react-native-starter@1.0.0 /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/***/scratchpad/main
+├─┬ eslint-plugin-react-hooks@7.1.1
+│ ├─┬ zod-validation-error@4.0.2
+│ │ └── zod@4.6.7 deduped
+│ └── zod@4.6.7 deduped
+├─┬ expo@57.0.30
+│ └─┬ @expo/cli@57.0.31
+│   └── zod@3.25.76
+└── zod@4.6.7
+
+
+
+> react-native-starter@1.0.0 audit:check
+> node scripts/check-audit.js
+
+high     node-forge GHSA-86w9-cpqp-85rv: allowlisted until 2027-01-09 (https://github.com/advisories/GHSA-86w9-cpqp-85rv)
+high     zod GHSA-mrhx-c7xc-m3w5: allowlisted until 2027-01-25 (https://github.com/advisories/GHSA-mrhx-c7xc-m3w5)
+moderate decode-uri-component GHSA-vcc3-ghjq-m6fr: reported (not gated)
+moderate uuid GHSA-w5hq-g745-h8pq: reported (not gated)
+npm audit --omit=dev: 4 advisories (records: 0 critical, 5 high, 6 moderate, 0 low).
+No unreviewed high or critical advisories.

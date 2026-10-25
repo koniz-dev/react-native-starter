@@ -1,0 +1,10 @@
+# npx expo export --platform web on sdk-58 at e5c4243
+metadata.json (49B)
+
+Exported: /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/4b4fa17a-b8dd-429b-8d69-af32f74c3a6f/scratchpad/web-142
+
+# zod version objects in the bundle
+   1 major:4,minor:6,patch:7
+
+# ZodFirstPartyTypeKind (zod 3 name) appears once; it is zod 4's classic compat layer:
+29:export var ZodFirstPartyTypeKind;

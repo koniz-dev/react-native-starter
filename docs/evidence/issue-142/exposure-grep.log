@@ -1,0 +1,9 @@
+# zod schemas over collections in the app and docs (main at 1ecec29)
+features/demo-todos/api/todosApi.ts:6:const TodosSchema = z.array(
+docs/connect-your-backend.md:485:    parse(z.array(PostSchema), (await api.get('/posts', { signal })).data),
+
+# zod 3 imports inside the nested @expo/cli (SDK 57 and SDK 58)
+@expo/cli@57 build/src/start/server/DevToolsPlugin.schema.js
+@expo/cli@57 build/src/start/server/createMCPDevToolsExtensionSchema.js
+@expo/cli@58 build/src/start/server/DevToolsPlugin.schema.js
+@expo/cli@58 build/src/start/server/createMCPDevToolsExtensionSchema.js
