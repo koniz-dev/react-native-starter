@@ -1,0 +1,13 @@
+# Each guard mutated alone, on 56e441d, against __tests__/shared/session/SessionProvider.test.tsx
+=== mutant L104: -      if (!changedRef.current && isMountedRef.current) { +      if (isMountedRef.current) { 
+Tests:       2 failed, 6 passed, 8 total
+=== mutant L95: -    if (isMountedRef.current) { +    if (true) { 
+Tests:       8 passed, 8 total
+=== mutant L140: -      if (isMountedRef.current) setSigningOut(false); +      setSigningOut(false); 
+Tests:       8 passed, 8 total
+=== mutant L154: -          if (isMountedRef.current) setSigningOut(false); +          setSigningOut(false); 
+Tests:       8 passed, 8 total
+=== mutant L165: -    if (user && isMountedRef.current) { +    if (user) { 
+Tests:       8 passed, 8 total
+=== mutant L167: -        current.status === 'signedIn' ? { status: 'signedIn', user } : current +        ({ status: 'signedIn', user }) 
+Tests:       1 failed, 7 passed, 8 total

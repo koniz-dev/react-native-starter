@@ -1,0 +1,13 @@
+diff --git a/shared/session/SessionProvider.tsx b/shared/session/SessionProvider.tsx
+index 41034bb..02edf4d 100644
+--- a/shared/session/SessionProvider.tsx
++++ b/shared/session/SessionProvider.tsx
+@@ -101,7 +101,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
+     isMountedRef.current = true;
+     // readStoredSession never rejects: a failure restores "signed out".
+     void readStoredSession().then(restored => {
+-      if (!changedRef.current && isMountedRef.current) {
++      if (isMountedRef.current) {
+         setSession(restored);
+       }
+     });

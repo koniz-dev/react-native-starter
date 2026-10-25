@@ -1,0 +1,15 @@
+---------------------|---------|----------|---------|---------|-------------------
+File                 | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+---------------------|---------|----------|---------|---------|-------------------
+All files            |     100 |      100 |     100 |     100 |                   
+ SessionProvider.tsx |     100 |      100 |     100 |     100 |                   
+---------------------|---------|----------|---------|---------|-------------------
+Jest: Coverage data for ./app/ was not found.
+Jest: Coverage data for ./features/ was not found.
+
+Test Suites: 49 passed, 49 total
+Tests:       736 passed, 736 total
+Snapshots:   0 total
+Time:        60.701 s, estimated 87 s
+Ran all test suites.
+untaken arms: 0

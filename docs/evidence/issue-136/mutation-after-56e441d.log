@@ -1,0 +1,105 @@
+# Full suite on 56e441d with mutation.diff applied
+FAIL __tests__/shared/session/SessionProvider.test.tsx
+  ● SessionProvider cold-start restore › does not sign out a user who signed in before the stored session was read
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 4
+    + Received  + 2
+
+      Object {
+    -   "status": "signedIn",
+    -   "user": Object {
+    -     "id": "a",
+    -   },
+    +   "status": "signedOut",
+    +   "user": null,
+      }
+
+      162 |
+      163 |     expect(error).toHaveBeenCalledWith('Restoring the session failed', failure);
+    > 164 |     expect(result.current.session).toMatchObject({
+          |                                    ^
+      165 |       status: 'signedIn',
+      166 |       user: { id: 'a' },
+      167 |     });
+
+      at Object.toMatchObject (__tests__/shared/session/SessionProvider.test.tsx:164:36)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● SessionProvider cold-start restore › does not sign back in a session that expired before the stored session was read
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "signedOut"
+    Received: "signedIn"
+
+      185 |     });
+      186 |
+    > 187 |     expect(result.current.session.status).toBe('signedOut');
+          |                                           ^
+      188 |   });
+      189 | });
+      190 |
+
+      at Object.toBe (__tests__/shared/session/SessionProvider.test.tsx:187:43)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+
+Summary of all failing tests
+FAIL __tests__/shared/session/SessionProvider.test.tsx
+  ● SessionProvider cold-start restore › does not sign out a user who signed in before the stored session was read
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 4
+    + Received  + 2
+
+      Object {
+    -   "status": "signedIn",
+    -   "user": Object {
+    -     "id": "a",
+    -   },
+    +   "status": "signedOut",
+    +   "user": null,
+      }
+
+      162 |
+      163 |     expect(error).toHaveBeenCalledWith('Restoring the session failed', failure);
+    > 164 |     expect(result.current.session).toMatchObject({
+          |                                    ^
+      165 |       status: 'signedIn',
+      166 |       user: { id: 'a' },
+      167 |     });
+
+      at Object.toMatchObject (__tests__/shared/session/SessionProvider.test.tsx:164:36)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● SessionProvider cold-start restore › does not sign back in a session that expired before the stored session was read
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "signedOut"
+    Received: "signedIn"
+
+      185 |     });
+      186 |
+    > 187 |     expect(result.current.session.status).toBe('signedOut');
+          |                                           ^
+      188 |   });
+      189 | });
+      190 |
+
+      at Object.toBe (__tests__/shared/session/SessionProvider.test.tsx:187:43)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+
+Test Suites: 1 failed, 48 passed, 49 total
+Tests:       2 failed, 734 passed, 736 total
+Snapshots:   0 total
+Time:        65.241 s
+Ran all test suites.

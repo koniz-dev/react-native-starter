@@ -1,0 +1,7 @@
+# Full suite on dd02672 with the mutation in mutation.diff applied (before the new tests)
+
+Test Suites: 49 passed, 49 total
+Tests:       732 passed, 732 total
+Snapshots:   0 total
+Time:        48.135 s, estimated 56 s
+Ran all test suites.
