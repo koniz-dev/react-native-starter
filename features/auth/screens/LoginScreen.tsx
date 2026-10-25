@@ -5,7 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   View,
-  type TextInput as NativeTextInput,
+  type TextInputInstance,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -35,7 +35,7 @@ export function LoginScreen() {
   const [error, setError] = useState<string | null>(null);
   // Which fields the last "fill in all fields" error was about.
   const [missing, setMissing] = useState({ username: false, password: false });
-  const passwordRef = useRef<NativeTextInput>(null);
+  const passwordRef = useRef<TextInputInstance>(null);
   const { signIn } = useSession();
   // Set synchronously, so a second "Go" before the re-render is ignored.
   const submittingRef = useRef(false);

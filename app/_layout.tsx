@@ -1,9 +1,14 @@
 import { PaperProvider } from 'react-native-paper';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useColorScheme } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import { getNavigationTheme, getTheme } from '@/shared/ui/theme';
-import { Stack, ThemeProvider } from 'expo-router';
+import {
+  router,
+  Stack,
+  ThemeProvider,
+  useRootNavigationState,
+} from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ErrorBoundary } from '@/shared/ui/ErrorBoundary';
 import { ConfigErrorScreen } from '@/shared/ui/ConfigErrorScreen';
@@ -31,7 +36,7 @@ SplashScreen.preventAutoHideAsync().catch(() => {});
 // alphabetically first group, and so that Back from a deep-linked /login
 // returns to Home instead of exiting the app.
 export const unstable_settings = {
-  initialRouteName: '(tabs)',
+  anchor: '(tabs)',
 };
 
 export default function RootLayout() {
@@ -75,6 +80,7 @@ function RootNavigator() {
   const { session } = useSession();
   const signedIn = session.status === 'signedIn';
   useScreenTracking({ enabled: session.status !== 'loading' });
+  useNoExtraHome(session.status);
 
   useEffect(() => {
     if (session.status !== 'loading') {
@@ -102,4 +108,58 @@ function RootNavigator() {
       />
     </Stack>
   );
+}
+
+/** The root stack's route groups that a session guard can send a user out of. */
+const GUARDED_GROUPS = new Set(['(auth)', '(app)']);
+
+/**
+ * Takes the user back to the screen below when the session guards send them
+ * Home. Expo Router 58 sends a user out of a guarded group (signing in on
+ * Login, signing out or a session that ends on Profile, a deep link the guard
+ * refuses) with replace('/'): a new Home takes the group's place on top of
+ * the stack, instead of the user going back to where they were. Back
+ * (Android) or the edge swipe (iOS) would then show that screen, or Home
+ * again, and each sign-in or sign-out would add one more Home.
+ *
+ * Only that replacement is undone: after the session changed, a Home on its
+ * first tab in the place where a guarded group just was. The app's own
+ * navigation stays, except a replace('/') at that moment, which looks the
+ * same (docs/conventions.md says to use dismissTo('/') then). A new guarded
+ * group goes in GUARDED_GROUPS. Reported upstream as expo/expo#51916; remove
+ * this hook once Expo Router pops a guarded route instead of replacing it.
+ */
+function useNoExtraHome(status: string) {
+  // The root stack is the first route's state, under Expo Router's own root.
+  const stack = useRootNavigationState()?.routes[0]?.state;
+  const top = stack?.routes[stack.index ?? 0];
+  const tab = top?.state?.routes[top.state.index ?? 0]?.name ?? 'index';
+  const length = stack?.routes.length ?? 0;
+  const before = useRef<{ name?: string; length: number }>({ length: 0 });
+  const sessionChanged = useRef(false);
+  useEffect(() => {
+    sessionChanged.current = true;
+  }, [status]);
+  useEffect(() => {
+    const previous = before.current;
+    before.current = { name: top?.name, length };
+    const inGroup =
+      previous.name !== undefined && GUARDED_GROUPS.has(previous.name);
+    if (!inGroup) {
+      // The stack moved with another screen on top: a session change before
+      // this had no guarded group to send the user out of.
+      sessionChanged.current = false;
+      return;
+    }
+    if (top?.name === previous.name) return;
+    const guardsRedirect =
+      sessionChanged.current &&
+      top?.name === '(tabs)' &&
+      tab === 'index' &&
+      length === previous.length;
+    // Answered either way: the guarded group has left the top. Needed when it
+    // left for the other group, where the reset above doesn't run.
+    sessionChanged.current = false;
+    if (guardsRedirect) router.dismiss();
+  }, [top?.name, tab, length]);
 }

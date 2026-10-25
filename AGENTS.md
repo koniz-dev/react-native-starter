@@ -1,6 +1,6 @@
 # Agent Instructions
 
-This is an Expo (SDK 57) and React Native app: Expo
+This is an Expo (SDK 58) and React Native app: Expo
 Router, TypeScript strict, React Native Paper (Material Design 3), Jest and
 React Native Testing Library, and Maestro end-to-end flows. Follow these
 instructions when you change the code; the linked docs have the details.
@@ -65,7 +65,8 @@ placement, and `t()` are by review. Details:
   default: `app/<name>.tsx` for `/<name>`, `app/(app)/<name>.tsx` to require
   sign-in, or a file in `app/(tabs)/` for a tab. Add its strings to
   `shared/i18n/en.ts` and its tests under `__tests__/features/<name>/`.
-  See [Adding a screen](docs/conventions.md#adding-a-screen) and
+  `npm run new-feature -- <name> [--route public|signed-in|tab]` scaffolds
+  all of these. See [Adding a screen](docs/conventions.md#adding-a-screen) and
   [Navigation](docs/conventions.md#navigation).
 - **An endpoint:** typed functions in `features/<name>/api/`, built on the
   app client in `shared/http/api.ts`; load data in screens with `useFetch`
@@ -164,5 +165,9 @@ Keep commits small and single-purpose.
 
 - [State Management](docs/recipes/state-management.md): store library
   recipes.
+- [Certificate Pinning](docs/recipes/certificate-pinning.md): public-key
+  pinning for the API hosts.
+- [A Second Language](docs/recipes/localization.md): device locale,
+  fallback, and RTL.
 
 <!-- @recipes remove-block-end -->

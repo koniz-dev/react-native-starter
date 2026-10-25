@@ -35,6 +35,8 @@ testing/                      shared helpers
 ├── secureStore.ts            in-memory expo-secure-store
 ├── colorScheme.ts            setColorScheme
 ├── http.ts                   holdRequests, ok, httpError
+├── documentTitle.tsx         a DocumentTitle that shows its title, for screen tests
+│                             (jest.mock it; see the file)
 └── projectCopy.ts            copies of the project, for script tests
                               (import from '@/testing/projectCopy')
 jest.setup.env.js             env for every test file (URLs, log level)
@@ -99,7 +101,7 @@ import { screen } from '@testing-library/react-native';
 import { HomeScreen } from '@/features/home/screens/HomeScreen';
 import { renderWithProviders } from '@/testing';
 
-renderWithProviders(<HomeScreen />, { withSession: true }); // options: scheme, withSession
+await renderWithProviders(<HomeScreen />, { withSession: true }); // options: scheme, withSession
 expect(await screen.findByText('Not signed in')).toBeTruthy();
 ```
 
@@ -109,14 +111,23 @@ expect(await screen.findByText('Not signed in')).toBeTruthy();
 ```tsx
 import { renderRouter, screen } from 'expo-router/testing-library';
 
-const app = renderRouter('./app', { initialUrl: '/profile' });
+const app = await renderRouter('./app', { initialUrl: '/profile' });
 expect(await screen.findByText('Not signed in')).toBeTruthy();
 expect(app.getPathname()).toBe('/'); // the guard sent a signed-out user Home
 ```
 
 Add a route just for a test with
-`renderRouter({ appDir: './app', overrides: { '(tabs)/boom': Bomb } })` (see
-`__tests__/shared/ui/ErrorBoundary.test.tsx`).
+`renderRouter({ appDir: './app', overrides: { '(auth)/boom': Bomb } })`, or
+replace a screen with `overrides: { '(tabs)/index': Bomb }` (see
+`__tests__/shared/ui/ErrorBoundary.test.tsx`). A tab must be declared in the
+tabs layout to be a route, so an extra file in `(tabs)` isn't reachable.
+
+`render`, `renderHook`, `renderRouter`, `fireEvent`, `act`, and the `rerender`
+and `unmount` they give you return
+promises (React Native Testing Library 14): `await` each of them. An awaited
+render has already run the effects and settled what was ready, so to see a
+loading state, hold the request or the storage read first (`holdRequests()`,
+or a promise the test resolves).
 
 ### A seam or adapter in a full-app test
 
@@ -147,12 +158,12 @@ beforeEach(() => {
 afterEach(() => analyticsSeam.reset());
 
 it('reports a screen view for each route', async () => {
-  renderRouter('./app', { initialUrl: '/' });
+  await renderRouter('./app', { initialUrl: '/' });
   await screen.findByText('Not signed in');
   // A screen view is reported just after navigation settles: wait for it.
   await waitFor(() => expect(provider.screen).toHaveBeenLastCalledWith('/'));
 
-  act(() => router.push('/login'));
+  await act(() => router.push('/login'));
   await screen.findByText('Welcome Back');
   await waitFor(() =>
     expect(provider.screen).toHaveBeenLastCalledWith('/login')
@@ -212,7 +223,7 @@ afterEach(() => {
 
 it('shows loading, then the error, and Try again loads the list', async () => {
   const requests = holdRequests();
-  renderWithProviders(<PostsScreen />);
+  await renderWithProviders(<PostsScreen />);
 
   expect(screen.getByTestId('loading-screen')).toBeTruthy();
   await waitFor(() => expect(requests).toHaveLength(1));
@@ -228,7 +239,7 @@ it('shows loading, then the error, and Try again loads the list', async () => {
     await screen.findByText('The server had a problem. Please try again later.')
   ).toBeTruthy();
   expect(screen.queryByText('Service unavailable')).toBeNull();
-  fireEvent.press(screen.getByText('Try again'));
+  await fireEvent.press(screen.getByText('Try again'));
 
   expect(await screen.findByTestId('loading-screen')).toBeTruthy();
   await waitFor(() => expect(requests).toHaveLength(2));
@@ -434,7 +445,7 @@ Setup:
   check it against `checksums_sha256.txt`, unzip it, and put `maestro/bin` on
   your `PATH` (or set `MAESTRO=/path/to/maestro/bin/maestro`). It needs Java
   17+ (`JAVA_HOME`).
-- **Expo Go** for SDK 57 on the device (`npx expo start` offers to install it
+- **Expo Go** for SDK 58 on the device (`npx expo start` offers to install it
   on a simulator or emulator).
 - **iOS Simulator keyboard**: flows that type (such as a sign-in flow) use
   the software keyboard, so turn off Simulator's **I/O > Keyboard > Connect Hardware
@@ -453,20 +464,25 @@ Setup:
   responding" dialogs for background apps (test-device settings it leaves
   in place).
 
-The Android flows can also run in GitHub Actions: the manual
-**E2E (Android, manual)** workflow (`.github/workflows/e2e-android.yml`)
+The Android flows can also run in GitHub Actions: the
+**E2E (Android)** workflow (`.github/workflows/e2e-android.yml`)
 boots an emulator, installs the Maestro release and the app, and uploads
 `e2e-results/android`. Its `app` input picks Expo Go (the default) or
 `native-debug`: a debug build of the development variant
 (`npm run prebuild:development`, then Gradle `assembleDebug`), which loads
-its bundle from Metro when it launches. The manual
-**E2E (iOS, manual)** workflow (`.github/workflows/e2e-ios.yml`) does the
+its bundle from Metro when it launches. Besides on demand, it can run
+weekly in Expo Go, to catch what changes outside the lockfile (the runner
+image, the emulator, a download): set the repository variable
+`E2E_ANDROID_SCHEDULE` to `true` (**Settings → Secrets and variables →
+Actions → Variables**). Without it the weekly run is skipped and costs
+nothing. A failed weekly run opens an issue, or comments on the open one.
+The manual **E2E (iOS, manual)** workflow (`.github/workflows/e2e-ios.yml`) does the
 same on an iOS simulator with a native debug build (prebuild, then
 `xcodebuild`): it covers what Expo Go on iOS doesn't, the app's own native
 modules. To test another branch or tag, such as one from before a fix,
 run the workflow on it (`gh workflow run e2e-ios.yml --ref <branch>`); the
-branch needs the workflow file. Neither is part of the per-push checks, because a device run takes
-much longer.
+branch needs the workflow file. Neither runs on push, because a device run
+takes much longer.
 
 ### Your backend or mock
 

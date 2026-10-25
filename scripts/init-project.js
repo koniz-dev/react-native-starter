@@ -12,7 +12,7 @@
  *    the other changes, since it edits some of the same files;
  * 3. deletes the template's onboarding text: every `@init remove-block` and
  *    docs/make-it-yours.md;
- * 4. deletes the state-management recipes and every `@recipes remove-block`
+ * 4. deletes the recipes (docs/recipes/) and every `@recipes remove-block`
  *    (the TanStack Query example, links, and CI's install of their
  *    libraries), unless --keep-recipes;
  * 5. deletes itself, its test, and its npm script, then formats the changed
@@ -66,6 +66,7 @@ const RECIPE_MARKED_FILES = [
   'AGENTS.md',
   'docs/README.md',
   'docs/api-and-storage.md',
+  'docs/plug-in-a-provider.md',
   '.github/workflows/ci.yml',
 ];
 const ALLOWLIST = 'scripts/audit-allowlist.json';
@@ -377,13 +378,13 @@ async function collectInput(args) {
       removeDemo = /^y(es)?$/i.test(answer);
     }
 
-    // The recipes go unless kept: a project picks one store library, or none.
+    // The recipes go unless kept: a project adopts the few it needs, or none.
     const recipesPresent = fs.existsSync(path.join(ROOT, RECIPES));
     let removeRecipes = recipesPresent && !args.flags.has('--keep-recipes');
     if (removeRecipes && !args.flags.has('--remove-recipes') && rl) {
       const answer = (
         await question(
-          'Keep the state-management recipes (Zustand, Redux, Jotai, Context)? (y/N): '
+          'Keep the recipes in docs/recipes (state management, certificate pinning, a second language)? (y/N): '
         )
       ).trim();
       removeRecipes = !/^y(es)?$/i.test(answer);
@@ -703,7 +704,7 @@ function planChanges(input) {
     changes.push({
       file: `${RECIPES}/`,
       action: 'delete',
-      summary: 'state-management recipes (--keep-recipes keeps them)',
+      summary: 'recipes (--keep-recipes keeps them)',
     });
   }
 
@@ -761,7 +762,7 @@ Prompts for every value that is not given (in a terminal).
   --owner <holder>      LICENSE copyright holder (default: git user.name)
   --remove-demo         also run npm run remove-demo
   --keep-demo           keep the demo (the default without a terminal)
-  --remove-recipes      delete the state-management recipes (the default)
+  --remove-recipes      delete the recipes in docs/recipes/ (the default)
   --keep-recipes        keep them (docs/recipes/)
   --dry-run             list every change without making it
   --force               run on uncommitted changes or a second time

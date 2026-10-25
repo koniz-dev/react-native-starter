@@ -19,7 +19,7 @@ permissions:
 jobs:
   e2e-ios:
     name: Maestro on iOS simulator (native-debug)
-    # Expo SDK 57 needs Xcode 26.4 or later.
+    # Expo SDK 58 needs Xcode 26.4 or later.
     runs-on: macos-26
     timeout-minutes: 120
     env:

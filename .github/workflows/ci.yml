@@ -66,7 +66,7 @@ jobs:
       - name: Check docs (snippets compile, paths and scripts exist)
         run: |
           # @recipes remove-block-start
-          # The state-management recipes and the TanStack Query example need
+          # The recipes and the TanStack Query example need
           # their libraries to compile. They are pinned, with their own
           # dependencies, in docs/recipes/package-lock.json (not the app's
           # package.json) and linked into node_modules for tsc.

@@ -7,9 +7,9 @@ import { renderWithProviders } from '@/testing';
 describe('<LoadingScreen />', () => {
   it.each(['light', 'dark'] as const)(
     'shows a progress indicator and the message in the %s theme',
-    scheme => {
+    async scheme => {
       const theme = getTheme(scheme);
-      renderWithProviders(<LoadingScreen message="Loading data..." />, {
+      await renderWithProviders(<LoadingScreen message="Loading data..." />, {
         scheme,
       });
 
@@ -25,8 +25,8 @@ describe('<LoadingScreen />', () => {
     }
   );
 
-  it('shows only the indicator without a message', () => {
-    renderWithProviders(<LoadingScreen />);
+  it('shows only the indicator without a message', async () => {
+    await renderWithProviders(<LoadingScreen />);
 
     expect(screen.getByRole('progressbar')).toBeTruthy();
     expect(screen.queryByText(/./)).toBeNull();

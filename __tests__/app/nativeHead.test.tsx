@@ -24,7 +24,7 @@ describe('screens in an iOS native build', () => {
     ['/showcase', 'Buttons'],
     // @demo remove-block-end
   ])('%s renders', async (initialUrl, text) => {
-    renderRouter('./app', { initialUrl });
+    await renderRouter('./app', { initialUrl });
     expect(await screen.findByText(text)).toBeTruthy();
     expect(screen.queryByTestId('error-fallback')).toBeNull();
   });
