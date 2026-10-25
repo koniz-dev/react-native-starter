@@ -38,6 +38,8 @@ Native topics, the pages link to the official documentation.
 
 - [State Management](recipes/state-management.md): Zustand, Redux Toolkit,
   Jotai, or React Context next to the session provider.
+- [Certificate Pinning](recipes/certificate-pinning.md): public-key pinning
+  for the API hosts, with backup pins and key rotation.
 
 <!-- @recipes remove-block-end -->
 

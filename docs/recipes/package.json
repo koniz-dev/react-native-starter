@@ -1,11 +1,12 @@
 {
   "name": "recipe-libraries",
   "private": true,
-  "description": "The store and query libraries the docs' recipe snippets compile against in CI (npm run docs:check). Not part of the app.",
+  "description": "The libraries the docs' recipe snippets compile against in CI (npm run docs:check). Not part of the app.",
   "dependencies": {
     "@reduxjs/toolkit": "2.13.0",
     "@tanstack/react-query": "5.104.2",
     "jotai": "3.0.1",
+    "react-native-ssl-public-key-pinning": "1.2.6",
     "react-redux": "9.3.0",
     "zustand": "5.0.15"
   }

@@ -13,7 +13,7 @@ npm run init-project
 
 It asks for your app name, slug, URL scheme, bundle / package ID, and LICENSE
 holder (or takes them as flags: `npm run init-project -- --help` lists them),
-whether to remove the demo, and whether to keep the state-management recipes.
+whether to remove the demo, and whether to keep the recipes.
 Then it:
 
 - sets the identity in `app.config.ts`, `package.json`, `package-lock.json`,
@@ -21,7 +21,8 @@ Then it:
 - replaces `README.md` with a short README for your app;
 - makes you the owner of the advisory review in `scripts/audit-allowlist.json`;
 - removes the demo if you chose to;
-- removes the state-management recipes (`docs/recipes/`) unless you keep
+- removes the recipes (`docs/recipes/`: state management, certificate
+  pinning) unless you keep
   them (`--keep-recipes`);
 - deletes the template's onboarding page and itself.
 

@@ -165,5 +165,7 @@ Keep commits small and single-purpose.
 
 - [State Management](docs/recipes/state-management.md): store library
   recipes.
+- [Certificate Pinning](docs/recipes/certificate-pinning.md): public-key
+  pinning for the API hosts.
 
 <!-- @recipes remove-block-end -->
