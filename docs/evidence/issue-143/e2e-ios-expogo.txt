@@ -1,0 +1,44 @@
+Simulator: iPhone 16 Plus (E0ACAF33), iOS 18.6, Expo Go 57.0.9 (Expo-Go-57.0.9.tar.gz, SHA256 faff1803... matches the release asset digest), Xcode 16.4, macOS 15.8.1; worktree of main at 1ecec29 (clean tree); Maestro 2.11.0 (SHA256 matches the workflow), JDK 17.0.20.1, Node 24.21.0
+
+== Run 3 (passed; load1 max 23.91 during the run, load.log)
+[Passed] Cold start opens Home (51s)
+[Passed] Back from Login returns Home (43s)
+[Passed] Tab navigation (35s)
+[Passed] Sign-in session survives a relaunch; logout clears it (2m 5s)
+[Passed] Login keyboard return keys (1m 2s)
+[Passed] Explore error state and Retry (37s)
+[Passed] Profile is protected and reloads the user (1m 14s)
+7/7 Flows Passed in 7m 6s
+Take screenshot dark-home... COMPLETED
+Take screenshot dark-explore... COMPLETED
+E2E RETRY lines: 0
+
+== Earlier run 1: failed while the host was overloaded by unrelated jobs (load1 about 130-150 at the failure)
+[Passed] Cold start opens Home (1m 8s)
+[Failed] Back from Login returns Home (38s)
+1/2 Flow Failed
+E2E RETRY: a flow failed (see <scratch>/main-wt/e2e-results/ios/maestro.log); running the flows once more.
+[Passed] Cold start opens Home (48s)
+[Passed] Back from Login returns Home (55s)
+[Passed] Tab navigation (43s)
+[Passed] Sign-in session survives a relaunch; logout clears it (2m 49s)
+[Passed] Login keyboard return keys (1m 43s)
+[Passed] Explore error state and Retry (1m 4s)
+[Failed] Profile is protected and reloads the user (28s)
+1/7 Flow Failed
+
+== Earlier run 2: started at load1 14, which rose again during the run (5-minute average about 100 at the end)
+[Passed] Cold start opens Home (1m 19s)
+[Passed] Back from Login returns Home (1m 14s)
+[Passed] Tab navigation (1m 2s)
+[Passed] Sign-in session survives a relaunch; logout clears it (3m 55s)
+[Failed] Login keyboard return keys (33s)
+1/5 Flow Failed
+E2E RETRY: a flow failed (see <scratch>/main-wt/e2e-results/ios/maestro.log); running the flows once more.
+[Passed] Cold start opens Home (33s)
+[Passed] Back from Login returns Home (45s)
+[Passed] Tab navigation (40s)
+[Failed] Sign-in session survives a relaunch; logout clears it (23s)
+1/4 Flow Failed
+
+Every failed flow in the earlier runs failed at the same step: subflows/open-app.yaml openLink, "Simulator device failed to open exp://127.0.0.1:8081. Operation timed out" (NSPOSIXErrorDomain code 60), before the app loaded (screenshot: a blank Expo Go screen).

@@ -1,0 +1,36 @@
+== run 40191398896 (E2E (Android, manual) 1ecec296f761ff98b0be8f8a5b61fbb09bd79f8b)
+[Passed] Cold start opens Home (1m 13s)
+[Passed] Back from Login returns Home (51s)
+[Passed] Tab navigation (30s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 43s)
+[Passed] Login keyboard return keys (1m 4s)
+[Passed] Explore error state and Retry (33s)
+[Passed] Profile is protected and reloads the user (1m 10s)
+7/7 Flows Passed in 7m 3s
+Take screenshot dark-home... COMPLETED
+Take screenshot dark-explore... COMPLETED
+E2E RETRY lines: 0
+== run 40191401336 (E2E (Android, manual) 1ecec296f761ff98b0be8f8a5b61fbb09bd79f8b)
+[Passed] Cold start opens Home (43s)
+[Passed] Back from Login returns Home (42s)
+[Passed] Tab navigation (28s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 23s)
+[Passed] Login keyboard return keys (48s)
+[Passed] Explore error state and Retry (31s)
+[Passed] Profile is protected and reloads the user (55s)
+7/7 Flows Passed in 5m 30s
+Take screenshot dark-home... COMPLETED
+Take screenshot dark-explore...ERROR        | Failed to find ColorBuffer: 513
+E2E RETRY lines: 0
+== run 40191403612 (E2E (iOS, manual) 1ecec296f761ff98b0be8f8a5b61fbb09bd79f8b)
+[Passed] Cold start opens Home (6m 24s)
+[Passed] Back from Login returns Home (1m 6s)
+[Passed] Tab navigation (45s)
+[Passed] Sign-in session survives a relaunch; logout clears it (3m 44s)
+[Passed] Login keyboard return keys (1m 37s)
+[Passed] Explore error state and Retry (48s)
+[Passed] Profile is protected and reloads the user (1m 47s)
+7/7 Flows Passed in 16m 11s
+Take screenshot dark-home... COMPLETED
+Take screenshot dark-explore... COMPLETED
+E2E RETRY lines: 0

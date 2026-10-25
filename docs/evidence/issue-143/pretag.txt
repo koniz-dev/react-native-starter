@@ -1,0 +1,10 @@
+pretag check 2026-10-25T12:03:23Z
+open issues:
+#143 Release v1.1.17: zod security fix (#142)
+#142 Security: zod < 4.6.6 (GHSA-mrhx-c7xc-m3w5, high) fails the Audit workflow
+#137 Add a manual EAS build/submit workflow that stays inert without EXPO_TOKEN
+#134 Upgrade to Expo SDK 58 (React Native 0.88) when the store Expo Go supports it
+code-scanning open: 0
+dependabot open: 0
+secret-scanning open: 0
+origin/main: 1ecec296f761ff98b0be8f8a5b61fbb09bd79f8b
