@@ -1,9 +1,16 @@
-name: E2E (Android, manual)
+name: E2E (Android)
 
 # Runs the Maestro flows in .maestro/ on an Android emulator, in Expo Go or
 # in a native debug build of the development variant.
-# Manual only: an emulator run takes far longer than the verify job.
+# Not on push: an emulator run takes far longer than the verify job. It runs
+# when dispatched, and weekly (in Expo Go) in a repository that sets the
+# variable E2E_ANDROID_SCHEDULE to true, so that a change outside the
+# lockfile (the runner image, the emulator, a download) can't break the
+# flows unnoticed. Without the variable the weekly run is skipped and costs
+# nothing (docs/testing.md#end-to-end-flows-maestro).
 on:
+  schedule:
+    - cron: '17 3 * * 1'
   workflow_dispatch:
     inputs:
       app:
@@ -19,10 +26,13 @@ permissions:
 
 jobs:
   e2e-android:
-    name: Maestro on Android emulator (${{ inputs.app }})
+    name: Maestro on Android emulator (${{ inputs.app || 'expo-go' }})
+    if: github.event_name != 'schedule' || vars.E2E_ANDROID_SCHEDULE == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     env:
+      # A scheduled run has no inputs: it tests Expo Go.
+      APP: ${{ inputs.app || 'expo-go' }}
       MAESTRO_VERSION: '2.11.0'
       MAESTRO_SHA256: '5384593cb4e7a106489e75a821d157dd43f4e438df6bc308b72e82c685e1283a'
       # Expo Go for the project's SDK; update both on an SDK upgrade.
@@ -57,7 +67,7 @@ jobs:
           echo "$HOME/maestro/bin" >> "$GITHUB_PATH"
 
       - name: Download Expo Go (pinned, checksum verified)
-        if: inputs.app == 'expo-go'
+        if: env.APP == 'expo-go'
         run: |
           sdk="$(node -p "require('expo/package.json').version.split('.')[0]")"
           if [ "${EXPO_GO_VERSION%%.*}" != "$sdk" ]; then
@@ -71,7 +81,7 @@ jobs:
       # bundle from Metro on localhost:8081 (adb reverse), so the flows open
       # no link.
       - name: Build the native debug app (development variant)
-        if: inputs.app == 'native-debug'
+        if: env.APP == 'native-debug'
         run: |
           npm run prebuild:development -- --platform android
           # Gradle downloads the NDK and plugins; a download that breaks off
@@ -105,6 +115,35 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           retention-days: 14
-          name: e2e-android-${{ inputs.app }}-results
+          name: e2e-android-${{ env.APP }}-results
           path: e2e-results/android
           if-no-files-found: ignore
+
+  # A scheduled failure also opens an issue (or comments on the open one), so
+  # it is seen without watching the Actions tab. A job of its own: only it can
+  # write issues, and it runs none of the project's code.
+  report-failure:
+    name: Report the scheduled failure
+    needs: e2e-android
+    if: failure() && github.event_name == 'schedule'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    steps:
+      - name: Open or update the failure issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          title='Weekly E2E (Android) run failed'
+          number="$(gh issue list --state open --search "\"$title\" in:title" --json number,title \
+            --jq "map(select(.title == \"$title\")) | .[0].number // empty")"
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body "Failed again: $RUN_URL"
+          else
+            gh issue create --title "$title" --body "The weekly Maestro run on an Android emulator failed: $RUN_URL
+
+          Its Maestro results are attached to the run. Fix the cause, then dispatch the E2E (Android) workflow and close this issue when it passes."
+          fi
