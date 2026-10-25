@@ -1,0 +1,32 @@
+--- app/(tabs)/_layout.tsx	2026-10-19 23:03:26
++++ /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/4b4fa17a-b8dd-429b-8d69-af32f74c3a6f/scratchpad/nf-copy/app/(tabs)/_layout.tsx	2026-10-25 17:49:18
+@@ -41,16 +41,15 @@
+           ),
+         }}
+       />
+-      {/* @demo remove-block-start */}
+       <Tabs.Screen
+-        name="explore"
++        name="reports"
+         options={{
+-          title: t('tabs.explore'),
+-          tabBarAccessibilityLabel: t('tabs.explore'),
+-          tabBarButtonTestID: 'tab-explore',
++          title: t('reports.title'),
++          tabBarAccessibilityLabel: t('reports.title'),
++          tabBarButtonTestID: 'tab-reports',
+           tabBarIcon: ({ focused }) => (
+             <MaterialCommunityIcons
+-              name="compass"
++              name="circle-outline"
+               size={24}
+               color={focused ? tabBar.active : tabBar.inactive}
+               aria-hidden
+@@ -58,7 +57,6 @@
+           ),
+         }}
+       />
+-      {/* @demo remove-block-end */}
+     </Tabs>
+   );
+ }

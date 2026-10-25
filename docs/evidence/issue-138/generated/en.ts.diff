@@ -1,0 +1,95 @@
+--- shared/i18n/en.ts	2026-10-15 22:46:52
++++ /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/4b4fa17a-b8dd-429b-8d69-af32f74c3a6f/scratchpad/nf-copy/shared/i18n/en.ts	2026-10-25 17:49:19
+@@ -6,9 +6,6 @@
+ export const en = {
+   // Tabs
+   'tabs.home': 'Home',
+-  // @demo remove-block-start
+-  'tabs.explore': 'Explore',
+-  // @demo remove-block-end
+ 
+   // Home
+   'home.title': 'Welcome',
+@@ -19,40 +16,6 @@
+   'home.session.signIn': 'Sign in',
+   'home.session.logOut': 'Log out',
+   'home.session.viewProfile': 'View profile',
+-  // @demo remove-block-start
+-  'home.examples.title': 'Examples',
+-  'home.examples.todos': 'Todos (API example)',
+-  'home.examples.todosDescription':
+-    'Loading, error, and retry states with useFetch',
+-  'home.examples.showcase': 'Component showcase',
+-  'home.examples.showcaseDescription': 'React Native Paper under the app theme',
+-  'showcase.title': 'Component showcase',
+-  'showcase.heading': 'React Native Paper',
+-  'showcase.subheading': 'Material Design 3 Components',
+-  'showcase.textVariants': 'Text Variants',
+-  'showcase.headlineSmall': 'Headline Small',
+-  'showcase.titleLarge': 'Title Large',
+-  'showcase.bodyLarge': 'Body Large',
+-  'showcase.bodyMedium': 'Body Medium',
+-  'showcase.buttons': 'Buttons',
+-  'showcase.button.contained': 'Contained',
+-  'showcase.button.outlined': 'Outlined',
+-  'showcase.button.text': 'Text',
+-  'showcase.pressed': '{name} pressed',
+-  'showcase.card': 'Card',
+-  'showcase.cardTitle': 'Card Title',
+-  'showcase.cardBody': 'This is a card component from React Native Paper.',
+-  'showcase.cancel': 'Cancel',
+-  'showcase.ok': 'Ok',
+-  'showcase.cardPressed': 'Card: {name} pressed',
+-  'showcase.surface': 'Surface',
+-  'showcase.surfaceBody': 'Surface component with elevation',
+-  'showcase.snackbar': 'Snackbar (Toast)',
+-  'showcase.snackbarBody':
+-    'React Native Paper includes a Snackbar component for showing toast-like messages. No additional libraries needed!',
+-  'showcase.snackbarButton': 'Show Snackbar',
+-  'showcase.snackbarMessage': 'This is a snackbar message!',
+-  // @demo remove-block-end
+ 
+   // Profile (protected example screen)
+   'profile.title': 'Profile',
+@@ -75,25 +38,7 @@
+   'login.error.usernameRequired': 'Please enter your username',
+   'login.error.passwordRequired': 'Please enter your password',
+   'login.error.generic': 'Login failed. Please try again.',
+-  // @demo remove-block-start
+-  'login.demoHint':
+-    'Demo backend (DummyJSON): sign in as {username} / {password}. For your backend, set EXPO_PUBLIC_AUTH_API_URL and register an AuthAdapter.',
+ 
+-  // Explore (API example)
+-  'explore.title': 'API Example',
+-  'explore.subtitle': 'Fetching todos from JSONPlaceholder API',
+-  'explore.loading': 'Loading todos...',
+-  'explore.retry': 'Retry',
+-  'explore.reload': 'Reload',
+-  'explore.retrying': 'Loading...',
+-  'explore.errorTitle': 'Error',
+-  'explore.errorAnnouncement': 'Error. {message}',
+-  'explore.listTitle': 'Todos ({count})',
+-  'explore.empty': 'No todos found',
+-  'explore.done': 'Done',
+-  'explore.todoMeta': 'User ID: {userId} • ID: {id}',
+-  // @demo remove-block-end
+-
+   // Not found (app/+not-found.tsx)
+   'notFound.title': 'Page not found',
+   'notFound.message': "This link doesn't lead to a screen in the app.",
+@@ -119,6 +64,15 @@
+   'configError.title': 'Configuration error',
+   'configError.body':
+     'The environment variables for this build are missing or invalid. Fix them in your .env file (see .env.example) or build profile, then restart the app.',
++
++  // Reports
++  'reports.title': 'Reports',
++
++  // Account
++  'account.title': 'Account',
++
++  // Settings
++  'settings.title': 'Settings',
+ } as const;
+ 
+ export type TranslationKey = keyof typeof en;

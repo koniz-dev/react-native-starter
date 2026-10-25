@@ -1,0 +1,112 @@
+
+> react-native-starter@1.0.0 lint
+> eslint . --max-warnings 0
+
+
+> react-native-starter@1.0.0 type-check
+> tsc --noEmit && tsc --noEmit -p tsconfig.tools.json
+
+
+> react-native-starter@1.0.0 test:ci
+> jest --coverage
+
+-----------------------------------|---------|----------|---------|---------|-------------------
+File                               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-----------------------------------|---------|----------|---------|---------|-------------------
+All files                          |    98.9 |    95.57 |    97.7 |   99.16 |                   
+ app                               |     100 |    90.62 |      70 |     100 |                   
+  +not-found.tsx                   |       0 |        0 |       0 |       0 |                   
+  _layout.tsx                      |     100 |    90.62 |      70 |     100 | 135-137           
+  showcase.tsx                     |       0 |        0 |       0 |       0 |                   
+ app/(app)                         |     100 |      100 |     100 |     100 |                   
+  _layout.tsx                      |     100 |      100 |     100 |     100 |                   
+  profile.tsx                      |       0 |        0 |       0 |       0 |                   
+ app/(auth)                        |     100 |      100 |     100 |     100 |                   
+  _layout.tsx                      |     100 |      100 |     100 |     100 |                   
+  login.tsx                        |       0 |        0 |       0 |       0 |                   
+ app/(tabs)                        |     100 |      100 |     100 |     100 |                   
+  _layout.tsx                      |     100 |      100 |     100 |     100 |                   
+  explore.tsx                      |       0 |        0 |       0 |       0 |                   
+  index.tsx                        |       0 |        0 |       0 |       0 |                   
+ features/auth/screens             |     100 |    97.36 |     100 |     100 |                   
+  LoginScreen.tsx                  |     100 |      100 |     100 |     100 |                   
+  ProfileScreen.tsx                |     100 |    94.44 |     100 |     100 | 50                
+ features/demo-auth                |     100 |     87.5 |     100 |     100 |                   
+  DemoCredentialsHint.tsx          |     100 |      100 |     100 |     100 |                   
+  dummyJsonAdapter.ts              |     100 |    83.33 |     100 |     100 | 33                
+ features/demo-showcase/components |     100 |      100 |     100 |     100 |                   
+  ExampleLinks.tsx                 |     100 |      100 |     100 |     100 |                   
+ features/demo-showcase/screens    |     100 |      100 |     100 |     100 |                   
+  ShowcaseScreen.tsx               |     100 |      100 |     100 |     100 |                   
+ features/demo-todos               |       0 |        0 |       0 |       0 |                   
+  types.ts                         |       0 |        0 |       0 |       0 |                   
+ features/demo-todos/api           |     100 |      100 |     100 |     100 |                   
+  todosApi.ts                      |     100 |      100 |     100 |     100 |                   
+ features/demo-todos/screens       |     100 |      100 |     100 |     100 |                   
+  TodosScreen.tsx                  |     100 |      100 |     100 |     100 |                   
+ features/home/screens             |     100 |      100 |     100 |     100 |                   
+  HomeScreen.tsx                   |     100 |      100 |     100 |     100 |                   
+ features/not-found/screens        |     100 |      100 |     100 |     100 |                   
+  NotFoundScreen.tsx               |     100 |      100 |     100 |     100 |                   
+ shared/config                     |     100 |    97.95 |     100 |     100 |                   
+  env.ts                           |     100 |    97.95 |     100 |     100 | 148               
+  featureFlags.ts                  |     100 |      100 |     100 |     100 |                   
+ shared/http                       |   97.77 |    96.13 |     100 |   98.75 |                   
+  api.ts                           |     100 |      100 |     100 |     100 |                   
+  apiError.ts                      |   98.03 |    97.14 |     100 |   97.67 | 91                
+  errorMessage.ts                  |     100 |      100 |     100 |     100 |                   
+  httpClient.ts                    |    97.5 |    95.09 |     100 |   99.07 | 165               
+ shared/i18n                       |     100 |    83.33 |     100 |     100 |                   
+  en.ts                            |     100 |      100 |     100 |     100 |                   
+  index.ts                         |     100 |    83.33 |     100 |     100 | 38                
+ shared/integrations               |   96.87 |    80.76 |     100 |   96.22 |                   
+  analytics.ts                     |     100 |     87.5 |     100 |     100 | 25                
+  errorReporter.ts                 |   88.23 |    63.63 |     100 |   83.33 | 41,63             
+  featureFlags.ts                  |     100 |      100 |     100 |     100 |                   
+  pushNotifications.ts             |     100 |      100 |     100 |     100 |                   
+  seam.ts                          |     100 |      100 |     100 |     100 |                   
+  setup.ts                         |     100 |      100 |     100 |     100 |                   
+  updates.ts                       |     100 |      100 |     100 |     100 |                   
+  useScreenTracking.ts             |     100 |      100 |     100 |     100 |                   
+ shared/lib                        |   98.49 |    93.97 |     100 |   98.33 |                   
+  logger.ts                        |   97.77 |    92.85 |     100 |    97.5 | 187-188           
+  useFetch.ts                      |     100 |      100 |     100 |     100 |                   
+ shared/session                    |   98.89 |      100 |   96.42 |    99.4 |                   
+  SessionProvider.tsx              |     100 |      100 |     100 |     100 |                   
+  authService.ts                   |   96.36 |      100 |   84.61 |   98.03 | 96                
+  session.ts                       |     100 |      100 |     100 |     100 |                   
+  tokenStore.ts                    |     100 |      100 |     100 |     100 |                   
+ shared/storage                    |     100 |      100 |     100 |     100 |                   
+  secureStorage.ts                 |     100 |      100 |     100 |     100 |                   
+  storage.ts                       |     100 |      100 |     100 |     100 |                   
+ shared/ui                         |     100 |    92.59 |   96.77 |     100 |                   
+  ConfigErrorScreen.tsx            |     100 |      100 |     100 |     100 |                   
+  DocumentTitle.tsx                |     100 |      100 |     100 |     100 |                   
+  DocumentTitle.web.tsx            |     100 |      100 |     100 |     100 |                   
+  ErrorBoundary.tsx                |     100 |    93.33 |   93.33 |     100 | 68                
+  LoadingScreen.tsx                |     100 |      100 |     100 |     100 |                   
+  theme.ts                         |     100 |    83.33 |     100 |     100 | 66                
+  useAnnouncement.ts               |     100 |      100 |     100 |     100 |                   
+-----------------------------------|---------|----------|---------|---------|-------------------
+
+Test Suites: 50 passed, 50 total
+Tests:       750 passed, 750 total
+Snapshots:   0 total
+Time:        67.238 s, estimated 106 s
+Ran all test suites.
+
+> react-native-starter@1.0.0 format:check
+> prettier --check "**/*.{ts,tsx,js,jsx,json,md}"
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> react-native-starter@1.0.0 docs:check
+> node scripts/check-docs.js
+
+Checked 19 files: 42 TypeScript snippets compiled with tsc.
+Skipped docs/api-and-storage.md:421: needs @tanstack/react-query (not installed).
+Skipped docs/recipes/state-management.md:41: needs zustand (not installed).
+Skipped docs/recipes/state-management.md:100: needs @reduxjs/toolkit, react-redux (not installed).
+Skipped docs/recipes/state-management.md:175: needs jotai (not installed).
+No problems.

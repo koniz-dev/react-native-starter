@@ -1,0 +1,164 @@
+// ===== features/reports/screens/ReportsScreen.tsx
+import { StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Text, useTheme } from 'react-native-paper';
+import { t } from '@/shared/i18n';
+import { DocumentTitle } from '@/shared/ui/DocumentTitle';
+
+/** The Reports screen (`/reports`). */
+export function ReportsScreen() {
+  const theme = useTheme();
+  return (
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
+      <DocumentTitle title={t('reports.title')} />
+      <Text
+        variant="headlineMedium"
+        accessibilityRole="header"
+        style={styles.content}
+        testID="reports-title"
+      >
+        {t('reports.title')}
+      </Text>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 16 },
+  content: { width: '100%', maxWidth: 720, alignSelf: 'center' },
+});
+
+// ===== features/account/screens/AccountScreen.tsx
+import { StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Stack } from 'expo-router';
+import { Text, useTheme } from 'react-native-paper';
+import { t } from '@/shared/i18n';
+import { DocumentTitle } from '@/shared/ui/DocumentTitle';
+
+/** The Account screen (`/account`). */
+export function AccountScreen() {
+  const theme = useTheme();
+  return (
+    <SafeAreaView
+      edges={['bottom', 'left', 'right']}
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
+      <Stack.Screen options={{ title: t('account.title') }} />
+      <DocumentTitle title={t('account.title')} />
+      <Text
+        variant="headlineMedium"
+        accessibilityRole="header"
+        style={styles.content}
+        testID="account-title"
+      >
+        {t('account.title')}
+      </Text>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 16 },
+  content: { width: '100%', maxWidth: 720, alignSelf: 'center' },
+});
+
+// ===== features/settings/screens/SettingsScreen.tsx
+import { StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Stack } from 'expo-router';
+import { Text, useTheme } from 'react-native-paper';
+import { t } from '@/shared/i18n';
+import { DocumentTitle } from '@/shared/ui/DocumentTitle';
+
+/** The Settings screen (`/settings`). */
+export function SettingsScreen() {
+  const theme = useTheme();
+  return (
+    <SafeAreaView
+      edges={['bottom', 'left', 'right']}
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
+      <Stack.Screen
+        options={{ headerShown: true, title: t('settings.title') }}
+      />
+      <DocumentTitle title={t('settings.title')} />
+      <Text
+        variant="headlineMedium"
+        accessibilityRole="header"
+        style={styles.content}
+        testID="settings-title"
+      >
+        {t('settings.title')}
+      </Text>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 16 },
+  content: { width: '100%', maxWidth: 720, alignSelf: 'center' },
+});
+
+// ===== app/(tabs)/reports.tsx
+export { ReportsScreen as default } from '@/features/reports/screens/ReportsScreen';
+
+// ===== app/(app)/account.tsx
+export { AccountScreen as default } from '@/features/account/screens/AccountScreen';
+
+// ===== app/settings.tsx
+export { SettingsScreen as default } from '@/features/settings/screens/SettingsScreen';
+
+// ===== __tests__/features/account/AccountScreen.test.tsx
+import { renderRouter, screen } from 'expo-router/testing-library';
+import { setItem, STORAGE_KEYS } from '@/shared/storage/storage';
+import { secureStore } from '@/testing';
+
+describe('<AccountScreen />', () => {
+  it('opens at /account with its title', async () => {
+    // The route needs sign-in: store a session for the app to restore.
+    secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
+    await setItem(STORAGE_KEYS.USER_DATA, {
+      id: 1,
+      email: 'user@example.com',
+      name: 'User',
+    });
+    const app = await renderRouter('./app', { initialUrl: '/account' });
+
+    expect(await screen.findByTestId('account-title')).toHaveTextContent(
+      'Account'
+    );
+    expect(app.getPathname()).toBe('/account');
+  });
+});
+
+// ===== __tests__/features/settings/SettingsScreen.test.tsx
+import { renderRouter, screen } from 'expo-router/testing-library';
+
+describe('<SettingsScreen />', () => {
+  it('opens at /settings with its title', async () => {
+    const app = await renderRouter('./app', { initialUrl: '/settings' });
+
+    expect(await screen.findByTestId('settings-title')).toHaveTextContent(
+      'Settings'
+    );
+    expect(app.getPathname()).toBe('/settings');
+  });
+});
+
+// ===== __tests__/features/reports/ReportsScreen.test.tsx
+import { renderRouter, screen } from 'expo-router/testing-library';
+
+describe('<ReportsScreen />', () => {
+  it('opens at /reports with its title', async () => {
+    const app = await renderRouter('./app', { initialUrl: '/reports' });
+
+    expect(await screen.findByTestId('reports-title')).toHaveTextContent(
+      'Reports'
+    );
+    expect(app.getPathname()).toBe('/reports');
+  });
+});
+

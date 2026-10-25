@@ -1,0 +1,28 @@
+$ npm run new-feature -- Settings
+new-feature: "Settings" is not a kebab-case name (lowercase letters, digits, and single hyphens, starting with a letter).
+exit 2
+$ npm run new-feature -- order--history
+new-feature: "order--history" is not a kebab-case name (lowercase letters, digits, and single hyphens, starting with a letter).
+exit 2
+$ npm run new-feature -- index
+new-feature: "index" is reserved; choose another name.
+exit 2
+$ npm run new-feature -- demo-notes
+new-feature: "demo-notes" is reserved; choose another name.
+exit 2
+$ npm run new-feature -- home
+new-feature: "home" already exists: features/home, __tests__/features/home, shared/i18n/en.ts (keys starting with home.).
+exit 2
+$ npm run new-feature -- login
+new-feature: "login" already exists: app/(auth)/login.tsx, shared/i18n/en.ts (keys starting with login.).
+exit 2
+$ npm run new-feature -- common
+new-feature: "common" already exists: shared/i18n/en.ts (keys starting with common.).
+exit 2
+$ npm run new-feature -- notes --route modal
+new-feature: --route must be one of: public, signed-in, tab.
+exit 2
+$ npm run new-feature -- 
+new-feature: Give the feature a name.
+exit 2
+$ git status --porcelain (empty: nothing changed)

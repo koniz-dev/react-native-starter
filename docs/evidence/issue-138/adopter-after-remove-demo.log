@@ -1,0 +1,27 @@
+# fresh copy of the working tree (sdk-58 + #138 changes), as an adopter would use it
+$ node scripts/remove-demo.js --force --no-summary
+  delete __tests__/scripts/removeDemo.test.ts
+  delete scripts/remove-demo.js
+$ grep -c demo scripts/new-feature.js __tests__/scripts/newFeature.test.ts
+__tests__/scripts/newFeature.test.ts:0
+scripts/new-feature.js:0
+$ npm run new-feature -- reports --route tab / account --route signed-in / settings
+Created the Reports feature (/reports, tab):
+Created the Account feature (/account, signed-in):
+Created the Settings feature (/settings, public):
+$ npm run lint && npm run type-check && npm run test:ci && npm run format:check
+exit 1
+  ● init-project on a copy of the template › sets the identity and deletes itself
+  ● init-project on a copy of the template › removes the demo with --remove-demo and refuses a second run
+  ● init-project on a copy of the template › sets the identity and deletes itself
+  ● init-project on a copy of the template › removes the demo with --remove-demo and refuses a second run
+Tests:       2 failed, 2 skipped, 697 passed, 701 total
+$ npm run lint && npm run type-check && npm run test:ci && npm run format:check   (log kept outside the copy)
+exit 0
+All matched files use Prettier code style!
+Tests:       2 skipped, 699 passed, 701 total
+  AccountScreen.tsx         |     100 |      100 |     100 |     100 |                   
+  ReportsScreen.tsx         |     100 |      100 |     100 |     100 |                   
+  SettingsScreen.tsx        |     100 |      100 |     100 |     100 |                   
+Test Suites: 48 passed, 48 total
+Tests:       2 skipped, 699 passed, 701 total
