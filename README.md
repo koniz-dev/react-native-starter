@@ -186,6 +186,11 @@ inherit them):
   gh api 'repos/koniz-dev/react-native-starter/secret-scanning/alerts?state=open' -q 'length'
   ```
 - **Actions must be pinned to a full commit SHA** (every workflow is).
+- **Variable `E2E_ANDROID_SCHEDULE=true`** (set 2026-10-25, #141): turns on
+  the weekly Expo Go run of E2E (Android). Copies of the template don't
+  inherit it, so theirs is skipped. The schedule only fires from `main`, so
+  it starts once the workflow change (on `sdk-58`) is merged. A failed weekly
+  run opens or updates the issue "Weekly E2E (Android) run failed".
 
 ## Dependencies held back
 
