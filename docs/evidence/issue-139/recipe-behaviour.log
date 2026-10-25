@@ -1,0 +1,11 @@
+# The recipe's sslPinning.ts block, extracted verbatim into a copy of sdk-58 as shared/http/sslPinning.ts, with the native library mocked (recipe-behaviour.test.ts)
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        4.131 s, estimated 17 s
+Ran all test suites matching __tests__/recipe.
+
+# Mutant: the interceptor registration removed (client.interceptors.request.use(waitForPinning) -> void client)
+  ● fails requests closed when pinning fails to start
+  ● pins both hosts and holds requests until pinning is on
+Tests:       2 failed, 1 passed, 3 total

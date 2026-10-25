@@ -1,0 +1,22 @@
+## remove-demo, then docs:check (recipe libraries linked as in CI)
+remove-demo exit 0
+docs/recipes/certificate-pinning.md
+docs/recipes/state-management.md
+Checked 19 files: 46 TypeScript snippets compiled with tsc.
+No problems.
+AGENTS.md:1
+docs/README.md:1
+
+## init-project (default: recipes removed)
+init exit 0
+ls: docs/recipes: No such file or directory
+grep exit 1 (1 = no mention left)
+No problems.
+
+## init-project --keep-recipes
+init exit 0
+docs/recipes/certificate-pinning.md
+docs/recipes/state-management.md
+docs/README.md:33:- [Certificate Pinning](recipes/certificate-pinning.md): public-key pinning
+AGENTS.md:162:- [Certificate Pinning](docs/recipes/certificate-pinning.md): public-key
+No problems.
