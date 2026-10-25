@@ -1,0 +1,8 @@
+# Triggers, guards, and permissions of .github/workflows/e2e-android.yml at ab4d519
+on: {"schedule":[{"cron":"17 3 * * 1"}],"workflow_dispatch":{"inputs":{"app":{"description":"App to test: expo-go, or native-debug (prebuild + Gradle assembleDebug)","type":"choice","options":["expo-go","native-debug"],"default":"expo-go"}}}}
+top-level permissions: {"contents":"read"}
+job e2e-android: if="github.event_name != 'schedule' || vars.E2E_ANDROID_SCHEDULE == 'true'" needs=null permissions="(top-level)" env.APP="${{ inputs.app || 'expo-go' }}"
+job report-failure: if="failure() && github.event_name == 'schedule'" needs="e2e-android" permissions={"issues":"write"} env.APP=null
+e2e-android steps: Check out repository | Set up Node.js | Set up Java 17 (Maestro) | Install dependencies | Install the Maestro CLI (release zip, checksum verified) | Download Expo Go (pinned, checksum verified) [if env.APP == 'expo-go'] | Build the native debug app (development variant) [if env.APP == 'native-debug'] | Enable KVM | Run the flows on an emulator | Upload Maestro results [if always()]
+actions/cache used: false
+setup-node cache: {"node-version-file":".nvmrc","cache":"npm"}

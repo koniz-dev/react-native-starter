@@ -1,0 +1,20 @@
+# gh run view 40189890830 (workflow_dispatch, ref sdk-58, head ab4d519, app=expo-go)
+head ab4d519cf42d153bd2995b869f7c0f8d8e09d846 event workflow_dispatch conclusion success
+job Maestro on Android emulator (expo-go): success
+job Report the scheduled failure: skipped
+
+[Passed] Cold start opens Home (1m 18s)
+[Passed] Back from Login returns Home (56s)
+[Passed] Tab navigation (30s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 45s)
+[Passed] Login keyboard return keys (1m 4s)
+[Passed] Explore error state and Retry (34s)
+[Passed] Profile is protected and reloads the user (1m 10s)
+7/7 Flows Passed in 7m 16s
+
+# maestro-dark.log (tail)
+  Run flow when "API Example" is not visible... SKIPPED
+Run subflows/tap-after-launch.yaml... COMPLETED
+Assert that "API Example" is visible... COMPLETED
+Take screenshot dark-explore... COMPLETED
+Tap on id: tab-home... COMPLETED

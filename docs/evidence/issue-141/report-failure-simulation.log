@@ -1,0 +1,11 @@
+# The report-failure job's run script, extracted from .github/workflows/e2e-android.yml at ab4d519, run with a fake gh (create/comment are printed, issue list answers through the real --jq)
+## no open issue -> create
+gh [issue] [create] [--title] [Weekly E2E (Android) run failed] [--body] [The weekly Maestro run on an Android emulator failed: https://example.invalid/run/1
+
+Its Maestro results are attached to the run. Fix the cause, then dispatch the E2E (Android) workflow and close this issue when it passes.]
+
+## open issue #12 -> comment
+gh [issue] [comment] [12] [--body] [Failed again: https://example.invalid/run/2]
+
+## the real search + --jq against this repository (read-only): expect nothing
+exit 0

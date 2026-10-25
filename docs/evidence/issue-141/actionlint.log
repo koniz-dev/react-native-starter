@@ -1,0 +1,2 @@
+$ actionlint .github/workflows/e2e-android.yml
+exit 0
