@@ -24,6 +24,14 @@ preview). See [`docs/remove-demo.md`](../docs/remove-demo.md).
 
 <!-- @demo remove-block-end -->
 
+## `new-feature.js`
+
+Scaffolds a feature with one screen (`npm run new-feature -- <name>`, with
+`--route signed-in` or `--route tab` for the other route groups): the
+screen, its route file, its title string, and a test that opens the route.
+It refuses a name that isn't kebab-case or already exists, changing nothing.
+See [Adding a screen](../docs/conventions.md#adding-a-screen).
+
 ## `check-docs.js`
 
 Checks the docs against the code (`npm run docs:check`, also run in CI):

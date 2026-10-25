@@ -105,6 +105,14 @@ Route groups export a route-level error boundary
 
 ## Adding a screen
 
+`npm run new-feature -- <name>` does the steps below for a new feature with
+one screen: the screen, the route file, its title string in
+`shared/i18n/en.ts`, and a test that opens the route. The default is a
+public route under the root stack; add `--route signed-in` for
+`app/(app)/`, or `--route tab` for a tab (it also declares the tab in
+`app/(tabs)/_layout.tsx`). The name is kebab-case (`order-history`); one that already
+exists is refused. By hand:
+
 ```tsx
 // features/settings/screens/SettingsScreen.tsx
 import { StyleSheet } from 'react-native';

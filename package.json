@@ -20,6 +20,7 @@
     "config:print": "expo config --type public",
     "init-project": "node scripts/init-project.js",
     "remove-demo": "node scripts/remove-demo.js",
+    "new-feature": "node scripts/new-feature.js",
     "docs:check": "node scripts/check-docs.js",
     "audit:check": "node scripts/check-audit.js",
     "doctor": "EXPO_OFFLINE=1 npm_config_loglevel=notice expo-doctor",
