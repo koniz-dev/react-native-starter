@@ -1,0 +1,14 @@
+Tag at 2026-10-25T14:12:21Z (pushed 14:11Z; title edited to the v1.1.N: <summary> pattern afterwards)
+object 1ecec296f761ff98b0be8f8a5b61fbb09bd79f8b
+type commit
+tag v1.1.17
+tagger koniz-dev <kietna.work@gmail.com> 1792937502 +0700
+
+v1.1.17: zod security fix (#142)
+
+Refs koniz-dev/react-native-starter#143
+remote: 1ecec296f761ff98b0be8f8a5b61fbb09bd79f8b	refs/tags/v1.1.17^{}
+origin/main: 1ecec296f761ff98b0be8f8a5b61fbb09bd79f8b
+{"isDraft":false,"isPrerelease":false,"name":"v1.1.17: zod security fix","publishedAt":"2026-10-25T14:11:45Z","tagName":"v1.1.17","url":"https://github.com/koniz-dev/react-native-starter/releases/tag/v1.1.17"}
+latest release: v1.1.17 2026-10-25T14:11:45Z
+v1.1.16 name: v1.1.16: eighth deep audit fixes

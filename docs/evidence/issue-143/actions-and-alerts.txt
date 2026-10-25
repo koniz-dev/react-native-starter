@@ -1,0 +1,19 @@
+After publishing, 2026-10-25T14:12:23Z
+code-scanning open alerts: 0
+dependabot open alerts: 0
+secret-scanning open alerts: 0
+CodeQL analyses on 1ecec29:
+  /language:javascript-typescript results=0 2026-10-25T09:53:54Z
+  /language:actions results=0 2026-10-25T09:53:39Z
+runs on 1ecec29:
+  E2E (iOS, manual) success 40191403612
+  E2E (Android, manual) success 40191401336
+  E2E (Android, manual) success 40191398896
+  CodeQL success 40182489346
+  CI success 40182489225
+  Audit success 40182489172
+open issues:
+143
+142
+137
+134
