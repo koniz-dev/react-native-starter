@@ -73,6 +73,49 @@ own name, bundle ID, and scheme, so all three install side by side:
 4. Build: `eas build --platform android --profile preview` (or `ios`). See
    [Expo: create your first build](https://docs.expo.dev/build/setup/).
 
+### EAS Build from GitHub Actions
+
+The **EAS Build (manual)** workflow (`.github/workflows/eas-build.yml`)
+runs the same build from the Actions tab. It does nothing until you enable
+it: without an `EXPO_TOKEN` secret, a run succeeds with a notice saying how.
+
+1. Do [EAS Build, the first time](#eas-build-the-first-time) (the project
+   ID must be in `app.config.ts`).
+2. Create an access token at
+   [expo.dev/settings/access-tokens](https://expo.dev/settings/access-tokens)
+   and add it as the repository secret `EXPO_TOKEN` (**Settings → Secrets and
+   variables → Actions**).
+3. Run the workflow (**Actions → EAS Build (manual) → Run workflow**, or
+   `gh workflow run eas-build.yml -f profile=preview -f platform=android`).
+
+| Input      | Values                                 | Default   |
+| ---------- | -------------------------------------- | --------- |
+| `profile`  | `preview`, `production` (`eas.json`)   | `preview` |
+| `platform` | `android`, `ios`, `all`                | `android` |
+| `submit`   | submit to the stores (production only) | off       |
+
+The build runs without prompts (`--non-interactive`), so credentials it
+can't create on its own must already be on EAS:
+
+- **Android:** EAS generates the upload keystore on the first build.
+- **iOS:** run the first build of each profile locally (for example
+  `eas build --platform ios --profile production`), so that EAS can set up
+  the certificate and provisioning profile with your Apple account; later
+  builds reuse them.
+- **Submit** (`--auto-submit`, with the `production` submit profile in
+  `eas.json`): set up a Google service account key and an App Store Connect
+  API key once with `eas credentials`. See
+  [Expo: submit](https://docs.expo.dev/submit/introduction/).
+
+Raise `APP_BUILD_NUMBER` in `eas.json` before each store upload (step 3
+of [EAS Build, the first time](#eas-build-the-first-time)). A run waits for the build, so its result is the build's; a newer
+run for the same profile and platform waits rather than cancelling it.
+
+The workflow builds binaries only. A JavaScript-only change can reach
+installed apps as an over-the-air update with `eas update` instead of a new
+build, once you add `expo-updates` ([Plug In a Provider](plug-in-a-provider.md#ota-updates));
+a change to native code or to `runtimeVersion` still needs a build.
+
 ## Icons and splash screen
 
 All four images are placeholders. Replace the files, keeping their names and
