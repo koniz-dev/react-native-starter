@@ -1,0 +1,6 @@
+$ actionlint --version
+1.7.12
+installed from Homebrew
+built with go1.26.3 compiler for darwin/amd64
+$ actionlint .github/workflows/eas-build.yml
+exit 0

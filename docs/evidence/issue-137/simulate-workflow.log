@@ -1,0 +1,52 @@
+
+## {"profile":"preview","platform":"android","submit":false} EXPO_TOKEN=empty
+JOB SUCCEEDS
+  run   Check for EXPO_TOKEN: exit 0
+        ::notice title=EAS Build skipped::No EXPO_TOKEN secret. Create an access token at https://expo.dev/settings/access-tokens and add it as the repository secret EXPO_TOKEN (docs/app-config.md, EAS Build from GitHub Actions).
+  skip  Check the inputs
+  skip  Check out repository
+  skip  Set up Node.js
+  skip  Install dependencies
+  skip  Build on EAS
+
+## {"profile":"production","platform":"all","submit":true} EXPO_TOKEN=empty
+JOB SUCCEEDS
+  run   Check for EXPO_TOKEN: exit 0
+        ::notice title=EAS Build skipped::No EXPO_TOKEN secret. Create an access token at https://expo.dev/settings/access-tokens and add it as the repository secret EXPO_TOKEN (docs/app-config.md, EAS Build from GitHub Actions).
+  skip  Check the inputs
+  skip  Check out repository
+  skip  Set up Node.js
+  skip  Install dependencies
+  skip  Build on EAS
+
+## {"profile":"preview","platform":"android","submit":false} EXPO_TOKEN=set
+JOB SUCCEEDS
+  run   Check for EXPO_TOKEN: exit 0
+  skip  Check the inputs
+  run   Check out repository (uses actions/checkout)
+  run   Set up Node.js (uses actions/setup-node)
+  run   Install dependencies: exit 0
+        (npm ci)
+  run   Build on EAS: exit 0
+        WOULD RUN: eas-cli@24.13.0 build --platform android --profile preview --non-interactive
+
+## {"profile":"production","platform":"ios","submit":true} EXPO_TOKEN=set
+JOB SUCCEEDS
+  run   Check for EXPO_TOKEN: exit 0
+  skip  Check the inputs
+  run   Check out repository (uses actions/checkout)
+  run   Set up Node.js (uses actions/setup-node)
+  run   Install dependencies: exit 0
+        (npm ci)
+  run   Build on EAS: exit 0
+        WOULD RUN: eas-cli@24.13.0 build --platform ios --profile production --non-interactive --auto-submit
+
+## {"profile":"preview","platform":"android","submit":true} EXPO_TOKEN=set
+JOB FAILS
+  run   Check for EXPO_TOKEN: exit 0
+  run   Check the inputs: exit 1
+        ::error::Only production builds are submitted: eas.json has a production submit profile, and preview builds are for internal distribution.
+  skip  Check out repository
+  skip  Set up Node.js
+  skip  Install dependencies
+  skip  Build on EAS
