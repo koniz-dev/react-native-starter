@@ -40,16 +40,15 @@ The same code runs on Android and on the web.</sub></p>
 
 ## Why this starter
 
-- **Configure, don't rebuild.** Validated config, an HTTP client with timeouts
-  and 401 handling, secure token storage, an error boundary and logger, build
-  variants, and CI already work. You extend them instead of adding parallel
-  systems.
-- **No vendor lock-in.** Analytics, feature flags, push, OTA updates, error
-  reporting, and i18n each have a typed seam with a no-op or console default.
-  Adding a provider is one adapter, registered in one file.
-- **Tested like a product.** Unit and full-app routing tests with coverage
-  thresholds, Maestro flows on iOS and Android, and docs whose code snippets
-  compile in CI.
+- **A working foundation.** Everything in [What you get](#what-you-get)
+  already works together and is tested, so you extend it instead of adding
+  parallel systems.
+- **No vendor lock-in.** Each external service has a typed seam with a no-op
+  or console default; adding a provider is one adapter, registered in one
+  file.
+- **Verified, not assumed.** CI enforces coverage thresholds and compiles the
+  docs' code snippets, and Maestro flows cover iOS and Android
+  ([Quality gates](#quality-gates)).
 - **Yours in one command.** `npm run init-project` sets your app's name and
   IDs and removes the template's text. The starter ships no credentialed
   services.
@@ -64,9 +63,7 @@ npm start              # then press i, a, or w, or scan the QR code with Expo Go
 
 <!-- @init remove-block-start -->
 
-Made a repository from this template? Run `npm run init-project` first: it
-sets your app's name and IDs and removes what belongs to the template
-([Getting Started](docs/getting-started.md#make-it-your-project-first)).
+Made a repository from this template? Run `npm run init-project` first.
 
 <!-- @init remove-block-end -->
 
