@@ -1,0 +1,28 @@
+## remove-demo, then docs:check (recipe libraries linked as in CI)
+remove-demo exit 0
+docs/recipes/certificate-pinning.md
+docs/recipes/localization.md
+docs/recipes/state-management.md
+Checked 20 files: 49 TypeScript snippets compiled with tsc.
+No problems.
+AGENTS.md:1
+docs/README.md:1
+docs/plug-in-a-provider.md:1
+0
+
+## init-project --remove-recipes
+init exit 0
+ls: docs/recipes: No such file or directory
+grep exit 1 (1 = nothing left)
+No problems.
+
+## init-project --keep-recipes
+init exit 0
+docs/recipes/certificate-pinning.md
+docs/recipes/localization.md
+docs/recipes/state-management.md
+AGENTS.md:164:- [A Second Language](docs/recipes/localization.md): device locale,
+docs/README.md:35:- [A Second Language](recipes/localization.md): the device's language,
+docs/plug-in-a-provider.md:270:[Recipe: A Second Language](recipes/localization.md) does this end to end:
+@recipes markers left in plug-in-a-provider.md: 0
+No problems.
