@@ -267,6 +267,14 @@ const vi: Translations = { ...en, 'tabs.home': 'Trang chủ' };
 i18nSeam.set(createDictionaryI18n('vi', vi));
 ```
 
+<!-- @recipes remove-block-start -->
+
+[Recipe: A Second Language](recipes/localization.md) does this end to end:
+the device's languages with `expo-localization`, English fallback,
+right-to-left layout, and a test for missing keys.
+
+<!-- @recipes remove-block-end -->
+
 To use a library such as i18next, wrap it in the `I18n` interface (`locale`
 and `t(key, params)`). The seam is read when a screen renders; if users
 switch language at runtime, re-render the app afterwards.

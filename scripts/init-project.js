@@ -66,6 +66,7 @@ const RECIPE_MARKED_FILES = [
   'AGENTS.md',
   'docs/README.md',
   'docs/api-and-storage.md',
+  'docs/plug-in-a-provider.md',
   '.github/workflows/ci.yml',
 ];
 const ALLOWLIST = 'scripts/audit-allowlist.json';
@@ -383,7 +384,7 @@ async function collectInput(args) {
     if (removeRecipes && !args.flags.has('--remove-recipes') && rl) {
       const answer = (
         await question(
-          'Keep the recipes in docs/recipes (state management, certificate pinning)? (y/N): '
+          'Keep the recipes in docs/recipes (state management, certificate pinning, a second language)? (y/N): '
         )
       ).trim();
       removeRecipes = !/^y(es)?$/i.test(answer);

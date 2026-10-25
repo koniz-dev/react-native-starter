@@ -167,5 +167,7 @@ Keep commits small and single-purpose.
   recipes.
 - [Certificate Pinning](docs/recipes/certificate-pinning.md): public-key
   pinning for the API hosts.
+- [A Second Language](docs/recipes/localization.md): device locale,
+  fallback, and RTL.
 
 <!-- @recipes remove-block-end -->

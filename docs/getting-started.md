@@ -22,7 +22,7 @@ Then it:
 - makes you the owner of the advisory review in `scripts/audit-allowlist.json`;
 - removes the demo if you chose to;
 - removes the recipes (`docs/recipes/`: state management, certificate
-  pinning) unless you keep
+  pinning, a second language) unless you keep
   them (`--keep-recipes`);
 - deletes the template's onboarding page and itself.
 
