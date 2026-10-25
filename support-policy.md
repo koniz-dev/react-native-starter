@@ -76,19 +76,17 @@ development. It needs a new release-readiness issue before it ships.
 
 ## Expo SDK, React Native, and Node
 
-- **Expo SDK:** the starter follows the SDK that the store's Expo Go runs
-  (`expoGoSdkVersion` at https://api.expo.dev/v2/versions/latest), so a new
-  project opens on a phone by scanning the QR code. When Expo releases a new
-  SDK, the upgrade is prepared on a branch, through a new release-readiness
-  issue; it is merged and tagged within about 1 week of the store's Expo Go
-  moving to that SDK, not before. Until that tag ships, the previous baseline
-  receives only security fixes. React Native, React, and Expo Router follow
-  the versions that the Expo SDK pins.
-- **If the store's Expo Go hasn't moved** 8 weeks after the SDK's release,
-  the maintainer decides whether to merge with a docs note (a simulator, an
-  emulator, or a development build until it moves).
-- **An earlier upgrade** is needed when the app stores stop accepting builds
-  on the current SDK, or when a security fix needs a newer SDK.
+- **Expo SDK:** the starter targets the stable SDK that the store's Expo Go
+  runs (`expoGoSdkVersion` at https://api.expo.dev/v2/versions/latest), so a
+  new project opens on a phone by scanning the QR code. There is no schedule
+  for moving to a new SDK and no promise of a date. An upgrade starts from an
+  issue, opened by a user who asks for it or by a maintainer, and is merged
+  only once the store's Expo Go runs that SDK; until then the current
+  baseline keeps receiving security fixes. React Native, React, and Expo
+  Router follow the versions that the Expo SDK pins.
+- **An upgrade before the store's Expo Go moves** is needed only when the app
+  stores stop accepting builds on the current SDK, or when a security fix
+  needs a newer SDK.
 - **Node:** the active LTS line in `.nvmrc`, plus the range in `engines` that
   the Expo SDK supports. A new LTS line is adopted with the next SDK upgrade,
   or earlier if the current line reaches end of life.

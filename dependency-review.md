@@ -56,7 +56,7 @@ output under `## Context`, and these acceptance criteria:
 2. Patch and minor updates that the Expo SDK allows
    (`npx expo install --check`, online; CI's `npm run doctor` checks only
    against the installed SDK) are applied, or deferred with a reason.
-3. A new Expo SDK release, if any, has an upgrade issue (Support Policy:
-   merged within about 1 week of the store's Expo Go moving to it).
+3. Expo SDK upgrades are not scheduled (Support Policy): an open upgrade
+   issue is merged only once the store's Expo Go runs that SDK.
 4. Gates pass; CI and the Audit workflow are green. The review is recorded
    as evidence.
