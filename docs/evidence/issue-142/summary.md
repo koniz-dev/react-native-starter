@@ -11,7 +11,7 @@ Commits: `main` 1ecec29 ([`package.json`](https://github.com/koniz-dev/react-nat
 | 1 | Exposure assessed | PASS | See [Exposure](#exposure). `exposure-grep.log`, `web-bundle-zod.log`. |
 | 2 | zod >= 4.6.6 on `main` and `sdk-58`; stale `braces` entry removed | PASS | `audit-main-1ecec29.log`, `audit-sdk58-e5c4243.log`: the direct zod is 4.6.7 (range `^4.6.7`); only `@expo/cli`'s zod 3.25.76 remains. The `braces` entry is gone. |
 | 3 | `audit:check` passes on both branches; gates, CI, Audit green | PASS | Both audit logs end "No unreviewed high or critical advisories". Gates: `gates-main-1ecec29.log` (708 tests), `gates-sdk58-e5c4243.log` (736 tests). Actions: `main` 1ecec29 CI 40182489225, Audit 40182489172, CodeQL 40182489346; `sdk-58` 2204ac8 CI 40183464359, Audit 40183464319. |
-| 4 | Patch tag if the app bundle is reachable | PENDING | Reachable (below), so a patch tag is due by 2026-11-08 (Support Policy: 14 days). The owner asked to finish the open issues first (2026-10-25). |
+| 4 | Patch tag if the app bundle is reachable | PASS | Reachable (below), so a patch tag was due by 2026-11-08 (Support Policy: 14 days). Shipped in [v1.1.17](https://github.com/koniz-dev/react-native-starter/releases/tag/v1.1.17) on 2026-10-25, a security-only release (#143, evidence `issue-143/`). |
 
 ## Exposure
 
