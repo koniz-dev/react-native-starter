@@ -14,16 +14,16 @@
       "tracking": "https://github.com/advisories/GHSA-86w9-cpqp-85rv"
     },
     {
-      "id": "GHSA-vfj7-8cjw-p6xm",
-      "package": "braces",
+      "id": "GHSA-mrhx-c7xc-m3w5",
+      "package": "zod",
       "severity": "high",
-      "path": "jest / metro / jest-haste-map > micromatch > braces",
-      "exposure": "Build tool only: glob matching in Metro and Jest over the project's own config patterns. Not in the iOS, Android, or web bundles.",
-      "fix": "None released: braces 3.0.3 is the latest and is in the affected range.",
+      "path": "expo > @expo/cli > zod@3 (the app's own zod is 4.6.7 or later: package.json requires ^4.6.7)",
+      "exposure": "Build tool only: the Expo CLI dev server validates dev-tools plugin and MCP extension schemas with zod 3 on the developer's machine. Not in the iOS, Android, or web bundles; the bundles use the direct zod dependency, which is patched.",
+      "fix": "None released for zod 3, which @expo/cli requires (^3.25.76); patched only in zod 4.6.6.",
       "owner": "starter template (re-review in your project)",
-      "reviewed": "2026-10-09",
-      "reviewBy": "2027-01-09",
-      "tracking": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm"
+      "reviewed": "2026-10-25",
+      "reviewBy": "2027-01-25",
+      "tracking": "https://github.com/advisories/GHSA-mrhx-c7xc-m3w5"
     }
   ]
 }
