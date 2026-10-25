@@ -1,0 +1,17 @@
+npm ci exit 0
+     (docs/app-config.md, docs/ui-and-theming.md).
+  4. Run npm run lint, npm run type-check, and npm run test:ci, then commit.
+init exit 0
+# Acme Notes
+
+Acme Notes is an Expo (SDK 57) and React Native app.
+
+## Run it
+0
+lint exit 0
+type-check exit 0
+format:check exit 0
+docs:check exit 0
+Tests:       579 passed, 579 total
+test exit 0
+(git grep exit 1; 1 = nothing found)

@@ -1,0 +1,13 @@
+Runs on da948c1 (README rewrite):
+  Audit success 40205548999
+  CI success 40205549003
+  CodeQL success 40205548697
+Runs on 1a3015a (dedup fix):
+  Audit success 40206191244
+  CodeQL success 40206191071
+  CI success 40206191211
+raw image URLs (readme-assets 7447c95):
+  ios-home-light 200 image/png
+  ios-explore-light 200 image/png
+  ios-showcase-dark 200 image/png
+  ios-login-dark 200 image/png
