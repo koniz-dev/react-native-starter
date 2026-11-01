@@ -1,0 +1,21 @@
+# Pre-tag check 2026-11-01T14:36:50Z
+origin/main: c9bf09afbc508c0eb2c87e0e6abaf358fce2fca5
+open issues:
+  #147 Release v1.1.18: dependency advisory fixes (#146) and README
+  #146 Security: follow-redirects, node-forge and decode-uri-component high advisories fail the Audit workflow
+  #134 Upgrade to Expo SDK 58 (React Native 0.88) when the store Expo Go supports it
+code-scanning open alerts: 0
+dependabot open alerts: 0
+secret-scanning open alerts: 0
+Actions on c9bf09a:
+  41304317751 E2E (iOS, manual) workflow_dispatch success
+  41304315522 E2E (Android, manual) workflow_dispatch success
+  41304313223 E2E (Android, manual) workflow_dispatch success
+  41298074723 Audit push success
+  41298074685 CI push success
+  41298074520 CodeQL dynamic success
+npm ls (main checkout, same lockfile):
+  │ └── follow-redirects@1.16.2
+      │ └── node-forge@1.4.2 deduped
+      └── node-forge@1.4.2
+store Expo Go: 57.0.0

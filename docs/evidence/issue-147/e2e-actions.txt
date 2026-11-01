@@ -1,0 +1,43 @@
+== run 41304313223 (E2E (Android, manual) c9bf09afbc508c0eb2c87e0e6abaf358fce2fca5 / Maestro on Android emulator (expo-go))
+[Passed] Cold start opens Home (38s)
+[Passed] Back from Login returns Home (49s)
+[Passed] Tab navigation (28s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 38s)
+[Passed] Login keyboard return keys (1m 1s)
+[Passed] Explore error state and Retry (31s)
+[Passed] Profile is protected and reloads the user (1m 6s)
+7/7 Flows Passed in 6m 11s
+Take screenshot dark-home... COMPLETED
+Take screenshot dark-explore...ERROR        | Failed to find ColorBuffer: 810
+E2E RETRY lines: 0
+'Failed to find ColorBuffer' emulator messages: 12
+== run 41304315522 (E2E (Android, manual) c9bf09afbc508c0eb2c87e0e6abaf358fce2fca5 / Maestro on Android emulator (native-debug))
+[Passed] Cold start opens Home (34s)
+[Passed] Back from Login returns Home (37s)
+[Passed] Tab navigation (27s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 21s)
+[Passed] Login keyboard return keys (46s)
+[Passed] Explore error state and Retry (30s)
+[Passed] Profile is protected and reloads the user (53s)
+7/7 Flows Passed in 5m 8s
+Take screenshot dark-home... COMPLETED
+Take screenshot dark-explore... COMPLETED
+E2E RETRY lines: 0
+'Failed to find ColorBuffer' emulator messages: 3
+== run 41304317751 (E2E (iOS, manual) c9bf09afbc508c0eb2c87e0e6abaf358fce2fca5 / Maestro on iOS simulator (native-debug))
+[Failed] Cold start opens Home (5m 14s)
+1/1 Flow Failed
+Take screenshot dark-home... COMPLETED
+Take screenshot dark-explore... COMPLETED
+[Passed] Cold start opens Home (48s)
+[Passed] Back from Login returns Home (1m 8s)
+[Passed] Tab navigation (1m 12s)
+[Passed] Sign-in session survives a relaunch; logout clears it (2m 38s)
+[Passed] Login keyboard return keys (1m 22s)
+[Passed] Explore error state and Retry (47s)
+[Passed] Profile is protected and reloads the user (1m 45s)
+7/7 Flows Passed in 9m 41s
+Take screenshot dark-home... COMPLETED
+Take screenshot dark-explore... COMPLETED
+E2E RETRY lines: 2
+First attempt: 'Cold start opens Home' failed at subflows/open-app.yaml (tab-home never visible); the screen shows 'Could not connect to development server' for localhost:8081 (ios-native-first-attempt.png). Metro had started with an empty cache. The whole-run retry passed.

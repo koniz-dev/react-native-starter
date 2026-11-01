@@ -1,0 +1,20 @@
+ ERROR  Can't perform a React state update on a component that hasn't mounted yet. This indicates that you have a side-effect in your render function that asynchronously tries to update the component. Move this work to useEffect instead. 
+
+Call Stack
+  apply (<native>)
+  NamelessError (node_modules/@expo/metro-runtime/src/metroServerLogs.native.ts:105)
+  captureCurrentStack (node_modules/@expo/metro-runtime/src/metroServerLogs.native.ts:110:27)
+  HMRClient.log (node_modules/@expo/metro-runtime/src/metroServerLogs.native.ts:42:79)
+  console.level (node_modules/react-native/Libraries/Core/setUpDeveloperTools.js:41:24)
+  runWithFiberInDEV$argument_1 (node_modules/react-native/Libraries/Renderer/implementations/ReactFabric-dev.js:15178:26)
+  run (<native>)
+  runWithFiberInDEV (node_modules/react-native/Libraries/Renderer/implementations/ReactFabric-dev.js:697:33)
+  warnAboutUpdateOnNotYetMountedFiberInDEV (node_modules/react-native/Libraries/Renderer/implementations/ReactFabric-dev.js:15177:28)
+  getRootForUpdatedFiber (node_modules/react-native/Libraries/Renderer/implementations/ReactFabric-dev.js:5123:51)
+  enqueueConcurrentHookUpdate (node_modules/react-native/Libraries/Renderer/implementations/ReactFabric-dev.js:5067:36)
+  dispatchSetStateInternal (node_modules/react-native/Libraries/Renderer/implementations/ReactFabric-dev.js:6991:45)
+  dispatchSetState (node_modules/react-native/Libraries/Renderer/implementations/ReactFabric-dev.js:6951:31)
+  url.then$argument_0 (node_modules/expo-router/build/fork/useLinking.native.js:127:47)
+  tryCallOne (address at (InternalBytecode.js:1:1296)
+  anonymous (address at (InternalBytecode.js:1:4984) 
+
