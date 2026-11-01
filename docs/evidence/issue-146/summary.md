@@ -10,7 +10,7 @@ published on 2026-10-29/30 and first failed the Audit workflow on `sdk-58` at 57
 | 2 | follow-redirects >= 1.16.2 and node-forge >= 1.4.1 on both branches, within the parents' ranges; stale allowlist entries removed. | `audit-main.txt`, `audit-sdk-58.txt` (`npm ls`): follow-redirects 1.16.2 (axios `^1.16.0`), node-forge 1.4.2 (`^1.3.3`). The lockfile diff on `main` changes only these two packages. node-forge 1.4.2 also clears GHSA-86w9-cpqp-85rv, so its entry is removed. | PASS |
 | 3 | decode-uri-component fixed or allowlisted with exposure, reason and tracking. | No compatible fix: 0.5.1 is ESM-only (`type: module`, `export default`), and query-string 7 loads it with `require` within `^0.2.2`, so an override would break `parse()`. Allowlisted on `main` (reviewed 2026-11-01, reviewBy 2027-02-01, tracking the GHSA). Not on `sdk-58`: Expo Router 58 has no query-string, so the entry is dropped there in 64acb33. | PASS |
 | 4 | audit:check passes on both; gates, CI and Audit green. | Local gates: `main` lint, type-check, format, docs:check, 708 tests, doctor 21/21; `sdk-58` the same with 750 tests and doctor 20/20. Actions on abda04e: CI 41290452844, Audit 41290452818, CodeQL 41290452871. On 64acb33: CI 41290723002, Audit 41290723008, CodeQL 41290719634. All success. | PASS |
-| 5 | Patch release prepared; tagged only with the maintainer's approval. | Pending. | OPEN |
+| 5 | Patch release prepared; tagged only with the maintainer's approval. | v1.1.18 (#147), tagged on c9bf09a and published after the maintainer's approval on 2026-11-01 (issue-147 `tag-and-release.txt`). | PASS |
 
 ## Notes
 
@@ -49,3 +49,5 @@ CodeQL 41298074520; `sdk-58` 46b6281 CI 41298527918, Audit 41298527892, CodeQL
 
 `sdk-58` now has expo-router 58.0.29; the navigation tests pass, and `useNoExtraHome`
 still needs its device UAT before the SDK 58 merge (#134).
+
+Verdict: PASS.

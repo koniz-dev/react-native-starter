@@ -1,0 +1,13 @@
+# Tag and release 2026-11-01T14:53:46Z
+Rechecked right before the tag: origin/main c9bf09a; open issues #134, #146, #147; alerts 0/0/0.
+94b64e8ff7350f172437c5251033a6c0ead9f347	refs/tags/v1.1.18
+c9bf09afbc508c0eb2c87e0e6abaf358fce2fca5	refs/tags/v1.1.18^{}
+tag v1.1.18 tag by koniz-dev 2026-11-01 21:53:31 +0700
+v1.1.18: dependency advisory fixes (#146) and README
+
+Refs koniz-dev/react-native-starter#147
+
+releases/latest: v1.1.18 v1.1.18: dependency advisory fixes draft=false prerelease=false published=2026-11-01T14:53:35Z
+https://github.com/koniz-dev/react-native-starter/releases/tag/v1.1.18
+notes identical to release-notes.md: yes (diff of `gh api .../releases/tags/v1.1.18 --jq .body` against it shows only the trailing newline jq adds)
+runs on the tag: none (no workflow triggers on tags)
