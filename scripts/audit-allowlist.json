@@ -2,16 +2,16 @@
   "$comment": "High/critical npm audit advisories (npm audit --omit=dev) reviewed and accepted until reviewBy. Checked by scripts/check-audit.js (npm run audit:check). The entries come with the starter: its review of advisories in the starter's own dependency tree. Re-review them for your project and set owner to yourself; see docs/getting-started.md#dependency-advisories.",
   "advisories": [
     {
-      "id": "GHSA-86w9-cpqp-85rv",
-      "package": "node-forge",
+      "id": "GHSA-qr28-fpjm-wq7f",
+      "package": "decode-uri-component",
       "severity": "high",
-      "path": "expo > @expo/cli > node-forge (also via @expo/code-signing-certificates)",
-      "exposure": "Build tool only: Expo CLI uses node-forge for code-signing certificates on the developer's or CI machine. Not in the iOS, Android, or web bundles.",
-      "fix": "None released: node-forge 1.4.0 is the latest and is in the affected range.",
+      "path": "expo-router > query-string@7 > decode-uri-component@0.2",
+      "exposure": "In the app bundles but not reached: query-string decodes only in parse(), which runs in React Navigation's default getStateFromPath; Expo Router replaces it with its own, which reads query strings with URL searchParams. Expo Router calls only query-string's stringify(), which encodes.",
+      "fix": "None compatible: the fix is decode-uri-component 0.5.1, which is ESM-only and outside query-string 7's ^0.2.2 (query-string 7 loads it with require). Expo Router 58 no longer depends on query-string.",
       "owner": "starter template (re-review in your project)",
-      "reviewed": "2026-10-09",
-      "reviewBy": "2027-01-09",
-      "tracking": "https://github.com/advisories/GHSA-86w9-cpqp-85rv"
+      "reviewed": "2026-11-01",
+      "reviewBy": "2027-02-01",
+      "tracking": "https://github.com/advisories/GHSA-qr28-fpjm-wq7f"
     },
     {
       "id": "GHSA-mrhx-c7xc-m3w5",
