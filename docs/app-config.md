@@ -72,6 +72,8 @@ own name, bundle ID, and scheme, so all three install side by side:
    otherwise.
 4. Build: `eas build --platform android --profile preview` (or `ios`). See
    [Expo: create your first build](https://docs.expo.dev/build/setup/).
+   To build from CI, see [Expo: EAS Workflows](https://docs.expo.dev/eas/workflows/get-started/)
+   or [build on CI](https://docs.expo.dev/build/building-on-ci/).
 
 ## Icons and splash screen
 
