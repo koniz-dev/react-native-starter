@@ -15,3 +15,19 @@ Branch `sdk-58`, commit fc671e2: [`docs/recipes/localization.md`](https://github
 `recipes-lifecycle.log`: after `remove-demo` the recipe stays, has no demo word left, and docs:check passes; `init-project --remove-recipes` removes it and every link (Plug In a Provider's link sits in an `@recipes` block, and the file was added to init-project's `RECIPE_MARKED_FILES`); `--keep-recipes` keeps the recipe and its links. The first draft quoted a `tsc` error naming `tabs.explore`, a demo key; `removeDemo.test.ts` caught it, and the quote now uses a key that stays.
 
 Not verified here: the direction change on a device (it needs a native build with an RTL language).
+
+## Reverted, closed as not planned (2026-11-01)
+
+The maintainer decided not to ship this, as part of one round that also dropped #137 and the rest of #138-#141 (`sdk-58` was tidied
+in one round). The starter is in maintenance mode (security fixes, regressions,
+compatibility, documentation fixes), and this was a new addition no user asked for: it came
+from comparing with koniz-dev/flutter-starter. It was never on `main` or in a release.
+
+- `sdk-58` 3c5567c reverts fc671e2. The four reverts (8ddba3b, 3c5567c, 7834bc2,
+  7f8e2d8) applied without conflicts; afterwards `git grep` finds no reference to
+  `new-feature`, `certificate-pinning`, `localization.md` or `E2E_ANDROID_SCHEDULE`, and
+  the workflows differ from `main` only in the SDK 58 pins.
+- Local gates at 7f8e2d8: format, lint, type-check, docs:check (46 snippets, "No
+  problems."), 736 tests, audit:check. CI on 7f8e2d8: see issue-146 or the PR #135 checks.
+- The issue was reopened, commented, its `status:in-progress` label removed (it had been
+  left on at the original close), and closed as not planned.

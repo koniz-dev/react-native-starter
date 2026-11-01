@@ -16,3 +16,19 @@ Branch `sdk-58`, commit 2c81883: [`scripts/new-feature.js`](https://github.com/k
 - **Fixture names an adopter would use.** The script's own test first scaffolded `settings` and `reports`; in a project that already has a `settings` feature it would fail. It now uses `scaffold-public`, `scaffold-signed-in`, `scaffold-tab`.
 - **`remove-demo` leftovers.** The `demo-*` refusal and its test case are between `@demo` markers, so init-project's "nothing reads like the template" check passes after `--remove-demo` (it failed before the markers were added).
 - Two init-project test failures during one adopter run were caused by my own log file written into the copy's root (the copy has no `.git`, so `copyProject` copies every file, log included). Rerun with the log outside the copy: green. A baseline copy of HEAD with `remove-demo` was also green.
+
+## Reverted, closed as not planned (2026-11-01)
+
+The maintainer decided not to ship this, as part of one round that also dropped #137 and the rest of #138-#141 (`sdk-58` was tidied
+in one round). The starter is in maintenance mode (security fixes, regressions,
+compatibility, documentation fixes), and this was a new addition no user asked for: it came
+from comparing with koniz-dev/flutter-starter. It was never on `main` or in a release.
+
+- `sdk-58` 7f8e2d8 reverts 2c81883. The four reverts (8ddba3b, 3c5567c, 7834bc2,
+  7f8e2d8) applied without conflicts; afterwards `git grep` finds no reference to
+  `new-feature`, `certificate-pinning`, `localization.md` or `E2E_ANDROID_SCHEDULE`, and
+  the workflows differ from `main` only in the SDK 58 pins.
+- Local gates at 7f8e2d8: format, lint, type-check, docs:check (46 snippets, "No
+  problems."), 736 tests, audit:check. CI on 7f8e2d8: see issue-146 or the PR #135 checks.
+- The issue was reopened, commented, its `status:in-progress` label removed (it had been
+  left on at the original close), and closed as not planned.

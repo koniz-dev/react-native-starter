@@ -15,3 +15,19 @@ Branch `sdk-58`, commit 396b833: [`docs/recipes/certificate-pinning.md`](https:/
 The recipe's `sslPinning.ts` block was extracted verbatim into a copy of the project and tested with the native module mocked (`recipe-behaviour.test.ts`, `recipe-behaviour.log`): both hosts are pinned, a request waits until pinning is on, a failed start fails requests without sending them, and the web does nothing. Removing the interceptor registration fails two of the three tests.
 
 Not verified here: pinning on a device. The recipe tells adopters to check that it fails closed in a preview build, with made-up pins, before shipping.
+
+## Reverted, closed as not planned (2026-11-01)
+
+The maintainer decided not to ship this, as part of one round that also dropped #137 and the rest of #138-#141 (`sdk-58` was tidied
+in one round). The starter is in maintenance mode (security fixes, regressions,
+compatibility, documentation fixes), and this was a new addition no user asked for: it came
+from comparing with koniz-dev/flutter-starter. It was never on `main` or in a release.
+
+- `sdk-58` 7834bc2 reverts 396b833. The four reverts (8ddba3b, 3c5567c, 7834bc2,
+  7f8e2d8) applied without conflicts; afterwards `git grep` finds no reference to
+  `new-feature`, `certificate-pinning`, `localization.md` or `E2E_ANDROID_SCHEDULE`, and
+  the workflows differ from `main` only in the SDK 58 pins.
+- Local gates at 7f8e2d8: format, lint, type-check, docs:check (46 snippets, "No
+  problems."), 736 tests, audit:check. CI on 7f8e2d8: see issue-146 or the PR #135 checks.
+- The issue was reopened, commented, its `status:in-progress` label removed (it had been
+  left on at the original close), and closed as not planned.
