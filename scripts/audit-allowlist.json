@@ -1,17 +1,4 @@
 {
   "$comment": "High/critical npm audit advisories (npm audit --omit=dev) reviewed and accepted until reviewBy. Checked by scripts/check-audit.js (npm run audit:check). The entries come with the starter: its review of advisories in the starter's own dependency tree. Re-review them for your project and set owner to yourself; see docs/getting-started.md#dependency-advisories.",
-  "advisories": [
-    {
-      "id": "GHSA-mrhx-c7xc-m3w5",
-      "package": "zod",
-      "severity": "high",
-      "path": "expo > @expo/cli > zod@3 (the app's own zod is 4.6.7 or later: package.json requires ^4.6.7)",
-      "exposure": "Build tool only: the Expo CLI dev server validates dev-tools plugin and MCP extension schemas with zod 3 on the developer's machine. Not in the iOS, Android, or web bundles; the bundles use the direct zod dependency, which is patched.",
-      "fix": "None released for zod 3, which @expo/cli requires (^3.25.76); patched only in zod 4.6.6.",
-      "owner": "starter template (re-review in your project)",
-      "reviewed": "2026-10-25",
-      "reviewBy": "2027-01-25",
-      "tracking": "https://github.com/advisories/GHSA-mrhx-c7xc-m3w5"
-    }
-  ]
+  "advisories": []
 }

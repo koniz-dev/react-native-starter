@@ -208,9 +208,10 @@ and the `build:preview:*` / `build:production:*` scripts for the others
 `npm run audit:check` fails on a high or critical advisory in the
 production dependency tree (`npm audit --omit=dev`, which also holds build
 tools such as Expo CLI) unless `scripts/audit-allowlist.json` has a review of it
-whose `reviewBy` date has not passed. Its first entries are the review of
-the dependencies the project started with (build tools, or code in the app
-bundles that the app never calls), so the Audit workflow starts green. Make the review yours:
+whose `reviewBy` date has not passed. Any entries it starts with are the
+review of the dependencies the project started with (build tools, or code in
+the app bundles that the app never calls), so the Audit workflow starts
+green. Make the review yours:
 
 1. For each entry, read the advisory (`tracking`) and check that `path` and
    `exposure` still hold for your dependencies (`npm ls <package>`).
