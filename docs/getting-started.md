@@ -209,8 +209,8 @@ and the `build:preview:*` / `build:production:*` scripts for the others
 production dependency tree (`npm audit --omit=dev`, which also holds build
 tools such as Expo CLI) unless `scripts/audit-allowlist.json` has a review of it
 whose `reviewBy` date has not passed. Its first entries are the review of
-the dependencies the project started with (build tools only, not in the app
-bundles), so the Audit workflow starts green. Make the review yours:
+the dependencies the project started with (build tools, or code in the app
+bundles that the app never calls), so the Audit workflow starts green. Make the review yours:
 
 1. For each entry, read the advisory (`tracking`) and check that `path` and
    `exposure` still hold for your dependencies (`npm ls <package>`).
@@ -227,8 +227,7 @@ bundles), so the Audit workflow starts green. Make the review yours:
 
 Moderate and low advisories are listed as `reported (not gated)` and never
 fail the check. Read the ones in packages your app ships (not only build
-tools): `decode-uri-component`, for example, comes through expo-router and
-parses deep-link URLs.
+tools), and check whether your code reaches the affected function.
 
 New advisories fail the check until you fix or review them the same way. The
 Audit workflow fails, and CI doesn't, so a new advisory doesn't block work on
