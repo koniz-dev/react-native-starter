@@ -1,0 +1,14 @@
+# Dependabot dismissals, with the maintainer's approval (2026-11-01)
+#10 minimatch GHSA-g3hv-75wg-m249 medium tolerable_risk at 2026-11-01T11:57:11Z
+  #146: minimatch 3 (Jest, istanbul) and 10 (@expo/fingerprint) run only in tests and build tooling with project patterns; not in the app bundles. Fix 11.0.1 is outside their ranges. https://github.com/koniz-dev/react-native-starter/blob/evidence/docs/evidence/issue-146/summary.md
+#9 glob GHSA-3g3m-2fjr-6pw4 medium tolerable_risk at 2026-11-01T11:57:09Z
+  #146: glob 13 (@expo/config-plugins) runs only at prebuild/config time on the developer's or CI machine with project paths; not in the app bundles. Fix 14.0.2 is outside ^13. https://github.com/koniz-dev/react-native-starter/blob/evidence/docs/evidence/issue-146/summary.md
+#8 decode-uri-component GHSA-qr28-fpjm-wq7f high not_used at 2026-11-01T11:57:28Z
+  #146 (allowlist, abda04e): query-string decodes only in parse(), via React Navigation's default getStateFromPath, which Expo Router replaces. 0.5.1 is ESM-only, outside ^0.2.2. Gone in Expo Router 58. Evidence: evidence branch, issue-146.
+#7 deepmerge GHSA-gcqx-w48m-w2h4 low tolerable_risk at 2026-11-01T11:57:29Z
+  #146: deepmerge 4.3.1 is under @expo/config (build-time config merging), not in the app bundles; the app's 3.3.0 (react-native-paper) is unaffected. No fix released. Evidence: evidence branch, issue-146.
+
+# Open alerts after
+code-scanning: 0
+dependabot: 0
+secret-scanning: 0

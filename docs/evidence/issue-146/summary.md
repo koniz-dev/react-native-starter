@@ -34,7 +34,7 @@ Its findings, each checked before acting:
 
 | Finding | Action |
 |---|---|
-| Four open Dependabot alerts block a release (maintainers README, "Check the alerts") | Waits for the maintainer: dismissing was blocked for the agent. |
+| Four open Dependabot alerts block a release (maintainers README, "Check the alerts") | Dismissed with reasons after the maintainer approved (#8 not used; #7, #9, #10 tolerable risk); open alerts 0/0/0 (`dependabot-dismissals.txt`). |
 | `docs/getting-started.md` said decode-uri-component "parses deep-link URLs" and that the shipped entries are build tools only | `main` 12cd706: no package named; "build tools, or code in the app bundles that the app never calls". |
 | `sdk-58` could drop the zod entry: expo 58.0.22 needs `@expo/cli ^58.1.18`, which has no zod 3; npm offered `expo@51` as the fix, so audit:check missed it | `sdk-58` e62f34d (`expo install expo@~58.0.22`, then `--fix`; `@react-native/jest-preset` 0.88.1, still exact, because jest-expo 58.0.13 needs `^0.88.1`), 46b6281 (zod entry removed, allowlist empty, Getting Started no longer assumes entries). `npm ls zod`: no 3.x. |
 | Stale maintainer docs (node-forge/braces; `E2E_ANDROID_SCHEDULE` for reverted #141) | `maintainers` b164d69, including a note that npm's `fixAvailable` can be wrong. Deleting the repository variable is left to the owner. |
