@@ -24,3 +24,28 @@ published on 2026-10-29/30 and first failed the Audit workflow on `sdk-58` at 57
   blocked for the agent and waits for the maintainer.
 - The push to `main` reported "Bypassed rule violations: Required status check Verify", as
   with every direct commit to `main` in this workflow; CI ran on the commit afterwards.
+
+## Tech-lead review and follow-ups (2026-11-01)
+
+An independent read-only review (a subagent acting as technical lead) found the v1.1.18
+content on `main` correct (lockfile, allowlist review, README claims, init-project and
+remove-demo runs) and the decode-uri-component reasoning sound (it read the call sites).
+Its findings, each checked before acting:
+
+| Finding | Action |
+|---|---|
+| Four open Dependabot alerts block a release (maintainers README, "Check the alerts") | Waits for the maintainer: dismissing was blocked for the agent. |
+| `docs/getting-started.md` said decode-uri-component "parses deep-link URLs" and that the shipped entries are build tools only | `main` 12cd706: no package named; "build tools, or code in the app bundles that the app never calls". |
+| `sdk-58` could drop the zod entry: expo 58.0.22 needs `@expo/cli ^58.1.18`, which has no zod 3; npm offered `expo@51` as the fix, so audit:check missed it | `sdk-58` e62f34d (`expo install expo@~58.0.22`, then `--fix`; `@react-native/jest-preset` 0.88.1, still exact, because jest-expo 58.0.13 needs `^0.88.1`), 46b6281 (zod entry removed, allowlist empty, Getting Started no longer assumes entries). `npm ls zod`: no 3.x. |
+| Stale maintainer docs (node-forge/braces; `E2E_ANDROID_SCHEDULE` for reverted #141) | `maintainers` b164d69, including a note that npm's `fixAvailable` can be wrong. Deleting the repository variable is left to the owner. |
+| 1233656 (CI-build links) on `sdk-58` was #137 leftover, not SDK 58 work | Same line added on `main` (c9bf09a); merged into `sdk-58` (81e2144) without a diff. |
+| SDK 57 patch releases not applied on `main`; README `@init` markers inert; `readme-assets` unprotected; allowlist wording | Deferred (no fix needed here; next monthly review). |
+
+Local gates on `sdk-58` 46b6281: audit:check, format, lint, type-check, docs:check, 736
+tests, doctor 20/20, web export, iOS and Android bundles; on `main` 12cd706/c9bf09a:
+docs:check, lint, 708 tests. Actions: `main` c9bf09a CI 41298074685, Audit 41298074723,
+CodeQL 41298074520; `sdk-58` 46b6281 CI 41298527918, Audit 41298527892, CodeQL
+41298525096. All success.
+
+`sdk-58` now has expo-router 58.0.29; the navigation tests pass, and `useNoExtraHome`
+still needs its device UAT before the SDK 58 merge (#134).
