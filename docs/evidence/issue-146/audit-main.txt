@@ -1,0 +1,11 @@
+# main abda04e
+high     decode-uri-component GHSA-qr28-fpjm-wq7f: allowlisted until 2027-02-01 (https://github.com/advisories/GHSA-qr28-fpjm-wq7f)
+high     zod GHSA-mrhx-c7xc-m3w5: allowlisted until 2027-01-25 (https://github.com/advisories/GHSA-mrhx-c7xc-m3w5)
+moderate decode-uri-component GHSA-vcc3-ghjq-m6fr: reported (not gated)
+moderate glob GHSA-3g3m-2fjr-6pw4: reported (not gated)
+moderate minimatch GHSA-g3hv-75wg-m249: reported (not gated)
+moderate uuid GHSA-w5hq-g745-h8pq: reported (not gated)
+low      deepmerge GHSA-gcqx-w48m-w2h4: reported (not gated)
+npm audit --omit=dev: 7 advisories (records: 0 critical, 5 high, 29 moderate, 6 low).
+No unreviewed high or critical advisories.
+exit: 0

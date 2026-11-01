@@ -1,0 +1,48 @@
+# npm ls on main abda04e (2026-11-01)
+react-native-starter@1.0.0 /Users/nguyenanhkiet/Playground/react-native-starter
+├─┬ axios@1.20.0
+│ └── follow-redirects@1.16.2
+├─┬ expo-router@57.0.28
+│ └─┬ query-string@7.1.3
+│   └── decode-uri-component@0.2.2
+└─┬ expo@57.0.30
+  └─┬ @expo/cli@57.0.31
+    ├─┬ @expo/code-signing-certificates@0.0.6
+    │ └── node-forge@1.4.2 deduped
+    └── node-forge@1.4.2
+
+
+# axios platform mapping (package.json browser / react-native): the Node http adapter, the only user of follow-redirects, is replaced
+{
+ "./dist/node/axios.cjs": "./dist/browser/axios.cjs",
+ "./lib/adapters/http.js": "./lib/helpers/null.js",
+ "./lib/platform/node/index.js": "./lib/platform/browser/index.js",
+ "./lib/platform/node/classes/Buffer.js": "./lib/helpers/null.js",
+ "./lib/platform/node/classes/FormData.js": "./lib/helpers/null.js"
+}
+
+# Where expo-router uses query-string (parse is the only decoding path)
+node_modules/expo-router/build/fork/getPathFromState-forks.js:71:    const query = queryString.stringify(focusedParams, { sort: false });
+node_modules/expo-router/build/fork/getStateFromPath.js:538://   const params = queryString.parse(query);
+node_modules/expo-router/build/fork/getPathFromState.js:273:            const query = queryString.stringify(focusedParams, { sort: false });
+node_modules/expo-router/build/react-navigation/core/getPathFromState.js:212:            const query = queryString.stringify(focusedParams, { sort: false });
+node_modules/expo-router/build/react-navigation/core/getStateFromPath.js:499:    const params = queryString.parse(query);
+
+# expo-router's linking config supplies its own getStateFromPath
+        },
+        subscribe: (0, linking_1.subscribe)(nativeLinking, redirects),
+        getStateFromPath: (path, options) => {
+            return (0, linking_1.getStateFromPath)(path, options, getRouteInfo().segments);
+        },
+
+# its query parsing (fork/getStateFromPath-forks.js)
+function parseQueryParams(path, route, parseConfig, hash) {
+    const searchParams = (0, url_1.parseUrlUsingCustomBase)(path).searchParams;
+    const params = Object.create(null);
+
+# query-string 7 loads decode-uri-component with require; 0.5.1 is ESM-only (type: module, export default)
+const decodeComponent = require('decode-uri-component');
+module
+
+# The app never imports query-string or getStateFromPath
+grep exit: 1
