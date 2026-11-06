@@ -155,7 +155,9 @@ function useNoExtraHome(signedIn: boolean) {
     if (
       top?.name === '(tabs)' &&
       tab === 'index' &&
-      length === previous.length
+      length === previous.length &&
+      // A replace into the group from Home leaves no screen below to go to.
+      length > 1
     ) {
       router.dismiss();
     }

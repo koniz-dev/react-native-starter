@@ -583,6 +583,22 @@ describe('session-guarded routes', () => {
           expect(await screen.findByText('Settings screen')).toBeTruthy();
           expect(rootRoutes(app)).toEqual(['(tabs)', 'settings']);
         });
+
+        it('replacing Home with it, with no screen below to go to', async () => {
+          if (signedIn) await storeSession();
+          const app = await renderRouter('./app', { initialUrl: '/' });
+          await screen.findByText(home);
+          const error = jest.spyOn(console, 'error');
+
+          await act(() => router.replace(url));
+
+          expect(await screen.findByText(home)).toBeTruthy();
+          expect(rootRoutes(app)).toEqual(['(tabs)']);
+          // A dismiss there is an action no navigator handles.
+          expect(error).not.toHaveBeenCalledWith(
+            expect.stringContaining("'POP'")
+          );
+        });
       }
     );
   });
