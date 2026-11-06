@@ -42,7 +42,10 @@ export function ShowcaseScreen() {
         options={{ headerShown: true, title: t('showcase.title') }}
       />
       <DocumentTitle title={t('showcase.title')} />
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        contentInsetAdjustmentBehavior="automatic"
+      >
         <View style={styles.header}>
           <Text
             variant="headlineMedium"

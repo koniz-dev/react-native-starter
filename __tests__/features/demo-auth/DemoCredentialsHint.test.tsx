@@ -17,16 +17,16 @@ function renderHint(useDemoBackends: boolean) {
 afterEach(() => jest.restoreAllMocks());
 
 describe('<DemoCredentialsHint />', () => {
-  it('shows the demo account with the demo backends on', () => {
-    renderHint(true);
+  it('shows the demo account with the demo backends on', async () => {
+    await renderHint(true);
 
     expect(screen.getByTestId('demo-credentials-hint')).toHaveTextContent(
       /emilys \/ emilyspass/
     );
   });
 
-  it('renders nothing without the demo backends', () => {
-    renderHint(false);
+  it('renders nothing without the demo backends', async () => {
+    await renderHint(false);
 
     expect(screen.queryByTestId('demo-credentials-hint')).toBeNull();
   });

@@ -1,6 +1,6 @@
 # Agent Instructions
 
-This is an Expo (SDK 57) and React Native app: Expo
+This is an Expo (SDK 58) and React Native app: Expo
 Router, TypeScript strict, React Native Paper (Material Design 3), Jest and
 React Native Testing Library, and Maestro end-to-end flows. Follow these
 instructions when you change the code; the linked docs have the details.

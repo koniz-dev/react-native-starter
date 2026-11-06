@@ -59,7 +59,12 @@ import { renderWithProviders } from '@/testing';
 import { useSession } from '@/shared/session/SessionProvider';
 import { authService } from '@/shared/session/authService';
 import { logger } from '@/shared/lib/logger';
-import { DocumentTitle } from '@/shared/ui/DocumentTitle';
+import { documentTitles } from '@/testing/documentTitle';
+
+// DocumentTitle renders nothing on native; this one shows its title.
+jest.mock('@/shared/ui/DocumentTitle', () =>
+  jest.requireActual('@/testing/documentTitle')
+);
 
 /** Shows the provider's session status so tests can see sign-in take effect. */
 function SessionProbe() {
@@ -78,7 +83,7 @@ const renderLogin = () =>
 
 /** Renders and waits until the provider has read the (empty) stored session. */
 async function renderLoginReady() {
-  const view = renderLogin();
+  const view = await renderLogin();
   await waitFor(() =>
     expect(view.getByTestId('session-probe').props.children).toBe('signedOut')
   );
@@ -102,13 +107,13 @@ describe('<LoginScreen />', () => {
             });
         })
     );
-    const { getByTestId, getByText } = renderLogin();
-    fireEvent.changeText(getByTestId('login-username'), 'emily');
-    fireEvent.changeText(getByTestId('login-password'), 'secret-pass');
+    const { getByTestId, getByText } = await renderLogin();
+    await fireEvent.changeText(getByTestId('login-username'), 'emily');
+    await fireEvent.changeText(getByTestId('login-password'), 'secret-pass');
 
-    fireEvent(getByTestId('login-password'), 'submitEditing');
-    fireEvent(getByTestId('login-password'), 'submitEditing');
-    fireEvent.press(getByText('Sign In'));
+    await fireEvent(getByTestId('login-password'), 'submitEditing');
+    await fireEvent(getByTestId('login-password'), 'submitEditing');
+    await fireEvent.press(getByText('Sign In'));
     finish();
 
     await waitFor(() =>
@@ -131,14 +136,14 @@ describe('<LoginScreen />', () => {
         token: 'test-token',
         user: { id: 1, email: 'user@example.com', name: 'Test User' },
       });
-    const { getByTestId, getByText, findByText } = renderLogin();
-    fireEvent.changeText(getByTestId('login-username'), 'emily');
-    fireEvent.changeText(getByTestId('login-password'), 'wrong');
-    fireEvent.press(getByText('Sign In'));
+    const { getByTestId, getByText, findByText } = await renderLogin();
+    await fireEvent.changeText(getByTestId('login-username'), 'emily');
+    await fireEvent.changeText(getByTestId('login-password'), 'wrong');
+    await fireEvent.press(getByText('Sign In'));
     expect(await findByText('Invalid credentials')).toBeTruthy();
 
-    fireEvent.changeText(getByTestId('login-password'), 'right');
-    fireEvent.press(getByText('Sign In'));
+    await fireEvent.changeText(getByTestId('login-password'), 'right');
+    await fireEvent.press(getByText('Sign In'));
 
     await waitFor(() =>
       expect(getByTestId('session-probe').props.children).toBe('signedIn')
@@ -158,16 +163,16 @@ describe('<LoginScreen />', () => {
             });
         })
     );
-    const { getByTestId, findByText, queryByText } = renderLogin();
+    const { getByTestId, findByText, queryByText } = await renderLogin();
     const submit = getByTestId('login-submit');
     expect(submit.props.accessibilityState).toEqual({ disabled: false });
     expect(submit.props.loading).toBe(false);
-    fireEvent.press(submit);
+    await fireEvent.press(submit);
     expect(await findByText('Please fill in all fields')).toBeTruthy();
 
-    fireEvent.changeText(getByTestId('login-username'), 'emily');
-    fireEvent.changeText(getByTestId('login-password'), 'secret-pass');
-    fireEvent.press(submit);
+    await fireEvent.changeText(getByTestId('login-username'), 'emily');
+    await fireEvent.changeText(getByTestId('login-password'), 'secret-pass');
+    await fireEvent.press(submit);
 
     await waitFor(() =>
       expect(getByTestId('login-submit').props.accessibilityState).toEqual({
@@ -183,9 +188,9 @@ describe('<LoginScreen />', () => {
   });
 
   it('marks only the field that is empty', async () => {
-    const { getByTestId, getByText, findByText } = renderLogin();
-    fireEvent.changeText(getByTestId('login-username'), 'emily');
-    fireEvent.press(getByText('Sign In'));
+    const { getByTestId, getByText, findByText } = await renderLogin();
+    await fireEvent.changeText(getByTestId('login-username'), 'emily');
+    await fireEvent.press(getByText('Sign In'));
 
     expect(await findByText('Please enter your password')).toBeTruthy();
     expect(getByTestId('login-username').props.error).toBe(false);
@@ -193,9 +198,8 @@ describe('<LoginScreen />', () => {
   });
 
   it('masks the password and titles the screen for screen readers and the browser tab', async () => {
-    const { getByTestId, getByRole, UNSAFE_getByType } =
-      await renderLoginReady();
-    expect(UNSAFE_getByType(DocumentTitle).props.title).toBe('Sign in');
+    const { getByTestId, getByRole } = await renderLoginReady();
+    expect(documentTitles()).toEqual(['Sign in']);
     expect(getByTestId('login-password').props).toMatchObject({
       secureTextEntry: true,
       autoComplete: 'current-password',
@@ -224,11 +228,11 @@ describe('<LoginScreen />', () => {
       token: 'test-token',
       user: { id: 1, email: 'user@example.com', name: 'Test User' },
     });
-    const { getByTestId, getByText } = renderLogin();
+    const { getByTestId, getByText } = await renderLogin();
 
-    fireEvent.changeText(getByTestId('login-username'), 'emily');
-    fireEvent.changeText(getByTestId('login-password'), 'secret-pass');
-    fireEvent.press(getByText('Sign In'));
+    await fireEvent.changeText(getByTestId('login-username'), 'emily');
+    await fireEvent.changeText(getByTestId('login-password'), 'secret-pass');
+    await fireEvent.press(getByText('Sign In'));
 
     await waitFor(() => {
       expect(authService.login).toHaveBeenCalledWith({
@@ -246,9 +250,9 @@ describe('<LoginScreen />', () => {
     });
     const { getByTestId, getByText, queryByTestId } = await renderLoginReady();
 
-    fireEvent.changeText(getByTestId('login-username'), '  emily ');
-    fireEvent.changeText(getByTestId('login-password'), '   ');
-    fireEvent.press(getByText('Sign In'));
+    await fireEvent.changeText(getByTestId('login-username'), '  emily ');
+    await fireEvent.changeText(getByTestId('login-password'), '   ');
+    await fireEvent.press(getByText('Sign In'));
 
     await waitFor(() =>
       expect(login).toHaveBeenCalledWith({ username: 'emily', password: '   ' })
@@ -264,11 +268,11 @@ describe('<LoginScreen />', () => {
         data: { message: 'Invalid credentials' },
       })
     );
-    const { getByTestId, getByText } = renderLogin();
+    const { getByTestId, getByText } = await renderLogin();
 
-    fireEvent.changeText(getByTestId('login-username'), 'emily');
-    fireEvent.changeText(getByTestId('login-password'), 'wrong-password');
-    fireEvent.press(getByText('Sign In'));
+    await fireEvent.changeText(getByTestId('login-username'), 'emily');
+    await fireEvent.changeText(getByTestId('login-password'), 'wrong-password');
+    await fireEvent.press(getByText('Sign In'));
 
     await waitFor(() => {
       expect(getByText('Invalid credentials')).toBeTruthy();
@@ -298,14 +302,17 @@ describe('<LoginScreen />', () => {
           data: { message: 'Invalid credentials' },
         })
       );
-      const { getByTestId, getByText } = renderLogin();
+      const { getByTestId, getByText } = await renderLogin();
       expect(getByTestId('login-error').props.accessibilityLiveRegion).toBe(
         'polite'
       );
 
-      fireEvent.changeText(getByTestId('login-username'), 'emily');
-      fireEvent.changeText(getByTestId('login-password'), 'wrong-password');
-      fireEvent.press(getByText('Sign In'));
+      await fireEvent.changeText(getByTestId('login-username'), 'emily');
+      await fireEvent.changeText(
+        getByTestId('login-password'),
+        'wrong-password'
+      );
+      await fireEvent.press(getByText('Sign In'));
 
       await waitFor(() =>
         expect(getByText('Invalid credentials')).toBeTruthy()
@@ -320,12 +327,12 @@ describe('<LoginScreen />', () => {
   it('says the same empty-field error again on a second try (iOS and live region)', async () => {
     jest.replaceProperty(Platform, 'OS', 'ios');
     const announce = jest.spyOn(AccessibilityInfo, 'announceForAccessibility');
-    const { getByTestId, getByText, findByText } = renderLogin();
+    const { getByTestId, getByText, findByText } = await renderLogin();
     const shown = () => getByTestId('login-error').props.children;
 
-    fireEvent.press(getByText('Sign In'));
+    await fireEvent.press(getByText('Sign In'));
     expect(await findByText('Please fill in all fields')).toBeTruthy();
-    fireEvent.press(getByText('Sign In'));
+    await fireEvent.press(getByText('Sign In'));
     // Cleared for a moment, so the live region changes, then shown again.
     expect(shown()).toBe('');
     await waitFor(() => expect(shown()).toBe('Please fill in all fields'));
@@ -337,16 +344,16 @@ describe('<LoginScreen />', () => {
     jest
       .spyOn(authService, 'login')
       .mockRejectedValue(new ApiError('Network Error', { code: 'network' }));
-    const { getByTestId, getByText, findByText } = renderLogin();
+    const { getByTestId, getByText, findByText } = await renderLogin();
 
-    fireEvent.press(getByText('Sign In'));
+    await fireEvent.press(getByText('Sign In'));
     expect(await findByText('Please fill in all fields')).toBeTruthy();
     expect(getByTestId('login-username').props.error).toBe(true);
     expect(getByTestId('login-password').props.error).toBe(true);
 
-    fireEvent.changeText(getByTestId('login-username'), 'emily');
-    fireEvent.changeText(getByTestId('login-password'), 'secret-pass');
-    fireEvent.press(getByText('Sign In'));
+    await fireEvent.changeText(getByTestId('login-username'), 'emily');
+    await fireEvent.changeText(getByTestId('login-password'), 'secret-pass');
+    await fireEvent.press(getByText('Sign In'));
 
     expect(
       await findByText('No connection. Check your network and try again.')
@@ -371,11 +378,11 @@ describe('<LoginScreen />', () => {
     async (_case, failure, shown) => {
       const logged = jest.spyOn(logger, 'error').mockImplementation(() => {});
       jest.spyOn(authService, 'login').mockRejectedValue(failure);
-      const { getByTestId, getByText, queryByText } = renderLogin();
+      const { getByTestId, getByText, queryByText } = await renderLogin();
 
-      fireEvent.changeText(getByTestId('login-username'), 'emily');
-      fireEvent.changeText(getByTestId('login-password'), 'secret-pass');
-      fireEvent.press(getByText('Sign In'));
+      await fireEvent.changeText(getByTestId('login-username'), 'emily');
+      await fireEvent.changeText(getByTestId('login-password'), 'secret-pass');
+      await fireEvent.press(getByText('Sign In'));
 
       await waitFor(() => expect(getByText(shown)).toBeTruthy());
       expect(queryByText(/register an AuthAdapter|Network Error/)).toBeNull();
@@ -402,9 +409,9 @@ describe('<LoginScreen />', () => {
       // Ready first: the probe must read the restored state, not 'loading'.
       const { getByTestId, getByText, findByText } = await renderLoginReady();
 
-      fireEvent.changeText(getByTestId('login-username'), username);
-      fireEvent.changeText(getByTestId('login-password'), password);
-      fireEvent.press(getByText('Sign In'));
+      await fireEvent.changeText(getByTestId('login-username'), username);
+      await fireEvent.changeText(getByTestId('login-password'), password);
+      await fireEvent.press(getByText('Sign In'));
 
       expect(await findByText(message)).toBeTruthy();
       expect(login).not.toHaveBeenCalled();
@@ -418,7 +425,7 @@ describe('<LoginScreen />', () => {
     const username = getByTestId('login-username');
 
     expect(username.props.returnKeyType).toBe('next');
-    fireEvent(username, 'submitEditing');
+    await fireEvent(username, 'submitEditing');
 
     expect(mockFocus).toHaveBeenCalledWith('login-password');
     expect(login).not.toHaveBeenCalled();
@@ -429,13 +436,13 @@ describe('<LoginScreen />', () => {
       token: 'test-token',
       user: { id: 1, email: 'user@example.com', name: 'Test User' },
     });
-    const { getByTestId } = renderLogin();
+    const { getByTestId } = await renderLogin();
     const password = getByTestId('login-password');
 
-    fireEvent.changeText(getByTestId('login-username'), 'emily');
-    fireEvent.changeText(password, 'secret-pass');
+    await fireEvent.changeText(getByTestId('login-username'), 'emily');
+    await fireEvent.changeText(password, 'secret-pass');
     expect(password.props.returnKeyType).toBe('go');
-    fireEvent(password, 'submitEditing');
+    await fireEvent(password, 'submitEditing');
 
     await waitFor(() => {
       expect(authService.login).toHaveBeenCalledWith({
@@ -453,11 +460,13 @@ describe('<LoginScreen />', () => {
     'wraps the form in a keyboard-avoiding container (%s: %s)',
     async (os, behavior) => {
       jest.replaceProperty(Platform, 'OS', os);
-      const { UNSAFE_getByType } = await renderLoginReady();
+      // KeyboardAvoidingView is a class: read the props it renders with
+      // (the test renderer keeps only host elements).
+      const kavRender = jest.spyOn(KeyboardAvoidingView.prototype, 'render');
+      await renderLoginReady();
 
-      expect(UNSAFE_getByType(KeyboardAvoidingView).props.behavior).toBe(
-        behavior
-      );
+      const instance = kavRender.mock.contexts.at(-1) as KeyboardAvoidingView;
+      expect(instance.props.behavior).toBe(behavior);
     }
   );
 });

@@ -14,7 +14,10 @@ The UI is built with [React Native Paper](https://callstack.github.io/react-nati
 - React Navigation draws screen backgrounds, headers, and the tab bar itself,
   so `getNavigationTheme(theme)` derives its theme from the Paper theme, and
   `getTabBarColors(theme)` gives the tab bar `surface` / `outlineVariant` and
-  `primary` / `onSurfaceVariant` tints.
+  `primary` / `onSurfaceVariant` tints. On iOS 26 and later, Expo Router's
+  stack headers use the system's Liquid Glass appearance instead of these
+  colors; `enableLegacyHeaderAppearance()` from `expo-router` brings back the
+  themed ones.
 - The status bar icons follow the theme: `app/_layout.tsx` renders
   `<StatusBar style={theme.dark ? 'light' : 'dark'} />`. `expo-system-ui`
   applies `userInterfaceStyle: 'automatic'` from `app.config.ts` in native
@@ -139,7 +142,10 @@ See [Expo: fonts](https://docs.expo.dev/develop/user-interface/fonts/).
 
 Screens wrap their content in `SafeAreaView` from
 `react-native-safe-area-context`. A screen under a navigation header excludes
-the top edge (`edges={['bottom', 'left', 'right']}`).
+the top edge (`edges={['bottom', 'left', 'right']}`). On iOS 26 and later
+that header is translucent and the screen runs under it, so give the
+screen's `ScrollView` `contentInsetAdjustmentBehavior="automatic"` to start
+its content below the header (Login and Profile do).
 See [Expo: safe areas](https://docs.expo.dev/develop/user-interface/safe-areas/).
 
 ## Web

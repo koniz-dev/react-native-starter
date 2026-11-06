@@ -41,10 +41,10 @@ you (icons, colors, backend, providers).
 
 - Node.js 24.21.0 (the version in `.nvmrc`; any 24.3+ or 22.13+ works, but
   not 23), and npm.
-- To run on a device: [Expo Go](https://expo.dev/go) for SDK 57.
+- To run on a device: [Expo Go](https://expo.dev/go) for SDK 58.
 - For simulators: Xcode (iOS Simulator, macOS only) or Android Studio (an
   Android emulator). Building the native iOS app yourself needs Xcode 26.4+,
-  which Expo SDK 57 requires.
+  which Expo SDK 58 requires.
 
 ## Platforms
 
@@ -69,7 +69,7 @@ accounts; the profiles are in `eas.json`), or locally with Xcode 26.4+:
 `npm run prebuild:preview`, then `npm run build:preview:ios`. See
 [App Config](app-config.md#build-variants).
 
-Expo SDK 57 (React Native 0.86, React 19.2). Not included: a production
+Expo SDK 58 (React Native 0.88, React 19.3). Not included: a production
 backend, store builds and submission, and real analytics, crash-reporting,
 push, feature-flag, or update providers (the app has
 [seams](plug-in-a-provider.md) with no-op or console defaults). Landscape
@@ -78,10 +78,14 @@ iPads (`supportsTablet`) and Android 16 on large screens rotate anyway, so
 check your screens there, or set `supportsTablet: false` in
 `app.config.ts`.
 
-**Hosting the web export:** `dist/` is a single-page app. Serve it at the
-root of a domain, and have the host answer every unknown path with
-`index.html` (for example `/profile` after a reload), or links into the app
-return 404. Under a subpath, set
+**Hosting the web export:** `dist/` is a single-page app (`web.output:
+'single'` in `app.config.ts`). Serve it at the root of a domain, and have the
+host answer every unknown path with `index.html` (for example `/profile` after
+a reload), or links into the app return 404. The JavaScript is split per route
+and loaded on demand, so a page opened before a deploy may still ask for the
+old files: keep the previous deploy's `_expo/static/` for a while, or the app
+shows its error screen instead of the route (and don't answer missing
+`/_expo/` paths with `index.html`). Under a subpath, set
 [`experiments.baseUrl`](https://docs.expo.dev/guides/publishing-websites/)
 first. Since the web build keeps the sign-in token in memory, also send a
 Content-Security-Policy header that allows only your own scripts and your
@@ -204,9 +208,10 @@ and the `build:preview:*` / `build:production:*` scripts for the others
 `npm run audit:check` fails on a high or critical advisory in the
 production dependency tree (`npm audit --omit=dev`, which also holds build
 tools such as Expo CLI) unless `scripts/audit-allowlist.json` has a review of it
-whose `reviewBy` date has not passed. Its first entries are the review of
-the dependencies the project started with (build tools, or code in the app
-bundles that the app never calls), so the Audit workflow starts green. Make the review yours:
+whose `reviewBy` date has not passed. Any entries it starts with are the
+review of the dependencies the project started with (build tools, or code in
+the app bundles that the app never calls), so the Audit workflow starts
+green. Make the review yours:
 
 1. For each entry, read the advisory (`tracking`) and check that `path` and
    `exposure` still hold for your dependencies (`npm ls <package>`).

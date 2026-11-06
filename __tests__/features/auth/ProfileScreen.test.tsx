@@ -4,9 +4,14 @@ import { ProfileScreen } from '@/features/auth/screens/ProfileScreen';
 import { ApiError } from '@/shared/http/apiError';
 import { authService } from '@/shared/session/authService';
 import { logger } from '@/shared/lib/logger';
-import { DocumentTitle } from '@/shared/ui/DocumentTitle';
 import { setItem, STORAGE_KEYS } from '@/shared/storage/storage';
 import { renderWithProviders, secureStore } from '@/testing';
+import { documentTitles } from '@/testing/documentTitle';
+
+// DocumentTitle renders nothing on native; this one shows its title.
+jest.mock('@/shared/ui/DocumentTitle', () =>
+  jest.requireActual('@/testing/documentTitle')
+);
 
 async function signInWithoutProfile() {
   secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
@@ -20,10 +25,8 @@ describe('<ProfileScreen />', () => {
     await signInWithoutProfile();
     jest.spyOn(authService, 'fetchProfile').mockResolvedValue(null);
 
-    const { findByTestId, queryByTestId, getAllByText } = renderWithProviders(
-      <ProfileScreen />,
-      { withSession: true }
-    );
+    const { findByTestId, queryByTestId, getAllByText } =
+      await renderWithProviders(<ProfileScreen />, { withSession: true });
 
     await findByTestId('profile-logout');
     await waitForRefresh(queryByTestId);
@@ -34,11 +37,13 @@ describe('<ProfileScreen />', () => {
     await signInWithoutProfile();
     jest.spyOn(authService, 'fetchProfile').mockResolvedValue(null);
 
-    const view = renderWithProviders(<ProfileScreen />, { withSession: true });
+    const view = await renderWithProviders(<ProfileScreen />, {
+      withSession: true,
+    });
 
     await view.findByTestId('profile-logout');
     await waitForRefresh(view.queryByTestId);
-    expect(view.UNSAFE_getByType(DocumentTitle).props.title).toBe('Profile');
+    expect(documentTitles()).toEqual(['Profile']);
   });
 
   it('shows the placeholder for an empty name', async () => {
@@ -50,9 +55,12 @@ describe('<ProfileScreen />', () => {
     });
     jest.spyOn(authService, 'fetchProfile').mockResolvedValue(null);
 
-    const { findByText, getByText } = renderWithProviders(<ProfileScreen />, {
-      withSession: true,
-    });
+    const { findByText, getByText } = await renderWithProviders(
+      <ProfileScreen />,
+      {
+        withSession: true,
+      }
+    );
 
     expect(await findByText('emily@example.com')).toBeTruthy();
     expect(getByText('Not available')).toBeTruthy();
@@ -65,7 +73,7 @@ describe('<ProfileScreen />', () => {
       .spyOn(authService, 'fetchProfile')
       .mockRejectedValue(new ApiError('Network Error', { code: 'network' }));
 
-    const { findByTestId } = renderWithProviders(<ProfileScreen />, {
+    const { findByTestId } = await renderWithProviders(<ProfileScreen />, {
       withSession: true,
     });
 
@@ -85,7 +93,7 @@ describe('<ProfileScreen />', () => {
       .spyOn(authService, 'fetchProfile')
       .mockRejectedValue(new ApiError('Expired', { code: 'unauthorized' }));
 
-    const { findByTestId, queryByTestId } = renderWithProviders(
+    const { findByTestId, queryByTestId } = await renderWithProviders(
       <ProfileScreen />,
       { withSession: true }
     );
@@ -103,7 +111,7 @@ describe('<ProfileScreen />', () => {
       .mockImplementation(
         () => new Promise(resolve => pending.push(() => resolve(null)))
       );
-    const { findByLabelText, queryByTestId } = renderWithProviders(
+    const { findByLabelText, queryByTestId } = await renderWithProviders(
       <ProfileScreen />,
       { withSession: true }
     );
@@ -119,7 +127,7 @@ describe('<ProfileScreen />', () => {
     const failure = new Error('The profile did not match the schema');
     jest.spyOn(authService, 'fetchProfile').mockRejectedValue(failure);
 
-    const { findByTestId } = renderWithProviders(<ProfileScreen />, {
+    const { findByTestId } = await renderWithProviders(<ProfileScreen />, {
       withSession: true,
     });
 

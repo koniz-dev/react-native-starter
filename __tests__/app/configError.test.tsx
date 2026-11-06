@@ -21,7 +21,7 @@ jest.mock('@/shared/config/env', () => {
 
 describe('startup with invalid configuration', () => {
   test('shows the configuration error screen instead of the app', async () => {
-    renderRouter('./app', { initialUrl: '/' });
+    await renderRouter('./app', { initialUrl: '/' });
 
     expect(await screen.findByText('Configuration error')).toBeTruthy();
     expect(screen.getByText('EXPO_PUBLIC_API_URL')).toBeTruthy();

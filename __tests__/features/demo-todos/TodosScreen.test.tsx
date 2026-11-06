@@ -5,8 +5,13 @@ import { TodosScreen } from '@/features/demo-todos/screens/TodosScreen';
 import type { Todo } from '@/features/demo-todos/types';
 import { api } from '@/shared/http/api';
 import { logger } from '@/shared/lib/logger';
-import { DocumentTitle } from '@/shared/ui/DocumentTitle';
 import { holdRequests, httpError, ok, renderWithProviders } from '@/testing';
+import { documentTitles } from '@/testing/documentTitle';
+
+// DocumentTitle renders nothing on native; this one shows its title.
+jest.mock('@/shared/ui/DocumentTitle', () =>
+  jest.requireActual('@/testing/documentTitle')
+);
 
 const todos: Todo[] = Array.from({ length: 12 }, (_, index) => ({
   id: index + 1,
@@ -28,10 +33,10 @@ afterEach(() => {
 describe('<TodosScreen /> (Explore)', () => {
   it('goes from loading to an error, then Retry loads the list', async () => {
     const requests = holdRequests();
-    renderWithProviders(<TodosScreen />);
+    await renderWithProviders(<TodosScreen />);
 
     expect(screen.getByText('Loading todos...')).toBeTruthy();
-    expect(screen.UNSAFE_getByType(DocumentTitle).props.title).toBe('Explore');
+    expect(documentTitles()).toEqual(['Explore']);
     await waitFor(() => expect(requests).toHaveLength(1));
     expect(requests[0]?.config.url).toBe('/todos');
 
@@ -44,7 +49,7 @@ describe('<TodosScreen /> (Explore)', () => {
 
     // Retrying keeps the screen, so the screen reader's focus stays on the
     // button, which reads as loading.
-    fireEvent.press(screen.getByText('Retry'));
+    await fireEvent.press(screen.getByText('Retry'));
     expect(await screen.findByText('Loading...')).toBeTruthy();
     expect(screen.queryByText('Loading todos...')).toBeNull();
     expect(screen.queryByText('Error')).toBeNull();
@@ -66,14 +71,14 @@ describe('<TodosScreen /> (Explore)', () => {
     expect(decoration('todo 1')).toBe('line-through');
     expect(decoration('todo 2')).toBeUndefined();
     expect(screen.getByRole('header', { name: 'API Example' })).toBeTruthy();
-    expect(screen.UNSAFE_getByType(DocumentTitle).props.title).toBe('Explore');
+    expect(documentTitles()).toEqual(['Explore']);
   });
 
   it('announces the error from a live region, and leaves server errors unlogged', async () => {
     const logged = jest.spyOn(logger, 'error');
     const announce = jest.spyOn(AccessibilityInfo, 'announceForAccessibility');
     const requests = holdRequests();
-    renderWithProviders(<TodosScreen />);
+    await renderWithProviders(<TodosScreen />);
     await waitFor(() => expect(requests).toHaveLength(1));
 
     await act(async () => requests[0]?.reject(serverError(requests[0].config)));
@@ -90,18 +95,18 @@ describe('<TodosScreen /> (Explore)', () => {
 
   it('keeps the list on screen while it reloads', async () => {
     const requests = holdRequests();
-    renderWithProviders(<TodosScreen />);
+    await renderWithProviders(<TodosScreen />);
     await waitFor(() => expect(requests).toHaveLength(1));
     await act(async () => requests[0]?.resolve(ok(requests[0].config, todos)));
     expect(await screen.findByText('Todos (10)')).toBeTruthy();
 
-    fireEvent.press(screen.getByText('Reload'));
+    await fireEvent.press(screen.getByText('Reload'));
     await waitFor(() => expect(requests).toHaveLength(2));
     expect(screen.getByText('Loading...')).toBeDisabled();
     expect(screen.getByText('todo 1')).toBeTruthy();
     // A second press while loading starts nothing (a request reaches the
     // adapter only after the interceptors, so let them run first).
-    fireEvent.press(screen.getByText('Loading...'));
+    await fireEvent.press(screen.getByText('Loading...'));
     await act(async () => {});
     expect(requests).toHaveLength(2);
 
@@ -115,7 +120,7 @@ describe('<TodosScreen /> (Explore)', () => {
   it('logs a response that fails validation and shows a generic message', async () => {
     const logged = jest.spyOn(logger, 'error').mockImplementation(() => {});
     const requests = holdRequests();
-    renderWithProviders(<TodosScreen />);
+    await renderWithProviders(<TodosScreen />);
     await waitFor(() => expect(requests).toHaveLength(1));
 
     await act(async () =>
@@ -133,7 +138,7 @@ describe('<TodosScreen /> (Explore)', () => {
 
   it('shows the empty state for an empty list', async () => {
     const requests = holdRequests();
-    renderWithProviders(<TodosScreen />);
+    await renderWithProviders(<TodosScreen />);
     await waitFor(() => expect(requests).toHaveLength(1));
 
     await act(async () => requests[0]?.resolve(ok(requests[0].config, [])));

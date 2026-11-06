@@ -3,16 +3,15 @@ import { renderRouter, screen } from 'expo-router/testing-library';
 import { getTabBarColors, getTheme } from '@/shared/ui/theme';
 import { setColorScheme } from '@/testing';
 
-type Instance = typeof screen.UNSAFE_root;
+type Instance = typeof screen.container;
 
 function flatStyle(node: Instance) {
   return StyleSheet.flatten(node.props.style) ?? {};
 }
 
 function findTabBar(backgroundColor: string) {
-  return screen.UNSAFE_root.findAll(
+  return screen.container.queryAll(
     (node: Instance) =>
-      typeof node.type === 'string' &&
       flatStyle(node).backgroundColor === backgroundColor &&
       flatStyle(node).borderTopColor !== undefined
   );
@@ -42,7 +41,7 @@ describe.each(['light', 'dark'] as const)('tab bar in %s mode', scheme => {
   });
 
   test('renders the tab bar with the theme background and tints', async () => {
-    renderRouter('./app', { initialUrl: '/' });
+    await renderRouter('./app', { initialUrl: '/' });
     await screen.findByText('Session');
 
     const [tabBar] = findTabBar(expected.background);

@@ -61,7 +61,7 @@ beforeEach(() => analyticsSeam.set(createPostHogAnalytics(posthog)));
 afterEach(() => analyticsSeam.reset());
 
 it("keeps PostHog's anonymous id on a launch that starts signed out", async () => {
-  renderWithProviders(<App />, { withSession: true });
+  await renderWithProviders(<App />, { withSession: true });
   await screen.findByText('signedOut');
   // Let any effect of the change run.
   await new Promise(resolve => setTimeout(resolve, 0));
@@ -77,12 +77,12 @@ it('identifies a restored user, and resets once on sign-out', async () => {
     email: 'ada@example.com',
     name: 'Ada',
   });
-  renderWithProviders(<App />, { withSession: true });
+  await renderWithProviders(<App />, { withSession: true });
 
   await screen.findByText('signedIn');
   expect(posthog.identify).toHaveBeenCalledWith('7', undefined);
 
-  fireEvent.press(screen.getByText('signedIn'));
+  await fireEvent.press(screen.getByText('signedIn'));
   await screen.findByText('signedOut');
   await waitFor(() => expect(posthog.reset).toHaveBeenCalledTimes(1));
   // And only once: the signed-out state that follows doesn't reset again.

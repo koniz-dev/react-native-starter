@@ -26,6 +26,14 @@ jest.mock('react-native/Libraries/Utilities/useColorScheme', () => ({
   default: () => jest.requireActual('@/testing/colorScheme').getColorScheme(),
 }));
 
+// Assets: jest-expo mocks react-native/asset-registry, but expo-asset reads
+// `AssetRegistry` from 'react-native', a separate module since React Native
+// 0.88. Without this, loading an icon font rejects ("Module "1" is missing
+// from the asset registry"). Remove it once jest-expo mocks that module too.
+jest.mock('react-native/src/private/assets/AssetRegistry', () => ({
+  AssetRegistry: jest.requireMock('react-native/asset-registry'),
+}));
+
 beforeEach(async () => {
   resetSecureStore();
   await AsyncStorage.clear();

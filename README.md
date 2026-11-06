@@ -12,7 +12,7 @@ and a few adapters, not a rewrite.
 [![CI](https://github.com/koniz-dev/react-native-starter/actions/workflows/ci.yml/badge.svg)](https://github.com/koniz-dev/react-native-starter/actions/workflows/ci.yml)
 [![Audit](https://github.com/koniz-dev/react-native-starter/actions/workflows/audit.yml/badge.svg)](https://github.com/koniz-dev/react-native-starter/actions/workflows/audit.yml)
 [![Release](https://img.shields.io/github/v/release/koniz-dev/react-native-starter)](https://github.com/koniz-dev/react-native-starter/releases)
-[![Expo SDK 57](https://img.shields.io/badge/Expo_SDK-57-000020?logo=expo)](https://docs.expo.dev/)
+[![Expo SDK 58](https://img.shields.io/badge/Expo_SDK-58-000020?logo=expo)](https://docs.expo.dev/)
 ![iOS | Android | Web](https://img.shields.io/badge/platforms-iOS_%7C_Android_%7C_Web-blue)
 [![TypeScript strict](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)](tsconfig.json)
 [![MIT license](https://img.shields.io/github/license/koniz-dev/react-native-starter)](LICENSE)
@@ -95,7 +95,7 @@ on: `emilys` / `emilyspass`.
 
 | Layer      | Choice                                                     |
 | ---------- | ---------------------------------------------------------- |
-| Framework  | Expo SDK 57, React Native 0.86, React 19                   |
+| Framework  | Expo SDK 58, React Native 0.88, React 19                   |
 | Navigation | Expo Router (file-based routes)                            |
 | UI         | React Native Paper 5 (Material Design 3)                   |
 | Language   | TypeScript in strict mode, with `noUncheckedIndexedAccess` |

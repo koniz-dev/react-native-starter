@@ -56,7 +56,7 @@ describe('i18n seam', () => {
     configureIntegrations();
     i18nSeam.set(createDictionaryI18n('x-pseudo', pseudo));
 
-    const app = renderRouter('./app', { initialUrl: '/' });
+    const app = await renderRouter('./app', { initialUrl: '/' });
     expect(await screen.findByText('[Not signed in]')).toBeTruthy();
     expect(screen.getByText('[Sign in]')).toBeTruthy();
     expect(screen.getByText('[Home]')).toBeTruthy();
@@ -64,8 +64,8 @@ describe('i18n seam', () => {
     expect(screen.getByText('[Explore]')).toBeTruthy();
     // @demo remove-block-end
 
-    app.unmount();
-    renderRouter('./app', { initialUrl: '/login' });
+    await app.unmount();
+    await renderRouter('./app', { initialUrl: '/login' });
     expect(await screen.findByText('[Welcome Back]')).toBeTruthy();
     expect(screen.getByText('[Sign in to continue]')).toBeTruthy();
     expect(screen.getByText('[Sign In]')).toBeTruthy();
@@ -83,9 +83,9 @@ describe('i18n seam', () => {
     await setItem(STORAGE_KEYS.USER_DATA, user);
     jest.spyOn(authService, 'fetchProfile').mockResolvedValue(user);
 
-    renderRouter('./app', { initialUrl: '/' });
+    await renderRouter('./app', { initialUrl: '/' });
     await screen.findByText('[View profile]');
-    act(() => router.navigate('/profile'));
+    await act(() => router.navigate('/profile'));
     expect(
       (await screen.findByTestId('protected-back')).props.accessibilityLabel
     ).toBe('[Back]');

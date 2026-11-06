@@ -43,15 +43,18 @@ function controlledFetch<T>() {
 
 describe('useFetch', () => {
   it('loads data, exposes a typed ApiError, and refetches', async () => {
+    // The first load answers when the test says so, to see it loading.
+    let answerFirst!: (value: string) => void;
     const fetchFn = jest
       .fn<Promise<string>, [AbortSignal]>()
-      .mockResolvedValueOnce('first')
+      .mockReturnValueOnce(new Promise(resolve => (answerFirst = resolve)))
       .mockRejectedValueOnce(new Error('Offline'))
       .mockResolvedValueOnce('second');
-    const { result } = renderHook(() => useFetch(fetchFn));
+    const { result } = await renderHook(() => useFetch(fetchFn));
 
     expect(result.current.loading).toBe(true);
-    await waitFor(() => expect(result.current.data).toBe('first'));
+    await act(async () => answerFirst('first'));
+    expect(result.current.data).toBe('first');
     expect(result.current.loading).toBe(false);
 
     await act(async () => result.current.refetch());
@@ -85,7 +88,7 @@ describe('useFetch', () => {
         config,
       }
     );
-    const { result } = renderHook(() =>
+    const { result } = await renderHook(() =>
       useFetch(() => Promise.reject(httpError))
     );
 
@@ -102,22 +105,22 @@ describe('useFetch', () => {
   // tests below cover ignoring stale results on a mounted component.)
   it('aborts the request on unmount', async () => {
     const { fetchFn, calls } = controlledFetch<string>();
-    const { unmount } = renderHook(() => useFetch(fetchFn));
+    const { unmount } = await renderHook(() => useFetch(fetchFn));
 
-    unmount();
+    await unmount();
 
     expect(calls[0]?.signal.aborted).toBe(true);
   });
 
   it('aborts the previous request when deps change', async () => {
     const { fetchFn, calls } = controlledFetch<string>();
-    const { rerender, result } = renderHook(
+    const { rerender, result } = await renderHook(
       ({ id }: { id: number }) => useFetch(fetchFn, [id]),
       { initialProps: { id: 1 } }
     );
     expect(fetchFn).toHaveBeenCalledTimes(1);
 
-    rerender({ id: 2 });
+    await rerender({ id: 2 });
     expect(calls[0]?.signal.aborted).toBe(true);
     expect(fetchFn).toHaveBeenCalledTimes(2);
     expect(calls[1]?.signal.aborted).toBe(false);
@@ -125,13 +128,13 @@ describe('useFetch', () => {
     await act(async () => calls[1]?.resolve('two'));
     expect(result.current.data).toBe('two');
 
-    rerender({ id: 2 }); // same deps: no new request
+    await rerender({ id: 2 }); // same deps: no new request
     expect(fetchFn).toHaveBeenCalledTimes(2);
   });
 
   it('goes back to loading without the old error on a deps change and on refetch', async () => {
     const { fetchFn, calls } = controlledFetch<string>();
-    const { rerender, result } = renderHook(
+    const { rerender, result } = await renderHook(
       ({ id }: { id: number }) => useFetch(fetchFn, [id]),
       { initialProps: { id: 1 } }
     );
@@ -140,7 +143,7 @@ describe('useFetch', () => {
     expect(result.current.error?.message).toBe('down');
 
     // The render with the new deps already shows loading, not the old error.
-    rerender({ id: 2 });
+    await rerender({ id: 2 });
     expect(result.current).toMatchObject({ loading: true, error: null });
 
     await act(async () => calls[1]?.reject(new Error('still down')));
@@ -160,7 +163,7 @@ describe('useFetch', () => {
 
   it("drops the old deps' data on a deps change, and keeps data on refetch", async () => {
     const { fetchFn, calls } = controlledFetch<string>();
-    const { rerender, result } = renderHook(
+    const { rerender, result } = await renderHook(
       ({ id }: { id: number }) => useFetch(fetchFn, [id]),
       { initialProps: { id: 1 } }
     );
@@ -168,7 +171,7 @@ describe('useFetch', () => {
     expect(result.current.data).toBe('user 1');
 
     // The view for user 2 must not show user 1 while it loads.
-    rerender({ id: 2 });
+    await rerender({ id: 2 });
     expect(result.current).toMatchObject({ loading: true, data: null });
     await act(async () => calls[1]?.resolve('user 2'));
 
@@ -181,11 +184,11 @@ describe('useFetch', () => {
 
   it('keeps the latest response when an older one arrives later', async () => {
     const { fetchFn, calls } = controlledFetch<string>();
-    const { rerender, result } = renderHook(
+    const { rerender, result } = await renderHook(
       ({ id }: { id: number }) => useFetch(fetchFn, [id]),
       { initialProps: { id: 1 } }
     );
-    rerender({ id: 2 });
+    await rerender({ id: 2 });
 
     await act(async () => calls[1]?.resolve('two'));
     // The server ignored the abort and answers the first request last.
@@ -197,11 +200,11 @@ describe('useFetch', () => {
 
   it('ignores an older request that fails after the newer one succeeded', async () => {
     const { fetchFn, calls } = controlledFetch<string>();
-    const { rerender, result } = renderHook(
+    const { rerender, result } = await renderHook(
       ({ id }: { id: number }) => useFetch(fetchFn, [id]),
       { initialProps: { id: 1 } }
     );
-    rerender({ id: 2 });
+    await rerender({ id: 2 });
 
     await act(async () => calls[1]?.resolve('two'));
     // The aborted request rejects, as axios does with a CanceledError.
@@ -216,11 +219,11 @@ describe('useFetch', () => {
 
   it("doesn't end the newer request's loading when an older one settles", async () => {
     const { fetchFn, calls } = controlledFetch<string>();
-    const { rerender, result } = renderHook(
+    const { rerender, result } = await renderHook(
       ({ id }: { id: number }) => useFetch(fetchFn, [id]),
       { initialProps: { id: 1 } }
     );
-    rerender({ id: 2 });
+    await rerender({ id: 2 });
 
     await act(async () => calls[0]?.resolve('one'));
 
@@ -231,13 +234,13 @@ describe('useFetch', () => {
   it('refetch aborts a request in flight and uses the newest fetchFn', async () => {
     const first = controlledFetch<string>();
     const second = controlledFetch<string>();
-    const { rerender, result } = renderHook(
+    const { rerender, result } = await renderHook(
       ({ fetchFn }: { fetchFn: (signal: AbortSignal) => Promise<string> }) =>
         useFetch(fetchFn),
       { initialProps: { fetchFn: first.fetchFn } }
     );
 
-    rerender({ fetchFn: second.fetchFn }); // a new function alone doesn't refetch
+    await rerender({ fetchFn: second.fetchFn }); // a new function alone doesn't refetch
     expect(second.fetchFn).not.toHaveBeenCalled();
 
     await act(async () => {
@@ -266,7 +269,7 @@ describe('useFetch', () => {
         <Probe />
       </Activity>
     );
-    const { rerender } = render(view('visible'));
+    const { rerender } = await render(view('visible'));
     await waitFor(() =>
       expect(
         screen.getByTestId('probe', { includeHiddenElements: true })
@@ -302,7 +305,7 @@ describe('useFetch', () => {
     );
     const probe = () =>
       screen.getByTestId('probe', { includeHiddenElements: true });
-    const { rerender } = render(view('visible'));
+    const { rerender } = await render(view('visible'));
     await waitFor(() => expect(probe()).toHaveTextContent('false:null:down'));
 
     await act(async () => rerender(view('hidden')));
