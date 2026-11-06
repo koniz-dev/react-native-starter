@@ -1,0 +1,27 @@
+useNoExtraHome rework (ff6918a, cc61fe8): tests and mutants, Jest on sdk-58 (Node 24.21.0)
+
+Before ff6918a, a link opened while the app runs to a refused group left two Homes
+(probe, renderRouter, root stack routes after the action):
+  push /login (signed in)      ["(tabs)","(tabs)"]
+  navigate /login (signed in)  ["(tabs)","(tabs)"]
+  push /profile (signed out)   ["(tabs)","(tabs)"]
+  navigate /profile (signed out) ["(tabs)","(tabs)"]
+After ff6918a: ["(tabs)"] in all four, router.canGoBack() false.
+
+New tests in __tests__/app/sessionRoutes.test.tsx, "after a link to %s that the guard
+refuses, while the app runs" (/profile signed out, /login signed in): on Home by navigate
+and by push, over another screen (which stays on top), and replacing Home (cc61fe8):
+8 tests. On the hook before ff6918a: the 6 tests of ff6918a fail. Without cc61fe8's
+`length > 1`: 2 fail.
+
+Mutants of the reworked hook (all app tests, 90):
+  M1 drop the refused check (lets === signedIn)   2 failed  killed
+  M2 drop the undefined check                     1 failed  killed
+  M3 drop tab === 'index'                         1 failed  killed
+  M4 length >= previous.length                    1 failed  killed
+  M5 length <= previous.length                    0 failed  survives (as before; a group replaced at the same length is the only case)
+  M6 drop top === '(tabs)'                        1 failed  killed
+  M7 (auth) flag true                             6 failed  killed
+  M8 drop signedIn from the effect's deps         0 failed  survives (the stack moves whenever the guard acts; lint requires the dependency)
+
+Full suite: 744 tests pass (cfdc124).

@@ -1,0 +1,27 @@
+appId: ${APP_ID}
+---
+- runFlow:
+    file: /Users/nguyenanhkiet/Playground/rns-sdk58/.maestro/subflows/open-app.yaml
+    env:
+      CLEAR_STATE: 'true'
+# Signed out: a link to Profile while the app runs.
+- openLink:
+    link: ${APP_URL}/--/profile
+- extendedWaitUntil:
+    visible: 'Not signed in'
+    timeout: 20000
+- takeScreenshot: 01-signed-out-after-profile-link
+- runFlow:
+    file: /Users/nguyenanhkiet/Playground/rns-sdk58/.maestro/subflows/open-login.yaml
+- runFlow:
+    file: /Users/nguyenanhkiet/Playground/rns-sdk58/.maestro/subflows/sign-in.yaml
+- extendedWaitUntil:
+    visible: 'Signed in as.*'
+    timeout: 20000
+# Signed in: a link to Login while the app runs.
+- openLink:
+    link: ${APP_URL}/--/login
+- extendedWaitUntil:
+    visible: 'Signed in as.*'
+    timeout: 20000
+- takeScreenshot: 02-signed-in-after-login-link

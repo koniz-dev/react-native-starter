@@ -1,0 +1,139 @@
+
+== Part 1: clean clone of tag sdk-58 (2026-11-06T19:42:16Z), node v24.21.0, npm 11.19.0
+cfdc1243c729adc7f9e85e85497d81a8ba24657d docs(ui-and-theming): the iOS 26 header and the automatic content inset
+npm ci exit 0
+recipes npm ci exit 0
+$ npm run lint
+> react-native-starter@1.0.0 lint
+> eslint . --max-warnings 0
+
+exit 0
+$ npm run type-check
+> react-native-starter@1.0.0 type-check
+> tsc --noEmit && tsc --noEmit -p tsconfig.tools.json
+
+exit 0
+$ npm run format:check
+
+Checking formatting...
+All matched files use Prettier code style!
+exit 0
+$ npm run docs:check
+
+Checked 19 files: 46 TypeScript snippets compiled with tsc.
+No problems.
+exit 0
+$ npm run test:ci
+
+Test Suites: 49 passed, 49 total
+Tests:       744 passed, 744 total
+Snapshots:   0 total
+Time:        60.12 s
+Ran all test suites.
+exit 0
+$ npm run audit:check
+
+moderate glob GHSA-3g3m-2fjr-6pw4: reported (not gated)
+moderate minimatch GHSA-g3hv-75wg-m249: reported (not gated)
+low      deepmerge GHSA-gcqx-w48m-w2h4: reported (not gated)
+npm audit --omit=dev: 3 advisories (records: 0 critical, 0 high, 19 moderate, 5 low).
+No unreviewed high or critical advisories.
+exit 0
+$ npm run doctor
+
+Running 20 checks on your project...
+20/20 checks passed. No issues detected!
+exit 0
+$ web export
+Exported: /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/88010181-5430-40e8-aeeb-72d23b15ea8e/scratchpad/gw/dist1
+exit 0
+$ native bundles
+Exported: /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/88010181-5430-40e8-aeeb-72d23b15ea8e/scratchpad/gw/dist1-native
+exit 0
+$ web export with .env.example (demo backends), for the web smoke
+Exported: /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/88010181-5430-40e8-aeeb-72d23b15ea8e/scratchpad/gw/dist-web-demo
+exit 0
+git status after the gates:
+(0 entries)
+
+== Part 2: clean clone of tag sdk-58 (2026-11-06T19:45:38Z), node v24.21.0, npm 11.19.0
+cfdc1243c729adc7f9e85e85497d81a8ba24657d docs(ui-and-theming): the iOS 26 header and the automatic content inset
+npm ci exit 0
+$ init-project --remove-demo --remove-recipes
+     (docs/app-config.md, docs/ui-and-theming.md).
+  4. Run npm run lint, npm run type-check, and npm run test:ci, then commit.
+exit 0
+leftovers (outside tests and the lockfile):
+(git grep exit 1; 1 = nothing found)
+docs/:
+README.md
+api-and-storage.md
+app-config.md
+connect-your-backend.md
+conventions.md
+environment-variables.md
+error-reporting.md
+getting-started.md
+plug-in-a-provider.md
+testing.md
+ui-and-theming.md
+.maestro/subflows:
+open-app.yaml
+open-login.yaml
+sign-in.yaml
+tap-after-launch.yaml
+type-username.yaml
+$ npm run lint
+> acme-notes@1.0.0 lint
+> eslint . --max-warnings 0
+
+exit 0
+$ npm run type-check
+> acme-notes@1.0.0 type-check
+> tsc --noEmit && tsc --noEmit -p tsconfig.tools.json
+
+exit 0
+$ npm run format:check
+
+Checking formatting...
+All matched files use Prettier code style!
+exit 0
+$ npm run docs:check
+
+Checked 16 files: 40 TypeScript snippets compiled with tsc.
+No problems.
+exit 0
+$ npm run test:ci
+
+Test Suites: 43 passed, 43 total
+Tests:       611 passed, 611 total
+Snapshots:   0 total
+Time:        45.62 s
+Ran all test suites.
+exit 0
+$ npm run audit:check
+
+moderate glob GHSA-3g3m-2fjr-6pw4: reported (not gated)
+moderate minimatch GHSA-g3hv-75wg-m249: reported (not gated)
+low      deepmerge GHSA-gcqx-w48m-w2h4: reported (not gated)
+npm audit --omit=dev: 3 advisories (records: 0 critical, 0 high, 19 moderate, 5 low).
+No unreviewed high or critical advisories.
+exit 0
+$ npm run doctor
+
+Running 20 checks on your project...
+20/20 checks passed. No issues detected!
+exit 0
+$ web export
+Exported: /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/88010181-5430-40e8-aeeb-72d23b15ea8e/scratchpad/gw/dist2
+exit 0
+$ native bundles
+Exported: /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/88010181-5430-40e8-aeeb-72d23b15ea8e/scratchpad/gw/dist2-native
+exit 0
+git status after the gates:
+ M .env.example
+ M .github/workflows/ci.yml
+ M .github/workflows/e2e-android.yml
+ M .github/workflows/e2e-ios.yml
+ D .maestro/02-tabs.yaml
+(66 entries)

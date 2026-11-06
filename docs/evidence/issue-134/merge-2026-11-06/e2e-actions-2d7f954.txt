@@ -1,0 +1,33 @@
+== run 42262631495: Maestro on Android emulator (expo-go), head 2d7f954a06a3546b744eb9fb5121d4700426a9f0, success
+app.apk: OK
+[Passed] Cold start opens Home (46s)
+[Passed] Back from Login returns Home (51s)
+[Passed] Tab navigation (29s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 41s)
+[Passed] Login keyboard return keys (1m 2s)
+[Passed] Explore error state and Retry (51s)
+[Passed] Profile is protected and reloads the user (1m 7s)
+7/7 Flows Passed in 6m 47s
+Take screenshot dark-home... COMPLETED
+== run 42262637357: Maestro on Android emulator (native-debug), head 2d7f954a06a3546b744eb9fb5121d4700426a9f0, success
+[Passed] Cold start opens Home (34s)
+[Passed] Back from Login returns Home (36s)
+[Passed] Tab navigation (27s)
+[Passed] Sign-in session survives a relaunch; logout clears it (1m 21s)
+[Passed] Login keyboard return keys (47s)
+[Passed] Explore error state and Retry (30s)
+[Passed] Profile is protected and reloads the user (54s)
+7/7 Flows Passed in 5m 9s
+Take screenshot dark-home... COMPLETED
+Take screenshot dark-explore... COMPLETED
+== run 42262643008: Maestro on iOS simulator (native-debug), head 2d7f954a06a3546b744eb9fb5121d4700426a9f0, success
+[Passed] Cold start opens Home (6m 50s)
+[Passed] Back from Login returns Home (2m 22s)
+[Passed] Tab navigation (1m 55s)
+[Passed] Sign-in session survives a relaunch; logout clears it (4m 13s)
+[Passed] Login keyboard return keys (1m 49s)
+[Passed] Explore error state and Retry (53s)
+[Passed] Profile is protected and reloads the user (2m 42s)
+7/7 Flows Passed in 20m 47s
+Take screenshot dark-home... COMPLETED
+Take screenshot dark-explore... COMPLETED

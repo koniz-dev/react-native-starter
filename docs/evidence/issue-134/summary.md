@@ -51,3 +51,49 @@ Branch `sdk-58`, draft PR #135. Last runtime change: 050b01a. Head: b6d6379 (doc
 
 - The root cause is upstream (Expo Router 58.0.24, the latest on 2026-10-20): `Stack.Protected` redirects with `replace('/')`. Reporting it to expo/expo is the maintainer's decision.
 - The disk on the maintainer's machine had about 3 GB free; downloads were deleted after use.
+
+## Merge readiness, 2026-11-06 (`merge-2026-11-06/`)
+
+The store's Expo Go runs SDK 58: `expoGoSdkVersion` 58.0.0 at api.expo.dev (57.0.0 on
+2026-11-01); App Store and Play Store Expo Go 58.0.5. The maintainer approved starting.
+Since b6d6379:
+
+- **main merged** (fa55194: setup-java 6.1.0); earlier merges brought the v1.1.18 changes.
+- **Versions** (0df42fc): `npx expo install --fix` to expo 58.0.23, expo-router 58.0.30,
+  expo-linking 58.0.16, expo-splash-screen 58.0.13, react-native-safe-area-context 5.11.1,
+  jest-expo 58.0.14; `expo install --check` up to date; doctor 20/20.
+- **Expo Go pin** (37e2a1a): Android 58.0.5, the store's version (SHA256 from the release
+  asset digest; the workflow's `sha256sum -c` passed). iOS Expo Go 58.0.7 locally.
+- **A link to a refused group while the app runs left two Homes** (the case added to
+  expo/expo#51916 on 2026-10-26; Router 57 dropped such a link). ff6918a: `useNoExtraHome`
+  undoes the guard's Home whenever the group that just left the top is one the guard now
+  refuses, instead of only right after a session change; cc61fe8 skips a one-screen stack
+  (R11 LOW 1); 2d7f954 documents a replace into a refused group (R11 LOW 2).
+  `hook-tests.txt`: 8 new tests, which fail on the old hook; mutants. `uat-refused-link/`:
+  the same on the simulator.
+- **Profile's top sat under the iOS 26 header** in every iOS native run since 2026-10-19
+  (`sheets/ios-native-42262643008-before-inset-fix.png`, 07-profile; also the earlier
+  `sheets/sdk58-ios-39306448903.png`, which this summary's criterion 5 called checked: I
+  missed it then). Expo Router 58 gives stack headers the native Liquid Glass appearance
+  on iOS 26 (expo/expo#51450): translucent, with the screen under it. 00c9677:
+  `contentInsetAdjustmentBehavior="automatic"` on the scroll views of Profile, Login and
+  the showcase; cfdc124 documents it (UI and Theming). Fixed in
+  `sheets/ios-native-42274677108.png`. The showcase is not in the flows, so it is not
+  verified on iOS 26.
+- **Confirmation round R11** (`r11-review.md`): no HIGH or MEDIUM; both LOWs fixed.
+
+| Check | On cfdc124 (last runtime change 00c9677) | Result |
+|---|---|---|
+| Clean-clone gates (`release-gates.txt`, Node 24.21.0) | lint, type-check, format, docs:check, 744 tests, audit:check (0 high/critical), doctor 20/20, web export, iOS and Android bundles; after `init-project --remove-demo --remove-recipes`: no leftovers, every gate, 611 tests | PASS |
+| CI, Audit, CodeQL | 42274675792, 42274675836, 42274669528 | success |
+| Android Expo Go 58.0.5 (Actions 42274667392) | 7/7 plus dark, no retry; 15 screenshots | PASS |
+| Android native debug (Actions 42274672905) | 7/7 plus dark, no retry; 15 screenshots | PASS |
+| iOS native debug, iOS 26 (Actions 42274677108) | 7/7 plus dark, no retry; 14 screenshots | PASS |
+| iOS Expo Go 58.0.7, iOS 18.6 (local, `e2e-ios-expogo58.0.7-local.txt`) | 7/7 plus dark, no `E2E RETRY`; 14 screenshots | PASS |
+
+All 58 screenshots were looked at (`sheets/`); each shows the expected screen. Runs on
+2d7f954, before the inset fix, are in `e2e-actions-2d7f954.txt` (all 7/7 plus dark).
+Contact sheets from `tools/sheet.swift` (AppKit; no downloaded code).
+
+Criterion 8: merged after this commit; the release that follows needs the maintainer's
+approval.

@@ -1,0 +1,60 @@
+Running on iPhone 16 Plus - iOS 18.6 - E0ACAF33-2846-4E2E-B304-D2322BC2F008
+ > Flow refused-link
+Run /Users/nguyenanhkiet/Playground/rns-sdk58/.maestro/subflows/open-app.yaml...
+  Run flow when ${CLEAR_STATE == 'true'} is true...
+    Clear state of ${APP_ID}... COMPLETED
+    Run flow when Platform is IOS...
+      Clear keychain... COMPLETED
+    Run flow when Platform is IOS... COMPLETED
+  Run flow when true is true... COMPLETED
+  Launch app "${APP_ID}"... COMPLETED
+  Run flow when ${APP_URL.indexOf('exp://') === 0} is true...
+    Open ${APP_URL}... COMPLETED
+  Run flow when true is true... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)...
+    Assert that (Optional) id: tab-home is visible... COMPLETED
+    Run flow when id: tab-home is not visible...
+    Run flow when id: tab-home is not visible... SKIPPED
+    Wait for animation to end... COMPLETED
+  Repeat while id: tab-home is not visible (up to 10 times)... COMPLETED
+  Assert that "Session" is visible... COMPLETED
+Run /Users/nguyenanhkiet/Playground/rns-sdk58/.maestro/subflows/open-app.yaml... COMPLETED
+Open ${APP_URL}/--/profile... COMPLETED
+Assert that "Not signed in" is visible... COMPLETED
+Take screenshot 01-signed-out-after-profile-link... COMPLETED
+Run /Users/nguyenanhkiet/Playground/rns-sdk58/.maestro/subflows/open-login.yaml...
+  Wait for animation to end... COMPLETED
+  Run tap-after-launch.yaml...
+    Tap on id: ${TAP_ID}... COMPLETED
+    Assert that (Optional) "${EXPECT}" is visible... COMPLETED
+    Run flow when "${EXPECT}" is not visible...
+    Run flow when "Welcome Back" is not visible... SKIPPED
+  Run tap-after-launch.yaml... COMPLETED
+  Assert that "Welcome Back" is visible... COMPLETED
+Run /Users/nguyenanhkiet/Playground/rns-sdk58/.maestro/subflows/open-login.yaml... COMPLETED
+Run /Users/nguyenanhkiet/Playground/rns-sdk58/.maestro/subflows/sign-in.yaml...
+  Assert that "Welcome Back" is visible... COMPLETED
+  Run type-username.yaml...
+    Retry 2 times...
+      Tap on id: login-username... COMPLETED
+      Erase text... COMPLETED
+      Input text ${MAESTRO_E2E_USERNAME}... COMPLETED
+      Assert that "${MAESTRO_E2E_USERNAME}", id: login-username is visible... COMPLETED
+    Retry 2 times... COMPLETED
+  Run type-username.yaml... COMPLETED
+  Tap on id: login-password... COMPLETED
+  Input text ${MAESTRO_E2E_PASSWORD}... COMPLETED
+  Hide Keyboard... COMPLETED
+  Run flow when id: login-submit is visible...
+    Tap on id: login-submit... COMPLETED
+  Run flow when id: login-submit is visible... COMPLETED
+  Assert that "Welcome Back" is not visible... COMPLETED
+  Run flow when Platform is IOS...
+    Assert that (Optional) "Save Password\?" is visible... COMPLETED
+    Tap on (Optional) "Not Now"... COMPLETED
+  Run flow when Platform is IOS... COMPLETED
+Run /Users/nguyenanhkiet/Playground/rns-sdk58/.maestro/subflows/sign-in.yaml... COMPLETED
+Assert that "Signed in as.*" is visible... COMPLETED
+Open ${APP_URL}/--/login... COMPLETED
+Assert that "Signed in as.*" is visible... COMPLETED
+Take screenshot 02-signed-in-after-login-link... COMPLETED
