@@ -228,8 +228,10 @@ list.
 
 While the user is signed out, the guard refuses the `(app)` group, so
 `router.navigate()` to one of its screens leaves the user where they are: no
-screen, no error. (A deep link into it at launch lands on Home instead.) A public screen that links to
-one checks the session and sends a signed-out user to Login:
+screen, no error. (A deep link into it at launch lands on Home instead, and
+so does a `router.replace()` into it: the screen it replaced is gone.) A
+public screen that links to one checks the session and sends a signed-out
+user to Login:
 
 ```tsx
 // features/home/components/ProfileLink.tsx
