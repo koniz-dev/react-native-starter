@@ -226,9 +226,9 @@ list.
 
 ### A link to a screen that needs sign-in
 
-While the user is signed out, the `(app)` group isn't mounted, so
-`router.navigate()` to one of its screens does nothing: no screen, no error.
-(A deep link into it lands on Home instead.) A public screen that links to
+While the user is signed out, the guard refuses the `(app)` group, so
+`router.navigate()` to one of its screens leaves the user where they are: no
+screen, no error. (A deep link into it at launch lands on Home instead.) A public screen that links to
 one checks the session and sends a signed-out user to Login:
 
 ```tsx

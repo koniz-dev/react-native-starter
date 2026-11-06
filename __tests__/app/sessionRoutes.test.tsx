@@ -538,6 +538,53 @@ describe('session-guarded routes', () => {
         expect(router.canGoBack()).toBe(false);
       }
     );
+
+    // A link opened while the app runs arrives as a navigate; Expo Router 57
+    // dropped one to a refused group, and Expo Router 58 opens the group and
+    // then replaces it with Home (expo/expo#51916).
+    describe.each([
+      ['/profile', false],
+      ['/login', true],
+    ] as const)(
+      'after a link to %s that the guard refuses, while the app runs',
+      (url, signedIn) => {
+        function Settings() {
+          return <Text>Settings screen</Text>;
+        }
+        const home = signedIn ? 'Signed in as Emily Johnson' : 'Not signed in';
+
+        it.each([
+          ['navigate', () => router.navigate(url)],
+          ['push', () => router.push(url)],
+        ])('on Home (%s)', async (_, go) => {
+          if (signedIn) await storeSession();
+          const app = await renderRouter('./app', { initialUrl: '/' });
+          await screen.findByText(home);
+
+          await act(go);
+
+          expect(await screen.findByText(home)).toBeTruthy();
+          expect(rootRoutes(app)).toEqual(['(tabs)']);
+          expect(router.canGoBack()).toBe(false);
+        });
+
+        it('over another screen, which stays on top', async () => {
+          if (signedIn) await storeSession();
+          const app = await renderRouter(
+            { appDir: './app', overrides: { settings: Settings } },
+            { initialUrl: '/' }
+          );
+          await screen.findByText(home);
+          await act(() => router.push('/settings'));
+          await screen.findByText('Settings screen');
+
+          await act(() => router.navigate(url));
+
+          expect(await screen.findByText('Settings screen')).toBeTruthy();
+          expect(rootRoutes(app)).toEqual(['(tabs)', 'settings']);
+        });
+      }
+    );
   });
 
   it('opens Login once for a double tap, so one Back returns Home', async () => {
