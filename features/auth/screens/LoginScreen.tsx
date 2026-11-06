@@ -108,6 +108,7 @@ export function LoginScreen() {
       >
         <ScrollView
           contentContainerStyle={styles.content}
+          contentInsetAdjustmentBehavior="automatic"
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.body}>

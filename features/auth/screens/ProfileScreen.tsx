@@ -61,7 +61,10 @@ export function ProfileScreen() {
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <DocumentTitle title={t('profile.title')} />
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        contentInsetAdjustmentBehavior="automatic"
+      >
         <Text variant="bodyMedium" style={styles.intro}>
           {t('profile.intro')}
         </Text>
