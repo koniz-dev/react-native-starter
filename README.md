@@ -188,8 +188,8 @@ inherit them):
 - **Actions must be pinned to a full commit SHA** (every workflow is).
 - **No scheduled E2E run.** The weekly Android run (#141) was reverted
   before it reached `main` (not planned, 2026-11-01); the E2E workflows are
-  manual. The repository variable `E2E_ANDROID_SCHEDULE` it used is read by
-  nothing and should be deleted.
+  manual. The repository variable `E2E_ANDROID_SCHEDULE` it used was deleted
+  on 2026-11-01.
 
 ## Dependencies held back
 
@@ -198,9 +198,12 @@ inherit them):
   eslint-plugin-react-native 5.0.0 allows `^9`. Upgrade when both plugins
   accept ESLint 10 (recorded in #95, 2026-10-14).
 - **Expo Router's guarded-route redirect** (SDK 58): `Stack.Protected`
-  redirects with `replace('/')`, which stacks a second Home; `useNoExtraHome`
-  in `app/_layout.tsx` undoes it. Reported as
-  [expo/expo#51916](https://github.com/expo/expo/issues/51916) (2026-10-20).
+  redirects with `replace('/')`, which stacks a second Home, after a sign-in or
+  sign-out and for a link to a group the guard refuses while the app runs;
+  `useNoExtraHome` in `app/_layout.tsx` undoes it. Reported as
+  [expo/expo#51916](https://github.com/expo/expo/issues/51916) (2026-10-20;
+  the link case was added there on 2026-10-26, and the open fix
+  expo/expo#51925 doesn't cover it).
   At each monthly dependency review, check whether a newer expo-router fixes
   it, and remove the hook (and its Conventions notes) when it does.
 - **react-native-gesture-handler** stays a direct dependency although the
