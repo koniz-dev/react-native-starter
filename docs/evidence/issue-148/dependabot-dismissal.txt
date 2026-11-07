@@ -1,0 +1,9 @@
+# Dependabot dismissal, approved by the maintainer (2026-11-07; they ran the command, which the terminal line-wrapped, and I re-ran it unchanged)
+#11 minimatch GHSA-g3hv-75wg-m249 medium tolerable_risk at 2026-11-07T12:43:33Z
+  #148: minimatch 9/10 (Jest 30 coverage, @expo/fingerprint, @expo/cli glob, typescript-eslint) runs only in tests and tooling with project-authored patterns; not in the app bundles. Fix 11.0.1 is outside ^9/^10. Evidence: evidence branch, issue-148.
+  (248 characters)
+
+# Open alerts after (pretag, 12:43:45Z)
+code-scanning: 0
+dependabot: 0
+secret-scanning: 0

@@ -1,0 +1,36 @@
+# Pre-tag checks (2026-11-07T12:43:45Z)
+origin/main: 28fac1a9f21ccbb5de9761d1525d7078b7498287
+trees: 28fac1a 887172f58e79cc6d70c2ff9931e3333758363199, cfdc124 887172f58e79cc6d70c2ff9931e3333758363199
+tag v1.1.19 exists: 0
+
+## Open issues
+#149 Release v1.1.19: Expo SDK 58 (#134)
+#148 Security: minimatch GHSA-g3hv-75wg-m249 (moderate) through new SDK 58 paths
+#134 Upgrade to Expo SDK 58 (React Native 0.88) when the store Expo Go supports it
+
+## Alerts (open)
+code-scanning: 0
+dependabot: 0
+secret-scanning: 0
+
+## Workflow runs on 28fac1a
+42283047673 CI completed/success
+42283047263 Audit completed/success
+42283043652 CodeQL completed/success
+
+## Store Expo Go SDK
+expoGoSdkVersion 58.0.0
+
+## npm ls --depth=0 (clean clone at 28fac1a, npm ci)
+├── @testing-library/react-native@14.1.0
+├── expo-router@58.0.30
+├── expo@58.0.23
+├── jest@30.5.2
+├── react-native-web@0.21.4
+├── react-native@0.88.1
+└── react@19.3.0
+
+
+## audit:check (clean clone)
+npm audit --omit=dev: 3 advisories (records: 0 critical, 0 high, 19 moderate, 5 low).
+No unreviewed high or critical advisories.

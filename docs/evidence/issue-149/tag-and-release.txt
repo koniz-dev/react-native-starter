@@ -1,0 +1,11 @@
+# Tag and release (2026-11-07T12:44:16Z)
+object 28fac1a9f21ccbb5de9761d1525d7078b7498287
+type commit
+tag v1.1.19
+tagger koniz-dev <kietna.work@gmail.com> 1794055452 +0700
+tag object: 767ed1d113d776a042777f54be8050209976b4bd
+points at: 28fac1a9f21ccbb5de9761d1525d7078b7498287
+origin/main: 28fac1a9f21ccbb5de9761d1525d7078b7498287
+767ed1d113d776a042777f54be8050209976b4bd	refs/tags/v1.1.19
+releases/latest: v1.1.19, published 2026-11-07T12:44:16Z, draft false, prerelease false
+published notes = release-notes.md except one trailing blank line GitHub adds (diff: "169a170 >")

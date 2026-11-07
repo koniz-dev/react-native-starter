@@ -9,7 +9,7 @@ advisory on the SDK 57 tree, was dismissed in #146 and is now reported as withdr
 |---|-----------|----------|--------|
 | 1 | Where each copy runs; whether the vulnerable code is reached | `npm-ls-minimatch.txt` (clean clone of 28fac1a, Node 24.21.0, `npm ci`) and `exposure.txt`. See below. | PASS |
 | 2 | Fix within the parents' ranges | 11.0.1 is outside every parent's range: `^10.2.2` (`@expo/fingerprint`, `glob` 13, `test-exclude` 7, `@typescript-eslint/typescript-estree`) and `^9.0.4` (`glob` 10). `npm audit` offers only downgrades (`expo@52`, `jest@25`). | PASS (no fix) |
-| 3 | Alert dismissed with a reason and a linked comment; 0 open Dependabot alerts | `dependabot-dismissal.txt` | see that file |
+| 3 | Alert dismissed with a reason and a linked comment; 0 open Dependabot alerts | `dependabot-dismissal.txt`: dismissed as tolerable_risk at 2026-11-07T12:43:33Z with the maintainer's approval, comment 248 characters linking #148; open alerts 0/0/0. | PASS |
 
 Where the affected copies run (all on the developer's or CI machine, with patterns the
 project writes):
@@ -32,3 +32,5 @@ and `braceExpand` finds nothing (`exposure.txt`). The 3.1.5 copies (ESLint, Jest
 `@react-native/jest-preset`) are outside the affected range.
 
 Decision: tolerable risk, as for #10 in #146.
+
+Verdict: PASS. Closed with the v1.1.19 release (#149).
