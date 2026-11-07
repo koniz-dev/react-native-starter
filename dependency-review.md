@@ -18,9 +18,10 @@ their CI starts green; adopters re-review the entries for their project
 - Review records: each entry's review is in the evidence folder of the issue
   that added it on the `evidence` branch (the first, 2026-10-09, in
   [issue 41](https://github.com/koniz-dev/react-native-starter/blob/evidence/docs/evidence/issue-41/audit-review.md)).
-  On `main` (2026-11-01) the entries are `decode-uri-component` (#146) and
-  the zod 3 under `@expo/cli` (#142); on `sdk-58` the list is empty (Expo
-  58.0.22 dropped zod 3, and Expo Router 58 has no `query-string`).
+  Since SDK 58 (`v1.1.19`, 2026-11-07) the list is empty: Expo 58.0.22
+  dropped the zod 3 entry (#142), and Expo Router 58 has no `query-string`, so
+  `decode-uri-component` (#146) is gone. The moderate minimatch alert that SDK 58
+  brought in is dismissed with its review in #148.
 - Remediation needs no tracking issue (#43 was closed by #67): the weekly
   Audit run fails once npm can apply an upstream fix within the current
   ranges, and notes an entry npm no longer reports; then upgrade and remove
