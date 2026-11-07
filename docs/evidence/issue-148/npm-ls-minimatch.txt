@@ -1,0 +1,76 @@
+react-native-starter@1.0.0 /private/tmp/claude-501/-Users-nguyenanhkiet-Playground-react-native-starter/***/scratchpad/rel
+├─┬ @react-native/jest-preset@0.88.1
+│ └─┬ babel-jest@29.7.0
+│   └─┬ babel-plugin-istanbul@6.1.1
+│     └─┬ test-exclude@6.0.0
+│       ├─┬ glob@7.2.3
+│       │ └── minimatch@3.1.5 deduped
+│       └── minimatch@3.1.5
+├─┬ @typescript-eslint/parser@8.71.1
+│ └─┬ @typescript-eslint/typescript-estree@8.71.1
+│   └── minimatch@10.2.6
+├─┬ eslint-plugin-react@7.37.5
+│ └── minimatch@3.1.5
+├─┬ eslint@9.39.5
+│ ├─┬ @eslint/config-array@0.21.2
+│ │ └── minimatch@3.1.5
+│ ├─┬ @eslint/eslintrc@3.3.7
+│ │ └── minimatch@3.1.5
+│ └── minimatch@3.1.5
+├─┬ expo@58.0.23
+│ ├─┬ @expo/cli@58.1.19
+│ │ └─┬ glob@13.0.6
+│ │   └── minimatch@10.2.6 deduped
+│ └─┬ @expo/fingerprint@0.21.9
+│   └── minimatch@10.2.6 deduped
+├─┬ jest-expo@58.0.14
+│ ├─┬ babel-jest@30.5.2
+│ │ └─┬ babel-plugin-istanbul@8.0.0
+│ │   └─┬ test-exclude@7.0.2
+│ │     ├─┬ glob@10.5.0
+│ │     │ └── minimatch@9.0.9
+│ │     └── minimatch@10.2.6 deduped
+│ └─┬ jest-snapshot@30.5.2
+│   └─┬ @jest/transform@30.5.2
+│     └─┬ babel-plugin-istanbul@8.0.0
+│       └─┬ test-exclude@7.0.2
+│         ├─┬ glob@10.5.0
+│         │ └── minimatch@9.0.9
+│         └── minimatch@10.2.6 deduped
+└─┬ jest@30.5.2
+  └─┬ @jest/core@30.5.2
+    ├─┬ @jest/reporters@30.5.2
+    │ └─┬ @jest/transform@30.5.2
+    │   └─┬ babel-plugin-istanbul@8.0.0
+    │     └─┬ test-exclude@7.0.2
+    │       ├─┬ glob@10.5.0
+    │       │ └── minimatch@9.0.9
+    │       └── minimatch@10.2.6 deduped
+    ├─┬ @jest/transform@30.5.2
+    │ └─┬ babel-plugin-istanbul@8.0.0
+    │   └─┬ test-exclude@7.0.2
+    │     ├─┬ glob@10.5.0
+    │     │ └── minimatch@9.0.9
+    │     └── minimatch@10.2.6 deduped
+    ├─┬ jest-config@30.5.2
+    │ └─┬ babel-jest@30.5.2
+    │   └─┬ babel-plugin-istanbul@8.0.0
+    │     └─┬ test-exclude@7.0.2
+    │       ├─┬ glob@10.5.0
+    │       │ └── minimatch@9.0.9
+    │       └── minimatch@10.2.6 deduped
+    ├─┬ jest-runner@30.5.2
+    │ └─┬ @jest/transform@30.5.2
+    │   └─┬ babel-plugin-istanbul@8.0.0
+    │     └─┬ test-exclude@7.0.2
+    │       ├─┬ glob@10.5.0
+    │       │ └── minimatch@9.0.9
+    │       └── minimatch@10.2.6 deduped
+    └─┬ jest-runtime@30.5.2
+      └─┬ @jest/transform@30.5.2
+        └─┬ babel-plugin-istanbul@8.0.0
+          └─┬ test-exclude@7.0.2
+            ├─┬ glob@10.5.0
+            │ └── minimatch@9.0.9
+            └── minimatch@10.2.6 deduped
+

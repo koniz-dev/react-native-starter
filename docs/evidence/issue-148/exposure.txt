@@ -1,0 +1,28 @@
+# Where the vulnerable copies are called (28fac1a, npm ci)
+## @expo/fingerprint/build
+@expo/fingerprint/build/ProjectWorkflow.d.ts:1:import type { Minimatch } from 'minimatch';
+@expo/fingerprint/build/Fingerprint.types.d.ts:1:import type { Minimatch } from 'minimatch';
+@expo/fingerprint/build/utils/Path.d.ts:1:import { Minimatch, type MinimatchOptions } from 'minimatch';
+@expo/fingerprint/build/utils/Path.js:59:    const data = require("minimatch");
+## @expo/cli/build
+## @typescript-eslint/typescript-estree/dist
+@typescript-eslint/typescript-estree/dist/useProgramFromProjectService.js:41:const minimatch_1 = require("minimatch");
+@typescript-eslint/typescript-estree/dist/useProgramFromProjectService.js:244:    return !!allowDefaultProject?.some(pattern => (0, minimatch_1.minimatch)(filePath, pattern, { dot: true }));
+## test-exclude
+test-exclude/is-outside-dir-win32.js:4:const minimatch = require('minimatch');
+test-exclude/index.js:6:const minimatch = require('minimatch');
+test-exclude/node_modules/minimatch/README.md:53:var minimatch = require("minimatch")
+test-exclude/node_modules/minimatch/README.md:80:var Minimatch = require("minimatch").Minimatch
+test-exclude/node_modules/glob/sync.js:5:var minimatch = require('minimatch')
+test-exclude/node_modules/glob/common.js:15:var minimatch = require("minimatch")
+## glob/dist
+glob/dist/esm/pattern.js:2:import { GLOBSTAR } from 'minimatch';
+glob/dist/esm/index.js:1:import { escape, unescape } from 'minimatch';
+glob/dist/esm/index.js:4:export { escape, unescape } from 'minimatch';
+glob/dist/esm/processor.d.ts:1:import { MMRegExp } from 'minimatch';
+glob/dist/esm/has-magic.js:1:import { Minimatch } from 'minimatch';
+glob/dist/esm/processor.js:2:import { GLOBSTAR } from 'minimatch';
+
+# The app bundles (28fac1a; web export with .env.example, iOS and Android production exports)
+$ grep -rl -E 'minimatch|globParts|braceExpand' dist-web-demo dist-native
+(grep exit 1: nothing found)
