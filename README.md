@@ -206,7 +206,9 @@ inherit them):
   [expo/expo#54249](https://github.com/expo/expo/issues/54249) (since
   2026-11-25, with #51916 and the link case expo/expo#54277 closed as
   duplicates). No fix is merged as of 2026-11-26 (expo-router 58.0.32):
-  expo/expo#51925 and expo/expo#53458 were closed unmerged.
+  expo/expo#51925 and expo/expo#53458 were closed unmerged. Repro links and
+  our preferred behaviour were posted on the umbrella on 2026-11-26
+  (issuecomment-7194601344).
   At each monthly dependency review, check whether a newer expo-router fixes
   it, and remove the hook (and its Conventions notes) when it does.
 - **react-native-gesture-handler** stays a direct dependency although the
