@@ -205,6 +205,26 @@ and the `build:preview:*` / `build:production:*` scripts for the others
 
 ## Dependency advisories
 
+The overrides in `package.json` keep transitive glob matching dependencies
+patched while their parent packages still request older major versions:
+
+- `test-exclude` 8 preserves the coverage filter API used by Istanbul and
+  removes the callback-based glob 7 dependency and its deprecated `inflight`.
+- Affected modern glob versions resolve to glob 14.0.6 or later for
+  [GHSA-3g3m-2fjr-6pw4](https://github.com/advisories/GHSA-3g3m-2fjr-6pw4).
+- Affected minimatch versions resolve to minimatch 11.0.9 or later for
+  [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249).
+  The older minimatch 3 API used by ESLint is outside that advisory's range
+  and is left intact.
+
+Remove each override when its parent dependencies request patched versions
+themselves, then rerun the quality gates, including coverage and all three
+platform exports. ESLint 9 and the `whatwg-encoding` dependency of Jest's
+jsdom environment still emit deprecation warnings: the React and React
+Native lint plugins do not yet declare ESLint 10 support, and Jest still
+requests jsdom 26. Keep those plugin-compatible dependency ranges until upstream
+provides compatible upgrades.
+
 `npm run audit:check` fails on a high or critical advisory in the
 production dependency tree (`npm audit --omit=dev`, which also holds build
 tools such as Expo CLI) unless `scripts/audit-allowlist.json` has a review of it
