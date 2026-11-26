@@ -1,0 +1,9 @@
+24c24,25
+<   ([expo/expo#51916](https://github.com/expo/expo/issues/51916)). `useNoExtraHome` in
+---
+>   ([expo/expo#54249](https://github.com/expo/expo/issues/54249), first reported as
+>   expo/expo#51916). `useNoExtraHome` in
+114c115
+<   did ([expo/expo#51916](https://github.com/expo/expo/issues/51916)). Known gaps:
+---
+>   did ([expo/expo#54249](https://github.com/expo/expo/issues/54249); no fix is merged as of 2026-11-26). Known gaps:

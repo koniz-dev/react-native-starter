@@ -1,0 +1,8 @@
+# Upstream state (2026-11-26, gh api)
+expo/expo#51916 closed duplicate closed=2026-11-25T17:20:22Z: [expo-router] Stack.Protected: a guard that turns false replaces the screen with a second (tabs) route instead of returning to the one below (SDK 58)
+expo/expo#54249 open reopened closed=-: [umbrella][router][protected-routes] Preserve stack history when route guards change
+expo/expo#54277 closed duplicate closed=2026-11-26T11:50:31Z: [expo-router] Stack.Protected: navigating to a guarded route adds a second home screen
+expo/expo#53545 closed duplicate closed=2026-11-25T17:20:27Z: [expo-router 58] Stack.Protected: when the focused screen's guard turns false, the redirect adds a second copy of the anchor instead of returning to the one in the stack
+expo/expo#51925 closed  merged_at=null closed=2026-11-25T17:20:38Z: [expo-router] Pop the focused route when its Stack.Protected guard turns false
+expo/expo#53458 closed  merged_at=null closed=2026-11-19T09:36:04Z: [router] Reject or redirect navigation to a blocked stack route
+expo-router latest on npm: 58.0.32
