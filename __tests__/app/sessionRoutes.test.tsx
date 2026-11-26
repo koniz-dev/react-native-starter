@@ -36,11 +36,15 @@ describe('session-guarded routes', () => {
   });
 
   it('restores a stored session on cold start, including a deep link into the protected group', async () => {
+    const warn = jest.spyOn(console, 'warn');
     await storeSession();
     const app = await renderRouter('./app', { initialUrl: '/profile' });
 
     expect(await screen.findByText('emily@example.com')).toBeTruthy();
     expect(app.getPathname()).toBe('/profile');
+    expect(warn).not.toHaveBeenCalledWith(
+      expect.stringContaining('navigation.getState() was called during render')
+    );
   });
 
   it('redirects a signed-out deep link into the protected group to Home', async () => {
@@ -163,6 +167,32 @@ describe('session-guarded routes', () => {
 
     expect(replace).toHaveBeenCalledWith('/');
     expect(back).not.toHaveBeenCalled();
+  });
+
+  it('goes back one screen within the protected group before returning Home', async () => {
+    function Settings() {
+      return <Text>Protected settings screen</Text>;
+    }
+    await storeSession();
+    const app = await renderRouter(
+      { appDir: './app', overrides: { '(app)/settings2': Settings } },
+      { initialUrl: '/' }
+    );
+    await screen.findByText('Signed in as Emily Johnson');
+    await act(() => router.push('/profile'));
+    await screen.findByText('emily@example.com');
+    await act(() => router.push('/settings2'));
+    await screen.findByText('Protected settings screen');
+
+    await fireEvent.press(screen.getByTestId('protected-back'));
+
+    expect(await screen.findByText('emily@example.com')).toBeTruthy();
+    expect(app.getPathname()).toBe('/profile');
+
+    await fireEvent.press(screen.getByTestId('protected-back'));
+
+    expect(await screen.findByText('Signed in as Emily Johnson')).toBeTruthy();
+    expect(app.getPathname()).toBe('/');
   });
 
   describe('leaves a single Home below', () => {

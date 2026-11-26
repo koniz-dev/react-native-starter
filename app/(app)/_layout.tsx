@@ -18,26 +18,20 @@ export { RouteErrorBoundary as ErrorBoundary } from '@/shared/ui/ErrorBoundary';
 export default function ProtectedLayout() {
   return (
     <Stack
-      screenOptions={({ route, navigation }) => {
-        // This stack starts at the group's first screen, so the header has no
-        // back button of its own; add one that returns to the screen that
-        // opened the group, or Home when there is none. It decides when
-        // pressed: these options are read once, before the stack below has
-        // settled. Later screens keep the default back button.
-        const isFirst = navigation.getState().routes[0]?.key === route.key;
-        if (!isFirst) return {};
-        return {
-          headerLeft: () => (
-            <Appbar.BackAction
-              accessibilityLabel={t('common.back')}
-              onPress={() =>
-                router.canGoBack() ? router.back() : router.replace('/')
-              }
-              style={styles.back}
-              testID="protected-back"
-            />
-          ),
-        };
+      screenOptions={{
+        // The first screen also needs a way back out of this group. Read
+        // history only on press, once navigation has settled, so every screen
+        // returns to its caller or falls back to Home without a stale snapshot.
+        headerLeft: () => (
+          <Appbar.BackAction
+            accessibilityLabel={t('common.back')}
+            onPress={() =>
+              router.canGoBack() ? router.back() : router.replace('/')
+            }
+            style={styles.back}
+            testID="protected-back"
+          />
+        ),
       }}
     >
       <Stack.Screen name="profile" options={{ title: t('profile.title') }} />
