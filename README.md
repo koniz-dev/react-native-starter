@@ -200,10 +200,13 @@ inherit them):
 - **Expo Router's guarded-route redirect** (SDK 58): `Stack.Protected`
   redirects with `replace('/')`, which stacks a second Home, after a sign-in or
   sign-out and for a link to a group the guard refuses while the app runs;
-  `useNoExtraHome` in `app/_layout.tsx` undoes it. Reported as
-  [expo/expo#51916](https://github.com/expo/expo/issues/51916) (2026-10-20;
-  the link case was added there on 2026-10-26, and the open fix
-  expo/expo#51925 doesn't cover it).
+  `useNoExtraHome` in `app/_layout.tsx` undoes it. Reported as expo/expo#51916
+  (2026-10-20; the link case was added there on 2026-10-26). Both cases are now
+  tracked in the umbrella
+  [expo/expo#54249](https://github.com/expo/expo/issues/54249) (since
+  2026-11-25, with #51916 and the link case expo/expo#54277 closed as
+  duplicates). No fix is merged as of 2026-11-26 (expo-router 58.0.32):
+  expo/expo#51925 and expo/expo#53458 were closed unmerged.
   At each monthly dependency review, check whether a newer expo-router fixes
   it, and remove the hook (and its Conventions notes) when it does.
 - **react-native-gesture-handler** stays a direct dependency although the
