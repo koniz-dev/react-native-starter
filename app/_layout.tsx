@@ -133,9 +133,9 @@ const GUARDED_GROUPS = new Map([
  * a group that the guard now refuses just was. The app's own navigation
  * stays, except a replace('/') from such a group, which looks the same
  * (docs/conventions.md says to use dismissTo('/') then). A new guarded group
- * goes in GUARDED_GROUPS. Reported upstream as expo/expo#51916; remove this
- * hook once Expo Router pops a guarded route instead of replacing it, and
- * refuses a link to one.
+ * goes in GUARDED_GROUPS. Tracked upstream in expo/expo#54249 (first reported
+ * as expo/expo#51916); remove this hook once Expo Router pops a guarded route
+ * instead of replacing it, and refuses a link to one.
  */
 function useNoExtraHome(signedIn: boolean) {
   // The root stack is the first route's state, under Expo Router's own root.

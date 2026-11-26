@@ -541,7 +541,7 @@ describe('session-guarded routes', () => {
 
     // A link opened while the app runs arrives as a navigate; Expo Router 57
     // dropped one to a refused group, and Expo Router 58 opens the group and
-    // then replaces it with Home (expo/expo#51916).
+    // then replaces it with Home (expo/expo#54249).
     describe.each([
       ['/profile', false],
       ['/login', true],
