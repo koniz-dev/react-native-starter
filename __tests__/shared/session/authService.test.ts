@@ -248,6 +248,26 @@ describe('authService with an adapter', () => {
     expect(storage.setItem).not.toHaveBeenCalled();
   });
 
+  it.each([false, true])(
+    'discards a cached profile read across sign-out (sign in again: %s)',
+    async signInAgain => {
+      setAuthAdapter(fakeAdapter());
+      await authService.login({ username: 'ada', password: 'p' });
+      let finishRead!: (value: typeof user) => void;
+      const read = new Promise<typeof user>(resolve => (finishRead = resolve));
+      jest.spyOn(authService, 'getCurrentUser').mockReturnValueOnce(read);
+
+      const fetching = authService.fetchProfile();
+      await authService.logout();
+      if (signInAgain) {
+        await authService.login({ username: 'ada', password: 'p' });
+      }
+      finishRead(user);
+
+      await expect(fetching).resolves.toBeNull();
+    }
+  );
+
   it("uses the adapter's refresh as the HTTP client's refresh handler and stores the new token", async () => {
     const refresh = jest.fn(async () => 'refreshed-token');
     setAuthAdapter(fakeAdapter({ refresh }));

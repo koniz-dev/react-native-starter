@@ -167,10 +167,13 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, [update]);
 
   const refreshUser = useCallback(async () => {
+    const generation = getSessionGeneration();
     const user = await authService.fetchProfile();
     if (user && isMountedRef.current) {
       setSession(current =>
-        current.status === 'signedIn' ? { status: 'signedIn', user } : current
+        current.status === 'signedIn' && generation === getSessionGeneration()
+          ? { status: 'signedIn', user }
+          : current
       );
     }
   }, []);

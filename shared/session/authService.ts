@@ -251,10 +251,11 @@ export const authService = {
    * Rejects with an ApiError; a 401 also clears the session.
    */
   fetchProfile: async (): Promise<AuthUser | null> => {
-    if (!adapter.fetchUser) {
-      return authService.getCurrentUser();
-    }
     const generation = getSessionGeneration();
+    if (!adapter.fetchUser) {
+      const user = await authService.getCurrentUser();
+      return generation === getSessionGeneration() ? user : null;
+    }
     const user = adapter.normalizeUser(await adapter.fetchUser(clients));
     if (generation !== getSessionGeneration()) return null;
     await runSessionStorageTask(async () => {

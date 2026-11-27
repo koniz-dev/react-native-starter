@@ -1,6 +1,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react-native';
 import type { ReactNode } from 'react';
 import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { logger } from '@/shared/lib/logger';
 import {
   authService,
@@ -210,6 +211,76 @@ describe('SessionProvider cold-start restore', () => {
 });
 
 describe('SessionProvider refreshUser', () => {
+  it.each(['a', 'b'])(
+    'does not apply an old refresh after signing in as %s',
+    async nextUser => {
+      setAuthAdapter({ ...slowLogoutAdapter().adapter, logout: undefined });
+      const { result } = await renderSession();
+      await act(() => result.current.signIn({ username: 'a', password: 'p' }));
+      const profile = deferred<{ id: string; email: string; name: string }>();
+      jest
+        .spyOn(authService, 'fetchProfile')
+        .mockReturnValueOnce(profile.promise);
+      let pending!: Promise<void>;
+      await act(() => {
+        pending = result.current.refreshUser();
+      });
+      await act(() => result.current.signOut());
+      await act(() =>
+        result.current.signIn({ username: nextUser, password: 'p' })
+      );
+      await act(async () => {
+        profile.resolve({
+          id: 'a',
+          email: 'a@example.com',
+          name: 'Old profile',
+        });
+        await pending;
+      });
+
+      expect(result.current.session).toMatchObject({
+        status: 'signedIn',
+        user: { id: nextUser, name: nextUser },
+      });
+      expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe(
+        `token-${nextUser}`
+      );
+    }
+  );
+
+  it('keeps the new session when an old cached profile finishes reading', async () => {
+    setAuthAdapter({ ...slowLogoutAdapter().adapter, logout: undefined });
+    const { result } = await renderSession();
+    await act(() => result.current.signIn({ username: 'a', password: 'p' }));
+    const reading = deferred<void>();
+    const profile = deferred<string | null>();
+    jest.mocked(AsyncStorage.getItem).mockImplementationOnce(key => {
+      expect(key).toBe(STORAGE_KEYS.USER_DATA);
+      reading.resolve();
+      return profile.promise;
+    });
+    let pending!: Promise<void>;
+    await act(() => {
+      pending = result.current.refreshUser();
+    });
+    await reading.promise;
+    await act(() => result.current.signOut());
+    await act(() => result.current.signIn({ username: 'b', password: 'p' }));
+    await act(async () => {
+      profile.resolve(
+        JSON.stringify({ id: 'a', email: 'a@example.com', name: 'a' })
+      );
+      await pending;
+    });
+
+    expect(result.current.session).toMatchObject({
+      status: 'signedIn',
+      user: { id: 'b' },
+    });
+    expect(await authService.getCurrentUser()).toMatchObject({ id: 'b' });
+    expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('token-b');
+  });
+
   it('does not sign back in a session that expired while the profile loaded', async () => {
     setAuthAdapter(slowLogoutAdapter().adapter);
     const { result } = await renderSession();
