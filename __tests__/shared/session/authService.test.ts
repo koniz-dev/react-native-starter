@@ -109,7 +109,10 @@ describe('authService with an adapter', () => {
     await expect(
       authService.login({ username: 'ada', password: 'secret' })
     ).rejects.toThrow('Secure storage is unavailable');
-    expect(storage.setItem).not.toHaveBeenCalled();
+    expect(storage.setItem).not.toHaveBeenCalledWith(
+      'user_data',
+      expect.anything()
+    );
   });
 
   it('reads and deletes only the token through protected storage', async () => {
@@ -190,7 +193,11 @@ describe('authService with an adapter', () => {
     await signingOut;
 
     expect(secureStore.get('auth_token')).toBe('token-b');
-    expect(storage.removeItem).toHaveBeenCalledTimes(1); // the expiry's
+    expect(
+      jest
+        .mocked(storage.removeItem)
+        .mock.calls.filter(([key]) => key === 'user_data')
+    ).toHaveLength(1); // the expiry's
   });
 
   it('still clears the session when the expiry failed to clear it while the adapter signed out', async () => {

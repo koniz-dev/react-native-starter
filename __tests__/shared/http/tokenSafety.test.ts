@@ -646,37 +646,45 @@ describe('work that outlives its session', () => {
     expect(seen).toEqual(['Bearer token-A']);
   });
 
-  it("doesn't replay a request as the next user when the session changed while its token was read", async () => {
-    useAdapter({});
-    await signInAs('A');
-    const store = getTokenStore();
-    const read = deferred<string | null>();
-    let first = true;
-    setTokenStore({
-      ...store,
-      get: () => {
-        if (!first) return store.get();
-        first = false;
-        return read.promise;
-      },
-    });
-    const seen: unknown[] = [];
-    const client = authenticatedClient(async config => {
-      seen.push(config.headers.Authorization);
-      throw httpError(config, 401);
-    });
+  it.each(['token-A', 'token-B', null])(
+    'cancels the first send when the session changes while reading %s',
+    async token => {
+      useAdapter({});
+      await signInAs('A');
+      const store = getTokenStore();
+      const read = deferred<string | null>();
+      const reading = deferred<void>();
+      let first = true;
+      setTokenStore({
+        ...store,
+        get: () => {
+          if (!first) return store.get();
+          first = false;
+          reading.resolve();
+          return read.promise;
+        },
+      });
+      const seen: unknown[] = [];
+      const client = authenticatedClient(async config => {
+        seen.push(config.headers.Authorization);
+        throw httpError(config, 401);
+      });
 
-    const request = client.get('/me').catch((e: unknown) => e);
-    // While A's token is being read, A signs out and B signs in.
-    await new Promise(resolve => setTimeout(resolve, 0));
-    await authService.logout();
-    await signInAs('B');
-    read.resolve('token-A');
+      const request = client
+        .post('/orders', { item: 'from-A' })
+        .catch((e: unknown) => e);
+      // While A's token is being read, A signs out and B signs in.
+      await reading.promise;
+      await authService.logout();
+      await signInAs('B');
+      read.resolve(token);
 
-    await expect(request).resolves.toMatchObject({ code: 'unauthorized' });
-    expect(seen).toEqual(['Bearer token-A']);
-    expect(expired).not.toHaveBeenCalled();
-  });
+      await expect(request).resolves.toMatchObject({ code: 'canceled' });
+      expect(seen).toEqual([]);
+      expect(await store.get()).toBe('token-B');
+      expect(expired).not.toHaveBeenCalled();
+    }
+  );
 
   it('sends a retry without a token as just that, not with the old header', async () => {
     useAdapter({});

@@ -8,7 +8,10 @@ import {
   useSession,
   type SessionContextValue,
 } from '@/shared/session/SessionProvider';
-import { defaultUnauthorizedHandler } from '@/shared/session/session';
+import {
+  defaultUnauthorizedHandler,
+  startNewSession,
+} from '@/shared/session/session';
 import { ApiError } from '@/shared/http/apiError';
 import {
   getItem,
@@ -799,6 +802,7 @@ describe('first launch after an install', () => {
     await first.unmount();
 
     // Sign in, then relaunch: still signed in.
+    startNewSession();
     secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'stored-token');
     await setItem(STORAGE_KEYS.USER_DATA, user);
     await renderRouter('./app', { initialUrl: '/' });

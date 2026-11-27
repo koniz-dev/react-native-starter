@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { resetSecureStore } from '@/testing/secureStore';
 import { setColorScheme } from '@/testing/colorScheme';
 import { STORAGE_KEYS } from '@/shared/storage/storage';
+import type * as SessionModule from '@/shared/session/session';
 
 // AsyncStorage: the library's in-memory mock.
 jest.mock('@react-native-async-storage/async-storage', () =>
@@ -35,6 +36,11 @@ jest.mock('react-native/src/private/assets/AssetRegistry', () => ({
 }));
 
 beforeEach(async () => {
+  // Tests represent separate app lifecycles, including in-memory invalidation.
+  // Load after each test file's mocks, so token stores use its storage mock.
+  jest
+    .requireActual<typeof SessionModule>('@/shared/session/session')
+    .startNewSession();
   resetSecureStore();
   await AsyncStorage.clear();
   // Each test is an app that has launched before; a test of the first launch

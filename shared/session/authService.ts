@@ -11,14 +11,21 @@
 import type { AxiosInstance } from 'axios';
 import { z } from 'zod';
 import { getConfig } from '@/shared/config/env';
-import { toApiError } from '@/shared/http/apiError';
+import { ApiError, toApiError } from '@/shared/http/apiError';
 import { createHttpClient } from '@/shared/http/httpClient';
 import { logger } from '@/shared/lib/logger';
-import { getItem, setItem, STORAGE_KEYS } from '@/shared/storage/storage';
+import {
+  getItem,
+  removeItem,
+  setItem,
+  STORAGE_KEYS,
+} from '@/shared/storage/storage';
 import {
   clearStoredSession,
   getSessionGeneration,
   getSessionStarts,
+  getSessionToken,
+  runSessionStorageTask,
   setRefreshTokenHandler,
   startNewSession,
 } from './session';
@@ -147,8 +154,13 @@ export function setAuthAdapter(next: AuthAdapter | null): void {
           // Signed out (or in again) meanwhile: don't bring the old session back.
           if (generation !== getSessionGeneration()) return null;
           if (token) {
+            const store = getTokenStore();
             try {
-              await getTokenStore().set(token);
+              await runSessionStorageTask(async () => {
+                if (generation === getSessionGeneration()) {
+                  await store.set(token);
+                }
+              });
             } catch (error) {
               // Such as the Keychain while the device is locked. The request
               // is retried with the new token anyway; the next 401 refreshes
@@ -158,7 +170,7 @@ export function setAuthAdapter(next: AuthAdapter | null): void {
               });
             }
           }
-          return token;
+          return generation === getSessionGeneration() ? token : null;
         }
       : null
   );
@@ -178,15 +190,24 @@ export const authService = {
     // Before the token is written: a sign-out still pending from an earlier
     // session checks the session count, and must not clear this token.
     startNewSession();
+    const generation = getSessionGeneration();
+    const store = getTokenStore();
     try {
-      await getTokenStore().set(result.token);
-      await setItem(STORAGE_KEYS.USER_DATA, user);
+      await runSessionStorageTask(async () => {
+        assertCurrentSession(generation);
+        await store.set(result.token);
+        await setItem(STORAGE_KEYS.USER_DATA, user);
+        await removeItem(STORAGE_KEYS.SESSION_INVALIDATED);
+      });
     } catch (error) {
       // A token without a profile would restore a signed-in session with no
       // user on the next launch: leave nothing behind.
-      await clearStoredSession().catch(() => undefined);
+      if (generation === getSessionGeneration()) {
+        await clearStoredSession().catch(() => undefined);
+      }
       throw error;
     }
+    assertCurrentSession(generation);
     return { token: result.token, user };
   },
 
@@ -211,7 +232,7 @@ export const authService = {
   },
 
   isAuthenticated: async (): Promise<boolean> => {
-    const token = await getTokenStore().get();
+    const token = await getSessionToken();
     return token !== null;
   },
 
@@ -236,7 +257,19 @@ export const authService = {
     const generation = getSessionGeneration();
     const user = adapter.normalizeUser(await adapter.fetchUser(clients));
     if (generation !== getSessionGeneration()) return null;
-    await setItem(STORAGE_KEYS.USER_DATA, user);
-    return user;
+    await runSessionStorageTask(async () => {
+      if (generation === getSessionGeneration()) {
+        await setItem(STORAGE_KEYS.USER_DATA, user);
+      }
+    });
+    return generation === getSessionGeneration() ? user : null;
   },
 };
+
+function assertCurrentSession(generation: number): void {
+  if (generation !== getSessionGeneration()) {
+    throw new ApiError('The session changed; sign-in was canceled', {
+      code: 'canceled',
+    });
+  }
+}

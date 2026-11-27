@@ -15,6 +15,29 @@ import {
 import { getTokenStore } from './tokenStore';
 
 let sessionGeneration = 0;
+let sessionInvalidated = false;
+let storageTask: Promise<void> = Promise.resolve();
+
+/** Serializes session writes so a pending refresh cannot undo a clear or sign-in. */
+export function runSessionStorageTask<T>(task: () => Promise<T>): Promise<T> {
+  const pending = storageTask.then(task);
+  // A failed write must not prevent the next sign-in or cleanup attempt.
+  storageTask = pending.then(
+    () => undefined,
+    () => undefined
+  );
+  return pending;
+}
+
+/** Reads only usable tokens; a failed logout stays signed out until cleanup succeeds. */
+export async function getSessionToken(): Promise<string | null> {
+  if (sessionInvalidated) return null;
+  const generation = sessionGeneration;
+  await storageTask;
+  if (await hasItem(STORAGE_KEYS.SESSION_INVALIDATED)) return null;
+  const token = await getTokenStore().get();
+  return !sessionInvalidated && generation === sessionGeneration ? token : null;
+}
 
 /**
  * A number that changes whenever a session starts or ends. Work that began
@@ -40,13 +63,29 @@ export function getSessionStarts(): number {
 export function startNewSession(): void {
   sessionGeneration += 1;
   sessionStarts += 1;
+  sessionInvalidated = false;
 }
 
 /** Removes the stored token (token store) and profile (AsyncStorage). */
 export async function clearStoredSession(): Promise<void> {
   sessionGeneration += 1;
-  await getTokenStore().clear();
-  await removeItem(STORAGE_KEYS.USER_DATA);
+  sessionInvalidated = true;
+  const store = getTokenStore();
+  await runSessionStorageTask(async () => {
+    // Persist before deleting: a locked Keychain must not restore the token
+    // on the next launch. Still try both deletions if either store fails.
+    const marker = await Promise.allSettled([
+      setItem(STORAGE_KEYS.SESSION_INVALIDATED, true),
+    ]);
+    const cleared = await Promise.allSettled([
+      store.clear(),
+      removeItem(STORAGE_KEYS.USER_DATA),
+    ]);
+    for (const result of [...marker, ...cleared]) {
+      if (result.status === 'rejected') throw result.reason;
+    }
+    await removeItem(STORAGE_KEYS.SESSION_INVALIDATED);
+  });
 }
 
 /**
@@ -94,11 +133,12 @@ export function emitSessionExpired(): void {
 export type UnauthorizedHandler = () => Promise<void>;
 
 export const defaultUnauthorizedHandler: UnauthorizedHandler = async () => {
+  const starts = sessionStarts;
   try {
     await clearStoredSession();
   } finally {
     // Even if clearing failed part way, the app must leave the session.
-    emitSessionExpired();
+    if (starts === sessionStarts) emitSessionExpired();
   }
 };
 

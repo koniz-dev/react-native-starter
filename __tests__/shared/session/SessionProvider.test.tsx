@@ -138,10 +138,31 @@ describe('SessionProvider sign-out', () => {
     expect(error).toHaveBeenCalledWith('Signing out failed', failure);
     expect(result.current.session.status).toBe('signedOut');
     expect(result.current.signingOut).toBe(false);
+    expect(await authService.isAuthenticated()).toBe(false);
   });
 });
 
 describe('SessionProvider cold-start restore', () => {
+  it('does not clear a new session when an older restore finishes without a token', async () => {
+    setAuthAdapter({ ...slowLogoutAdapter().adapter, logout: undefined });
+    const read = deferred<boolean>();
+    jest
+      .spyOn(authService, 'isAuthenticated')
+      .mockReturnValueOnce(read.promise);
+    const { result } = await renderHook(() => useSession(), { wrapper });
+    // Wait for restore to reach the token read before signing in.
+    await waitFor(() => expect(authService.isAuthenticated).toHaveBeenCalled());
+    await act(() => result.current.signIn({ username: 'b', password: 'p' }));
+    await act(async () => read.resolve(false));
+
+    expect(result.current.session).toMatchObject({
+      status: 'signedIn',
+      user: { id: 'b' },
+    });
+    expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('token-b');
+    expect(await authService.isAuthenticated()).toBe(true);
+  });
+
   // The stored session is read while the app shows the splash screen; a slow
   // read (a Keychain read on a locked device) can resolve after the session
   // changed, and must not overwrite that change.

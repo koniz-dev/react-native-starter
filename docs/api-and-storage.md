@@ -185,8 +185,11 @@ as a warning. Either way, authenticated endpoints should not redirect:
 request the final URL (for example with its trailing slash).
 
 A refresh or a profile load (`fetchProfile`) that finishes after the user
-signed out is discarded, and a retry whose session ended before it was sent
-is canceled (`code: 'canceled'`).
+signed out is discarded. Authenticated requests check the session after
+reading the token, including on the first attempt: if the session changed,
+the request is canceled (`code: 'canceled'`) before it reaches the network.
+Session writes are serialized, so an in-flight refresh write finishes before
+logout clears it or a new sign-in stores its own token and profile.
 
 An `ApiError` never holds the request's headers or body: its `cause` is a
 summary (method, URL without the query string, axios's error code), so
@@ -231,6 +234,19 @@ If reading the stored session fails at launch (secure storage or
 AsyncStorage throws), the app starts signed out and logs `Restoring the
 session failed` with `logger.error`, so it is reported. The stored session
 is kept, and the next launch tries again.
+
+Logout and session expiry block token use in memory before clearing storage.
+They first save a `session_invalidated` marker in AsyncStorage, then attempt
+both token and profile deletion. If deletion fails, the marker prevents
+restoring the old token on the next launch, which retries cleanup. Successful
+cleanup or a new sign-in removes the marker. If both saving the marker and
+deleting the token fail, the running app still blocks it, but cannot persist
+that decision across a restart; the storage failure is reported.
+
+App code that needs a usable access token calls `getSessionToken()` from
+`shared/session/session.ts`, as the HTTP clients do. `getTokenStore()` exposes
+the underlying storage for adapters; reading it directly bypasses session
+invalidation.
 
 On iOS the Keychain items use Expo SecureStore's default accessibility
 (`WHEN_UNLOCKED`): readable while the device is unlocked, and included in

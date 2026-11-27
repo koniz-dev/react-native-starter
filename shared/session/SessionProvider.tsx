@@ -25,6 +25,7 @@ import {
 import {
   clearSessionFromPreviousInstall,
   clearStoredSession,
+  getSessionGeneration,
   onSessionExpired,
 } from './session';
 import { getErrorReporter } from '@/shared/integrations/errorReporter';
@@ -68,7 +69,12 @@ const SIGNED_OUT: Session = { status: 'signedOut', user: null };
 async function readStoredSession(): Promise<Session> {
   try {
     await clearSessionFromPreviousInstall();
-    if (await authService.isAuthenticated()) {
+    const generation = getSessionGeneration();
+    const authenticated = await authService.isAuthenticated();
+    // A stale read must not clear the token of a sign-in that finished
+    // during restore, even though changedRef already protects the UI.
+    if (generation !== getSessionGeneration()) return SIGNED_OUT;
+    if (authenticated) {
       return { status: 'signedIn', user: await authService.getCurrentUser() };
     }
     // No token, e.g. after a reload on web, where the token lives in memory

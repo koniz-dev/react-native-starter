@@ -26,9 +26,9 @@ import { Platform } from 'react-native';
 import { getConfig } from '@/shared/config/env';
 import { logger } from '@/shared/lib/logger';
 import { toApiError, type ApiErrorCode } from './apiError';
-import { getTokenStore } from '@/shared/session/tokenStore';
 import {
   getSessionGeneration,
+  getSessionToken,
   getUnauthorizedHandler,
   refreshAccessToken,
 } from '@/shared/session/session';
@@ -234,12 +234,13 @@ export function createHttpClient(options: HttpClientOptions): AxiosInstance {
     // Before the token is read: if the session changes during the read,
     // the request belongs to the session it started in, not the next one.
     const generation = getSessionGeneration();
-    const token = retriable._retryToken ?? (await getTokenStore().get());
+    const token = retriable._retryToken ?? (await getSessionToken());
     retriable._retryToken = undefined;
     if (!retriable._retried) {
       retriable._generation = generation;
-    } else if (retriable._generation !== getSessionGeneration()) {
-      // The session this request belongs to ended before its retry was sent
+    }
+    if (retriable._generation !== getSessionGeneration()) {
+      // The session this request belongs to ended before it was sent
       // (signed out, or in as someone else): don't send it for the new one.
       throw new CanceledError('The session changed; the request was not sent');
     }
@@ -288,7 +289,7 @@ export function createHttpClient(options: HttpClientOptions): AxiosInstance {
     // it's gone, there is no session to end.
     let current: string | null;
     try {
-      current = await getTokenStore().get();
+      current = await getSessionToken();
     } catch (readError) {
       // Such as the Keychain while the device is locked: without the stored
       // token nothing can be decided, so keep the session and fail the request.
