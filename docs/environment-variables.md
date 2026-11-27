@@ -45,6 +45,9 @@ Validation rules:
 - URLs must be absolute `http(s)` URLs with a host, and contain no
   whitespace, backslash, or control character (the HTTP client could not
   read the origin of such a URL, so it would never send the token to it).
+- An explicit port must contain decimal digits only and be from 0 to 65535;
+  an empty port is rejected. IPv6 hosts use brackets, for example
+  `https://[2001:db8::1]:8443`. These rules also apply to trusted origins.
 - Every value is trimmed, and an empty value (`KEY=`) counts as unset.
 - Outside `development`, `http://` URLs and trusted origins are rejected.
   This includes `npx expo export`: an export is not a development build, so

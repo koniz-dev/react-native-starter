@@ -169,6 +169,44 @@ describe('parseEnv', () => {
     }
   });
 
+  it.each([
+    'EXPO_PUBLIC_API_URL',
+    'EXPO_PUBLIC_AUTH_API_URL',
+    'EXPO_PUBLIC_API_TRUSTED_ORIGINS',
+  ])('validates port syntax and range for %s', variable => {
+    for (const authority of [
+      'api.example.com:bad',
+      'api.example.com:99999',
+      'api.example.com:65536',
+      'api.example.com:-1',
+      'api.example.com:1.5',
+      'api.example.com:1e3',
+      'api.example.com:0x50',
+      'api.example.com:',
+      'user:pass@api.example.com:bad',
+      '[::1]:bad',
+      '[::1]:65536',
+      '::1:443',
+    ]) {
+      expect(
+        issuesOf({ ...valid, [variable]: `https://${authority}` })
+      ).toEqual([expect.objectContaining({ variable })]);
+    }
+    for (const url of [
+      'https://api.example.com:0',
+      'https://api.example.com:1',
+      'https://api.example.com:443',
+      'https://api.example.com:65535/v1?region=eu#x',
+      'https://user:pass@api.example.com:8443/v1',
+      'https://api.example.com:00443',
+      'https://[::1]',
+      'https://[2001:db8::1]:8443/v1',
+      'https://api.example.com/v1:bad?next=:99999',
+    ]) {
+      expect(issuesOf({ ...valid, [variable]: url })).toEqual([]);
+    }
+  });
+
   it('rejects http outside development and allows it in development', () => {
     const httpApi = { ...valid, EXPO_PUBLIC_API_URL: 'http://api.example.com' };
     expect(issuesOf(httpApi)).toEqual([

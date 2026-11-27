@@ -74,15 +74,26 @@ const optionalString = z
 
 /**
  * An absolute http(s) URL with a host (after any `user@`, and not only a
- * port), and no whitespace, backslash, or control character anywhere: the
+ * port), an optional decimal port from 0 to 65535, and no whitespace,
+ * backslash, or control character anywhere: the
  * HTTP client can't read the origin of any other URL (shared/http/httpClient.ts
  * getOrigin), so it would never trust it with the token.
  */
-const isHttpUrl = (value: string) =>
-  // eslint-disable-next-line no-control-regex
-  /^https?:\/\/([^/?#@\s\\\x00-\x1f\x7f]*@)?[^/?#@:\s\\\x00-\x1f\x7f][^/?#@\s\\\x00-\x1f\x7f]*([/?#][^\s\\\x00-\x1f\x7f]*)?$/i.test(
-    value
+const isHttpUrl = (value: string): boolean => {
+  const plainUrl =
+    // eslint-disable-next-line no-control-regex
+    /^https?:\/\/([^/?#@\s\\\x00-\x1f\x7f]*@)?[^/?#@:\s\\\x00-\x1f\x7f][^/?#@\s\\\x00-\x1f\x7f]*([/?#][^\s\\\x00-\x1f\x7f]*)?$/i;
+  if (!plainUrl.test(value)) return false;
+
+  // Only the authority contains a port: passwords, IPv6 addresses, and
+  // paths may also contain colons. Avoid the incomplete native URL parser.
+  const authority = value.slice(value.indexOf('://') + 3).split(/[/?#]/, 1)[0]!;
+  const hostAndPort = authority.slice(authority.lastIndexOf('@') + 1);
+  const match = /^(?:\[[^\]]+\]|[^:[\]]+)(?::(\d+))?$/.exec(hostAndPort);
+  return (
+    match !== null && (match[1] === undefined || Number(match[1]) <= 65535)
   );
+};
 
 const urlField = optionalString.refine(
   value => value === undefined || isHttpUrl(value),
