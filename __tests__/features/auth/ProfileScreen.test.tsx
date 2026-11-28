@@ -1,8 +1,17 @@
-import { AccessibilityInfo } from 'react-native';
+import { AccessibilityInfo, Platform } from 'react-native';
+import { AxiosError } from 'axios';
+import { renderRouter, screen } from 'expo-router/testing-library';
+import * as SecureStore from 'expo-secure-store';
 import { act, waitFor } from '@testing-library/react-native';
 import { ProfileScreen } from '@/features/auth/screens/ProfileScreen';
 import { ApiError } from '@/shared/http/apiError';
-import { authService } from '@/shared/session/authService';
+import {
+  authClients,
+  authService,
+  setAuthAdapter,
+} from '@/shared/session/authService';
+import { configureIntegrations } from '@/shared/integrations/setup';
+import { getConfig } from '@/shared/config/env';
 import { logger } from '@/shared/lib/logger';
 import { setItem, STORAGE_KEYS } from '@/shared/storage/storage';
 import { renderWithProviders, secureStore } from '@/testing';
@@ -19,7 +28,10 @@ async function signInWithoutProfile() {
 }
 
 describe('<ProfileScreen />', () => {
-  afterEach(() => jest.restoreAllMocks());
+  afterEach(() => {
+    setAuthAdapter(null);
+    jest.restoreAllMocks();
+  });
 
   it('shows placeholders until a profile is known', async () => {
     await signInWithoutProfile();
@@ -87,7 +99,7 @@ describe('<ProfileScreen />', () => {
     expect(announce).toHaveBeenCalledWith(message);
   });
 
-  it('shows nothing for a 401: the session ends and the guard leaves', async () => {
+  it('shows an unauthorized refresh failure when the session remains signed in', async () => {
     await signInWithoutProfile();
     jest
       .spyOn(authService, 'fetchProfile')
@@ -100,7 +112,96 @@ describe('<ProfileScreen />', () => {
 
     await findByTestId('profile-logout');
     await waitForRefresh(queryByTestId);
-    expect(queryByTestId('profile-error')).toBeNull();
+    expect(await findByTestId('profile-error')).toHaveTextContent(
+      'Could not refresh your profile: Something went wrong. Please try again.'
+    );
+  });
+
+  it.each(['redirect', 'token-read'])(
+    'shows and announces a 401 retained by the HTTP client (%s)',
+    async reason => {
+      jest.replaceProperty(Platform, 'OS', 'ios');
+      const announce = jest.spyOn(
+        AccessibilityInfo,
+        'announceForAccessibility'
+      );
+      const warn = jest.spyOn(logger, 'warn').mockImplementation(() => {});
+      await seedProfileSession();
+      const original = authClients.authenticated.defaults.adapter;
+      authClients.authenticated.defaults.adapter = async config => {
+        if (reason === 'token-read') {
+          jest
+            .mocked(SecureStore.getItemAsync)
+            .mockRejectedValueOnce(new Error('Keychain locked'));
+        }
+        throw new AxiosError(
+          'Unauthorized',
+          'ERR_BAD_REQUEST',
+          config,
+          reason === 'redirect'
+            ? { responseURL: `${getConfig().authApiUrl}/auth/me/` }
+            : undefined,
+          {
+            config,
+            status: 401,
+            statusText: 'Unauthorized',
+            headers: {},
+            data: { message: 'Please try again.' },
+          }
+        );
+      };
+      try {
+        const app = await renderRouter('./app', { initialUrl: '/profile' });
+        const message = 'Could not refresh your profile: Please try again.';
+        expect(await screen.findByTestId('profile-error')).toHaveTextContent(
+          message
+        );
+        await waitForRefresh(screen.queryByTestId);
+        expect(app.getPathname()).toBe('/profile');
+        expect(screen.getByText('Cached profile')).toBeTruthy();
+        expect(secureStore.get(STORAGE_KEYS.AUTH_TOKEN)).toBe('stored-token');
+        expect(
+          screen.getByTestId('profile-status').props.accessibilityLiveRegion
+        ).toBe('polite');
+        expect(announce).toHaveBeenCalledWith(message);
+        expect(warn).toHaveBeenCalledWith(
+          reason === 'redirect'
+            ? expect.stringContaining('401 after a redirect')
+            : 'Reading the token after a 401 failed',
+          reason === 'redirect' ? { status: 401 } : { error: 'Keychain locked' }
+        );
+      } finally {
+        authClients.authenticated.defaults.adapter = original;
+      }
+    }
+  );
+
+  it('leaves Profile without announcing a refresh error when a 401 actually expires the session', async () => {
+    jest.replaceProperty(Platform, 'OS', 'ios');
+    const announce = jest.spyOn(AccessibilityInfo, 'announceForAccessibility');
+    await seedProfileSession();
+    const original = authClients.authenticated.defaults.adapter;
+    authClients.authenticated.defaults.adapter = async config => {
+      throw new AxiosError('Expired', 'ERR_BAD_REQUEST', config, undefined, {
+        config,
+        status: 401,
+        statusText: 'Unauthorized',
+        headers: {},
+        data: { message: 'Session expired' },
+      });
+    };
+    try {
+      const app = await renderRouter('./app', { initialUrl: '/profile' });
+      expect(await screen.findByText('Not signed in')).toBeTruthy();
+      expect(app.getPathname()).toBe('/');
+      expect(screen.queryByTestId('profile-error')).toBeNull();
+      expect(secureStore.has(STORAGE_KEYS.AUTH_TOKEN)).toBe(false);
+      expect(announce).not.toHaveBeenCalledWith(
+        expect.stringContaining('Could not refresh your profile')
+      );
+    } finally {
+      authClients.authenticated.defaults.adapter = original;
+    }
   });
 
   it('shows a labeled indicator while reloading', async () => {
@@ -140,6 +241,22 @@ describe('<ProfileScreen />', () => {
     );
   });
 });
+
+/** Uses the real session service and HTTP client, with only the backend replaced. */
+async function seedProfileSession(): Promise<void> {
+  configureIntegrations();
+  const user = { id: 1, name: 'Cached profile', email: 'cached@example.com' };
+  setAuthAdapter({
+    login: async () => ({ token: 'unused', user }),
+    normalizeUser: () => user,
+    fetchUser: async ({ authenticated }) => {
+      const { data } = await authenticated.get<unknown>('/auth/me');
+      return data;
+    },
+  });
+  await signInWithoutProfile();
+  await setItem(STORAGE_KEYS.USER_DATA, user);
+}
 
 /** Waits until the screen's refresh has settled (the spinner is gone). */
 async function waitForRefresh(

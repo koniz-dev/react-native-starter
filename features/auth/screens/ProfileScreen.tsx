@@ -28,7 +28,10 @@ export function ProfileScreen() {
   const [refreshing, setRefreshing] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const user = session.user;
-  const errorText = error && t('profile.refreshFailed', { message: error });
+  const errorText =
+    session.status === 'signedIn' && error
+      ? t('profile.refreshFailed', { message: error })
+      : null;
   useAnnouncement(errorText);
 
   useEffect(() => {
@@ -41,8 +44,9 @@ export function ProfileScreen() {
         if (apiError.code === 'unknown') {
           logger.error('Refreshing the profile failed', err);
         }
-        // A 401 signs out; the guard navigates away, so there is nothing to show.
-        if (active && apiError.code !== 'unauthorized') {
+        // A 401 may keep the session. Report the failure while signed in;
+        // an expired session hides it and the route guard leaves the screen.
+        if (active) {
           setError(errorMessage(apiError));
         }
       })
