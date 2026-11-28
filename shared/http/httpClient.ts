@@ -107,6 +107,8 @@ export function getOrigin(url: string): string | null {
   }
   const scheme = rawScheme.toLowerCase();
   let host = rawHost.toLowerCase();
+  // Port spelling does not change an origin (00443 and 443 are identical).
+  host = host.replace(/:(\d+)$/, (_, port: string) => `:${Number(port)}`);
   if (
     (scheme === 'https' && host.endsWith(':443')) ||
     (scheme === 'http' && host.endsWith(':80'))

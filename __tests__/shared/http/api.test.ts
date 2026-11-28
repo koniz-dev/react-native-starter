@@ -144,6 +144,17 @@ describe('token origin allow-list', () => {
     expect(secureStorage.getSecureItem).not.toHaveBeenCalled();
   });
 
+  it('sends the token to an equivalent origin with a zero-padded default port', async () => {
+    const config = await captureRequest(`${authOrigin}:00443/auth/me`);
+    expect(config?.headers?.Authorization).toBe('Bearer test-token');
+  });
+
+  it('does not trust a different port after normalizing leading zeros', async () => {
+    const config = await captureRequest(`${authOrigin}:08443/auth/me`);
+    expect(config?.headers?.Authorization).toBeUndefined();
+    expect(secureStorage.getSecureItem).not.toHaveBeenCalled();
+  });
+
   it('does not attach the token to a look-alike host', async () => {
     const config = await captureRequest(`${authOrigin}.attacker.example/x`);
     expect(config?.headers?.Authorization).toBeUndefined();
@@ -157,7 +168,7 @@ describe('token origin allow-list', () => {
 
   it('trusts origins listed in EXPO_PUBLIC_API_TRUSTED_ORIGINS, including the API', async () => {
     const previous = process.env.EXPO_PUBLIC_API_TRUSTED_ORIGINS;
-    process.env.EXPO_PUBLIC_API_TRUSTED_ORIGINS = ` ${apiOrigin.toUpperCase()}:443 , ,https://cdn.example.com `;
+    process.env.EXPO_PUBLIC_API_TRUSTED_ORIGINS = ` ${apiOrigin.toUpperCase()}:00443 , ,https://cdn.example.com `;
     try {
       let isolatedApi: typeof ApiModule | undefined;
       let isolatedSecure: typeof secureStorage | undefined;
@@ -197,6 +208,12 @@ describe('getOrigin', () => {
   it.each([
     ['https://API.Example.com/v1?x=1', 'https://api.example.com'],
     ['https://api.example.com:443/v1', 'https://api.example.com'],
+    ['https://api.example.com:00443/v1', 'https://api.example.com'],
+    ['http://localhost:00080', 'http://localhost'],
+    ['https://api.example.com:08443', 'https://api.example.com:8443'],
+    ['https://[2001:db8::1]:00443', 'https://[2001:db8::1]'],
+    ['http://[::1]:00080', 'http://[::1]'],
+    ['https://[::1]:08443', 'https://[::1]:8443'],
     ['http://localhost:80', 'http://localhost'],
     ['http://localhost:3000/x', 'http://localhost:3000'],
     ['https://user:pass@api.example.com/x', 'https://api.example.com'],
