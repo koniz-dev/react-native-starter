@@ -86,7 +86,8 @@ const isHttpUrl = (value: string): boolean => {
   if (!plainUrl.test(value)) return false;
 
   // Only the authority contains a port: passwords, IPv6 addresses, and
-  // paths may also contain colons. Avoid the incomplete native URL parser.
+  // paths may also contain colons. Keep config parsing independent of
+  // runtime initialization (including Expo's URL polyfill).
   const authority = value.slice(value.indexOf('://') + 3).split(/[/?#]/, 1)[0]!;
   const hostAndPort = authority.slice(authority.lastIndexOf('@') + 1);
   const match = /^(?:\[[^\]]+\]|[^:[\]]+)(?::(\d+))?$/.exec(hostAndPort);

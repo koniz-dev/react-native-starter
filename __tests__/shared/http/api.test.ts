@@ -1,6 +1,7 @@
 import type * as ApiModule from '@/shared/http/api';
 import { AxiosError, AxiosHeaders, type AxiosRequestConfig } from 'axios';
 import { ApiError } from '@/shared/http/apiError';
+import { URL as ExpoURL } from 'whatwg-url-minimum';
 
 import { api, getOrigin, getTrustedTokenOrigins } from '@/shared/http/api';
 import { getConfig } from '@/shared/config/env';
@@ -205,6 +206,39 @@ describe('token origin allow-list', () => {
 });
 
 describe('getOrigin', () => {
+  it.each([
+    ['web', globalThis.URL],
+    ['Expo native', ExpoURL],
+  ] as const)(
+    'canonicalizes IDN with the %s URL runtime',
+    (_, implementation) => {
+      const original = globalThis.URL;
+      Object.assign(globalThis, { URL: implementation });
+      try {
+        for (const url of [
+          'https://Bücher.example',
+          'https://xn--bcher-kva.example',
+          'https://bu\u0308cher.example',
+          'https://bücher.example:00443/path',
+        ]) {
+          expect(getOrigin(url)).toBe('https://xn--bcher-kva.example');
+        }
+        expect(getOrigin('https://café.example')).toBe(
+          'https://xn--caf-dma.example'
+        );
+        expect(getOrigin('https://bücher.example:08443')).toBe(
+          'https://xn--bcher-kva.example:8443'
+        );
+        expect(getOrigin('https://evil\\@bücher.example')).toBeNull();
+        expect(getOrigin('https://bü\tcher.example')).toBeNull();
+        expect(getOrigin('https://host.example:bad')).toBeNull();
+        expect(getOrigin('custom://host.example')).toBeNull();
+      } finally {
+        Object.assign(globalThis, { URL: original });
+      }
+    }
+  );
+
   it.each([
     ['https://API.Example.com/v1?x=1', 'https://api.example.com'],
     ['https://api.example.com:443/v1', 'https://api.example.com'],

@@ -126,6 +126,10 @@ default ports ignored) is trusted:
 - the origins in `EXPO_PUBLIC_API_TRUSTED_ORIGINS` (comma-separated), for
   example your API on a separate first-party domain.
 
+Unicode IDN hostnames and their punycode spelling identify the same origin.
+The comparison uses the canonical hostname, scheme, and port: another IDN,
+subdomain, scheme, or port is a different origin, including after a redirect.
+
 Requests to any other origin, including absolute URLs passed to `api`, go out
 without the `Authorization` header. A URL whose host part contains a
 backslash, whitespace, or a control character is never trusted, because

@@ -241,28 +241,90 @@ describe('token safety', () => {
     }
   );
 
-  it('on iOS, reads an IDN host and its punycode form as the same host', async () => {
-    jest.replaceProperty(Platform, 'OS', 'ios');
-    const config = getConfig();
-    jest.spyOn(env, 'getConfig').mockReturnValue({
-      ...config,
-      apiTrustedOrigins: ['https://bücher.example'],
-    });
-    await signIn('t1');
-    const refresh = jest.fn(async () => 't2');
-    setRefreshTokenHandler(refresh);
-    const client = authenticatedClient(async requestConfig => {
-      if (requestConfig.headers.Authorization === 'Bearer t2') {
-        return response(requestConfig, 200);
-      }
-      const error = httpError(requestConfig, 401);
-      // iOS reports the host in its punycode form.
-      error.request = { responseURL: 'https://xn--bcher-kva.example/notes' };
-      throw error;
+  describe.each(['ios', 'android', 'web'] as const)('IDN origins on %s', os => {
+    beforeEach(() => {
+      jest.replaceProperty(Platform, 'OS', os);
+      jest.spyOn(env, 'getConfig').mockReturnValue({
+        ...getConfig(),
+        apiTrustedOrigins: ['https://bücher.example'],
+      });
     });
 
-    await client.get('https://bücher.example/notes');
-    expect(refresh).toHaveBeenCalledTimes(1);
+    it.each([
+      ['https://bücher.example', 'https://xn--bcher-kva.example'],
+      ['https://xn--bcher-kva.example', 'https://bücher.example'],
+      ['https://bücher.example:00443', 'https://xn--bcher-kva.example'],
+    ])(
+      'refreshes a 401 from the same origin represented as %s and %s',
+      async (requested, final) => {
+        await signIn('t1');
+        const refresh = jest.fn(async () => 't2');
+        setRefreshTokenHandler(refresh);
+        const sent: unknown[] = [];
+        const client = authenticatedClient(async config => {
+          sent.push(config.headers.Authorization);
+          if (config.headers.Authorization === 'Bearer t2')
+            return response(config, 200);
+          const error = httpError(config, 401);
+          error.request = { responseURL: `${final}/notes` };
+          throw error;
+        });
+
+        await client.get(`${requested}/notes`);
+
+        expect(sent).toEqual(['Bearer t1', 'Bearer t2']);
+        expect(refresh).toHaveBeenCalledTimes(1);
+        expect(expired).not.toHaveBeenCalled();
+        expect(await getTokenStore().get()).toBe('t2');
+      }
+    );
+
+    it.each([
+      ['https://bücher.example', 'https://xn--caf-dma.example'],
+      ['https://xn--bcher-kva.example', 'https://café.example'],
+      ['https://bücher.example', 'https://sub.xn--bcher-kva.example'],
+      ['https://bücher.example', 'https://xn--bcher-kva.example:8443'],
+      ['https://bücher.example', 'http://xn--bcher-kva.example'],
+    ])(
+      'keeps the session after a cross-origin redirect from %s to %s',
+      async (requested, final) => {
+        await signIn('t1');
+        const refresh = jest.fn(async () => 't2');
+        setRefreshTokenHandler(refresh);
+        const sent = jest.fn();
+        const client = authenticatedClient(async config => {
+          sent(config.headers.Authorization);
+          const error = httpError(config, 401);
+          error.request = { responseURL: `${final}/notes` };
+          throw error;
+        });
+
+        await expect(client.get(`${requested}/notes`)).rejects.toMatchObject({
+          code: 'unauthorized',
+        });
+
+        expect(sent).toHaveBeenCalledTimes(1);
+        expect(sent).toHaveBeenCalledWith('Bearer t1');
+        expect(refresh).not.toHaveBeenCalled();
+        expect(expired).not.toHaveBeenCalled();
+        expect(await getTokenStore().get()).toBe('t1');
+      }
+    );
+
+    it('expires a rejected token when Unicode and punycode identify the same origin', async () => {
+      await signIn('t1');
+      const client = authenticatedClient(async config => {
+        const error = httpError(config, 401);
+        error.request = { responseURL: 'https://xn--bcher-kva.example/notes' };
+        throw error;
+      });
+
+      await expect(
+        client.get('https://bücher.example/notes')
+      ).rejects.toMatchObject({ code: 'unauthorized' });
+      expect(expired).toHaveBeenCalledTimes(1);
+      expect(await getTokenStore().get()).toBeNull();
+    });
   });
 
   it.each(['android', 'web'] as const)(

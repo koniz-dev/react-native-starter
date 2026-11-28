@@ -88,7 +88,8 @@ function isPlainAuthority(authority: string): boolean {
 /**
  * Returns the normalized origin (`scheme://host[:port]`, lowercase, default
  * ports dropped) of an absolute URL, or null if the URL is not absolute.
- * Parsed by hand because React Native's URL implementation is incomplete.
+ * Expo installs a URL runtime that canonicalizes IDN hostnames, IPv6, and
+ * ports; web uses the browser's URL implementation.
  *
  * Fails closed: a URL whose authority contains a backslash, whitespace, or a
  * control character returns null, because browsers and Android's OkHttp
@@ -101,21 +102,12 @@ export function getOrigin(url: string): string | null {
   if (!rawScheme || !authority || !isPlainAuthority(authority)) {
     return null;
   }
-  const rawHost = authority.slice(authority.lastIndexOf('@') + 1);
-  if (!rawHost || rawHost.startsWith(':')) {
+  try {
+    const origin = new URL(url).origin;
+    return origin === 'null' ? null : origin;
+  } catch {
     return null;
   }
-  const scheme = rawScheme.toLowerCase();
-  let host = rawHost.toLowerCase();
-  // Port spelling does not change an origin (00443 and 443 are identical).
-  host = host.replace(/:(\d+)$/, (_, port: string) => `:${Number(port)}`);
-  if (
-    (scheme === 'https' && host.endsWith(':443')) ||
-    (scheme === 'http' && host.endsWith(':80'))
-  ) {
-    host = host.slice(0, host.lastIndexOf(':'));
-  }
-  return `${scheme}://${host}`;
 }
 
 /**
@@ -172,9 +164,6 @@ function pathOf(url: string): string {
   return `/${segments.join('/')}`;
 }
 
-/** A host with non-ASCII characters, which the platform may report as punycode. */
-const isUnicodeHost = (origin: string) => /[^ -~]/.test(origin);
-
 /**
  * Whether a request followed a redirect that dropped the Authorization
  * header, so its 401 says nothing about the token. Every platform drops it
@@ -188,12 +177,7 @@ function followedRedirect(error: AxiosError, requested: string): boolean {
   if (typeof final !== 'string' || !final) return false;
   const [from, to] = [getOrigin(requested), getOrigin(final)];
   if (!from || !to) return false;
-  // An internationalized host comes back in its punycode (xn--) form, which
-  // can't be matched to it here: only that pair counts as the same origin.
-  const idnPair =
-    (isUnicodeHost(from) && to.includes('xn--')) ||
-    (isUnicodeHost(to) && from.includes('xn--'));
-  if (from !== to && !idnPair) return true;
+  if (from !== to) return true;
   if (Platform.OS !== 'ios') return false;
   return pathOf(final) !== pathOf(requested);
 }
