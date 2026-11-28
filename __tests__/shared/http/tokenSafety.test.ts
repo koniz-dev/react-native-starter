@@ -107,10 +107,7 @@ describe('token safety', () => {
 
   it('ignores a 401 from an untrusted origin that got its own Authorization header', async () => {
     await signIn('t1');
-    const refresh = jest.fn(async () => {
-      secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 't2');
-      return 't2';
-    });
+    const refresh = jest.fn(async () => 't2');
     setRefreshTokenHandler(refresh);
     const seen: unknown[] = [];
     const client = authenticatedClient(async config => {

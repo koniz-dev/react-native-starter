@@ -284,10 +284,7 @@ describe('createHttpClient', () => {
 
   it('refreshes once and retries the request with the new token', async () => {
     await signIn('old-token');
-    setRefreshTokenHandler(async () => {
-      secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'new-token');
-      return 'new-token';
-    });
+    setRefreshTokenHandler(async () => 'new-token');
     const seenTokens: unknown[] = [];
     const client = authenticatedClient(async config => {
       seenTokens.push(config.headers.Authorization);
@@ -342,10 +339,7 @@ describe('createHttpClient', () => {
 
   it('shares one refresh between concurrent 401s', async () => {
     await signIn('old-token');
-    const refresh = jest.fn(async () => {
-      secureStore.set(STORAGE_KEYS.AUTH_TOKEN, 'new-token');
-      return 'new-token';
-    });
+    const refresh = jest.fn(async () => 'new-token');
     setRefreshTokenHandler(refresh);
     const client = authenticatedClient(async config => {
       if (config.headers.Authorization === 'Bearer old-token') {

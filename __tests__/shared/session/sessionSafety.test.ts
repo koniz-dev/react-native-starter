@@ -7,6 +7,7 @@ import {
   getSessionToken,
   onSessionExpired,
   refreshAccessToken,
+  setRefreshTokenHandler,
 } from '@/shared/session/session';
 import { getTokenStore, setTokenStore } from '@/shared/session/tokenStore';
 import { getItem, STORAGE_KEYS } from '@/shared/storage/storage';
@@ -41,10 +42,17 @@ afterEach(() => {
   setAuthAdapter(null);
 });
 
-it.each([false, true])(
-  'serializes a pending refresh write before logout (next sign-in: %s)',
-  async signInAgain => {
+it.each([
+  ['adapter', false],
+  ['adapter', true],
+  ['handler', false],
+  ['handler', true],
+] as const)(
+  'serializes a pending %s refresh write before logout (next sign-in: %s)',
+  async (registration, signInAgain) => {
     await login('A');
+    if (registration === 'handler')
+      setRefreshTokenHandler(async () => 'token-A2');
     const store = getTokenStore();
     const writing = deferred<void>();
     const release = deferred<void>();
@@ -75,6 +83,51 @@ it.each([false, true])(
     expect(await authService.isAuthenticated()).toBe(signInAgain);
     expect((await authService.getCurrentUser())?.id ?? null).toBe(
       signInAgain ? 'B' : null
+    );
+  }
+);
+
+it('stores and shares the token returned by a custom refresh handler', async () => {
+  await login('A');
+  const ready = deferred<string>();
+  const refresh = jest.fn(() => ready.promise);
+  setRefreshTokenHandler(refresh);
+  const first = refreshAccessToken();
+  const second = refreshAccessToken();
+  ready.resolve('token-A2');
+  await expect(Promise.all([first, second])).resolves.toEqual([
+    'token-A2',
+    'token-A2',
+  ]);
+  expect(refresh).toHaveBeenCalledTimes(1);
+  expect(await getSessionToken()).toBe('token-A2');
+});
+
+it.each([false, true])(
+  'discards a custom refresh after logout (next sign-in: %s)',
+  async signInAgain => {
+    await login('A');
+    const ready = deferred<string>();
+    setRefreshTokenHandler(() => ready.promise);
+    const refreshing = refreshAccessToken();
+    await authService.logout();
+    if (signInAgain) await login('B');
+    ready.resolve('token-A2');
+
+    await expect(refreshing).resolves.toBeNull();
+    expect(await getTokenStore().get()).toBe(signInAgain ? 'token-B' : null);
+    const client = createHttpClient({
+      getBaseURL: () => getConfig().authApiUrl,
+      authenticated: true,
+    });
+    const sent = jest.fn();
+    client.defaults.adapter = async config => {
+      sent(config.headers.Authorization);
+      return { config, data: {}, headers: {}, status: 200, statusText: 'OK' };
+    };
+    await client.post('/orders', { item: 1 });
+    expect(sent).toHaveBeenCalledWith(
+      signInAgain ? 'Bearer token-B' : undefined
     );
   }
 );

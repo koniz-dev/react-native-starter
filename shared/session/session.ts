@@ -13,6 +13,7 @@ import {
   STORAGE_KEYS,
 } from '@/shared/storage/storage';
 import { getTokenStore } from './tokenStore';
+import { logger } from '@/shared/lib/logger';
 
 let sessionGeneration = 0;
 let sessionInvalidated = false;
@@ -155,9 +156,10 @@ export function getUnauthorizedHandler(): UnauthorizedHandler {
 }
 
 /**
- * Optional token refresh. It should obtain a new access token (for example
- * with a refresh token), store it with getTokenStore().set(), and return it;
- * return null when the session can't be refreshed. If it throws, a network,
+ * Optional token refresh. Obtain and return a new access token (for example
+ * with a refresh token); never write the access token to storage here. The
+ * session core checks ownership and serializes its write with sign-in/out.
+ * Return null when the session can't be refreshed. If it throws, a network,
  * timeout, server, or canceled error keeps the session (the request fails
  * with that error), as does a 408 or 429 (`isTransient` in
  * shared/http/apiError.ts); any other error counts as "can't refresh". The HTTP client retries
@@ -187,20 +189,39 @@ export function setRefreshTokenHandler(
  * timeout, 5xx, canceled, 408, 429), so the caller keeps the session.
  */
 export async function refreshAccessToken(): Promise<string | null> {
-  if (!refreshTokenHandler) return null;
+  const refresh = refreshTokenHandler;
+  if (!refresh) return null;
   const generation = sessionGeneration;
   // Join a refresh only if it belongs to this session: one started before a
   // sign-out (or a new sign-in) resolves null and must not speak for it.
   let inFlight = refreshInFlight;
   if (inFlight?.generation !== generation) {
+    const store = getTokenStore();
     const started = {
       generation,
-      promise: refreshTokenHandler().catch((error: unknown) => {
-        // Says nothing about the session (try again later), or no session.
-        const apiError = toApiError(error);
-        if (isTransient(apiError)) throw apiError;
-        return null;
-      }),
+      promise: Promise.resolve()
+        .then(refresh)
+        .catch((error: unknown) => {
+          // Says nothing about the session (try again later), or no session.
+          const apiError = toApiError(error);
+          if (isTransient(apiError)) throw apiError;
+          return null;
+        })
+        .then(async token => {
+          if (!token || generation !== sessionGeneration) return null;
+          try {
+            await runSessionStorageTask(async () => {
+              if (generation === sessionGeneration) await store.set(token);
+            });
+          } catch (error) {
+            // A temporary Keychain failure must not end an otherwise valid
+            // session: retry the request with the returned token regardless.
+            logger.warn('Storing the refreshed token failed', {
+              error: toApiError(error).message,
+            });
+          }
+          return generation === sessionGeneration ? token : null;
+        }),
     };
     inFlight = refreshInFlight = started;
     void started.promise

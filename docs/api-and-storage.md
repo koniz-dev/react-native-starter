@@ -191,6 +191,13 @@ the request is canceled (`code: 'canceled'`) before it reaches the network.
 Session writes are serialized, so an in-flight refresh write finishes before
 logout clears it or a new sign-in stores its own token and profile.
 
+Both `AuthAdapter.refresh` and a custom `setRefreshTokenHandler` callback
+return the new access token without storing it. The session core owns that
+write: it checks the session generation and uses the same storage queue as
+sign-in and logout. If a custom handler previously called
+`getTokenStore().set()`, remove that call and only return the token. Writing
+directly to the underlying store bypasses these ownership checks.
+
 An `ApiError` never holds the request's headers or body: its `cause` is a
 summary (method, URL without the query string, axios's error code), so
 logging or reporting it can't leak the token or a password. Request-failure

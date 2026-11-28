@@ -75,6 +75,7 @@ export interface AuthAdapter {
   fetchUser?(clients: AuthClients): Promise<unknown>;
   /**
    * Obtains a new access token, e.g. with a refresh token the adapter keeps;
+   * return it without storing it: the session core owns access-token writes.
    * null when the session can't be refreshed. Called once on a 401. A 401 on
    * `clients.authenticated` here rejects (and so signs the user out); it
    * never starts another refresh. Use `clients`, not the app's `api` client.
@@ -146,34 +147,7 @@ let adapter: AuthAdapter = notConfiguredAuthAdapter;
 export function setAuthAdapter(next: AuthAdapter | null): void {
   adapter = next ?? notConfiguredAuthAdapter;
   const refresh = adapter.refresh?.bind(adapter);
-  setRefreshTokenHandler(
-    refresh
-      ? async () => {
-          const generation = getSessionGeneration();
-          const token = await refresh(authRefreshClients);
-          // Signed out (or in again) meanwhile: don't bring the old session back.
-          if (generation !== getSessionGeneration()) return null;
-          if (token) {
-            const store = getTokenStore();
-            try {
-              await runSessionStorageTask(async () => {
-                if (generation === getSessionGeneration()) {
-                  await store.set(token);
-                }
-              });
-            } catch (error) {
-              // Such as the Keychain while the device is locked. The request
-              // is retried with the new token anyway; the next 401 refreshes
-              // again. Signing the user out over it would be worse.
-              logger.warn('Storing the refreshed token failed', {
-                error: toApiError(error).message,
-              });
-            }
-          }
-          return generation === getSessionGeneration() ? token : null;
-        }
-      : null
-  );
+  setRefreshTokenHandler(refresh ? () => refresh(authRefreshClients) : null);
 }
 
 export const authService = {
