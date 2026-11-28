@@ -57,7 +57,7 @@ export async function saveSettings(
   - an `Error` in the context is reduced to its name, message, `code`, and
     `status` (development adds its stack);
   - a `Date` becomes its ISO string, a `Map` an object, a `Set` an array,
-    and a `URL` its address without the query string, as does a string
+    and a `URL` its address without user info, query, or fragment, as does a string
     under a key ending in `url`, `uri`, `href`, `link`, `endpoint`, or
     `location` (such as `redirectUri`, but not `linkText`); a value whose getter throws becomes
     `[unreadable]`, so logging never throws;
@@ -69,8 +69,8 @@ export async function saveSettings(
 
   The `Error` passed to `captureException` is the original object, so the
   provider gets its stack. An `ApiError` from the HTTP clients carries no
-  headers or request body (its `cause` is a summary without the query
-  string), and its `data` (the response body) is not an enumerable field,
+  headers or request body (its `cause` is a summary without URL credentials,
+  query, or fragment), and its `data` (the response body) is not an enumerable field,
   so SDKs that copy an error's fields into the report leave it out. If
   your own errors carry sensitive fields, strip them in the adapter (or the
   provider's `beforeSend`).

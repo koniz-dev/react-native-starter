@@ -733,6 +733,25 @@ describe('work that outlives its session', () => {
 });
 
 describe('request failure logs', () => {
+  it('removes user info, query, and fragment from request logs and error summaries', async () => {
+    const client = authenticatedClient(async config => {
+      throw networkError(config);
+    });
+    const error = await client
+      .get(
+        'https://service:SECRET-PASSWORD@auth.example.com/me?token=SECRET-QUERY#frag'
+      )
+      .catch((caught: unknown) => caught);
+    expect(logger.warn).toHaveBeenCalledWith(
+      'API GET https://auth.example.com/me failed: network'
+    );
+    expect(inspect(error, { depth: 20, showHidden: true })).not.toMatch(
+      /service|SECRET-PASSWORD|SECRET-QUERY|frag/
+    );
+    expect(error).toMatchObject({
+      cause: { url: 'https://auth.example.com/me' },
+    });
+  });
   it('leave out the query string and fragment', async () => {
     const client = authenticatedClient(async config => {
       throw new AxiosError('Bad', 'ERR_BAD_REQUEST', config, undefined, {

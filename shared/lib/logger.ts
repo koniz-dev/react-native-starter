@@ -20,6 +20,7 @@
  */
 import { configResult, type LogLevel } from '@/shared/config/env';
 import { getErrorReporter } from '@/shared/integrations/errorReporter';
+import { sanitizeUrl } from './sanitizeUrl';
 
 export type LogContext = Record<string, unknown>;
 
@@ -84,7 +85,7 @@ function isSecretKey(key: string): boolean {
 const BODY_KEY = /^(data|body)$/i;
 /**
  * Keys whose string values are URLs (by how the key ends, so `linkText` is
- * not one): logged without the query or fragment.
+ * not one): logged without user info, query, or fragment.
  */
 const URL_KEY = /(ur[il]|href|link|endpoint|location)$/i;
 const MAX_DEPTH = 5;
@@ -149,8 +150,8 @@ export function redact(value: unknown, development: boolean): unknown {
         : current.toISOString();
     }
     if (typeof URL !== 'undefined' && current instanceof URL) {
-      // Like request logs: no query string or fragment.
-      return current.href.split(/[?#]/)[0];
+      // Like request logs: no URL credentials, query, or fragment.
+      return sanitizeUrl(current.href);
     }
     const entries: [string, unknown][] =
       current instanceof Map
@@ -164,8 +165,8 @@ export function redact(value: unknown, development: boolean): unknown {
       } else if (!development && BODY_KEY.test(key)) {
         result[key] = REDACTED;
       } else if (typeof item === 'string' && URL_KEY.test(key)) {
-        // A query string can carry a token (?access_token=...).
-        result[key] = item.split(/[?#]/)[0];
+        // Both user info and query strings can carry credentials.
+        result[key] = sanitizeUrl(item);
       } else {
         result[key] = walk(item, depth + 1);
       }

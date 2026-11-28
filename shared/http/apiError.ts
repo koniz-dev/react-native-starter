@@ -2,6 +2,7 @@
  * The single error type every HTTP client in the app rejects with.
  */
 import axios, { type AxiosError } from 'axios';
+import { sanitizeUrl } from '@/shared/lib/sanitizeUrl';
 
 export type ApiErrorCode =
   /** No response: offline, DNS failure, connection refused, CORS. */
@@ -94,7 +95,7 @@ function codeForStatus(status: number): ApiErrorCode {
 /**
  * What an ApiError keeps of the axios error it replaces: no headers (the
  * Authorization token) and no request body (a password), since errors reach
- * logs and the error reporter. The URL loses its query string and fragment.
+ * logs and the error reporter. The URL loses user info, query, and fragment.
  */
 interface RequestSummary {
   name: string;
@@ -112,7 +113,7 @@ function summarize(error: AxiosError): RequestSummary {
     ...(error.config?.method && {
       method: error.config.method.toUpperCase(),
     }),
-    ...(error.config?.url && { url: error.config.url.split(/[?#]/)[0] }),
+    ...(error.config?.url && { url: sanitizeUrl(error.config.url) }),
   };
 }
 

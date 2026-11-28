@@ -17,7 +17,11 @@ import {
   CanceledError,
   type InternalAxiosRequestConfig,
 } from 'axios';
-import { ApiError, type ApiErrorCode } from '@/shared/http/apiError';
+import {
+  ApiError,
+  toApiError,
+  type ApiErrorCode,
+} from '@/shared/http/apiError';
 import {
   createHttpClient,
   requestFailureLogLevel,
@@ -634,6 +638,31 @@ describe('logger', () => {
       });
     });
 
+    it.each([true, false])(
+      'removes URL user info from context in development=%s',
+      development => {
+        expect(
+          redact(
+            {
+              url: 'https://service:SECRET-PASSWORD@api.example.com/me?token=SECRET-QUERY#frag',
+              nested: {
+                endpoint:
+                  '//service:SECRET-PASSWORD@api.example.com/me?token=x',
+              },
+              link: new URL(
+                'https://service:SECRET-PASSWORD@api.example.com/me?token=x'
+              ),
+            },
+            development
+          )
+        ).toEqual({
+          url: 'https://api.example.com/me',
+          nested: { endpoint: '//api.example.com/me' },
+          link: 'https://api.example.com/me',
+        });
+      }
+    );
+
     it('redacts what the logger writes outside development', () => {
       createLogger(() => PRODUCTION).warn('Request failed', {
         config: { headers: { Authorization: 'Bearer abc' } },
@@ -644,6 +673,34 @@ describe('logger', () => {
         config: { headers: { Authorization: '[redacted]' } },
         response: { status: 401, data: '[redacted]' },
       });
+    });
+
+    it('sends sanitized request URLs and context to the reporter', () => {
+      const url =
+        'https://service:SECRET-PASSWORD@api.example.com/me?token=SECRET-QUERY#fragment';
+      const error = toApiError(
+        new AxiosError('Network Error', 'ERR_NETWORK', {
+          url,
+          headers: {} as InternalAxiosRequestConfig['headers'],
+        } as InternalAxiosRequestConfig)
+      );
+      createLogger(() => PRODUCTION).error('Request failed', error, { url });
+
+      expect(reporter.captureException).toHaveBeenCalledWith(
+        expect.objectContaining({
+          cause: expect.objectContaining({ url: 'https://api.example.com/me' }),
+        }),
+        {
+          message: 'Request failed',
+          extra: { url: 'https://api.example.com/me' },
+        }
+      );
+      expect(JSON.stringify(reporter.captureException.mock.calls)).not.toMatch(
+        /service|SECRET-PASSWORD|SECRET-QUERY|fragment/
+      );
+      expect(JSON.stringify(consoleSpies.error.mock.calls)).not.toMatch(
+        /service|SECRET-PASSWORD|SECRET-QUERY|fragment/
+      );
     });
   });
 });

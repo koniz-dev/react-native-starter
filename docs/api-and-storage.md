@@ -199,9 +199,9 @@ sign-in and logout. If a custom handler previously called
 directly to the underlying store bypasses these ownership checks.
 
 An `ApiError` never holds the request's headers or body: its `cause` is a
-summary (method, URL without the query string, axios's error code), so
+summary (method, URL without credentials, query, or fragment, axios's error code), so
 logging or reporting it can't leak the token or a password. Request-failure
-log lines also leave out the query string.
+log lines also leave out URL credentials, query, and fragment.
 
 To react differently, replace the unauthorized handler, and subscribe
 anywhere to session expiry:

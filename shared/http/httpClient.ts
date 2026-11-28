@@ -25,6 +25,7 @@ import axios, {
 import { Platform } from 'react-native';
 import { getConfig } from '@/shared/config/env';
 import { logger } from '@/shared/lib/logger';
+import { sanitizeUrl } from '@/shared/lib/sanitizeUrl';
 import { toApiError, type ApiErrorCode } from './apiError';
 import {
   getSessionGeneration,
@@ -195,10 +196,10 @@ function followedRedirect(error: AxiosError, requested: string): boolean {
   return pathOf(final) !== pathOf(requested);
 }
 
-/** `METHOD path` for logs, without the query string or fragment. */
+/** `METHOD path` for logs, without URL credentials, query, or fragment. */
 function describe(config: InternalAxiosRequestConfig | undefined): string {
   if (!config) return 'request';
-  const path = (config.url ?? '').split(/[?#]/)[0];
+  const path = sanitizeUrl(config.url ?? '');
   return `${(config.method ?? 'get').toUpperCase()} ${path}`;
 }
 
